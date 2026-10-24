@@ -1,6 +1,8 @@
 # gogs-repos-game-server
 
-原始路径：`gogs-repos-game-server`　|　文件：**1163**　|　主语言：Go 1112, SQL 25, YAML 10
+> 本目录原始 README 见文末，本节为快照补充信息。
+
+原始路径：`gogs-repos-game-server`　|　文件 **1163**　|　主语言：Go 1112, SQL 25, YAML 10
 
 ## 目录构成
 
@@ -17,26 +19,21 @@ tools/couponSQL/  — 26
 hallserver/src/  — 26
 game/zjh/  — 23
 monitorserver/src/  — 21
-notifyserver/src/  — 19
-game/tgw/  — 18
 ```
 
 ## 关键文件
 
 - CI/构建：`Makefile`
 
-## 主要文件
+---
 
-- `using/src/netproto/HallMsg.pb.go`
-- `game/by/src/bylogic/bylogic_test.go`
-- `game/by/src/bylogic/bylogic.go`
-- `game/scmj/src/scmj/scmjlogic.go`
-- `game/ddz/src/ddzgamelogic/ddzgamelogic.go`
-- `game/ermj/src/ermjlogic/ermjlogic.go`
-- `game/bjl/src/baijialelogic/baijialelogic.go`
-- `game/ddz/src/ddzgamelogic/ddzrobotlogic.go`
+## 原始说明
 
-## 说明
+# GameServer
 
-该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
+![Build Status](http://0.0.0.0/api/badges/ServerTeam/GameServer/status.svg)
+
+GameServer - 0201
+
+test
 

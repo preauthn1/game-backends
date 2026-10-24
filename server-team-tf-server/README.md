@@ -1,6 +1,8 @@
 # server-team-tf-server
 
-原始路径：`server-team-tf-server`　|　文件：**19**　|　主语言：Go 18, XML 1
+> 本目录原始 README 见文末，本节为快照补充信息。
+
+原始路径：`server-team-tf-server`　|　文件 **19**　|　主语言：Go 18, XML 1
 
 ## 目录构成
 
@@ -11,18 +13,47 @@ cmd/tfconfig/  — 2
 cmd/tfserver/  — 1
 ```
 
-## 主要文件
+---
 
-- `internal/tfserver/tfnet/tfserver.go`
-- `internal/tfserver/tfnet/conninfo.go`
-- `internal/tfserver/router/portrouter/remotemaploader.go`
-- `cmd/tfconfig/main.go`
-- `internal/tfserver/router/portrouter/localconfigmaploader.go`
-- `internal/tfserver/tfconfig/tfconfig.go`
-- `cmd/tfserver/main.go`
-- `internal/tfserver/tfnet/tchannel.go`
+## 原始说明
 
-## 说明
+# Servers
 
-该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
+* [TF Server](#tf-server)
+* [TF Config](#tf-config)
+
+# TF Server
+
+# TF Config
+
+### RestfulAPIs
+
+| Method | URI                    | Description            |
+|:------:|:----------------------:|:-----------------------|
+| GET    | [config](#config)      | 加載配置               |
+| GET    | [submit](#submit)      | 交轉發服務器狀態       |
+| GET    | [tfstatus](#tf-status) | 讀取轉發服務器運行狀況 |
+
+---
+#### Config
+加載配置
+##### Method `GET`
+##### URI `${hostname}/config`
+---
+#### Submit
+交轉發服務器狀態
+##### Method `GET`
+##### URI `${hostname}/submit`
+##### Arguments
+| Name | Type   | Required | Descirption |
+| :--: | :----: | :------: | :---------- |
+| cn   | Int    | Required | 當前連接數  |
+| code | string | Required | 校驗碼      |
+> `code`: 要帶入`tfconfig.dat`裡的`submitcheckcode`
+---
+#### TF Status
+讀取轉發服務器運行狀況
+##### Method `GET`
+##### URI `${hostname}/tfstatus`
+---
 

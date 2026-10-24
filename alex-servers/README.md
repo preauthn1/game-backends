@@ -1,6 +1,8 @@
 # alex-servers
 
-原始路径：`alex-servers`　|　文件：**804**　|　主语言：Go 792, Shell 4, YAML 2
+> 本目录原始 README 见文末，本节为快照补充信息。
+
+原始路径：`alex-servers`　|　文件 **804**　|　主语言：Go 792, Shell 4, YAML 2
 
 ## 目录构成
 
@@ -17,26 +19,27 @@ internal/notifyserver/  — 19
 pkg/util/  — 16
 pkg/robot/  — 16
 pkg/module/  — 15
-pkg/poker/  — 13
-pkg/roomlogic/  — 12
 ```
 
 ## 关键文件
 
 - CI/构建：`Makefile`
 
-## 主要文件
+---
 
-- `pkg/netproto/HallMsg.pb.go`
-- `internal/dbserver/dal/msghandler/cover.txt`
-- `pkg/netproto/GameMsg.pb.go`
-- `pkg/netproto/GameMsg_Slot.pb.go`
-- `pkg/netproto/GameMsg_ALD.pb.go`
-- `internal/game/xmbx/logic_test.go`
-- `pkg/netproto/GameMsg_XMBX.pb.go`
-- `internal/game/wlzb/logic_test.go`
+## 原始说明
 
-## 说明
+# Servers
 
-该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
+[![pipeline status](http://example.invalid:1688/server-team/servers/badges/master/pipeline.svg)](http://example.invalid:1688/server-team/servers/commits/master)
+[![coverage report](http://example.invalid:1688/server-team/servers/badges/master/coverage.svg)](http://example.invalid:1688/server-team/servers/commits/master)
+
+### Games
+
+#### Slot 
+* [多福多財(DFDC), 招財進寶(ZCJB)](internal/game/dfdc/README.md)
+* [糖果屋(TGW)](internal/game/candyhouse/README.md)
+* [星光派對(XGPD), 阿拉丁(ALD)](internal/game/aladdin/README.md)
+* [五龍爭霸(WLZB)](internal/game/wlzb/README.md)
+* [熊貓報喜(XMBX)](internal/game/xmbx/README.md)
 

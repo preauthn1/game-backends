@@ -1,6 +1,6 @@
 # game-backends
 
-59 个工程，35997 个文本文件。每个目录内的 README.md 描述该工程。
+60 个工程，35997 个文本文件。每目录一份 README（结构信息 + 原始说明）。
 
 ## 索引
 
@@ -28,7 +28,7 @@
 | [`ddynh-botservice`](./ddynh-botservice) | HangfireJob/wwwroot · game.Service.Job/ServiceImplement · packages/Newtonsoft.Json.12.0.2 | 282 | C# |
 | [`docker90`](./docker90) | game/ddz · game/by · game/zjh | 26 | Shell |
 | [`docker91`](./docker91) | game/ddz · game/by · game/zjh | 27 | YAML |
-| [`electron-jp-game`](./electron-jp-game) |  | 8 | JavaScript |
+| [`electron-jp-game`](./electron-jp-game) | — | 8 | JavaScript |
 | [`fz-777agent`](./fz-777agent) | anframework/vendor · public/assets · public/bjui | 2930 | PHP |
 | [`fz-backend.agent77`](./fz-backend.agent77) | Agent/Agent77 · Agent/Repository · Agent/Service | 1120 | JavaScript |
 | [`fz-backend.fw`](./fz-backend.fw) | FW.Core.AdminSys.WebUI/Content · FW.Core.AdminSys.WebUI/Themes · FW.Core.IO/FastDFS | 1055 | CSS |
@@ -50,7 +50,7 @@
 | [`phnum-protocal`](./phnum-protocal) | C# | 104 | C# |
 | [`proto`](./proto) | scripts | 4 | YAML |
 | [`protocol`](./protocol) | C# | 100 | C# |
-| [`prototest`](./prototest) |  | 2 | YAML |
+| [`prototest`](./prototest) | — | 2 | YAML |
 | [`release`](./release) | Release-v1.1.3/SQL-Update · Release-v1.0.4/SQL-Update · Release-v1.1.2/SQL-Update | 47 | SQL |
 | [`server-team-deploy-server`](./server-team-deploy-server) | internal/deploy · configs · pkg/copy | 7 | Go |
 | [`server-team-origin-protocol`](./server-team-origin-protocol) | C# · phnum · scripts | 133 | C# |
@@ -58,7 +58,8 @@
 | [`server-team-servers`](./server-team-servers) | internal/game · internal/dbserver · pkg/slot | 2221 | Go |
 | [`server-team-tf-server`](./server-team-tf-server) | internal/tfserver · internal/tfconfig · cmd/tfconfig | 19 | Go |
 | [`sql-update`](./sql-update) | 20190701-coupon · 20190708-aepayment | 61 | SQL |
-| [`upload_to_s3`](./upload_to_s3) |  | 1 | YAML |
+| [`tutorial`](./tutorial) | — | 0 | — |
+| [`upload_to_s3`](./upload_to_s3) | — | 1 | YAML |
 | [`white-chessgameserver`](./white-chessgameserver) | framework/src · roomserver/src · dbserver/src | 786 | Go |
 | [`white-kube`](./white-kube) | pgs-dev/deployment · core/docker-registry · core | 38 | YAML |
 | [`white-origin-protocol`](./white-origin-protocol) | C# | 104 | C# |

@@ -1,6 +1,8 @@
 # cm-backend
 
-原始路径：`cm-backend`　|　文件：**407**　|　主语言：PHP 382, JavaScript 9, CSS 7
+> 本目录原始 README 见文末，本节为快照补充信息。
+
+原始路径：`cm-backend`　|　文件 **407**　|　主语言：PHP 382, JavaScript 9, CSS 7
 
 ## 目录构成
 
@@ -17,28 +19,81 @@ public/resources/  — 14
 config/  — 13
 app/Helpers/  — 9
 database/migrations/  — 4
-routes/  — 3
-app/  — 3
 ```
 
 ## 关键文件
 
-- 依赖清单：`package.json`、`composer.json`
 - CI/构建：`.gitlab-ci.yml`
 - 前端入口：`resources/js/app.js`
 
-## 主要文件
+---
 
-- `public/resources/css/bootstrap.css`
-- `public/resources/js/chart.js`
-- `public/resources/css/bootstrap.min.css`
-- `public/resources/css/nifty.min.css`
-- `public/resources/css/bootstrap-icons.min.css`
-- `public/resources/js/jquery-2.2.4.min.js`
-- `resources/views/livewire/system/miner-setting.blade.php`
-- `public/resources/js/moment.min.js`
+## 原始说明
 
-## 说明
+<p align="center"><a href="https://example.invalid" target="_blank"><img src="https://example.invalid/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
+<p align="center">
+<a href="https://example.invalid/laravel/framework/actions"><img src="https://example.invalid/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://example.invalid/packages/laravel/framework"><img src="https://example.invalid/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://example.invalid/packages/laravel/framework"><img src="https://example.invalid/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://example.invalid/packages/laravel/framework"><img src="https://example.invalid/packagist/l/laravel/framework" alt="License"></a>
+</p>
+
+## About Laravel
+
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+
+- [Simple, fast routing engine](https://example.invalid/docs/routing).
+- [Powerful dependency injection container](https://example.invalid/docs/container).
+- Multiple back-ends for [session](https://example.invalid/docs/session) and [cache](https://example.invalid/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://example.invalid/docs/eloquent).
+- Database agnostic [schema migrations](https://example.invalid/docs/migrations).
+- [Robust background job processing](https://example.invalid/docs/queues).
+- [Real-time event broadcasting](https://example.invalid/docs/broadcasting).
+
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
+
+## Learning Laravel
+
+Laravel has the most extensive and thorough [documentation](https://example.invalid/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+
+You may also try the [Laravel Bootcamp](https://example.invalid), where you will be guided through building a modern Laravel application from scratch.
+
+If you don't feel like reading, [Laracasts](https://example.invalid) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+
+## Laravel Sponsors
+
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://example.invalid).
+
+### Premium Partners
+
+- **[Vehikl](https://example.invalid/)**
+- **[Tighten Co.](https://example.invalid)**
+- **[WebReinvent](https://example.invalid/)**
+- **[Kirschbaum Development Group](https://example.invalid)**
+- **[64 Robots](https://example.invalid)**
+- **[Curotec](https://example.invalid/services/technologies/laravel/)**
+- **[Cyber-Duck](https://example.invalid.uk)**
+- **[DevSquad](https://example.invalid/hire-laravel-developers)**
+- **[Jump24](https://example.invalid.uk)**
+- **[Redberry](https://redberry.international/laravel/)**
+- **[Active Logic](https://example.invalid)**
+- **[byte5](https://byte5.de)**
+- **[OP.GG](https://op.gg)**
+
+## Contributing
+
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://example.invalid/docs/contributions).
+
+## Code of Conduct
+
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://example.invalid/docs/contributions#code-of-conduct).
+
+## Security Vulnerabilities
+
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [user@example.invalid](mailto:user@example.invalid). All security vulnerabilities will be promptly addressed.
+
+## License
+
+The Laravel framework is open-sourced software licensed under the [MIT license](https://example.invalid/licenses/MIT).
 

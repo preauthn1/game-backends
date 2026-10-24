@@ -1,6 +1,8 @@
 # backend.portal
 
-原始路径：`backend.portal`　|　文件：**335**　|　主语言：Vue 205, TypeScript 99, YAML 10
+> 本目录原始 README 见文末，本节为快照补充信息。
+
+原始路径：`backend.portal`　|　文件 **335**　|　主语言：Vue 205, TypeScript 99, YAML 10
 
 ## 目录构成
 
@@ -17,28 +19,39 @@ src/store/  — 4
 src/i18n/  — 3
 src/router/  — 3
 DockerFiles/  — 2
-src/plugins/  — 1
-docs/decisions/  — 1
 ```
 
 ## 关键文件
 
-- 依赖清单：`package.json`
 - CI/构建：`.gitlab-ci.yml`、`DockerFiles/Dockerfile`
 - 前端入口：`src/main.ts`、`public/index.html`
 
-## 主要文件
+---
 
-- `src/components/system-setting/Merchants.vue`
-- `src/components/agent/MerchantCredits.vue`
-- `src/components/statistics/merchant-summary/MerchantSummaryFinanceCompare.vue`
-- `src/components/members-management/Detail.vue`
-- `src/components/game-management/UnionBetRecords.vue`
-- `src/components/game-management/BetRecordSearch.vue`
-- `src/components/game-management/RecordList.vue`
-- `src/components/system-setting/AccountingInvoice.vue`
+## 原始说明
 
-## 说明
+# backend.portal
 
-该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
+## Project setup
+```
+yarn install
+```
+
+### Compiles and hot-reloads for development
+```
+yarn serve
+```
+
+### Compiles and minifies for production
+```
+yarn build
+```
+
+### Lints and fixes files
+```
+yarn lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://example.invalid/config/).
 

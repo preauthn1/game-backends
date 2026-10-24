@@ -1,6 +1,8 @@
 # app-frontend
 
-原始路径：`app-frontend`　|　文件：**177**　|　主语言：XML 10, JSON 5, C++ 4
+> 本目录原始 README 见文末，本节为快照补充信息。
+
+原始路径：`app-frontend`　|　文件 **177**　|　主语言：XML 10, JSON 5, C++ 4
 
 ## 目录构成
 
@@ -17,8 +19,6 @@ linux/  — 4
 windows/flutter/  — 3
 android/  — 3
 linux/flutter/  — 3
-macos/Runner/  — 3
-lib/platform/  — 2
 ```
 
 ## 关键文件
@@ -26,18 +26,53 @@ lib/platform/  — 2
 - CI/构建：`.gitlab-ci.yml`
 - 前端入口：`web/index.html`
 
-## 主要文件
+---
 
-- `lib/screens/my_screen.dart`
-- `lib/screens/agent_screen.dart`
-- `lib/screens/my_miner_detail_screen.dart`
-- `lib/screens/miner_purchase_detail_screen.dart`
-- `lib/screens/top_up_receipt_screen.dart`
-- `lib/screens/register_screen.dart`
-- `lib/screens/fund_record_screen.dart`
-- `lib/widgets/withdrawal_bank_section.dart`
+## 原始说明
 
-## 说明
+# miner
 
-该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
+A new Flutter project.
+
+## Getting Started
+
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
+
+## Environment List
+
+To setup environments, edit the following file:
+
+/lib/utils/env_list.dart
+
+## Switching Environments
+
+To switch environments, use the following commands based on your target platform:
+
+### Run in a Specific Environment
+```
+flutter run --dart-define=ENV=your_environment_name
+```
+
+Replace `your_environment_name` with the desired environment name.
+
+### Build APK for a Specific Environment
+```
+flutter build apk --dart-define=ENV=your_environment_name
+```
+
+### Build for Web in a Specific Environment
+```
+flutter build web --dart-define=ENV=your_environment_name
+```
+
+In each case, replace `your_environment_name` with the desired environment.
 
