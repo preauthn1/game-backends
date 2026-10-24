@@ -1,0 +1,40 @@
+syntax = "proto2";
+
+package netproto;
+
+enum JLBPK_GameMessageClassID {
+    //---------- Server - Client ----------
+    GameInfo = 10001;                 // S2C 牌局資訊，於玩家進入牌局或斷線重連時傳送
+    AllUserInfo = 10002;              // S2C 玩家資訊，當玩家人數或狀態有變動時傳送
+    WaitingStart = 10003;             // S2C 等待遊戲開始，此階段玩家可自由進出遊戲
+    StartBettingAnimation = 10004;    // S2C 遊戲開始，播放開始下注動畫
+    StartBettingAnimationOK = 10005;  // C2S 開始下注動畫播放完成
+    UserBettingStart = 10006;         // S2C 玩家開始下注
+    Bet = 10007;                      // C2S 玩家下注，包含底注及邊注
+    BetResult = 10008;                // S2C 玩家下注結果
+    StopBettingAnimation = 10009;     // S2C 播放停止下注動畫
+    StopBettingAnimationOK = 10010;   // C2S 停止下注動畫播放完成
+    Deal = 10011;                     // S2C 發牌
+    DealOk = 10012;                   // C2S 發牌動畫播放完成
+    DoubleBetStart = 10013;           // S2C 玩家開始加注
+    DoubleBet = 10014;                // C2S 玩家加注
+    DoubleBetResult = 10015;          // S2C 玩家加注結果
+    FoldCard = 10016;                 // C2S 棄牌
+    UserFoldCard = 10017;             // S2C 傳送玩家棄牌訊息，玩家於加注倒數時間結束時仍未加注，亦傳送此協定強制棄牌
+    ShowCards = 10018;                // S2C 開牌，邊注結算
+    ShowCardsOK = 10019;              // C2S 開牌，邊注結算效果完成
+    Compensate_BetBase = 10020;       // S2C 賠付，底注結算
+    Compensate_BetBase_OK = 10021;    // C2S 賠付，底注結算效果完成
+    Compensate_DoubleBet = 10022;     // S2C 賠付，加注結算
+    Compensate_DoubleBet_OK = 10023;  // C2S 賠付，加注結算效果完成
+    UpdateJackpot = 10024;            // S2C 更新 Jackpot 金額
+
+    //---------- SuperTool ----------
+    JLBPK_SuperTool_GetDealerWeight = 20001;       // 要求莊家牌型權重
+    JLBPK_SuperTool_GetDealerWeightRet = 20002;    // 取得莊家牌型權重
+    JLBPK_SuperTool_GetSetting = 20003;            // 要求超端設定
+    JLBPK_SuperTool_GetSettingRet = 20004;         // 取得超端設定
+    JLBPK_SuperTool_GetVIPUser = 20005;            // 要求監控玩家清冊
+    JLBPK_SuperTool_GetVIPUserRet = 20006;         // 取得監控玩家清冊
+    JLBPK_SuperTool_UpdateVIPUser = 20007;         // 更新監控玩家資料
+};

@@ -1,0 +1,116 @@
+﻿@{
+    ViewBag.Title = "新增总代理/财务";
+}
+
+@model Repository.ViewModel.AgentUser
+
+<div class="box box-primary">
+    <!-- /.box-header -->
+    <form action="@Url.Action("AddAgentUser", "Admin", new { Area = "Agent" })" class="form-horizontal" method="post">
+        <div class="box-body">
+            <div class="form-group">
+                <label class="col-sm-12">账号</label>
+                <div class="col-sm-12">
+                    @Html.TextBoxFor(x => x.Account, new { @class = "form-control", maxlength = "40" })
+                    @Html.ValidationMessageFor(x => x.Account)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-12">密码</label>
+                <div class="col-sm-12">
+                    @Html.PasswordFor(x => x.Password, new { @class = "form-control", maxlength = "40" })
+                    @Html.ValidationMessageFor(x => x.Password)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-12">确认密码</label>
+                <div class="col-sm-12">
+                    @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "form-control", maxlength = "40" })
+                    @Html.ValidationMessageFor(x => x.ConfirmPassword)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-12">身份</label>
+                <div class="col-sm-12">
+                    @Html.DropDownList("AdminType", null, null, new { @class = "form-control select2" })
+                    @Html.ValidationMessageFor(x => x.AdminType)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-12">平台</label>
+                <div class="col-sm-12">
+                    @Html.DropDownList("PlatformIDS", (MultiSelectList)ViewBag.PlatformID, "请选择", new { @class = "form-control", multiple = "multiple", style = "width: 100%;" })                  
+                    @Html.HiddenFor(x => x.PlatformID)
+                    @Html.ValidationMessageFor(x => x.PlatformID)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-12">代理模式</label>
+                <label class="col-md-2 col-sm-1 col-xs-12">                 
+                    @Html.CheckBoxFor(x => x.Mode1, new { @class = "minimal" })
+                    全民
+                </label>
+                <label class="col-md-2 col-sm-1 col-xs-12">
+                    @Html.CheckBoxFor(x => x.Mode2, new { @class = "minimal" })
+                    流水
+                </label>
+                <label class="col-md-2 col-sm-1 col-xs-12">
+                    @Html.CheckBoxFor(x => x.Mode3, new { @class = "minimal" })
+                    裂变
+                </label>
+                <label class="col-md-2 col-sm-1 col-xs-12">
+                    @Html.CheckBoxFor(x => x.Mode4, new { @class = "minimal" })
+                    联运(净利润)
+                </label>
+                <label class="col-md-2 col-sm-1 col-xs-12">
+                    @Html.CheckBoxFor(x => x.Mode5, new { @class = "minimal" })
+                    无限极
+                </label>
+                <label class="col-md-2 col-sm-1 col-xs-12">
+                    @Html.CheckBoxFor(x => x.Mode6, new { @class = "minimal" })
+                    礼码
+                </label>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-primary btn-block">确认</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section head{   
+    <!-- iCheck -->
+    <link rel="stylesheet" href="~/Areas/Agent/Content/plugins/iCheck/all.css">
+    <link rel="stylesheet" href="~/Areas/Agent/Content/plugins/iCheck/square/blue.css">
+    <!-- Select2 -->
+    <link href="~/Areas/Agent/Content/plugins/select2/select2.css" rel="stylesheet" />
+}
+@section scripts{ 
+    <!-- iCheck -->
+    <script src="/Areas/Agent/Content/plugins/iCheck/icheck.min.js"></script>
+    <!-- Select2 -->
+    <script src="~/Areas/Agent/Content/plugins/select2/select2.full.js"></script>
+    <!-- Page script -->
+    <script type="text/javascript">
+        var $PlatformID = $("#PlatformID");
+        var $PlatformIDS = $("#PlatformIDS");
+
+        $(function () {
+            $PlatformIDS.select2(
+            {
+                placeholder: '请选择',
+                allowClear: true
+            }).on('change', function (e) {
+                $PlatformID.val($(this).val());
+            });
+
+            $('input[type="checkbox"].minimal').iCheck({
+                checkboxClass: 'icheckbox_minimal-blue',
+                radioClass: 'iradio_minimal-blue'
+            });
+        })
+    </script>
+}
+

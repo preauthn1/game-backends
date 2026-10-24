@@ -1,0 +1,112 @@
+﻿@using FW.Core.Helper.Enum
+
+
+@model  FW.Core.Helper.PagedList<OrderListDTO>
+
+@section pageLevelPlugins{
+	<script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+
+@using FW.Core.Helper.Enum
+@model List<game.Entity.Stat.BankSourceLog>
+@section pageLevelPlugins{
+	<script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="protlet-body">
+
+			<form class="form-inline" id="form_search" method="get">
+				<div class="form-group">
+					@Html.Partial("_PlatformSelect", false)
+					@Html.Partial("AdminAreaListMust", true)
+
+					<label>保險箱流通类型</label>
+					@Html.DropDownList("sourceTypeID", DataService.BankSourceType(), new { @class = "form-control input-small", id = "sourceTypeID" })
+				</div>
+				<div class="form-group">
+					<label>保險箱变化方式</label>
+					<select class="form-control input-small" id="changeType" name="changeType">
+						<option>--不限--</option>
+						@foreach (var item in Enum.GetValues(typeof(game.Entity.Money.BankSourceChangeType)))
+						{
+							<option value="@item.ToString().ToLower()">@item.GetDisplayName()</option>
+						}
+					</select>
+				</div>
+				<div class="form-group">
+					<label>统计时间</label>
+					<input type="text" class="form-control " style="width:180px" id="beginTime" name="beginTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+					到
+					<input type="text" class="form-control " style="width:180px" id="endTime" name="endTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd'})" placeholder="结束时间" autocomplete="off">
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-default"> 搜 索 </button>
+				</div>
+			</form>
+
+			<div class="table-scrollable">
+
+				<table class="table table-striped table-bordered table-hover progressTable">
+					<thead>
+						<tr>
+							<th class="hide">编号</th>
+							<th>统计时间</th>
+							<th>流向编号</th>
+							<th>保險箱流通类型</th>
+							<th>保險箱变化方式</th>
+							<th style="width:500px">金额</th>
+						</tr>
+					</thead>
+					<tbody>
+						@if (Model != null)
+						{
+							foreach (var item in Model)
+							{
+								<tr>
+									<td class="hide">@item.Id</td>
+									<td>@item.StatTime.ToString("yyyy-MM-dd")</td>
+									<td>@item.SourceID</td>
+									<td>@item.SourceType.SourceName</td>
+									<td>@item.SourceType.ChangeType.GetDisplayName()</td>
+									<td class="amountProgress" style="width:500px">@item.Amount.ToCash()</td>
+
+								</tr>
+							}
+						}
+					</tbody>
+					@if (Model != null && Model.Count > 0)
+					{
+						<tfoot>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td>
+									@{
+										Int64 inflow = Convert.ToInt64(Model.Where(m => m.SourceType.ChangeType == game.Entity.Money.BankSourceChangeType.InFlow).Sum(p => p.Amount));
+										Int64 outflow = Convert.ToInt64(Model.Where(m => m.SourceType.ChangeType == game.Entity.Money.BankSourceChangeType.OutFlow).Sum(p => p.Amount));
+									}
+									总流入:@inflow.ToCash()<br />
+									总流出:@Math.Abs(outflow).ToCash()<br />
+									净流入:@((inflow - Math.Abs(outflow)).ToCash())<br />
+								</td>
+								<td></td>
+							</tr>
+						</tfoot>
+					}
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+@section initScripts{
+	<script>
+		$(function () {
+			fillFormData('form_search');
+			ShowProgress($(".progressTable"), "amountProgress", 500);
+		})
+	</script>
+}

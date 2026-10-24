@@ -1,0 +1,136 @@
+﻿@using System.Web.UI.WebControls
+@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+@using FW.Core.Helper
+ @model game.Entity.Customer.QuestionType
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="~/Content/Bootstrap/assets/plugins/PinYin.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $(document).delegate('.type-value', 'keyup', function() {
+                $(this).parent().find('.type-name').val(codefans_net_CC2PY($(this).val()));
+            });
+        })
+    </script>
+}
+<table style="display:none">
+    <tr id="templateRoom"> 
+        <td><input type="hidden" name="Name" class="type-name form-control" /><input type="text" name="Value" class="type-value form-control" /></td>
+        <td>
+            <a class="button btn btn-danger" onclick="removeFileds(this);"><span class="glyphicon glyphicon-minus" arir-hidden="true"></span> 删除</a>
+        </td>
+    </tr> 
+</table>
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>@(Model.Id==0 ? "新增类型" : "编辑类型")
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="form1" method="post" class="form-horizontal form-bordered">
+                  
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">类型名称</label>
+                            <div class="col-md-8">
+                                <input type="text" name="TypeName" class="form-control input-medium" placeholder="请输入类型名称" value="@Model.TypeName" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4">问题相关数据</label>
+                            <div class="col-md-8">
+                                <input type="hidden" name="kucun" id="kucun" /> 
+                                <textarea class="form-control" name="data" id="txtData" style="display:none">@Model.ChildTypeFileds</textarea>
+                                <table id="tabConfig" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>字段名称</th>
+                                            <th style="width: 90px;">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.Id == 0)
+                                        {
+                                            <tr> 
+                                                <td><input type="hidden" name="Name" class="type-name form-control" /><input type="text" name="Value" class="type-value form-control" /></td>
+                                                <td> 
+                                                </td>
+                                            </tr>
+                                        }
+                                        @if (ViewBag.ChildFileds != null)
+                                        {
+                                            var i = 0;
+                                            foreach (var item in ViewBag.ChildFileds)
+                                            {
+                                                <tr> 
+                                                    <td><input type="hidden" name="Name" class="type-name form-control disabled" value="@item.Name" />
+                                                        <input type="text" name="Value" class="type-value form-control disabled" value="@item.Value" /></td> 
+                                                    <td>
+                                                        <a class="button btn btn-success disabled">已生效</a>
+                                                    </td>
+                                                </tr>
+                                                i++;
+
+                                            }
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="4">
+                                                <a class="button btn btn-info" onclick="addFileds(this);"><span class="glyphicon glyphicon-plus" arir-hidden="true"></span> 新增</a> 
+                                                <span class="alert-danger">(请尽量不要对‘已生效’字段的名称进行修改,否则之前问题记录的数据将会丢失！)</span> 
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @Html.OkWithRight(onclick: "return Check()")
+
+                            @Html.Back(Url.Action("QuestionTypeList"))
+
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div> 
+
+@section initScripts{
+
+    <script type="text/javascript"> 
+        $(function() {
+            $("#form1").validate({
+                rules: {
+                    TypeName: {
+                        required: true,
+                        minlength: 2,
+                        maxlength: 1024
+                    }
+                }
+            });
+        });  
+        function addFileds() {
+            $("#tabConfig > tbody").append("<tr>" + $("#templateRoom").html() + "</tr>");
+        } 
+        function removeFileds(span) {
+            $(span).parent().parent().remove();
+        }
+
+    </script>
+}

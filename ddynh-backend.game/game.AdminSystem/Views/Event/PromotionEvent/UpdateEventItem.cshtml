@@ -1,0 +1,286 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@using game.Entity.Event
+@using game.Entity.Money
+@using game.Entity.Event
+
+@model game.AdminSystem.Models.ViewModels.PromotionEventItemUpdateModel
+
+@{
+    var gameList = (List<game.Entity.Area.AreaGameList>)ViewBag.GameList;    
+    string defaultStyleImage = Model.DisplayMode == (int)AnnouncementDisplayModeEnum.Image ? "" : "display:none";
+    string defaultStyleContent = Model.DisplayMode == (int)AnnouncementDisplayModeEnum.Image ? "display:none" : "";
+}
+
+@section pageLevelPlugins
+{
+
+}
+
+
+<style>
+
+    .form-group {
+        margin-top: 7px !important;
+        margin-left:10px !important;
+    }
+
+    .ck-editor__editable_inline {
+        min-height: 350px;
+    }
+
+</style>
+
+
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i> 活动公告图片与位置管理 (@ViewBag.TypeName)
+                </div>
+            </div>
+            <div class="portlet-body form">
+
+                <!-- BEGIN FORM-->
+                <form id="myForm" method="post" class="form-horizontal form-bordered" enctype="multipart/form-data">
+
+                    <input type="hidden" name="Id" id="Id" value="@Model.Id" />
+                    <input type="hidden" name="EventId" id="EventId" value="@Model.EventId" />
+
+                    <div class="modal-body">
+
+                        <div class="form-group" style="margin-bottom:25px;border-bottom:solid 5px #EEE;font-weight:700;color:#555;margin-left:-5px !important;">
+
+                            <span style="font-size:16px;" title="活动名称">
+                                 @Model.EventName 
+                            </span>
+
+                        </div>
+
+
+                        @if (Model.Type == (int)PromotionEventPositionTypeEnum.MailPage)
+                        {
+                            <div class="form-group" style="margin-top:10px;">
+                                <label for="Link">
+                                    公告内文呈现方式：
+                                </label>
+                                @(Html.RenderDropdownByEnum<AnnouncementDisplayModeEnum>("DisplayMode", Model.DisplayMode))
+                            </div>
+                        }
+
+
+
+
+                        <div class="form-group" id="imageDisplay" style="@defaultStyleImage">
+
+                            <div>
+                                <span class="msgSpan" id="flieMsg"></span>
+                                <input type='file' id="MyFile" name="MyFile" />
+                            </div>
+
+
+                            <label for="">
+                                预览图片 (@ViewBag.TypeName)
+
+                                <span id="image_tip" class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" style="color:#ab284c;" title="首页弹窗图片不可超过1280*720，活动公告内文图片宽度最大为734">
+                                </span>
+                            </label>
+                            <div class="previewImage_contain" style="height:200px;border:dashed 5px #EEE;text-align:center">
+
+                                @{
+                                    string hideStyle = string.IsNullOrEmpty(Model.ImageUrl) ? "display:none;" : "";
+                                }
+
+                                <img id="preview" src="@(Model.ImageUrlDomain + Model.ImageUrl)" alt="your image" style="@(hideStyle)height:180px;max-width:100%;" />
+                            </div>
+                        </div>
+
+
+                        @if (Model.Type == (int)PromotionEventPositionTypeEnum.MailPage)
+                        {
+                            <div style="margin-top:20px;margin-left:10px;">
+                                <label>
+                                    自订内文：
+                                </label>
+                                <span id="content_tip" class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" style="color:#ab284c;" title="格式请参考：<b></b>：粗体。<i></i>：斜体。<color></color>：颜色。<size></size>：尺寸">                                                                                       
+                                </span>
+                            </div>
+
+                            <div id="contentDisplay" style="@defaultStyleContent" >
+
+                                <textarea name="content" id="editor" style="height:250px;width:700px;margin-left:10px;" placeholder="填写内文" >@Model.Content</textarea>
+
+                            </div>
+
+
+                        }
+
+
+                        <div class="form-group">
+                            <label for="Link">启用状态</label>
+                            @Html.Partial("_DropdownActiveStatus", new DropdownPartialSettingViewModel(FirstOptionValueEnum.None, Model.Status))
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="Link">排序</label>
+                            <input type="text" class="form-control input-small" name="Sort" id="Sort" value="@Model.Sort">
+                        </div>
+
+
+                        @if (Model.Type == (int)PromotionEventPositionTypeEnum.HomePage)
+                        {
+                            <div class="form-group">
+                                <label for="Link">跳转至</label>
+                                @(Html.RenderDropdownByEnum<game.Entity.Game.Behavior>("BehaviorType", Model.BehaviorType))
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Link">
+                                    跳转設定(额外参数)
+                                    <span id="extraSetting_tip" class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" style="color:#ab284c;" title="若选择连结广告位置、请输入http连结网址。若选择一键入厅、请输入游戏ID(数字编号)">
+                                    </span>
+
+                                    <a class="link-text" onclick="global_showMyModal()" style="margin-left:10px;color:#949494 !important;">查游戏编号</a>
+
+                                </label>
+                                <input type="text" class="form-control  input-large" name="BehaviorSettingValue" id="BehaviorSettingValue" value="@Model.BehaviorSettingValue" placeholder="e.g. 若选择超连结类型，此栏位需输入网址">
+                            </div>
+
+                        }
+
+
+                        @if (Model.Type == (int)PromotionEventPositionTypeEnum.MailPage)
+                        {
+                            <div class="form-group">
+                                <label for="Link">标签</label>
+                                @(Html.RenderDropdownByEnum<game.Entity.Event.EventItemTagEnum>("tags", Model.Tags))
+                            </div>
+                        }
+
+
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="add-advertisement-button">確定</button>
+                        <button id="btnBack" type="button" class="btn " style="" onclick="javascript:window.history.back();return false;"><i class="fa  fa-mail-reply-all"></i> 返回</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="modal_empty_template" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width:300px">
+        <div class="modal-content" style="padding:15px;">
+
+            <h4>
+                游戏编号对照表
+            </h4>
+
+            @foreach (var item in gameList)
+            {
+                <div style="padding:5px;border-bottom:solid 1px #EEE;">
+
+                    <span style="display:inline-block;width:50px;cursor:pointer;" onclick="setValueToInput('@item.GameID')" title="複製">
+                        @item.GameID
+                    </span>
+                    @item.Game.GameName
+                </div>
+            }
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    关闭
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    $("#myForm").validate({
+        rules: {
+            Sort: {
+                required: true,
+                min: 0,
+                max: 9999
+            }
+        }
+    });
+
+
+
+    $(function () {
+
+
+        $("#DisplayMode").change(function () {
+
+            var value = $(this).val();
+
+            if (value == '@((int)AnnouncementDisplayModeEnum.Image)')
+            {
+                $("#imageDisplay").show();
+                $("#contentDisplay").hide();
+            }
+            else
+            {
+                $("#imageDisplay").hide();
+                $("#contentDisplay").show();
+            }
+        });
+
+    })
+
+
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#preview').attr('src', e.target.result);
+            }
+
+            $("#preview").show();
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $(function () {
+
+        $("#MyFile").change(function () {
+            readURL(this);
+        });
+
+        $('#extraSetting_tip').tooltip();
+        $('#content_tip').tooltip();
+        $('#image_tip').tooltip();
+    })
+
+
+    function setValueToInput(myValue) {
+
+        $("#myModal").modal('hide');
+        $("#BehaviorSettingValue").val(myValue);
+
+    }
+
+
+
+
+</script>

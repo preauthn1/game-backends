@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://example.invalid/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{507A67E7-9244-4A78-ACB0-BB0C7EE7C406}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Repository</RootNamespace>
+    <AssemblyName>Repository</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="example.invalid.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdminSysContext.cs" />
+    <Compile Include="AgentClubContext.cs" />
+    <Compile Include="AgentClubFactory.cs" />
+    <Compile Include="DbHelper.cs" />
+    <Compile Include="Entity\agentclub\AgentApply.cs" />
+    <Compile Include="Entity\agentclub\AgentCustomer.cs" />
+    <Compile Include="Entity\agentclub\AgentInformation.cs" />
+    <Compile Include="Entity\agentclub\AgentProfitLog.cs" />
+    <Compile Include="Entity\agentclub\AgentRateRange.cs" />
+    <Compile Include="Entity\agentclub\AgentUsers.cs" />
+    <Compile Include="Entity\agentclub\Area.cs" />
+    <Compile Include="Entity\agentclub\ChangeLog.cs" />
+    <Compile Include="Entity\agentclub\DomainConfig.cs" />
+    <Compile Include="Entity\agentclub\GrandConfig.cs" />
+    <Compile Include="Entity\agentclub\LogonLog.cs" />
+    <Compile Include="Entity\agentclub\OfficialUserConfig.cs" />
+    <Compile Include="ViewModel\RregisteredCount.cs" />
+    <Compile Include="ViewModel\vMaxMinRate.cs" />
+    <Compile Include="Entity\agentclub\Platform.cs" />
+    <Compile Include="Entity\agentclub\SMS.cs" />
+    <Compile Include="Entity\agentclub\SystemConfig.cs" />
+    <Compile Include="Entity\agentclub\WithdrawApply.cs" />
+    <Compile Include="Entity\agentclub\WithdrawLog.cs" />
+    <Compile Include="Entity\agent_back.cs" />
+    <Compile Include="Entity\agent_login_total.cs" />
+    <Compile Include="Entity\agent_login_user.cs" />
+    <Compile Include="Entity\agent_money_total.cs" />
+    <Compile Include="Entity\agent_money_user.cs" />
+    <Compile Include="Entity\agent_player.cs" />
+    <Compile Include="Entity\agent_player_recharge.cs" />
+    <Compile Include="Entity\agent_recharge_total.cs" />
+    <Compile Include="Entity\agent_total.cs" />
+    <Compile Include="Entity\agent_user.cs" />
+    <Compile Include="Entity\UserInfo.cs" />
+    <Compile Include="IRepositoryFactory.cs" />
+    <Compile Include="Models\Agent.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Agent.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Agent.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Agent.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Agent.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_ad.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_apply.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_back.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_chat.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_exchange_back.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_exchange_player.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_login_total.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_login_user.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_menu.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_money_total.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_money_user.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_plan.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_player.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_player_recharge.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_recharge.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_recharge_total.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_red.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_report_day.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_tip.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_total.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_user.cs">
+      <DependentUpon>Agent.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Interface\IDatabase.cs" />
+    <Compile Include="Models\Interface\IRepository.cs" />
+    <Compile Include="Models\Repository\AgentClubRepository.cs" />
+    <Compile Include="Models\Repository\GenericRepository.cs" />
+    <Compile Include="Models\Repository\MSDatabase.cs" />
+    <Compile Include="MSRepositoryFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel\AgentMoneyUser.cs" />
+    <Compile Include="ViewModel\AgentOrder.cs" />
+    <Compile Include="ViewModel\AgentReportDay.cs" />
+    <Compile Include="ViewModel\AgentRechargeTotal.cs" />
+    <Compile Include="ViewModel\vGrandConfig.cs" />
+    <Compile Include="ViewModel\vRateRange.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <EntityDeploy Include="Models\Agent.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Agent.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Models\Agent.edmx.diagram">
+      <DependentUpon>Agent.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Models\Agent.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Agent.edmx</DependentUpon>
+      <LastGenOutput>Agent.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Agent.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Agent.edmx</DependentUpon>
+      <LastGenOutput>Agent.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

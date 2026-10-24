@@ -1,0 +1,84 @@
+﻿@{
+    ViewBag.Title = "二维码URL";
+}
+
+@model List<DomainSetting>
+
+    <div class="box box-primary">
+        <!-- /.box-header -->
+        <form action="@Url.Action("AddPlatformInfo", "Admin", new { PlatformID = ViewBag.IntPlatformID })" class="form-horizontal" method="get">
+            <div class="box-body">
+                <div class="form-group">
+                    <label class="col-sm-12">平台</label>
+                    <div class="col-sm-12">
+                        @Html.DropDownList("PlatformID", null, "---", new { @class = "form-control select2" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <button type="submit" class="btn btn-primary btn-block">确认</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-striped">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>PlatformID</th>
+                    <th>AreaID</th>
+                    <th>Domain</th>
+                    <th>Status</th>
+                    <th>PlatformName</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.PlatformID</td>
+                            <td>@item.AreaID</td>
+                            <td>
+                                <form action="@Url.Action("AddPlatformInfo", "Admin", new {PlatformID = ViewBag.IntPlatformID })" class="form-horizontal" method="post">
+                                    <input type="hidden" name="ID" value="@item.ID" />
+                                    <input type="text" class="form-control" name="Domain" value="@item.Domain" />
+                                    <input type="submit" class="btn btn-primary btn-block" value="更新" />
+                                </form>
+                            </td>
+                            <td>@item.Status</td>
+                            <td>@item.PlatformName</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    
+@section head{
+    <!-- Select2 -->
+    <link href="~/Areas/Agent/Content/plugins/select2/select2.css" rel="stylesheet" />
+}
+@section scripts{
+    <!-- Select2 -->
+    <script src="~/Areas/Agent/Content/plugins/select2/select2.full.js"></script>
+    <!-- Page script -->
+    <script type="text/javascript">
+        var $PlatformID = $("#PlatformID");
+
+        $(function () {
+            $PlatformID.select2(
+            {
+                placeholder: '请选择',
+                allowClear: true
+            }).on('change', function (e) {
+                console.log($(this).val());
+            });
+        })
+    </script>
+}
+

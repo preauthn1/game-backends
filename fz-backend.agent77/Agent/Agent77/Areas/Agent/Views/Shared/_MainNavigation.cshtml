@@ -1,0 +1,189 @@
+﻿@{
+    var controllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+    var actionName = this.ViewContext.RouteData.Values["action"].ToString();
+
+    var isAdmin = controllerName.Equals("Admin");
+    var isCustomer = controllerName.Equals("Customer");
+    var isProfit = controllerName.Equals("Profit");
+    var isUnlimit = controllerName.Equals("Unlimit");
+    var isSplit = controllerName.Equals("Split");
+    var isCoupon = controllerName.Equals("Coupon");
+}
+
+<ul class="sidebar-menu tree" data-widget="tree">
+    <li class="header">MAIN NAVIGATION</li>
+    @if (UserHelper.User.Role == RoleType.Admin || UserHelper.User.Role == RoleType.Biz)
+    {
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-laptop"></i> <span>系统管理</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu @(isAdmin ? "menu-open" : string.Empty)" style='display: @(isAdmin ? "block;" : "none;")'>
+                @if (UserHelper.User.Role == RoleType.Admin)
+                {
+                <li @(isAdmin && actionName.Equals("AddAgentUser") ? "class=active" : string.Empty)><a href="@Url.Action("AddAgentUser", "Admin")"><i class="fa fa-circle-o text-red"></i> 新增总代理/财务 </a></li>
+                <li @(isAdmin && actionName.Equals("AdminList") ? "class=active" : string.Empty)><a href="@Url.Action("AdminList", "Admin")"><i class="fa fa-circle-o text-red"></i> 管理员列表 </a></li>
+                <li @(isAdmin && actionName.Equals("AddPlatformInfo") ? "class=active" : string.Empty)><a href="@Url.Action("AddPlatformInfo", "Admin")"><i class="fa fa-circle-o text-red"></i> 二维码URL </a></li>
+                }
+                <li @(isAdmin && actionName.Equals("EventDetail") ? "class=active" : string.Empty)><a href="@Url.Action("EventDetail", "Admin")"><i class="fa fa-circle-o text-red"></i> 活动管理 </a></li>
+            </ul>
+        </li>
+    }
+    @if (UserHelper.User.Mode1 == 1)
+    {
+        <li class="treeview @(controllerName.Equals("Customer") ? "active" : string.Empty)">
+            <a href="#">
+                <i class="glyphicon glyphicon-grain"></i> <span>全民代理</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>        
+            <ul class="treeview-menu @(isCustomer ? "menu-open" : string.Empty)" style='display: @(isCustomer ? "block;" : "none;")'>
+                <li @(isCustomer && actionName.Equals("SubUserInfo") ? "class=active" : string.Empty)><a href="@Url.Action("SubUserInfo", "Customer")"><i class="fa fa-circle-o text-red"></i> <span>我的代理</span></a></li>
+                <li @(isCustomer && actionName.Equals("ProfitlogDay") ? "class=active" : string.Empty)><a href="@Url.Action("ProfitlogDay", "Customer")"><i class="fa fa-circle-o text-red"></i><span>按日税收记录</span></a></li>
+                <li @(isCustomer && actionName.Equals("TaxBonusLog") ? "class=active" : string.Empty)><a href="@Url.Action("TaxBonusLog", "Customer")"><i class="fa fa-circle-o text-red"></i><span>按日收益记录</span></a></li>
+                <li @(isCustomer && actionName.Equals("WithdrawList") ? "class=active" : string.Empty)><a href="@Url.Action("WithdrawList", "Customer")"><i class="fa fa-circle-o text-red"></i><span>提取收益记录</span></a></li>
+            </ul>
+        </li>
+    }
+
+    @if (UserHelper.User.Mode2 == 1 && 1==2)
+    {
+    <li class="treeview">
+        <a href="#">
+            <i class="glyphicon glyphicon-tint"></i> <span>流水代理</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu" style="display: none;">
+            <li class="active"><a href="#"><i class="fa fa-circle-o text-red"></i> Page1 </a></li>
+            <li class="active"><a href="#"><i class="fa fa-circle-o text-red"></i> Page2 </a></li>
+            <li class="active"><a href="#"><i class="fa fa-circle-o text-red"></i> Page3 </a></li>
+            <li class="active"><a href="#"><i class="fa fa-circle-o text-red"></i> Page4 </a></li>
+        </ul>
+    </li>
+    }
+
+    @if (UserHelper.User.Mode3 == 1)
+    {
+        <li class="treeview">
+            <a href="#">
+                <i class="glyphicon glyphicon-tower"></i> <span>裂变代理</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu @(isSplit ? "menu-open" : string.Empty)" style='display: @(isSplit ? "block;" : "none;")'>
+                @if(UserHelper.User.Role != RoleType.Agent)
+                {
+                <li @(isSplit && actionName.Equals("SystemRate") ? "class=active" : string.Empty)><a href="@Url.Action("SystemRate", "Split")"><i class="fa fa-circle-o text-red"></i> <span>奖励設定</span></a></li>
+                }
+                <li @(isSplit && actionName.Equals("UserInfoList") ? "class=active" : string.Empty)><a href="@Url.Action("UserInfoList", "Split")"><i class="fa fa-circle-o text-red"></i> <span>用戶列表</span></a></li>
+                <li @(isSplit && actionName.Equals("UserConvert") ? "class=active" : string.Empty)><a href="@Url.Action("UserConvert", "Split")"><i class="fa fa-circle-o text-red"></i> <span>提現紀錄</span></a></li>
+            </ul>
+        </li>   
+    }
+
+    @if (UserHelper.User.Mode4 == 1)
+    {
+        <li class="treeview">
+            <a href="#">
+            
+                <i class="glyphicon glyphicon-flash"></i> <span>联运代理</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu @(isProfit ? "menu-open" : string.Empty)" style='display: @(isProfit ? "block;" : "none;")'>
+                @if (UserHelper.User.Role == RoleType.Biz || UserHelper.User.Role == RoleType.Admin)
+                {
+                    <li @(isProfit && actionName.Equals("SystemRateDaylimit") ? "class=active" : string.Empty)><a href="@Url.Action("SystemRateDaylimit", "Profit")"><i class="fa fa-circle-o text-red"></i> 平台比例設定 </a></li>
+                    <li @(isUnlimit && actionName.Equals("AddUserRelation") ? "class=active" : string.Empty)><a href="@Url.Action("AddUserRelation", "Profit")"><i class="fa fa-circle-o text-red"></i> 绑定上级 </a></li>
+                }
+                @if (UserHelper.User.Role == RoleType.Biz)
+                {
+                <li @(isProfit && actionName.Equals("AddNewAgent") ? "class=active" : string.Empty)><a href="@Url.Action("AddNewAgent", "Profit")"><i class="fa fa-circle-o text-red"></i> 新增一级代理 </a></li>
+                <li @(isProfit && actionName.Equals("AgentApplyList") ? "class=active" : string.Empty)><a href="@Url.Action("AgentApplyList", "Profit")"><i class="fa fa-circle-o text-red"></i> 审核代理申请 </a></li>               
+                }
+                @if (UserHelper.User.Role != RoleType.Agent)
+                {
+                <li @(isProfit && actionName.Equals("WithdrawList") ? "class=active" : string.Empty)><a href="@Url.Action("WithdrawList", "Profit")"><i class="fa fa-circle-o text-red"></i> 审核提领列表 </a></li>
+                }
+                else
+                {
+                <li @(isProfit && actionName.Equals("WithdrawLog") ? "class=active" : string.Empty)><a href="@Url.Action("WithdrawLog", "Profit")"><i class="fa fa-circle-o text-red"></i> 提现记录 </a></li>
+                }
+                @if (UserHelper.User.Role == RoleType.Agent)
+                {
+                <li @(isProfit && actionName.Equals("WithDrawOrder") ? "class=active" : string.Empty)><a href="@Url.Action("WithDrawOrder", "Profit")"><i class="fa fa-circle-o text-red"></i> 代理提现 </a></li>
+                }
+                <li @(isProfit && actionName.Equals("AgentWithdrawLog") ? "class=active" : string.Empty)><a href="@Url.Action("AgentWithdrawLog", "Profit")"><i class="fa fa-circle-o text-red"></i> 代理提现记录 </a></li>
+                <li @(isProfit && actionName.Equals("WithdrawDetail") ? "class=active" : string.Empty)><a href="@Url.Action("WithdrawDetail", "Profit")"><i class="fa fa-circle-o text-red"></i> 充值兑换记录 </a></li>
+                <li @(isProfit && actionName.Equals("SubUserList") ? "class=active" : string.Empty)><a href="@Url.Action("SubUserList", "Profit")"><i class="fa fa-circle-o text-red"></i> 代理/玩家列表 </a></li>
+            </ul>
+        </li>
+    }
+
+    @if (UserHelper.User.Mode5 == 1)
+    {
+        <li class="treeview">
+            <a href="#">
+                <i class="glyphicon glyphicon-knight"></i> <span>无限极代理</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu @(isUnlimit ? "menu-open" : string.Empty)" style='display: @(isUnlimit ? "block;" : "none;")'>
+                @if (UserHelper.User.Role == RoleType.Biz || UserHelper.User.Role == RoleType.Admin)
+                {
+                    <li @(isUnlimit && actionName.Equals("AddUserRelation") ? "class=active" : string.Empty)><a href="@Url.Action("AddUserRelation", "Unlimit")"><i class="fa fa-circle-o text-red"></i> 绑定上级 </a></li>
+                }
+                @if (UserHelper.User.Role == RoleType.Agent)
+                {
+                <li @(isUnlimit && actionName.Equals("UserConvertInfo") ? "class=active" : string.Empty)><a href="@Url.Action("UserConvertInfo", "Unlimit")"><i class="fa fa-circle-o text-red"></i> 提現紀錄 </a></li>
+                <li @(isUnlimit && actionName.Equals("UserPreConvertInfo") ? "class=active" : string.Empty)><a href="@Url.Action("UserPreConvertInfo", "Unlimit")"><i class="fa fa-circle-o text-red"></i> 預提紀錄 </a></li>
+                }
+                <li @(isUnlimit && actionName.Equals("SubUserConvertInfo") ? "class=active" : string.Empty)><a href="@Url.Action("SubUserConvertInfo", "Unlimit")"><i class="fa fa-circle-o text-red"></i> 下线提现纪录 </a></li>
+                <li @(isUnlimit && actionName.Equals("SubUserPreConvertInfo") ? "class=active" : string.Empty)><a href="@Url.Action("SubUserPreConvertInfo", "Unlimit")"><i class="fa fa-circle-o text-red"></i> 下线預提紀錄 </a></li>                
+                <li @(isUnlimit && actionName.Equals("UserInfoList") ? "class=active" : string.Empty)><a href="@Url.Action("UserInfoList", "Unlimit")"><i class="fa fa-circle-o text-red"></i> 团队列表 </a></li>                
+            </ul>
+        </li>
+    }
+
+    @if (UserHelper.User.Mode6 == 1)
+    {
+        <li class="treeview">
+            <a href="#">
+                <i class="glyphicon glyphicon-star"></i> <span>礼码管理</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu @(isCoupon ? "menu-open" : string.Empty)" style="display: @(isCoupon ? "block;" : "none;");">
+                <li @(isCoupon && actionName.Equals("DailyReport") ? "class=active" : string.Empty)><a href="@Url.Action("DailyReport", "Coupon")"><i class="fa fa-circle-o text-red"></i> 日报 </a></li@(isUnlimit>
+                <li @(isCoupon && actionName.Equals("SearchUser") ? "class=active" : string.Empty)><a href="@Url.Action("SearchUser", "Coupon")"><i class="fa fa-circle-o text-red"></i> 玩家列表 </a></li>
+                <li @(isCoupon && actionName.Equals("CouponDetail") ? "class=active" : string.Empty)><a href="@Url.Action("CouponDetail", "Coupon")"><i class="fa fa-circle-o text-red"></i> 礼码详情 </a></li>
+                <li @(isCoupon && actionName.Equals("CouponGenerator") ? "class=active" : string.Empty)><a href="@Url.Action("CouponGenerator", "Coupon")"><i class="fa fa-circle-o text-red"></i> 礼码生成工具 </a></li>
+            </ul>
+        </li>
+    }
+
+    @*<li class="treeview">
+        <a href="#">
+            <i class="fa fa-fw fa-bar-chart"></i> <span>记录查询</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu" style="display: none;">
+            <li><a href="#"><i class="fa fa-circle-o text-red"></i> Page1 </a></li>
+            <li><a href="#"><i class="fa fa-circle-o text-red"></i> Page2 </a></li>
+            <li><a href="#"><i class="fa fa-circle-o text-red"></i> Page3 </a></li>
+            <li><a href="#"><i class="fa fa-circle-o text-red"></i> Page4 </a></li>
+        </ul>
+    </li>*@
+</ul>

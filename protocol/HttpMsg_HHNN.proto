@@ -1,0 +1,100 @@
+syntax = "proto2";
+
+package netproto;
+
+message Http_HHNN_GameInfo {
+    repeated Http_HHNN_TableList TableList = 1;  //桌子信息
+};
+
+message Http_HHNN_TableList {
+    required int32 TableNo = 1;            //桌子号
+    required int32 Status = 2;             //当前状态 0 下注中 1 开奖中 2开奖动画 3结算动画 4等待开始游戏
+    required int32 GameUserCount = 3;      //玩家人数(包含未下注玩家)
+    required int32 RobotCount = 4;         //机器人数(包含未下注机器人)
+    required int64 SumEarnAmount = 5;      //系统从开服到现在的总收益
+    required int32 LastEarnAmount = 6;     //最后一局收益
+    required int64 PoolCurrentAmount = 7;  //当前水池金币数
+};
+
+message Http_HHNN_BetBlackDetail {
+    required string BlackUserList = 1;  //黑名單UserId
+};
+
+message Http_HHNN_TableDetail {
+    required int32 TableNo = 1;            //桌子号
+    required int32 Status = 2;             //当前状态 0 下注中 1 开奖中 2开奖动画 3结算动画 4等待开始游戏
+    required int64 SumEarnAmount = 3;      //系统从开服到现在的总收益
+    required int32 LastEarnAmount = 4;     //最后一局收益
+    required int64 PoolCurrentAmount = 5;  //当前水池金币数
+    required int32 GameUserCount = 6;      //游戏玩家人数(包含未下注玩家)
+    required int32 RobotCount = 7;         //机器人数(包含未下注机器人)
+    required int32 PopWaterRate = 8;       //当前注水率
+
+    required int32 ZhuangType = 9;                 //庄家类型	0系统 1机器人当庄 2玩家上庄
+    required string ZhuangNickName = 10;           //庄家昵称
+    required int32 ZhuangUserID = 11;              //庄家用户ID
+    required int32 ZhuangSurplusTotal = 12;        //庄家剩余局数
+    required int64 ZhuangCurrentMoneyAmount = 13;  //庄家当前金币数 系统或机器人坐庄则表示水池金币数量
+    required int64 ZhuangInitMoneyAmount = 14;     //庄家初始上庄金币数 系统或机器人坐庄则用0表示
+
+    required int64 OpenResultHung = 15;  //当前开奖结果为紅的收益数量
+    required int64 OpenResultHei = 16;   //当前开奖结果为黑的收益数量
+    required int64 SysTaxIncome = 17;    //系統稅收
+
+    required string CurentOpenResult = 18;     //当前开奖结果,只有在开奖动画状态下有值
+    required int64 CurentOpenResultEarn = 19;  //当前开奖收益,只有在开奖动画状态下有值
+
+    repeated Http_HHNN_UserInfo UserInfo = 20;  //玩家信息
+    required int32 BetTime = 21;                //下注時間
+
+    required int64 WinLine = 22;                       //平衡金額
+    required int64 RobotBetAmount = 23;                //機器人下注量
+    repeated Http_HHNN_UserInfo LastGameUserBet = 24;  //上局下注玩家信息
+    required int32 HungWinRate = 25;
+    required int32 PowerWinRate = 26;
+    required int32 HeiWinRate = 27;
+    required int64 FanFengTarget = 28;
+    required int64 FanFengComplete = 29;
+};
+
+message Http_HHNN_UserInfo {
+    required int32 UserID = 1;        //玩家ID
+    required int32 UserType = 2;      //玩家类型 0机器人 1玩家
+    required string NickName = 3;     //玩家昵称
+    required int64 GameScore = 4;     //游戏总输赢
+    required int64 InitMoney = 5;     //初始金币
+    required int64 CurrentMoney = 6;  //当前金币
+    required int64 BetInfoHung = 7;   //下注紅的金币数量
+    required int64 BetInfoHei = 8;    //下注黑的金币数量
+    required int64 BetInfoPower = 9;  //下注致命一擊的金币数量
+    required int64 SumCharge = 10;    //總充值
+    required int64 SumConvert = 11;   //總兌換
+    required int64 WinRate = 12;      // 9局勝率
+    required int64 BetTotal = 13;
+    required bool IsVIP = 14;
+};
+
+//前20次开出的牌
+message Http_HHNN_ResultCardList {
+    repeated Http_HHNN_GameResultPoker CardList = 1;
+};
+
+//游戏扑克结果
+message Http_HHNN_GameResultPoker {
+    required Http_HHNN_Poker HungPoker = 1;  //紅區扑克牌
+    required Http_HHNN_Poker HeiPoker = 2;   //黑區扑克牌
+    required int32 Win = 5;                  //贏家，1:紅，2:黑
+    required int32 RoundID = 6;              //局數
+};
+
+//一局的
+message Http_HHNN_Poker {
+    required int32 NiuNiuRet = 2;       //牛牛類型: 0 五小牛; 1四炸; 2 五花牛; 3 牛牛; 4 有牛; 5 無牛;
+    required int32 NiuNiuNumber = 3;    //牛幾
+    repeated Http_PokerCard Cards = 4;  //牌
+};
+
+message Http_PokerCard {
+    required int32 Color = 1;
+    required int32 CardNumber = 2;
+};

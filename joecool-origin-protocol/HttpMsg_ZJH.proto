@@ -1,0 +1,45 @@
+syntax = "proto2";
+
+package netproto;
+
+message Http_ZJH_ServerInfo {
+    repeated int32 TableList = 1;
+    repeated Http_ZJH_UserInfo OnlineUserList = 2;  // online user list
+    required Http_ZJH_CardTypeInfo BaoZiCount = 3;
+    required Http_ZJH_CardTypeInfo SunJinCount = 4;
+    required Http_ZJH_CardTypeInfo JiaHuaCount = 5;
+    required Http_ZJH_CardTypeInfo SunZiCount = 6;
+    required Http_ZJH_CardTypeInfo DuiZiCount = 7;
+    required Http_ZJH_CardTypeInfo SanPaiCount = 8;
+    required int32 FapaiRule = 9;  //發牌規則 1 大牌規則, 2 一般規則
+};
+
+message Http_ZJH_CardTypeInfo {
+    required int32 Count = 1;
+    required int32 Rate = 2;
+}
+
+message Http_ZJH_UserInfo {
+    required int32 UserID = 1;             //玩家ID
+    required int32 UserType = 2;           //玩家类型 0机器人 1玩家
+    required string NickName = 3;          //玩家昵称
+    required int64 GameScore = 4;          //游戏总输赢
+    required int64 InitMoney = 5;          //初始金币
+    required int64 CurrentMoney = 6;       //当前金币
+    required int64 SumCharge = 7;          //總充值
+    required int64 SumConvert = 8;         //總兌換
+    required int64 SumWinLose = 9;         //總輸贏
+    required int64 TodayCharge = 10;       //今日充值
+    required int64 TodayConvert = 11;      //今日兌換
+    required int64 TodayWinLose = 12;      //今日輸贏
+    required int64 TableNo = 13;           //當前桌號
+    required string CurrentCard = 14;      //當前牌
+    required string CurrentCardType = 15;  //當前牌型
+    required bool IsVIP = 16;              //是否監控用戶
+    required string LoginName = 17;
+    required string AlipayAccount = 18;
+};
+
+message Http_ZJH_AssignTableList {
+    repeated int32 TableList = 1;
+}

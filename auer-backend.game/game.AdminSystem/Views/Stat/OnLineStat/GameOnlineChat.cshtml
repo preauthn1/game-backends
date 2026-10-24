@@ -1,0 +1,122 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+
+@model List<game.Entity.Stat.GameOnlineChatData>
+@{
+    var Labels = "[]";
+    var TotalCount = "[]";
+    var PCCount = "[]";
+    var AndroidCount = "[]";
+    var IOSCount = "[]";
+    if (Model != null)
+    {
+        Labels = "['" + string.Join("','", Model.Select(m => m.StatTime).ToArray()) + "']";
+        TotalCount = "[" + string.Join(",", Model.Select(m => m.TotalCount).ToArray()) + "]";
+        PCCount = "[" + string.Join(",", Model.Select(m => m.PCCount).ToArray()) + "]";
+        AndroidCount = "[" + string.Join(",", Model.Select(m => m.AndroidCount).ToArray()) + "]";
+        IOSCount = "[" + string.Join(",", Model.Select(m => m.IOSCount).ToArray()) + "]";
+    }
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/ECharts/echarts.js")"></script>
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_PlatformSelect", false)
+                <div class="form-group">
+                    <label>游戏</label>
+                    @Html.DropDownList("gameID", DataService.Game(string.Empty, true), new { @class = "form-control input-small", id = "gameID" })
+                </div>
+                <div class="form-group">
+                    <label>类型</label>
+                    <select class="form-control input-small" id="dataType" name="dataType">
+                        <option value="1">日</option>
+                        <option value="2">周</option>
+                        <option value="3">月</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>统计时间</label>
+                    <input type="text" class="form-control " style="width:180px" id="beginTime" name="beginTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="endTime" name="endTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd'})" placeholder="结束时间" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default"> 搜 索 </button>
+                </div>
+            </form>
+            <div class="table-scrollable">
+                <div id="chart" style="width:100%; height:600px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+    $(function () {
+        fillFormData('form_search');
+        fillChart();
+    });
+    function fillChart() {
+        var hasData = '@(Model == null ? 0 : 1)';
+        if (hasData == 0) return;
+
+        var option = {
+            title: {
+                text: '游戏在线人数曲线图'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                //data:['PC人数','安卓人数','IOS人数','总人数']
+                data:['安卓人数','IOS人数','总人数']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: @Html.Raw(Labels)
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                @*{
+                    name:'PC人数',
+                    type:'line',
+                    data:@Html.Raw(PCCount)
+                },*@
+                {
+                    name:'安卓人数',
+                    type:'line',
+                    data:@Html.Raw(AndroidCount)
+                },
+                {
+                    name:'IOS人数',
+                    type:'line',
+                    data:@Html.Raw(IOSCount)
+                },
+                {
+                    name:'总人数',
+                    type:'line',
+                    data:@Html.Raw(TotalCount)
+                }
+            ]
+        };
+        var myChart=echarts.init(document.getElementById('chart'));
+        myChart.setOption(option);
+    }
+    </script>
+}
+

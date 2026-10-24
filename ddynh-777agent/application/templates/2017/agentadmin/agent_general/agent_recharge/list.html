@@ -1,0 +1,15 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+{% autoescape false %}{{formSearch}}{% endautoescape %}
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                <th data-options="{name:'created_at',align:'center'}">时间</th>
+                <th data-options="{name:'total_agent_id',align:'center'}">代理</th>
+                <th data-options="{name:'username',align:'center'}">代理名</th>
+                <th data-options="{name:'num',align:'center'}">充值金额</th>
+            </tr>
+        </thead>
+    </table>
+</div>

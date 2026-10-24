@@ -1,0 +1,286 @@
+game:
+  dhzw:
+    id: 1005
+    name: 東海之王
+    group: slot
+    room:
+      - port: 13901
+        serverid: 425
+        proto: dhzw-test
+        configs: 
+          gameserver.dat: |
+            [gameserver]
+            gameid=1005				 	// 游戏ID
+            gamename=東海之王  		 	// 游戏名称
+            flag=1				     	// 显示名称,客户端可根据此名称将房间分类显示
+            minplayer=1              	// 游戏最小人数
+            maxplayer=1          		// 游戏最大人数
+            tablecount=480			 	// 桌子数
+            seatcount=1		    		// 椅子数
+            loginmoney=0			 	// 进入游戏最小积分
+            scoremode=3					// 0 即时写分 1退房间写分
+            maxuser=480					// 最大人数
+            taxscale=0					// 抽水比例
+            readywaittime=10			// 举手超时时间,单位秒
+            reghallserverinterval=5		// 注册广场时间间隔,单位秒
+            basescore=100				// 底分
+            deallog=2					// 牌局记录器类型0 不记录 ,1 文本, 2 db
+            mincarrymoney=20            // 下注攜帶金額限制
+            settlescore=10000   		//大於SettleScore分時結算
+            settleround=3  				//大於SettleRound局時結算
+
+            [gamequeue]
+            gamematchwaitmintime=1		// 撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		// 撮合时间间隔范围大值,单位秒
+            againstsameip=0				// 同IP不分配一起
+            againstlastgame=0			// 最后一次游戏过的用户不分配一起
+            gameendaction=0				// 游戏结束后动作,0 无动作 1 准备
+            queuetype=1					// 撮合类型 0 时间随机 1 固定人数
+            queueusercount=1			// 排队人数
+            queuetimeout=2				// 排队人数超时
+          slotconfig.dat: |
+            [slotsetting]
+            endactiontime=1				                            // 结算动画超时
+            betcount=10,20,30,50,60,100                              // 一次下注的数量
+            betrate=28,38,58,88                                   // 玩家可上調的基本押注數量的倍率
+
+            slotpattern=8                                           // 參考csv SlotPattern類型, 可多個用逗號分
+            releasepattern=11    // 放分
+            bitepattern=9       // 咬分
+            bigwinrule=200,500,800,1200   								//client動畫播放階段,以Bet為主
+            bigwinnotify=400                                        // 當下注16, Total=6400(16*400) 得獎超過6400才廣播.
+
+
+            [description]
+            w1.title=百搭
+            w1.desc=只出现在一般游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w2.title=百搭
+            w2.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w3.title=百搭
+            w3.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w4.title=百搭
+            w4.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            s1.title=分散符号
+            s1.desc=出现3或更多时，会进入免费游戏特别奖。\n免费游戏中，当2、3、4、5个符號出现时。即分别赢得5、15、25、50个额外免费游戏。
+      - port: 13902
+        serverid: 426
+        proto: dhzw-test
+        configs:
+          gameserver.dat: |
+            [gameserver]
+            gameid=1005				 	// 游戏ID
+            gamename=東海之王  		 	// 游戏名称
+            flag=2				     	// 显示名称,客户端可根据此名称将房间分类显示
+            minplayer=1              	// 游戏最小人数
+            maxplayer=1          		// 游戏最大人数
+            tablecount=480			 	// 桌子数
+            seatcount=1		    		// 椅子数
+            loginmoney=0			 	// 进入游戏最小积分
+            scoremode=3					// 0 即时写分 1退房间写分
+            maxuser=480					// 最大人数
+            taxscale=0					// 抽水比例
+            readywaittime=10			// 举手超时时间,单位秒
+            reghallserverinterval=5		// 注册广场时间间隔,单位秒
+            basescore=100				// 底分
+            deallog=2					// 牌局记录器类型0 不记录 ,1 文本, 2 db
+            mincarrymoney=20            // 下注攜帶金額限制
+            settlescore=10000   		//大於SettleScore分時結算
+            settleround=3  				//大於SettleRound局時結算
+
+            [gamequeue]
+            gamematchwaitmintime=1		// 撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		// 撮合时间间隔范围大值,单位秒
+            againstsameip=0				// 同IP不分配一起
+            againstlastgame=0			// 最后一次游戏过的用户不分配一起
+            gameendaction=0				// 游戏结束后动作,0 无动作 1 准备
+            queuetype=1					// 撮合类型 0 时间随机 1 固定人数
+            queueusercount=1			// 排队人数
+            queuetimeout=2				// 排队人数超时
+          slotconfig.dat: |
+            [slotsetting]
+            endactiontime=1				                            // 结算动画超时
+            betcount=10,20,30,50,60,100                              // 一次下注的数量
+            betrate=28,38,58,88                                   // 玩家可上調的基本押注數量的倍率
+
+            slotpattern=9                                           // 參考csv SlotPattern類型, 可多個用逗號分
+            bigwinrule=200,500,800,1200   								//client動畫播放階段,以Bet為主
+            bigwinnotify=400                                        // 當下注16, Total=6400(16*400) 得獎超過6400才廣播.
+
+
+            [description]
+            w1.title=百搭
+            w1.desc=只出现在一般游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w2.title=百搭
+            w2.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w3.title=百搭
+            w3.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w4.title=百搭
+            w4.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            s1.title=分散符号
+            s1.desc=出现3或更多时，会进入免费游戏特别奖。\n免费游戏中，当2、3、4、5个符號出现时。即分别赢得5、15、25、50个额外免费游戏。
+      - port: 13903
+        serverid: 427
+        proto: dhzw-test
+        configs:
+          gameserver.dat: |
+            [gameserver]
+            gameid=1005				 	// 游戏ID
+            gamename=東海之王  		 	// 游戏名称
+            flag=3				     	// 显示名称,客户端可根据此名称将房间分类显示
+            minplayer=1              	// 游戏最小人数
+            maxplayer=1          		// 游戏最大人数
+            tablecount=480			 	// 桌子数
+            seatcount=1		    		// 椅子数
+            loginmoney=0			 	// 进入游戏最小积分
+            scoremode=3					// 0 即时写分 1退房间写分
+            maxuser=480					// 最大人数
+            taxscale=0					// 抽水比例
+            readywaittime=10			// 举手超时时间,单位秒
+            reghallserverinterval=5		// 注册广场时间间隔,单位秒
+            basescore=100				// 底分
+            deallog=2					// 牌局记录器类型0 不记录 ,1 文本, 2 db
+            mincarrymoney=20            // 下注攜帶金額限制
+            settlescore=10000   		//大於SettleScore分時結算
+            settleround=3  				//大於SettleRound局時結算
+
+            [gamequeue]
+            gamematchwaitmintime=1		// 撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		// 撮合时间间隔范围大值,单位秒
+            againstsameip=0				// 同IP不分配一起
+            againstlastgame=0			// 最后一次游戏过的用户不分配一起
+            gameendaction=0				// 游戏结束后动作,0 无动作 1 准备
+            queuetype=1					// 撮合类型 0 时间随机 1 固定人数
+            queueusercount=1			// 排队人数
+            queuetimeout=2				// 排队人数超时
+          slotconfig.dat: |
+            [slotsetting]
+            endactiontime=1				                            // 结算动画超时
+            betcount=10,20,30,50,60,100                              // 一次下注的数量
+            betrate=28,38,58,88                                   // 玩家可上調的基本押注數量的倍率
+
+            slotpattern=10                                           // 參考csv SlotPattern類型, 可多個用逗號分
+            bigwinrule=200,500,800,1200   								//client動畫播放階段,以Bet為主
+            bigwinnotify=400                                        // 當下注16, Total=6400(16*400) 得獎超過6400才廣播.
+
+            [description]
+            w1.title=百搭
+            w1.desc=只出现在一般游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w2.title=百搭
+            w2.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w3.title=百搭
+            w3.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w4.title=百搭
+            w4.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            s1.title=分散符号
+            s1.desc=出现3或更多时，会进入免费游戏特别奖。\n免费游戏中，当2、3、4、5个符號出现时。即分别赢得5、15、25、50个额外免费游戏。
+      - port: 13904
+        serverid: 428
+        proto: dhzw-test
+        configs:
+          gameserver.dat: |
+            [gameserver]
+            gameid=1005				 	// 游戏ID
+            gamename=東海之王  		 	// 游戏名称
+            flag=4				     	// 显示名称,客户端可根据此名称将房间分类显示
+            minplayer=1              	// 游戏最小人数
+            maxplayer=1          		// 游戏最大人数
+            tablecount=480			 	// 桌子数
+            seatcount=1		    		// 椅子数
+            loginmoney=0			 	// 进入游戏最小积分
+            scoremode=3					// 0 即时写分 1退房间写分
+            maxuser=480					// 最大人数
+            taxscale=0					// 抽水比例
+            readywaittime=10			// 举手超时时间,单位秒
+            reghallserverinterval=5		// 注册广场时间间隔,单位秒
+            basescore=100				// 底分
+            deallog=2					// 牌局记录器类型0 不记录 ,1 文本, 2 db
+            mincarrymoney=20            // 下注攜帶金額限制
+            settlescore=10000   		//大於SettleScore分時結算
+            settleround=3  				//大於SettleRound局時結算
+
+            [gamequeue]
+            gamematchwaitmintime=1		// 撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		// 撮合时间间隔范围大值,单位秒
+            againstsameip=0				// 同IP不分配一起
+            againstlastgame=0			// 最后一次游戏过的用户不分配一起
+            gameendaction=0				// 游戏结束后动作,0 无动作 1 准备
+            queuetype=1					// 撮合类型 0 时间随机 1 固定人数
+            queueusercount=1			// 排队人数
+            queuetimeout=2				// 排队人数超时
+          slotconfig.dat: |
+            [slotsetting]
+            endactiontime=1				                            // 结算动画超时
+            betcount=10,20,30,50,60,100                              // 一次下注的数量
+            betrate=28,38,58,88                                   // 玩家可上調的基本押注數量的倍率
+
+            slotpattern=11                                           // 參考csv SlotPattern類型, 可多個用逗號分
+            bigwinrule=200,500,800,1200   								//client動畫播放階段,以Bet為主
+            bigwinnotify=400                                        // 當下注16, Total=6400(16*400) 得獎超過6400才廣播.
+
+
+            [description]
+            w1.title=百搭
+            w1.desc=只出现在一般游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w2.title=百搭
+            w2.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w3.title=百搭
+            w3.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w4.title=百搭
+            w4.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            s1.title=分散符号
+            s1.desc=出现3或更多时，会进入免费游戏特别奖。\n免费游戏中，当2、3、4、5个符號出现时。即分别赢得5、15、25、50个额外免费游戏。
+      - port: 13905
+        serverid: 429
+        proto: dhzw-test
+        configs:
+          gameserver.dat: |
+            [gameserver]
+            gameid=1005				 	// 游戏ID
+            gamename=東海之王  		 	// 游戏名称
+            flag=5				     	// 显示名称,客户端可根据此名称将房间分类显示
+            minplayer=1              	// 游戏最小人数
+            maxplayer=1          		// 游戏最大人数
+            tablecount=480			 	// 桌子数
+            seatcount=1		    		// 椅子数
+            loginmoney=0			 	// 进入游戏最小积分
+            scoremode=0					// 0 即时写分 1退房间写分
+            maxuser=480					// 最大人数
+            taxscale=0					// 抽水比例
+            readywaittime=10			// 举手超时时间,单位秒
+            reghallserverinterval=5		// 注册广场时间间隔,单位秒
+            basescore=100				// 底分
+            deallog=2					// 牌局记录器类型0 不记录 ,1 文本, 2 db
+            mincarrymoney=20            // 下注攜帶金額限制
+
+            [gamequeue]
+            gamematchwaitmintime=1		// 撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		// 撮合时间间隔范围大值,单位秒
+            againstsameip=0				// 同IP不分配一起
+            againstlastgame=0			// 最后一次游戏过的用户不分配一起
+            gameendaction=0				// 游戏结束后动作,0 无动作 1 准备
+            queuetype=1					// 撮合类型 0 时间随机 1 固定人数
+            queueusercount=1			// 排队人数
+            queuetimeout=2				// 排队人数超时
+          slotconfig.dat: |
+            [slotsetting]
+            endactiontime=1				                            // 结算动画超时
+            betcount=10,20,30,50,60,100                              // 一次下注的数量
+            betrate=28,38,58,88                                   // 玩家可上調的基本押注數量的倍率
+
+            slotpattern=12                                           // 參考csv SlotPattern類型, 可多個用逗號分
+            bigwinrule=200,500,800,1200   								//client動畫播放階段,以Bet為主
+            bigwinnotify=400                                        // 當下注16, Total=6400(16*400) 得獎超過6400才廣播.
+
+
+            [description]
+            w1.title=百搭
+            w1.desc=只出现在一般游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w2.title=百搭
+            w2.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w3.title=百搭
+            w3.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w4.title=百搭
+            w4.desc=只出现在免费游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            s1.title=分散符号
+            s1.desc=出现3或更多时，会进入免费游戏特别奖。\n免费游戏中，当2、3、4、5个符號出现时。即分别赢得5、15、25、50个额外免费游戏。
+

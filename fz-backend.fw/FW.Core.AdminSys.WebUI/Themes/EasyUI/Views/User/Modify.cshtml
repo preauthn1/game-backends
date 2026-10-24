@@ -1,0 +1,70 @@
+﻿@using KCKJ.Core.AdminSys.WebUI
+@model KCKJ.Core.AdminSys.Provider.Entity.AdminUser
+
+<form method="post">
+    <table width="800" cellpadding="2" cellspacing="2">
+        <tr>
+            <td align="right">用户名:</td>
+            <td>
+                <input type="hidden" name="userID" value="@Model.UserID" />
+                <input type="text" name="loginName" class="easyui-textbox" style="width:300px" value="@Model.LoginName" data-options="required:true,missingMessage:'用户名称不能为空',validType:['length[6,16]']" />
+            </td>
+        </tr>
+        <tr>
+            <td align="right">密码:</td>
+            <td>
+                <input type="password" name="password" class="easyui-textbox" style="width:300px" value="" data-options="required:true,missingMessage:'密码不能为空',validType:['length[6,16]']" />
+            </td>
+        </tr>
+        <tr>
+            <td align="right">确认密码:</td>
+            <td>
+                <input type="password" name="rePassword" class="easyui-textbox" style="width:300px" value="" data-options="required:true,missingMessage:'密码不能为空',validType:['length[6,16]']" />
+            </td>
+        </tr>
+        <tr>
+            @{
+                string statusForbidden = "";
+                string statusNormal = "";
+
+                if (Model.Status == 0) {
+                    statusForbidden = "checked";
+                }
+                if (Model.Status == 1) {
+                    statusNormal = "checked";
+                }
+                
+            }
+            <td align="right">状态:</td>
+            <td>
+                <input type="radio" name="status" value="0" @statusForbidden />冻结
+                <input type="radio" name="status" value="1" @statusNormal />正常
+            </td>
+        </tr>
+        <tr>
+            <td align="right">创建时间:</td>
+            <td>
+                @Model.CreateTime.ToString("yyyy-MM-dd HH:mm")
+            </td>
+        </tr>
+        <tr>
+            <td align="right">最后登录时间:</td>
+            <td>
+                @Model.LastLogonTime.ToString("yyyy-MM-dd HH:mm")
+            </td>
+        </tr>
+        <tr>
+            <td align="right">最后登录IP:</td>
+            <td>
+                @Model.LastLogonIPAddress
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                @Html.OkWithRight()
+                @Html.Back(@Url.Action("List"))
+            </td>
+        </tr>
+    </table>
+</form>

@@ -1,0 +1,266 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+@using FW.Core.Helper
+
+@model game.Entity.Warning.WarningType
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>编辑报警类型
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="form1" method="post" class="form-horizontal form-bordered">
+                    <input name="Id" id="Id" hidden value="@Model.Id" />
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">报警名称</label>
+                            <div class="col-md-8">
+                                <input type="text" name="TypeName" class="form-control input-medium" placeholder="请输入报警名称" value="@Model.TypeName" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">报警类型状态</label>
+                            <div class="col-md-8">
+                                <select class="form-control  input-medium" name="Status">
+                                   @foreach (game.Entity.Warning.WarningTypeStatus item in Enum.GetValues(typeof(game.Entity.Warning.WarningTypeStatus)))
+                                   {
+                                       <option value="@item.ToString().ToLower()" @Html.IsChoose(item==Model.Status,"select") >@item.GetDisplayName()</option>
+                                   }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">报警配置</label>
+                            <div class="col-md-8">
+                                <textarea rows="3" name="Setting" id="Setting" class="form-control  input-medium hide" placeholder="报警配置">@Model.Setting</textarea>
+                                <table class="tabSetting">                                    
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:none">
+                        @{
+                            List<game.Entity.Money.MoneySourceType> moneyList = DataService.getMoneySourceType();//金币流通类型                            
+                        }
+                        <select class="form-control input-small" id="ddlMoney">
+                            @foreach (var item in moneyList)
+                            {
+                                <option value="@item.Id" data="@item.GroupID">@item.SourceName</option>
+                            }
+                        </select>                        
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @Html.OkWithRight(onclick: "return Check()")
+                            @Html.Back(Url.Action("WarningType"))
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+@section initScripts{
+    <script type="text/javascript" src="/Plugins/Uploadify/Upload.js"></script>
+    <script>
+        var settingConfig = [
+            {
+                id: 1,
+                multi: false,
+                columns: [{ name: '金币最大值', key: 'MaxAmount' }, { name: '比昨天增加N报警', key: 'ChangeAmount' }]
+            },
+            {
+                id: 2,
+                multi: true,
+                columns: [{ name: '金币流通类型', key: 'SourceID', select: 'ddlMoney' }, { name: '当天高于N报警', key: 'MaxAmount' }, { name: '比昨天增加N报警', key: 'ChangeAmount' }]
+            },           
+            {
+                id: 6,
+                multi: false,
+                columns: [{ name: '金币数量', key: 'Amount' }]
+            },
+            {
+                id: 7,
+                multi: true,
+                columns: [{ name: '时间间隔(分)', key: 'TimeSpan' }, { name: '注册数量', key: 'RegCount' }]
+            }
+        ];
+
+        function showSetting(){
+            var typeid = $("#Id").val();
+            var setting = JSON.parse($("#Setting").val());
+            var config = d.array.firstOrDefault(settingConfig, function (p) { return p.id == typeid });
+            
+            var html = '';
+
+            html += "<thead><tr>";            
+            for (var i = 0; i < config.columns.length; i++) {
+                html += d.string.format("<th>{0}</th>", config.columns[i].name);
+            }
+            if (config.multi) html += "<th></th>";
+            html += "</tr></thead>";
+
+            html += "<tbody>";
+
+            for (var i = 0; i < setting.length; i++) {
+                html += "<tr>";
+
+                for (var j = 0; j < config.columns.length; j++) {
+                    if (config.columns[j].select) {
+                        $("#" + config.columns[j].select).find("option").removeAttr("selected");
+                        $("#" + config.columns[j].select).find("option[value='" + setting[i][config.columns[j].key] + "']").attr("selected", "selected");                        
+                        html += d.string.format('<td><select class="form-control " key="{1}">{0}</select></td>', $("#" + config.columns[j].select).html(), config.columns[j].key);
+                    }else{
+                        html += d.string.format('<td><input type="text" value="{0}" key="{1}" class="form-control" style="ime-mode:disabled" /></td>', setting[i][config.columns[j].key], config.columns[j].key);
+                    }
+                }
+                if (config.multi) html += '<td style="width:50px;"><span class="glyphicon glyphicon-minus" aria-hidden="true" onclick="del(this);"></span> <span class="glyphicon glyphicon-plus" aria-hidden="true" onclick="add(this);"></span></td>';
+                html += "</tr>";
+            }
+            html += "</tbody>";
+
+            $(".tabSetting").html(html);
+        }
+
+
+        function del(span) {
+            $(span).parents("tr").remove();
+        }
+        function add(span) {
+            var tr = $(span).parents("tr");
+            var html = "<tr>" + tr.html() + "</tr>";
+            tr.after(html);
+        }
+
+
+        function Check() {
+            var flag = false;
+            var isRepeat = false;
+            var xml = "", xmlAttr = "";
+            var repeat = [];
+
+            $(".tabSetting tbody tr").each(function () {
+                flag = true;
+                xmlAttr = "";
+
+                $(this).find("input").each(function () {
+                    xmlAttr += d.string.format(' {0}="{1}"', $(this).attr("key"), $(this).val());
+                });
+
+                $(this).find("select").each(function () {
+                    if (d.array.contains(repeat, $(this).attr("key") + $(this).val())) {
+                        isRepeat = true;
+                        return false;
+                    }
+                    xmlAttr += d.string.format(' {0}="{1}"', $(this).attr("key"), $(this).val());
+                    repeat.push($(this).attr("key") + $(this).val());
+                });
+
+                xml += d.string.format('<Setting{0} />', xmlAttr);
+            });
+
+            if (isRepeat == true) {
+                alert("操作失败：存在重复的数据，请检查！");
+                return false;
+            }
+
+            if (flag == false) {
+                alert("操作失败：配置数据不允许为空，刷新页面重试！");
+                return false;
+            }
+
+            $("#Setting").val(xml);
+            return true;
+        }
+
+        var num = 0;
+        $(function () {
+            showSetting();
+
+            $("#form1").validate({
+                rules: {
+                    TypeName: {
+                        required: true
+                    },
+                    Status: {
+                        required: true,
+                    }
+                }
+            });
+        });
+
+
+        /*数组处理*/
+        var d = {};
+        d.array = {
+            firstOrDefault: function (attr, p, defaultValue) {
+                //从数组中寻找符合条件的第一个元素,如果没有找到则返回defaultValue
+                if (attr.constructor != Array) return defaultValue || null;
+                if (p.constructor == Function) {
+                    for (var i = 0, length = attr.length; i < length; i++) {
+                        if (p(attr[i]) == true) return attr[i];
+                    }
+                } else {
+                    for (var i = 0, length = attr.length; i < length; i++) {
+                        if (attr[i] == p) return attr[i];
+                    }
+                }
+                return defaultValue || null;
+            },
+            contains: function (attr, p) {
+                //返回布尔值 数组中是否包含指定条件p的元素
+                if (attr.constructor != Array) return false;
+                if (p.constructor == Function) {
+                    for (var i = 0, length = attr.length; i < length; i++) {
+                        if (p(attr[i]) == true) return true;
+                    }
+                } else {
+                    for (var i = 0, length = attr.length; i < length; i++) {
+                        if (attr[i] == p) return true;
+                    }
+                }
+                return false;
+            }
+        };
+
+        d.string = {
+            format: function (str, params) {
+                // 简单格式化字符串
+                // d.string.format('我是{0}，今年{1}了',"ywb", 25);
+                // d.string.format('我是{name}，今年{age}了',{ name: "ywb", age: 22 });
+                var result = str;
+                if (arguments.length > 1) {
+                    if (arguments.length == 2 && typeof params == "object") {
+                        for (var key in params) {
+                            if (params[key] != undefined) {
+                                var reg = new RegExp("({" + key + "})", "g");
+                                result = result.replace(reg, params[key]);
+                            }
+                        }
+                    }
+                    else {
+                        for (var i = 1; i < arguments.length; i++) {
+                            if (arguments[i] != undefined) {
+                                var reg = new RegExp("({)" + (i - 1) + "(})", "g");
+                                result = result.replace(reg, arguments[i]);
+                            }
+                        }
+                    }
+                }
+                return result;
+            }
+        };
+
+    </script>
+}

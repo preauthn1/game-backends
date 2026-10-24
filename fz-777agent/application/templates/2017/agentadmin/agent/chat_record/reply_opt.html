@@ -1,0 +1,17 @@
+<div class="bjui-pageContent">
+    <form action="{{agentApiRoute}}" data-toggle="ajaxform" class="datagrid-edit-form" data-data-type="jsonp" data-options='{closeCurrent:true,tabid:"sider-menu-2005"}'>
+        <div class="bjui-row col-1">
+            <input type="hidden" name="id" value="{{params.id}}">
+            <label class="row-label">内容</label>
+            <div class="row-input">
+                <textarea cols="30" rows="4" name="reply" data-rule="required">{{params.reply}}</textarea>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="bjui-pageFooter">
+    <ul>
+        <li><button type="button" class="btn-close" data-icon="close">取消</button></li>
+        <li><button type="submit" class="btn-default" data-icon="save">保存</button></li>
+    </ul>
+</div>

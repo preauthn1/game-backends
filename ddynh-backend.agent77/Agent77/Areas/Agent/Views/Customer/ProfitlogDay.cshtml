@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = "按日税收记录";
+}
+
+@Html.Action("Index", "Customer")
+
+<div class="box box-primary">
+    <!-- form start -->
+    <div class="box-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">玩家ID</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="text" class="form-control" id="subUserID">
+                </div>
+
+                <label class="col-lg-2 col-md-3 col-sm-3 col-xs-12">开始日期</label>
+                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                    <input type="date" class="form-control" id="dtStartTime" >
+                </div>
+                <label class="col-lg-1 col-md-1 col-sm-1 col-xs-12">到</label>
+                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                    <input type="date" class="form-control" id="dtEndTime" >
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                    <button type="button" id="btnQuery" class="btn btn-primary btn-block">搜索</button>
+                </div>
+                <div class="col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                    <button type="button" id="btnExcel" class="btn btn-primary btn-block">汇出</button>
+                </div>
+            </div>
+        </div>
+        <hr class="hr-sm1">
+        
+        <!-- 查詢結果 -->
+        <div class="box-header">
+            <h3 class="box-title">搜索结果</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>                           
+                        <th>时间</th>
+                        <th>玩家ID</th>      
+                        <th>税收收益</th>                       
+                    </tr>
+                </thead>
+            </table>               
+        </div>
+        <!-- /.box-body -->        
+    </div>
+</div>
+
+<!-- /.box -->
+@section scripts{    
+    <!-- Page script -->
+    <script type="text/javascript">
+        $(function () {
+
+            //DataTable
+            var table =
+                $('#example1').DataTable({
+                    "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                    "searching": false,
+                    "autoWidth": false,
+                    "serverSide": true,
+                    "deferLoading": 0,
+                    "order": [[0, 'desc']],
+                    "ajax": {
+                        method: 'post',
+                        url: '@Url.Action("ProfitlogDay", "Customer")',
+                        data: function (d) {                         
+                            d.subUserID = $('#subUserID').val();
+                            d.dtStartTime = $('#dtStartTime').val();
+                            d.dtEndTime = $('#dtEndTime').val();
+                        },
+                        "dataSrc": function (json) {
+                            if (json.success == false)
+                                swal("错误", json.message, "error");
+
+                            return json.data;
+                        }
+                    },
+                    columns: [
+                        {
+                            name: "LogDate",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                return moment(data.LogDate).format("YYYY-MM-DD");
+                            }
+                        },
+                        { name: "UserID", data: "UserID" },
+                        { name: "Amount", data: "Amount" }
+                    ],
+                    responsive: true
+                });
+
+            $('#btnQuery').click(function () {
+                table.draw();
+            });
+
+            $('#btnExcel').click(function () {
+                var fieldArr = ['subUserID','dtStartTime','dtEndTime'];
+                var url = '@Url.Action("ProfitlogDayExportExcel", "Customer")' + '?' + GetInputUrlString(fieldArr);
+                location.href = url;
+            });
+
+            function GetInputUrlString(fieldArr) {
+                var inputString = '';
+                for (i = 0; i < fieldArr.length; i++) {
+                    if (i != 0) {
+                        inputString += '&';
+                    }
+                    inputString += fieldArr[i] + '=' + $('#' + fieldArr[i]).val();
+                }
+                return inputString;
+            }
+        })
+    </script>
+}

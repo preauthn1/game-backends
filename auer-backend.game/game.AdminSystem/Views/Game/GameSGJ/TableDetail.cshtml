@@ -1,0 +1,1229 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .info td > span {
+        color: red;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: middle;
+    }
+
+    .color-red {
+        color: red;
+    }
+
+    .popover {
+        max-width: 600px;
+    }
+
+    .btn-group-vertical > .btn-default {
+        padding: 2px 10px;
+        text-align: left;
+    }
+
+    #radioBtn .notActive {
+        color: #3276b1;
+        background-color: #fff;
+    }
+
+    .heightFixed {
+        height: 450px;
+        overflow: auto;
+    }
+
+    .search-group {
+        display: flex;
+        align-items: center;
+        padding: 2%;
+    }
+
+        .search-group div {
+            padding: 1%;
+        }
+
+    #WinPrizeLog_table_wrapper {
+        max-height: 500px;
+        overflow: auto;
+    }
+
+    .update_Red {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: red;
+    }
+
+    .update_Green {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: #58ae63;
+    }
+</style>
+
+<div id="vApp">
+    <div class="row">
+        <div class="col-md-12">
+            <div style="margin-top:20px; text-align:center;">
+                <a class="btn btn-sm dark" v-on:click="getWhiteList()" data-toggle="modal" data-target="#whiteList">白名單</a>
+                <a class="btn btn-sm dark" v-on:click="getBlackList()" data-toggle="modal" data-target="#blackList">黑名單</a>
+                <a class="btn btn-sm dark" v-on:click="showEditPool()" data-toggle="modal" data-target="#editPool">编辑水池</a>
+                <a class="btn btn-sm dark" v-on:click="showEditWaterRate()" data-toggle="modal" data-target="#editWaterRate">编辑注水率</a>
+               @* <a class="btn btn-sm dark" v-on:click="showSetPrize()" data-toggle="modal" data-target="#setWinPrize">指定开奖</a>*@
+                <a class="btn btn-sm dark" v-on:click="createWinPrizeLogTable()" data-toggle="modal" data-target="#showWinPrizeLog">指定开奖操作查询</a>
+            </div>
+            <div class="portlet box grey" style="margin-top:20px;">
+                <div class="portlet-title">
+                    <div class="caption">游戏信息</div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="info" style="width:100%;">
+                                <tr>
+                                    <td style="width:15%;">当前游戏状态：<span>{{tableStatus[tableDetail.Status]}}</span></td>
+
+                                    <!-- #48 临时注解 http://0.0.0.0/redmine/issues/48
+                                    <td style="width:15%;">总收益：<span>{{ToCash(tableDetail.SumEarnAmount)}}</span></td>
+                                    <td style="width:15%;">上局收益：<span>{{ToCash(tableDetail.LastEarnAmount)}}</span></td>
+                                    -->
+                                    <td style="width:15%;">  系統稅收：<span>{{ToCash(tableDetail.SysTaxIncome)}}</span></td>
+                                    <td style="width:15%;">开奖结果：<span>{{tableDetail.Status==2?tableDetail.CurentOpenResult:''}}</span></td>
+                                    <td style="width:25%;">开奖收益：<span>{{tableDetail.Status==2?ToCash(tableDetail.CurentOpenResultEarn):'0.00'}}</span></td>
+                                    <td style="width:15%;">注水金额：<span>{{ToCash(tableDetail.ZhuShuiMoney)}}</span></td>
+                                    <td>水池剩馀金额：<span>{{ToCash(tableDetail.PoolCurrentAmount)}}</span></td>
+                                </tr>
+                                <tr>
+
+                                    <td>水池注水率：<span>{{tableDetail.PopWaterRate}}%</span></td>
+                                    <td>当前游戏总人数：<span>{{tableDetail.GameUserCount+tableDetail.RobotCount}}</span></td>
+                                    <td>当前玩家人数：<span>{{tableDetail.GameUserCount}}</span></td>
+                                    <td>当前机器人人数：<span>{{tableDetail.RobotCount}}</span></td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">最新下注情况</div>
+                </div>
+                <div class="portlet-body">
+                    <table class="table table-hover" style="margin-bottom:0;">
+                        <thead>
+                            <tr>
+                                <th style="width:12%;">&nbsp;</th>
+                                <th style="width:11%;">网易</th>
+                                <th style="width:11%;">华为</th>
+                                <th style="width:11%;">京东</th>
+                                <th style="width:11%;">360</th>
+                                <th style="width:11%;">小米</th>
+                                <th style="width:11%;">腾讯</th>
+                                <th style="width:11%;">百度</th>
+                                <th style="width:11%;">阿里</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>玩家</td>
+                                <td class="color-red">{{ToCash(sum.UserApple)}}</td>
+                                <td class="color-red">{{ToCash(sum.UserOrange)}}</td>
+                                <td class="color-red">{{ToCash(sum.UserMango)}}</td>
+                                <td class="color-red">{{ToCash(sum.UserBell)}}</td>
+                                <td class="color-red">{{ToCash(sum.UserWatermelon)}}</td>
+                                <td class="color-red">{{ToCash(sum.UserDobuleStar)}}</td>
+                                <td class="color-red">{{ToCash(sum.User77)}}</td>
+                                <td class="color-red">{{ToCash(sum.UserBar)}}</td>
+                            </tr>
+                            <tr>
+                                <td>机器人</td>
+                                <td class="color-red">{{ToCash(sum.RobotApple)}}</td>
+                                <td class="color-red">{{ToCash(sum.RobotOrange)}}</td>
+                                <td class="color-red">{{ToCash(sum.RobotMango)}}</td>
+                                <td class="color-red">{{ToCash(sum.RobotBell)}}</td>
+                                <td class="color-red">{{ToCash(sum.RobotWatermelon)}}</td>
+                                <td class="color-red">{{ToCash(sum.RobotDobuleStar)}}</td>
+                                <td class="color-red">{{ToCash(sum.Robot77)}}</td>
+                                <td class="color-red">{{ToCash(sum.RobotBar)}}</td>
+                            </tr>
+                            <tr>
+                                <td>总计</td>
+                                <td class="color-red">{{ToCash(sum.TotalApple)}}</td>
+                                <td class="color-red">{{ToCash(sum.TotalOrange)}}</td>
+                                <td class="color-red">{{ToCash(sum.TotalMango)}}</td>
+                                <td class="color-red">{{ToCash(sum.TotalBell)}}</td>
+                                <td class="color-red">{{ToCash(sum.TotalWatermelon)}}</td>
+                                <td class="color-red">{{ToCash(sum.TotalDobuleStar)}}</td>
+                                <td class="color-red">{{ToCash(sum.Total77)}}</td>
+                                <td class="color-red">{{ToCash(sum.TotalBar)}}</td>
+                            </tr>
+                            <tr>
+                                <td>开奖[大]收益</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResultApple)}}</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResultOrange)}}</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResultMango)}}</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResultBell)}}</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResultWatermelon)}}</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResultDobuleStar)}}</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResult77)}}</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResultBar)}}</td>
+                            </tr>
+                            <tr>
+                                <td>开奖[小]收益</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResultAppleMin)}}</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResultOrangeMin)}}</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResultMangoMin)}}</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResultBellMin)}}</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResultWatermelonMin)}}</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResultDobuleStarMin)}}</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResult77Min)}}</td>
+                                <td class="color-red">{{ToCash(tableDetail.OpenResultBarMin)}}</td>
+                            </tr>
+                            <tr>
+                                <td>开奖[LuckLose]收益</td>
+                                <td colspan="8" class="color-red">{{ToCash(tableDetail.OpenResultLuckLose)}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">庄家信息</div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="info" style="width:100%;">
+                                <tr>
+                                    <td style="width:16%;">庄家类型：<span>{{bankerType[tableDetail.ZhuangType]}}</span></td>
+                                    <td style="width:17%;">
+                                        庄家昵称：
+                                        <span v-if="tableDetail.ZhuangType==0">{{tableDetail.ZhuangNickName}}</span>
+                                        <a v-else v-on:mouseenter="showUserDetailInfo($event,tableDetail.ZhuangUserID)" v-on:mouseleave="hideUserDetailInfo()" target="_blank" href="'/UserInfo/Search?userID=' + tableDetail.ZhuangUserID + '&beginTime=@(DateTime.Now.ToString("yyyy-MM-01 HH:mm"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))'">{{tableDetail.ZhuangNickName}}</a>
+                                    </td>
+                                    <td style="width:16%;">庄家ID：<span>{{tableDetail.ZhuangUserID}}</span></td>
+                                    <td style="width:17%;">初始上庄金币：<span>{{ToCash(tableDetail.ZhuangInitMoneyAmount)}}</span></td>
+                                    <td style="width:17%;">当前剩余金币：<span>{{ToCash(tableDetail.ZhuangCurrentMoneyAmount)}}</span></td>
+                                    <td style="width:17%;">金币变化量：<span>{{ToCash(tableDetail.ZhuangCurrentMoneyAmount-tableDetail.ZhuangInitMoneyAmount)}}</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">玩家信息</div>
+                    <div class="form-group" style="float: right;">
+                        <div class="input-group">
+                            <span>只看玩家</span>
+                            <div id="radioBtn" class="btn-group">
+                                <a class="btn btn-primary btn-sm active" v-on:click="filterUserType(true)" data-toggle="filter" data-title="Y">開</a>
+                                <a class="btn btn-primary btn-sm notActive" v-on:click="filterUserType(false)" data-toggle="filter" data-title="N">關</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portlet-body">
+                    <table class="table table-striped table-bordered table-hover" style="margin-bottom:0;">
+                        <thead>
+                            <tr>
+                                <th rowspan="3" style="width: 5%;">玩家类型</th>
+                                <th rowspan="3" style="width: 5%;">昵称</th>
+                                <th rowspan="3" style="width: 5%;">ID</th>
+                                <th rowspan="3" style="width: 7%;">初始金币</th>
+                                <th rowspan="3" style="width: 7%;">当前金币</th>
+                                <th rowspan="3" style="width: 7%;">游戏总输赢</th>
+                                <th rowspan="3" style="width: 7%;">总充值</th>
+                                <th rowspan="3" style="width: 7%;">总兑换</th>
+                                <th rowspan="3" style="width: 7%;">总输赢</th>
+                                <th colspan="1" style="border-right-color: white;">指定开奖 <span style="color:red;">{{tableDetail.BetTime}}</span>
+                                    <div><span style="color:red;" id="WinPrizeMsg"></span></div>
+                                </th>
+                                <th colspan="10">
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=1">
+                                        <input type="radio" name="WinPrize" value="1" v-on:click="confirmSetWinPrize()" />
+                                        <img src="~/Content/SGJPrize/orange.png" style="width: 20px; height: 20px;" />
+                                        x10
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=2">
+                                        <input type="radio" name="WinPrize" value="2"  v-on:click="confirmSetWinPrize()"/>
+                                        <img src="~/Content/SGJPrize/orange.png" style="width: 20px; height: 20px;" />
+                                        x3
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=3">
+                                        <input type="radio" name="WinPrize" value="3"  v-on:click="confirmSetWinPrize()" />
+                                        <img src="~/Content/SGJPrize/dobulestar.png" style="width: 20px; height: 20px;" />
+                                        x30
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=4">
+                                        <input type="radio" name="WinPrize" value="4"  v-on:click="confirmSetWinPrize()" />
+                                        <img src="~/Content/SGJPrize/dobulestar.png" style="width: 20px; height: 20px;" />
+                                        x3
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=6">
+                                        <input type="radio" name="WinPrize" value="6"  v-on:click="confirmSetWinPrize()" />
+                                        <img src="~/Content/SGJPrize/apple.png" style="width: 20px; height: 20px; " />
+                                        x5
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=14">
+                                        <input type="radio" name="WinPrize" value="14"  v-on:click="confirmSetWinPrize()" />
+                                        <img src="~/Content/SGJPrize/apple.png" style="width: 20px; height: 20px; " />
+                                        x3
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=7">
+                                        <input type="radio" name="WinPrize" value="7"  v-on:click="confirmSetWinPrize()" />
+                                        <img src="~/Content/SGJPrize/bell.png" style="width: 20px; height: 20px;" />
+                                        x10
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=8">
+                                        <input type="radio" name="WinPrize" value="8"  v-on:click="confirmSetWinPrize()" />
+                                        <img src="~/Content/SGJPrize/bell.png" style="width: 20px; height: 20px;" />
+                                        x3
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=9">
+                                        <input type="radio" name="WinPrize" value="9"  v-on:click="confirmSetWinPrize()" />
+                                        <img src="~/Content/SGJPrize/mango.png" style="width: 20px; height: 20px;" />
+                                        x10
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=10">
+                                        <input type="radio" name="WinPrize" value="10"  v-on:click="confirmSetWinPrize()" />
+                                        <img src="~/Content/SGJPrize/mango.png" style="width: 20px; height: 20px;" />
+                                        x3
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=15">
+                                        <input type="radio" name="WinPrize" value="15"  v-on:click="confirmSetWinPrize()" />
+                                        <img src="~/Content/SGJPrize/77.png" style="width: 20px; height: 20px;" />
+                                        x40
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=16">
+                                        <input type="radio" name="WinPrize" value="16"  v-on:click="confirmSetWinPrize()" />
+                                        <img src="~/Content/SGJPrize/77.png" style="width: 20px; height: 20px;" />
+                                        x3
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=19">
+                                        <input type="radio" name="WinPrize" value="19"  v-on:click="confirmSetWinPrize()" />
+                                        <img src="~/Content/SGJPrize/watermelon.png" style="width: 20px; height: 20px;" />
+                                        x20
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=20">
+                                        <input type="radio" name="WinPrize" value="20"  v-on:click="confirmSetWinPrize()"/>
+                                        <img src="~/Content/SGJPrize/watermelon.png" style="width: 20px; height: 20px;" />
+                                        x3
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=5">
+                                        <input type="radio" name="WinPrize" value="5"  v-on:click="confirmSetWinPrize()" />
+                                        <img src="~/Content/SGJPrize/bar.png" style="width: 20px; height: 20px; " />
+                                        x100
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=17">
+                                        <input type="radio" name="WinPrize" value="17"  v-on:click="confirmSetWinPrize()" />
+                                        <img src="~/Content/SGJPrize/bar.png" style="width: 20px; height: 20px; " />
+                                        x50
+                                    </label>
+                                    <label v-on:click="setWinPrizeInfo.WinPrize=11">
+                                        <input type="radio" name="WinPrize" value="11"  v-on:click="confirmSetWinPrize()"  />
+                                        <img src="~/Content/SGJPrize/lucky.png" style="width: 20px; height: 20px;" />
+                                        无奖
+                                    </label>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th colspan="11"> 当前下注 </th>
+                            </tr>
+                            <tr>
+                                <th style="width: 6.5%;">网易</th>
+                                <th style="width: 6.5%;">华为</th>
+                                <th style="width: 6.5%;">京东</th>
+                                <th style="width: 6.5%;">360</th>
+                                <th style="width: 6.5%;">小米</th>
+                                <th style="width: 6.5%;">腾讯</th>
+                                <th style="width: 6.5%;">百度</th>
+                                <th style="width: 6.5%;">阿里</th>
+                                <th style="width: 7%;">总</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="user in tableDetail.UserInfo">
+                                <td>{{userType[user.UserType]}}</td>
+                                <td>{{user.NickName}}</td>
+                                <td><a v-on:mouseenter="showUserDetailInfo($event,user.UserID)" v-on:mouseleave="hideUserDetailInfo()" target="_blank" href="'/UserInfo/Search?userID=' + user.UserID + '&beginTime=@(DateTime.Now.ToString("yyyy-MM-01 HH:mm"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))'" style="vipUser.indexOf(user.UserID)>-1?'color:red;':''">{{user.UserID}}</a></td>
+                                <td>{{ToCash(user.InitMoney)}}</td>
+                                <td>{{ToCash(user.CurrentMoney)}}</td>
+                                <td class="color-red">{{ToCash(user.GameScore)}}</td>
+                                <td class="color-red">{{ToCash(user.SumCharge)}}</td>
+                                <td class="color-red">{{ToCash(user.SumConvert)}}</td>
+                                <td>
+                                    <div>
+                                        <span class="update_Red" v-if="((user.SumCharge - user.SumConvert - user.CurrentMoney) *-1) < 0">{{ToCash((user.SumCharge - user.SumConvert - user.CurrentMoney)*-1)}}</span>
+                                        <span class="update_Green" v-else>{{ToCash((user.SumCharge - user.SumConvert - user.CurrentMoney)*-1)}}</span>
+                                    </div>
+                                </td>
+                                <td v-bind:class="{'color-red':user.BetInfoUserApple > 0 }">{{ToCash(user.BetInfoUserApple)}}</td>
+                                <td v-bind:class="{'color-red':user.BetInfoUserOrange > 0 }">{{ToCash(user.BetInfoUserOrange)}}</td>
+                                <td v-bind:class="{'color-red':user.BetInfoUserMango > 0 }">{{ToCash(user.BetInfoUserMango)}}</td>
+                                <td v-bind:class="{'color-red':user.BetInfoUserBell > 0 }">{{ToCash(user.BetInfoUserBell)}}</td>
+                                <td v-bind:class="{'color-red':user.BetInfoUserWatermelon > 0 }">{{ToCash(user.BetInfoUserWatermelon)}}</td>
+                                <td v-bind:class="{'color-red':user.BetInfoUserDobuleStar > 0 }">{{ToCash(user.BetInfoUserDobuleStar)}}</td>
+                                <td v-bind:class="{'color-red':user.BetInfoUser77 > 0 }">{{ToCash(user.BetInfoUser77)}}</td>
+                                <td v-bind:class="{'color-red':user.BetInfoUserBar > 0 }">{{ToCash(user.BetInfoUserBar)}}</td>
+                                <td v-bind:class="{'color-red':(user.BetInfoUserApple+user.BetInfoUserOrange+user.BetInfoUserMango+user.BetInfoUserBell+user.BetInfoUserWatermelon+user.BetInfoUserDobuleStar+user.BetInfoUser77+user.BetInfoUserBar) > 0 }">{{ToCash(user.BetInfoUserApple+user.BetInfoUserOrange+user.BetInfoUserMango+user.BetInfoUserBell+user.BetInfoUserWatermelon+user.BetInfoUserDobuleStar+user.BetInfoUser77+user.BetInfoUserBar)}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @Html.Back(Url.Action("TableList", new { serverID = ViewBag.ServerID }))
+        </div>
+    </div>
+    <!--指定开奖-->
+    <div class="modal fade" id="setWinPrize" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">指定开奖</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">编辑桌号：</label>
+                            <div class="col-md-6">
+                                <span class="help-block">{{tableNO}}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">当前状态：</label>
+                            <div class="col-md-6">
+                                <span class="help-block">{{tableStatus[tableDetail.Status]}}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">请指定本局开奖类型：</label>
+                            <div class="col-md-6">
+                                <div class="btn-group-vertical" data-toggle="buttons" style="width:180px;">
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=1">
+                                        <input type="radio" name="WinPrize" value="1" class="toggle" />
+                                        <img src="~/Content/SGJPrize/orange.png" style="width: 30px; height: 30px;" />
+                                        x10
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultOrange)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=2">
+                                        <input type="radio" name="WinPrize" value="2" class="toggle" />
+                                        <img src="~/Content/SGJPrize/orange.png" style="width: 30px; height: 30px;" />
+                                        x3
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultOrangeMin)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=3">
+                                        <input type="radio" name="WinPrize" value="3" class="toggle" />
+                                        <img src="~/Content/SGJPrize/dobulestar.png" style="width: 30px; height: 30px;" />
+                                        x30
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultDobuleStar)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=4">
+                                        <input type="radio" name="WinPrize" value="4" class="toggle" />
+                                        <img src="~/Content/SGJPrize/dobulestar.png" style="width: 30px; height: 30px;" />
+                                        x3
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultDobuleStarMin)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=5">
+                                        <input type="radio" name="WinPrize" value="5" class="toggle" />
+                                        <img src="~/Content/SGJPrize/bar.png" style="width: 30px; height: 30px; " />
+                                        x100
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultBar)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=17">
+                                        <input type="radio" name="WinPrize" value="17" class="toggle" />
+                                        <img src="~/Content/SGJPrize/bar.png" style="width: 30px; height: 30px; " />
+                                        x50
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultBarMin)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=6">
+                                        <input type="radio" name="WinPrize" value="6" class="toggle" />
+                                        <img src="~/Content/SGJPrize/apple.png" style="width: 30px; height: 30px; " />
+                                        x5
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultApple)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=14">
+                                        <input type="radio" name="WinPrize" value="14" class="toggle" />
+                                        <img src="~/Content/SGJPrize/apple.png" style="width: 30px; height: 30px; " />
+                                        x3
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultAppleMin)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=7">
+                                        <input type="radio" name="WinPrize" value="7" class="toggle" />
+                                        <img src="~/Content/SGJPrize/bell.png" style="width: 30px; height: 30px;" />
+                                        x10
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultBell)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=8">
+                                        <input type="radio" name="WinPrize" value="8" class="toggle" />
+                                        <img src="~/Content/SGJPrize/bell.png" style="width: 30px; height: 30px;" />
+                                        x3
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultBellMin)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=9">
+                                        <input type="radio" name="WinPrize" value="9" class="toggle" />
+                                        <img src="~/Content/SGJPrize/mango.png" style="width: 30px; height: 30px;" />
+                                        x10
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultMango)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=10">
+                                        <input type="radio" name="WinPrize" value="10" class="toggle" />
+                                        <img src="~/Content/SGJPrize/mango.png" style="width: 30px; height: 30px;" />
+                                        x3
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultMangoMin)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=15">
+                                        <input type="radio" name="WinPrize" value="15" class="toggle" />
+                                        <img src="~/Content/SGJPrize/77.png" style="width: 30px; height: 30px;" />
+                                        x40
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResult77)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=16">
+                                        <input type="radio" name="WinPrize" value="16" class="toggle" />
+                                        <img src="~/Content/SGJPrize/77.png" style="width: 30px; height: 30px;" />
+                                        x3
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResult77Min)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=19">
+                                        <input type="radio" name="WinPrize" value="19" class="toggle" />
+                                        <img src="~/Content/SGJPrize/watermelon.png" style="width: 30px; height: 30px;" />
+                                        x20
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultWatermelon)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=20">
+                                        <input type="radio" name="WinPrize" value="20" class="toggle" />
+                                        <img src="~/Content/SGJPrize/watermelon.png" style="width: 30px; height: 30px;" />
+                                        x3
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultWatermelonMin)}}</span>
+                                    </label>
+                                    <label class="btn btn-default" v-on:click="setWinPrizeInfo.WinPrize=11">
+                                        <input type="radio" name="WinPrize" value="11" class="toggle" />
+                                        <img src="~/Content/SGJPrize/lucky.png" style="width: 30px; height: 30px;" />
+                                        无奖
+                                        <span style="color:red; float:right; margin:6px 0;">{{ToCash(tableDetail.OpenResultLuckLose)}}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                    <button type="button" class="btn btn-primary" v-on:click="confirmSetWinPrize()">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--编辑水池-->
+    <div class="modal fade" id="editPool" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">编辑水池</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">编辑桌号：</label>
+                            <div class="col-md-6">
+                                <span class="help-block">{{tableNO}}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">当前房间水池金额：</label>
+                            <div class="col-md-6">
+                                <span class="help-block">{{ToCash(tableDetail.PoolCurrentAmount)}}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">选择修改桌号：</label>
+                            <div class="col-md-6">
+                                <select class="form-control input-small" v-model="editPoolInfo.EditTableNo">
+                                    <!-- <option value="tableNO">当前</option> -->
+                                    <option value="-1">全部</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">修改金额：</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-small" placeholder="请输入修改金额" value="" v-model="editPoolInfo.EditPoolCurrentAmount" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                    <button type="button" class="btn btn-primary" v-on:click="confirmEditPool()">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--编辑注水率-->
+    <div class="modal fade" id="editWaterRate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">编辑注水率</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">编辑桌号：</label>
+                            <div class="col-md-6">
+                                <span class="help-block">{{tableNO}}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">当前房间注水率：</label>
+                            <div class="col-md-6">
+                                <span class="help-block">{{tableDetail.PopWaterRate}}%</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">选择修改桌号：</label>
+                            <div class="col-md-6">
+                                <select class="form-control input-small" v-model="editWaterRateInfo.EditTableNo">
+                                    <option value="tableNO">当前</option>
+                                    <option value="-1">全部</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">修改注水率：</label>
+                            <div class="col-md-6">
+                                <input type="range" class="form-control input-small" max="100" min="0" step="1" v-model="editWaterRateInfo.EditPopWaterRate" style="padding:0;" />
+                                <span>{{editWaterRateInfo.EditPopWaterRate}}%</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                    <button type="button" class="btn btn-primary" v-on:click="confirmEditWaterRate()">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--黑名單-->
+    <div class="modal fade" id="blackList" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">黑名單</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">新增黑名單使用者ID：</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control input-small" placeholder="请输入使用者ID" value="" v-model="black.addBlackUserID" />
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-primary" v-on:click="addbetblack()">确定</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 heightFixed">
+                            <span id="resultMsg" style="color:red;"></span>
+                            <table class="table table-bordered" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            使用者ID
+                                        </th>
+                                        <th>
+                                            操作
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="user in black.blackList">
+                                        <td>
+                                            <a target="_blank" :href="'/UserInfo/Search?userId='+user+'&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))'">{{user}}</a>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-warning" v-on:click="deletebetblack(user)">移除監控</button>
+                                        </td>
+                                    </tr>
+                                    <tr v-for="user in black.deleteList">
+                                        <td>
+                                            <a target="_blank" :href="'/UserInfo/Search?userId='+user+'&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))'">{{user}}</a>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary" v-on:click="reAddbetblack(user)">加回監控</button>
+                                            <button type="button" class="btn btn-danger" v-on:click="deleteUserPermanent(user)">永久刪除</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--指定开奖操作查询-->
+    <div class="modal fade" id="showWinPrizeLog" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal.large modal-size" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">指定开奖操作查询</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="search-group">
+                        <div>时间范围</div>
+                        <div>
+                            <input type="text" class="form-control " style="width:180px" id="beginTimeLog" name="beginTimeLog" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString("yyyy-MM-dd 00:00")">
+                        </div>
+                        <div>
+                            到
+                        </div>
+                        <div>
+                            <input type="text" class="form-control " style="width:180px" id="endTimeLog" value="" name="endTimeLog" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-default" v-on:click="createWinPrizeLogTable()"> 搜 索 </button>
+                        </div>
+                    </div>
+                    <table id="WinPrizeLog_table" class="display" style="width:100%;"></table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--白名單-->
+    <div class="modal fade" id="whiteList" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">白名單</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">新增白名單使用者ID：</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control input-small" placeholder="请输入使用者ID" value="" v-model="white.addWhiteUserID" />
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-primary" v-on:click="addbetwhite()">确定</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 heightFixed">
+                            <span id="resultMsgWhite" style="color:red;"></span>
+                            <table class="table table-bordered" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            使用者ID
+                                        </th>
+                                        <th>
+                                            操作
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="user in white.whiteList">
+                                        <td>
+                                            <a target="_blank" :href="'/UserInfo/Search?userId='+user+'&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))'">{{user}}</a>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-warning" v-on:click="deletebetwhite(user)">移除監控</button>
+                                        </td>
+                                    </tr>
+                                    <tr v-for="user in white.deleteList">
+                                        <td>
+                                            <a target="_blank" :href="'/UserInfo/Search?userId='+user+'&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))'">{{user}}</a>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary" v-on:click="reAddbetwhite(user)">加回監控</button>
+                                            <button type="button" class="btn btn-danger" v-on:click="deleteUserPermanentWhite(user)">永久刪除</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        var vApp = new Vue({
+            el: '#vApp',
+            data: {
+                serverID: '@ViewBag.ServerID',
+                tableNO: '@ViewBag.TableNO',
+                tableStatus: ['下注中', '开奖中', '结算动画', '等待开始游戏'],
+                bankerType: ['系统', '机器人上庄', '玩家上庄'],
+                prizeType: ['', '华为 x10', '华为 x3', '腾讯 x30', '腾讯 x3', '阿里 x100', '网易 x5', '360 x10', '360 x3', '京东 x10', '京东 x3', '崩盘黑', '', '', '网易 x3', '百度 x40', '百度 x3', '阿里 x50', '', '小米 x20', '小米 x3'],
+                userType: ['机器人', '玩家'],
+                tableDetail: {},
+                sum: {},
+                vipUser: [],
+                setWinPrizeInfo: {},
+                editPoolInfo: {},
+                editWaterRateInfo: {},
+                mouseEnterElement: false,
+                mouseEnterUserId: 0,
+                black: { addBlackUserID: '', blackList: [], deleteList: [] },
+                white: { addWhiteUserID: '', whiteList: [], deleteList: [] },
+                filterTag: true,
+                gameID: '@ViewBag.GameID',
+                showName: '@ViewBag.ShowName'
+            },
+            methods: {
+                ToCash: function (val) {
+                    return ToCash(val);
+                },
+                getTableDetail: function () {
+                    $.get('/GameSGJ/GetTableDetail', { 'serverID': vApp.serverID, 'tableNo': vApp.tableNO, 'filterTag': vApp.filterTag, '_r': Math.random() }, function (data) {
+                        if (data instanceof Object) {
+                            if (data.TableDetail.UserInfo.length < 1) {
+                                $('body>.popover').remove();
+                            }
+                            data.TableDetail.UserInfo = new ArrayEx(data.UserInfo);
+                            data.TableDetail.UserInfo.Sort('UserType', false);
+                            data.TableDetail.UserInfo = data.TableDetail.UserInfo.ToList(function (e) { return e; });
+                            vApp.tableDetail = data.TableDetail;
+                            vApp.sum = data.Sum;
+                            vApp.vipUser = data.VIPUser;
+
+                            if (vApp.tableDetail.BetTime <= 0) {
+                                $("#WinPrizeMsg").text("");
+                                vApp.setWinPrizeInfo = {};
+                                $('input[type="radio"][name="WinPrize"]').closest("span").removeClass('checked');
+                            }
+                        }
+                        else {
+                            vApp.tableDetail = {};
+                            vApp.sum = {};
+                            vApp.vipUser = [];
+                        }
+                    });
+                },
+                showUserDetailInfo: function (event, userID) {
+                    this.mouseEnterElement = true;
+                    this.mouseEnterUserId = userID;
+                    $('body>.popover').remove();
+                    setTimeout(function () {
+                        if (vApp.mouseEnterElement && vApp.mouseEnterUserId == userID) {
+                            $.get('/GameManage/GetUserInfoById', { 'userID': userID, '_r': Math.random() }, function (data) {
+                                var strHtml = '<table class="info" style="width:560px;">\
+                                <tr>\
+                                    <td><img style="height:64px;" src="/Content/HeadIcon/sprite_' + data.FaceID + '.png"></td>\
+                                    <td>ID：<span>' + data.Id + '</span></td>\
+                                    <td>账号：<span>' + data.LoginName + '</span></td>\
+                                </tr>\
+                                <tr>\
+                                    <td>等级：<span>' + data.GradeID + '</span></td>\
+                                    <td>注册时间：<span>' + data.CreateTime + '</span></td>\
+                                    <td>最后登录时间：<span>' + data.LastLogonTime + '</span></td>\
+                                </tr>\
+                                <tr>\
+                                    <td>累计登录次数：<span>' + data.SumLoginTimes + '</span></td>\
+                                    <td>真实姓名：<span>' + data.RealName + '</span></td>\
+                                    <td>支付宝账号：<span>' + data.AlipayAccount + '</span></td>\
+                                </tr>\
+                                <tr>\
+                                    <td>渠道：<span>' + data.AreaName + '</span></td>\
+                                    <td>平台：<span>' + data.PlatformName + '</span></td>\
+                                    <td>总金额数：<span>' + ToCash(data.AllCoinAmount) + '</span></td>\
+                                </tr>\
+                                <tr>\
+                                    <td>累计充值数：<span>' + ToCash(data.SumCharge) + '</span></td>\
+                                    <td>累计税收数：<span>' + ToCash(data.SumTax) + '</span></td>\
+                                    <td>累计兑换数：<span>' + ToCash(data.SumConvert) + '</span></td>\
+                                </tr>\
+                            </table>';
+                                $(event.target).popover({ title: '玩家详细信息', container: 'body', placement: 'top', content: strHtml, html: true });
+                                $(event.target).popover('show');
+                            });
+                        }
+                    }, 750);
+                },
+                hideUserDetailInfo: function () {
+                    this.mouseEnterElement = false;
+                    $('body>.popover').remove();
+                },
+                showSetPrize: function () {
+                    this.setWinPrizeInfo.WinPrize = undefined;
+                    $('label.active').removeClass('active');
+                },
+                showEditPool: function (table) {
+                    this.editPoolInfo = { 'EditTableNo': this.tableNO };
+                },
+                showEditWaterRate: function (table) {
+                    this.editWaterRateInfo = { 'EditTableNo': this.tableNO, 'EditPopWaterRate': this.tableDetail.PopWaterRate };
+                },
+                confirmSetWinPrize: function () {
+                    if (this.setWinPrizeInfo.WinPrize) {
+                            $.get('/GameSGJ/SetWinPrize', { 'serverID': vApp.serverID, 'tableNo': vApp.tableNO, 'winPrize': vApp.setWinPrizeInfo.WinPrize, '_r': Math.random() }, function (msg) {
+                                if (msg.result) {
+                                    $("#WinPrizeMsg").text("*修改成功");
+                                }
+                                else {
+                                    alert('修改失败！');
+                                }
+                            });
+                    }
+                },
+                confirmEditPool: function () {
+                    if (this.editPoolInfo.EditPoolCurrentAmount) {
+                        if (confirm('您正在将水池金额修改为　' + vApp.editPoolInfo.EditPoolCurrentAmount)) {
+                            $.get('/GameSGJ/EditPool', { 'serverID': vApp.serverID, 'tableNo': vApp.editPoolInfo.EditTableNo, 'poolAmount': vApp.editPoolInfo.EditPoolCurrentAmount, '_r': Math.random() }, function (msg) {
+                                if (msg.result) {
+                                    alert('恭喜您，修改成功！');
+                                    $('#editPool').modal('hide');
+                                }
+                                else {
+                                    alert('修改失败！');
+                                }
+                            });
+                        }
+                    }
+                },
+                confirmEditWaterRate: function () {
+                    if (this.editWaterRateInfo.EditPopWaterRate) {
+                        if (confirm('您正在将水池注水率修改为　' + vApp.editWaterRateInfo.EditPopWaterRate + '%')) {
+                            $.get('/GameSGJ/EditWaterRate', { 'serverID': vApp.serverID, 'tableNo': vApp.editWaterRateInfo.EditTableNo, 'popWaterRate': vApp.editWaterRateInfo.EditPopWaterRate, '_r': Math.random() }, function (msg) {
+                                if (msg.result) {
+                                    alert('恭喜您，修改成功！');
+                                    $('#editWaterRate').modal('hide');
+                                }
+                                else {
+                                    alert('修改失败！');
+                                }
+                            });
+                        }
+                    }
+                },
+                getBlackList: function () {
+                    $("#resultMsg").text('');
+                    $.get('/GameCommon/GetBlackList', { serverID: vApp.serverID }, function (data) {
+                        if (data instanceof Object) {
+                            vApp.black.blackList = data.BlackList;
+                            vApp.black.deleteList = data.DeleteList;
+                        }
+                        else {
+                            vApp.black.blackList = [];
+                            vApp.black.deleteList = [];
+                        }
+                    });
+                },
+                addbetblack: function () {
+                    var userID = vApp.black.addBlackUserID;
+
+                    if (!userID || userID == '') {
+                        alert("请先输入使用者ID");
+                        return;
+                    };
+
+                    if (vApp.black.blackList != undefined) {
+                        if (vApp.black.blackList.indexOf(userID) != -1) {
+                            alert("已经存在此ID");
+                            return;
+                        }
+                    }
+
+                    $.get('/GameCommon/Addbetblack', { userID: userID, serverID: vApp.serverID }, function (msg) {
+                        if (msg.result) {
+                            $("#resultMsg").text('修改成功！');
+                            vApp.getBlackList();
+                            return;
+                        }
+                        else {
+                            alert('修改失败！');
+                            return;
+                        }
+                    });
+                },
+                deletebetblack: function (id) {
+
+                    $.get('/GameCommon/Delbetblack', { userID: id, serverID: vApp.serverID }, function (result) {
+                        $("#resultMsg").text(result.msg);
+                        vApp.getBlackList();
+                        return;
+                    });
+                },
+                filterUserType: function (flag) {
+                    if (flag == this.filterTag) { return; }
+                    this.filterTag = flag
+                    vApp.getTableDetail();
+                },
+                deleteUserPermanent: function (id) {
+                    var index = vApp.black.deleteList.indexOf(id);
+                    var userList = vApp.black.deleteList;
+                    userList.splice(index, 1);
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/GameCommon/DelBlackUserPermanent',
+                        dataType: 'JSON',
+                        traditional: true,
+                        data: {
+                            userIDList: userList,
+                            showName: vApp.showName,
+                            gameID: vApp.gameID
+                        },
+                        success: function (result) {
+                            $("#resultMsg").text(result.msg);
+                            vApp.getBlackList();
+                            return;
+                        },
+                        error: function (XMLHttpRequest, textStatus, error) {
+                            alert(error);
+                        }
+                    });
+                },
+                reAddbetblack: function (id) {
+                    if (vApp.black.blackList != undefined) {
+                        if (vApp.black.blackList.indexOf(id) != -1) {
+                            alert("已经存在此ID");
+                            return;
+                        }
+                    }
+
+                    $.get('/GameCommon/ReAddbetblack', { userID: id, serverID: vApp.serverID }, function (result) {
+                        $("#resultMsg").text(result.msg);
+                        vApp.getBlackList();
+                        return;
+                    });
+                },
+                createWinPrizeLogTable: function () {
+                    const head = [
+                               { "sTitle": "牌局ID", "mData": "LogID" },
+                               { "sTitle": "修改人", "mData": "AdminUser" },
+                               {
+                                   "sTitle": "开奖类型", "mData": "PrizeType",
+                                   "render": function (data, type, row) {
+                                       return vApp.prizeType[data];
+                                   }
+                               },
+                               { "sTitle": "创建时间", "mData": "StrCreateTime" },
+                               { "sTitle": "修改时间", "mData": "StrUpdateTime" }]
+
+                    const beginTime = $("#beginTimeLog").val();
+                    const endTime = $("#endTimeLog").val();
+
+                    const opt = {
+                        "ordering": false,
+                        "searching": false,
+                        "aoColumns": head,
+                        "processing": true,
+                        "serverSide": true,
+                        "lengthMenu": [20, 50, 100, 150],
+                        "pageLength": 50,
+                        "ajax": {
+                            "type": "POST",
+                            "url": "/GameSGJ/GetWinPrizeLog",
+                            "data": {
+                                '_r': Math.random(),
+                                'ServerID': vApp.serverID,
+                                'GameID': vApp.gameID,
+                                'TableNo': vApp.tableNO,
+                                'BeginTime': beginTime,
+                                'EndTime': endTime
+                            }
+                        },
+                        "destroy": true
+                    }
+                    $("#WinPrizeLog_table").dataTable(opt)
+                },
+                getWhiteList: function () {
+                    $.get('/GameSGJ/GetBlackList', { serverID: vApp.serverID }, function (data) {
+                        if (data instanceof Object) {
+                            vApp.white.whiteList = data.WhitekList;
+                            vApp.white.deleteList = data.DeleteList;
+                        }
+                        else {
+                            vApp.white.whiteList = [];
+                            vApp.white.deleteList = [];
+                        }
+                    });
+                },
+                addbetwhite: function () {
+                    var userID = vApp.white.addWhiteUserID;
+
+                    if (!userID || userID == '') {
+                        alert("请先输入使用者ID");
+                        return;
+                    };
+
+                    if (vApp.white.whiteList != undefined) {
+                        if (vApp.white.whiteList.indexOf(userID) != -1) {
+                            alert("已经存在此ID");
+                            return;
+                        }
+                    }
+
+                    $.get('/GameSGJ/Addbetwhite', { userID: userID, serverID: vApp.serverID }, function (msg) {
+                        if (msg.result) {
+                            $("#resultMsg").text('修改成功！');
+                            vApp.getWhiteList();
+                            return;
+                        }
+                        else {
+                            alert('修改失败！');
+                            return;
+                        }
+                    });
+                },
+                deletebetwhite: function (id) {
+
+                    $.get('/GameSGJ/Delbetwhite', { userID: id, serverID: vApp.serverID }, function (result) {
+                        $("#resultMsgWhite").text(result.msg);
+                        vApp.getWhiteList();
+                        return;
+                    });
+                },
+                getWhiteList: function () {
+                    $("#resultMsgWhite").text('');
+                    $.get('/GameCommon/GetWhiteList', { serverID: vApp.serverID }, function (data) {
+                        if (data instanceof Object) {
+                            vApp.white.whiteList = data.WhiteList;
+                            vApp.white.deleteList = data.DeleteList;
+                        }
+                        else {
+                            vApp.white.whiteList = [];
+                            vApp.white.deleteList = [];
+                        }
+                    });
+                },
+                addbetwhite: function () {
+                    var userID = vApp.white.addWhiteUserID;
+
+                    if (!userID || userID == '') {
+                        alert("请先输入使用者ID");
+                        return;
+                    };
+
+                    if (vApp.white.whiteList != undefined) {
+                        if (vApp.white.whiteList.indexOf(userID) != -1) {
+                            alert("已经存在此ID");
+                            return;
+                        }
+                    }
+
+                    $.get('/GameCommon/Addbetwhite', { userID: userID, serverID: vApp.serverID }, function (msg) {
+                        if (msg.result) {
+                            $("#resultMsg").text('修改成功！');
+                            vApp.getWhiteList();
+                            return;
+                        }
+                        else {
+                            alert('修改失败！');
+                            return;
+                        }
+                    });
+                },
+                deletebetwhite: function (id) {
+                    $.get('/GameCommon/Delbetwhite', { userID: id, serverID: vApp.serverID }, function (result) {
+                        $("#resultMsgWhite").text(result.msg);
+                        vApp.getWhiteList();
+                        return;
+                    });
+                },
+                deleteUserPermanentWhite: function (id) {
+                    var index = vApp.white.deleteList.indexOf(id);
+                    var userList = vApp.white.deleteList;
+                    userList.splice(index, 1);
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/GameCommon/DelWhiteUserPermanent',
+                        dataType: 'JSON',
+                        traditional: true,
+                        data: {
+                            userIDList: userList,
+                            showName: vApp.showName,
+                            gameID: vApp.gameID
+                        },
+                        success: function (result) {
+                            $("#resultMsgWhite").text(result.msg);
+                            vApp.getWhiteList();
+                            return;
+                        },
+                        error: function (XMLHttpRequest, textStatus, error) {
+                            alert(error);
+                        }
+                    });
+                },
+                reAddbetwhite: function (id) {
+                    if (vApp.white.whiteList != undefined) {
+                        if (vApp.white.whiteList.indexOf(id) != -1) {
+                            alert("已经存在此ID");
+                            return;
+                        }
+                    }
+
+                    $.get('/GameCommon/ReAddbetwhite', { userID: id, serverID: vApp.serverID }, function (result) {
+                        $("#resultMsgWhite").text(result.msg);
+                        vApp.getWhiteList();
+                        return;
+                    });
+                }
+            }
+        });
+
+        vApp.getTableDetail();
+        setInterval(function () {
+            vApp.getTableDetail();
+        }, 1000);
+
+        $(function () {
+            $('#radioBtn a').on('click', function () {
+                var sel = $(this).data('title');
+                var tog = $(this).data('toggle');
+
+                $('a[data-toggle="' + tog + '"]').not('[data-title="' + sel + '"]').removeClass('active').addClass('notActive');
+                $('a[data-toggle="' + tog + '"][data-title="' + sel + '"]').removeClass('notActive').addClass('active');
+            })
+        });
+    </script>
+}

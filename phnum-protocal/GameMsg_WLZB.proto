@@ -1,0 +1,188 @@
+syntax = "proto2";
+
+package netproto;
+
+// [訊息] 玩家Spin Client to Server -> Slot_ActionSpinID = 21001
+message WLZB_MSG_Spin {
+    optional int64 Money = 1;  // 下注金額
+    optional int32 Rate = 2;   // 下注倍率
+}
+
+// [訊息] 遊戲初始時所需資訊 Server to Client -> Slot_SettingID = 20001
+message WLZB_MSG_Setting {
+    optional int32 PayLineMode = 1;                   // 賠付線類型 (0.非全線, 1.全線)
+    optional int32 TotalPayLine = 2;                  // 總共多少賠付線
+    optional int64 MinCarryMoney = 3;                 // 最小攜帶金額
+    optional int32 RowCounts = 4;                     // 顯示結算的行數
+    repeated int32 BetMoneys = 5;                     // 下注金額
+    repeated int32 BetRates = 6;                      // 下注的倍率
+    repeated int32 BigWinStep = 7;                    // BigWin各階段演出條件
+    repeated WLZB_SymbolPayTable SymbolPayTable = 8;  // 符號倍率設定
+    repeated WLZB_ReelSetting ReelSetting = 9;        // 輪軸表演設置
+    repeated WLZB_FreeGameInfo FreeGames = 10;        // 共有多少免費遊戲
+    repeated WLZB_PayLine PayLines = 11;              // 所有賠線
+    repeated WLZB_UnitPrefix UnitPrefix = 12;         // 單位縮寫對照
+    repeated WLZB_Description Descriptions = 13;      // 文字描述
+    repeated WLZB_GoldBallInfo GoldBallSetting = 14;  // 金球倍率設定
+    repeated WLZB_JackpotInfo Jackpots = 15;          // 多組奬池資訊
+};
+
+// [訊息] 遊戲狀態 Server to Client -> Slot_StatusID = 20002
+message WLZB_MSG_Status {
+    optional int32 State = 1;  // 遊戲狀態 0: 玩家可下注, 1: 開獎, 2: 開獎動畫, 3: 結算動畫, 4: 等待遊戲開始
+}
+
+// [訊息] 下注結果 Server to Client -> Slot_BetStatusID = 20003
+message WLZB_MSG_BetStatus {
+    optional int32 Ret = 1;  // 下注狀態 0: 下注成功, -1: 用戶金額不足, -2: 下注的類型未找到, -3: 莊家不能下注, -4: 此類下注已達到上限, -5: 非下注階段, -6: 用戶金額小於下注限制
+    optional int64 Money = 2;  // 下注金額
+}
+
+// [訊息] 遊戲結果 (轉出內容，中獎項目，中獎金額) Server to Client -> Slot_GameResultID = 20004
+message WLZB_MSG_GameResult {
+    optional int64 BetMoney = 1;              // 下注金額
+    optional int64 WinMoney = 2;              // 贏得獎金
+    optional int64 FinalMoney = 3;            // 最終身上金額
+    optional int64 JackpotMoney = 4;          // 贏得的Jackpot金額
+    repeated WLZB_ReelResult ReelResult = 5;  // 輪軸結果
+    repeated WLZB_PayGroup PayGroups = 6;     // 中獎內容，賠付線結果(派彩線)
+    optional int64 FreeGameWinMoney = 7;      // 免費遊戲累計所贏得的獎金
+}
+
+// [訊息] 剩餘免費遊戲資訊 Server to Client -> Slot_LeftFreeGameID = 20005
+message WLZB_MSG_LeftFreeGameData {
+    optional int32 Count = 1;     // 剩餘次數
+    optional int64 BetMoney = 2;  // 下注金額
+    optional int64 BetRate = 3;   // 下注倍率符號
+    optional int32 ID = 4;        // 免費遊戲ID
+}
+
+// [訊息] 查詢遊戲歷程 Client to Server -> Slot_LoadHistoryID = 22001 || Server to DB -> Slot_GameLogReadID = 30031
+message WLZB_MSG_GameLogRead {
+    optional int32 UserID = 1;      // 玩家ID
+    optional int32 GameID = 2;      // 遊戲ID
+    optional string StartTime = 3;  // 起始時間
+    optional string EndTime = 4;    // 結束時間
+    optional int32 PageIndex = 5;   // 第幾頁
+    optional int32 PageSize = 6;    // 一頁幾筆
+}
+
+// [訊息] 回傳遊戲歷程 || 新增遊戲歷程 Server to Client -> Slot_LoadHistoryRetID = 22002 || Server to DB -> Slot_GameLogReadRetID = 30032
+message WLZB_MSG_GameLogRecord {
+    optional int32 UserID = 1;       // 回傳玩家ID
+    optional int32 GameID = 2;       // 回傳遊戲ID
+    optional int32 PageCount = 3;    // 回傳全部筆數
+    repeated WLZB_GameLog Logs = 4;  // 歷程紀錄
+}
+
+// [訊息] 玩家選擇哪種免費遊戲 Server to Client -> WLZB_ChooseGameID = 11001
+message WLZB_MSG_ChooseGame {
+    required int32 ID = 1;  // 選擇免費遊戲的ID
+}
+
+// [訊息] 通知可以選擇龍龍 Server to Client -> WLZB_GameOptionsID = 10001
+message WLZB_MSG_ChooseGameOptions {
+    required int32 Times = 1;  // 選擇免費遊戲的剩餘次數
+}
+
+// 輪軸表演設置
+message WLZB_ReelSetting {
+    optional int32 ReelID = 1;         // 輪軸編號
+    repeated WLZB_Symbol Symbols = 2;  // 該輪軸群組的符號
+};
+
+// 位置資訊
+message WLZB_ReelPosition {
+    optional int32 Reel = 1;  // 直的軸
+    optional int32 Row = 2;   // 橫的列
+}
+
+// 輪軸結果
+message WLZB_ReelResult {
+    optional WLZB_ReelPosition Position = 1;  // 輪軸位置
+    optional WLZB_Symbol Symbol = 2;          // 該輪軸群組的符號
+    optional bool Blink = 3;                  // 是否亮符號
+};
+
+// 符號
+message WLZB_Symbol {
+    optional int32 SymbolID = 1;     // 符號ID
+    optional string SymbolName = 2;  // 符號Name
+};
+
+// 賠線資訊
+message WLZB_PayLine {
+    optional int32 PayLineID = 1;              // 賠線ID
+    repeated WLZB_ReelPosition Positions = 2;  // 賠線位置 [{Reel: 1, Row: 2},{Reel: 2, Row: 2},{Reel: 3, Row: 2},{Reel: 4, Row: 2},{Reel: 5, Row: 2}]
+}
+
+// 中獎內容，賠付線結果(派彩線)
+message WLZB_PayGroup {
+    optional WLZB_PayLine PayLines = 1;             // 中獎的賠線     [{Reel:1,Row:2},{Reel:2,Row:2},{Reel:3,Row:2}] , 給多少畫多少線
+    optional int64 WinMoney = 2;                    // 這條連線中獎金額
+    optional string LinkType = 3;                   // 連線方式. left: 由左至右連線，right: 由右至左連線
+    optional int32 Count = 4;                       // 連線符號數量
+    repeated WLZB_ReelPosition BlinkPositions = 5;  // 亮符號位置
+    optional int32 Way = 6;                         // 共有幾條連線
+    optional int32 Multi = 7;                       // 加乘倍數
+}
+
+// 符號賠率設定
+message WLZB_SymbolPayTable {
+    optional WLZB_Symbol Symbol = 1;  // Symbol
+    optional int32 Count = 2;         // 連續幾個Symbol
+    optional string Type = 3;         // 獎項類型。 chip: 賠倍率, jackpot: 中jackpot, pickgame: 中bonus game
+    optional int32 Payout = 4;        // 該項獎勵數量。 chip: 倍率, jackpot: 最大出獎金額, pickgame: 幾pick
+    optional string Title = 5;        // 符號在賠付表要顯示的標題
+    optional string Desc = 6;         // 符號在賠付表要顯示的說明
+}
+
+// 歷程紀錄
+message WLZB_GameLog {
+    optional int32 RowNum = 1;       // 流水號
+    optional string CreateTime = 2;  // 訂單時間
+    optional int64 OrderID = 3;      // 訂單編號
+    optional int64 BetMoney = 4;     // 投注金額
+    optional int64 Profit = 5;       // 盈利/輸贏(計算方式:結算分數-原始分數)
+}
+
+// 免費遊戲
+message WLZB_FreeGameInfo {
+    optional int32 ID = 1;                      // 免費遊戲ID
+    optional int32 Count = 2;                   // 總共可以有多少次
+    repeated WLZB_ReelSetting ReelSetting = 3;  // 動態輪軸
+}
+
+// BonusGame 選擇位置紀錄 {ID: 1, Location: 0, Money: 100}
+message WLZB_BonusGameRecord {
+    optional int32 ID = 1;           // 順序 1 開始，由小至大
+    optional int32 Location = 2;     // 位置 0: 未翻過, [1-12]:位置
+    optional int64 RewardValue = 3;  // 獎勵數量
+}
+
+// Jackpot奬池資訊
+message WLZB_JackpotInfo {
+    optional int64 Money = 1;  // Jackpot最大獎金額
+    optional string Name = 2;  // Jackpot名稱 (Single / Grand / Major / Minor / Mini)
+    optional int32 ID = 3;     // JackpotID
+}
+
+// 單位名稱
+message WLZB_UnitPrefix {
+    optional string Name = 1;     // 單位名稱
+    optional int64 Multiple = 2;  // 多少倍
+}
+
+// 文字敘述
+message WLZB_Description {
+    optional string Name = 1;  // Key
+    optional string Desc = 2;  // Value
+    optional string Title = 3;  // Value
+}
+
+// 金球倍率設定
+message WLZB_GoldBallInfo {
+    optional string Symbol = 1;  // 符號
+    optional string Type = 2;    // 獎勵類型
+    optional int64 Value = 3;    // 獎勵內容, Jackpot: 給ID, Multiple: 給倍數
+}

@@ -1,0 +1,68 @@
+syntax = "proto2";
+
+package netproto;
+
+//---------- Server - Client ----------
+// HLJBP_GameInfo = 10001;                   // S2C 牌局資訊，於玩家進入牌局或斷線重連時傳送
+message HLJBP_Msg_GameInfo {
+    repeated string Manual = 1;                // 遊戲說明
+    repeated int64 ChipValue = 2;              // 籌碼面額
+    required int64 Bet_Limit = 3;              // 押注上限
+    required int32 GameState = 4;              // 遊戲狀態 0:等待遊戲開始，1:開始下注，2:結算，3:遊戲結束
+    required int32 TimeRemain = 5;             // 剩餘時間
+    repeated HLJBP_Msg_UserInfo UserInfo = 6;  // 所有玩家資訊
+    required int32 LuckyNumber = 7;            // 場上開出數字
+};
+
+// HLJBP_AllUserInfo = 10002;                // S2C 玩家資訊，當玩家人數或狀態有變動時傳送
+message HLJBP_Msg_AllUserInfo {
+    repeated HLJBP_Msg_UserInfo UserInfo = 1;  // 所有玩家資訊
+};
+
+message HLJBP_Msg_UserInfo {
+    required int32 UserID = 1;        // 玩家ID，若是空位時，玩家ID = -1
+    required int32 State = 2;         // 玩家狀態，0:空位，1:正常，2:觀戰
+    required int32 SeatNo = 3;        // 玩家座位
+    optional int32 FaceID = 4;        // 頭像ID
+    required int64 Money = 5;         // 玩家金錢
+    required int64 Bet = 6;           // 玩家下注金額
+    required int32 Winner = 7;        // 贏家，-1:發牌前狀態，0:和，1:贏，2:輸
+    required int64 WinLoseMoney = 8;  // 玩家輸贏金錢(不扣稅收)，若值為負數，則為玩家輸掉的金額，client 端顯示用
+    required int64 TotalWinLose = 9;  // 總輸贏(已扣稅收)，client 端顯示用
+};
+
+// HLJBP_UserBettingStart = 10003;           // S2C 玩家開始下注
+message HLJBP_Msg_UserBettingStart {
+    required int32 TimeRemain = 1;  // 剩餘時間
+};
+
+// HLJBP_Bet = 10004;                        // C2S 玩家下注
+message HLJBP_Msg_Bet {
+    required int64 Bet = 1;  // 下注金額
+};
+
+// HLJBP_BetResult = 10005;                  // S2C 玩家下注結果
+message HLJBP_Msg_BetResult {
+    required int32 SeatNo = 1;       // 下注玩家座位
+    required int64 Bet = 2;          // 下注金額
+    required int64 MoneyRemain = 3;  // 下注後玩家剩餘金錢
+    required int32 Result = 4;       // 下注結果，0:下注成功，-1:玩家餘額不足，-2:已停止下注，-3:底注超過上限，-4:押注金額<=0，-5:壓注失敗
+};
+
+// HLJBP_Settlement = 10006;         // S2C 總結算
+message HLJBP_Msg_Settlement {
+    required bool IsSettlement = 1;            // 是否結算
+    required int32 LuckyNumber = 2;            // 場上開出數字
+    repeated HLJBP_Msg_UserInfo UserInfo = 3;  // 所有玩家資訊
+    required string ActionName = 4;            // 動畫名稱
+};
+
+// HLJBP_KickTip = 10007;              // S2C 踢人倒數提示
+message HLJBP_Msg_KickTip {
+    required int32 Round = 1;  // 倒數回合
+};
+
+// HLJBP_UserActionCommitID = 11;      // C2S 動畫播放完成
+message HLJBP_Msg_UserActionCommited {
+    required string ActionName = 1;
+};

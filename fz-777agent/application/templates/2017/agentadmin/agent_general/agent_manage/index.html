@@ -1,0 +1,28 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+{% autoescape false %}{{formSearch}}{% endautoescape %}
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                <th data-options="{name:'id',align:'center',render:function(value,data){return '<a href=\'{{$agentPageRoute}}/addmoney_opt\'>'+value+'</a>'}}">代理商ID</th>
+                <th data-options="{name:'status',align:'center','items'=>[['0'=>'禁用'],['1'=>'启用']}">状态</th>
+                <th data-options="{name:'telphone',align:'center'}">绑定手机号</th>
+                <th data-options="{name:'telphone_bind',align:'center'}">开启绑定手机登录</th>
+                <th data-options="{name:'telphone',align:'center'}">代理账户</th>
+                <th data-options="{name:'name',align:'center'}">代理名称</th>
+                <th data-options="{name:'money',align:'center'}">余额</th>
+                <th data-options="{name:'total_recharge',align:'center'}">充值合计</th>
+                <th data-options="{name:'total_turn_out',align:'center'}">转出合计</th>
+                <th data-options="{name:'total_turn_in',align:'center'}">转入合计</th>
+                <th data-options="{name:'weixin',align:'center'}">weixin</th>
+                <th data-options="{name:'qq',align:'center'}">QQ</th>
+                <th data-options="{name:'created_at',align:'center'}">注册时间</th>
+                <th data-options="{name:'ip',align:'center'}">注册ip</th>
+                <th data-options="{name:'remark',align:'center'}">备注</th>
+                <th data-options="{name:'telphone',align:'center'}">手机号</th>
+                <th data-options="{name:'telphone',align:'center'}">代理支付宝</th>
+            </tr>
+        </thead>
+    </table>
+</div>

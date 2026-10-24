@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://example.invalid/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4F70D664-A9B0-4F2B-B461-D2C12548EDDC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FW.Core.Helper</RootNamespace>
+    <AssemblyName>FW.Core.Helper</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\using\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseEntity.cs" />
+    <Compile Include="BaseModel\FWConstant.cs" />
+    <Compile Include="BaseModel\CheckResultModel.cs" />
+    <Compile Include="BaseModel\CRUDResultModel.cs" />
+    <Compile Include="BaseModel\Exceotion\InvalidParameterException.cs" />
+    <Compile Include="Check.cs" />
+    <Compile Include="CollectionExtensions.cs" />
+    <Compile Include="Encrypt\EncryptHelper.cs" />
+    <Compile Include="Enum\EnumDescriptionAttribute.cs" />
+    <Compile Include="Enum\EnumExtensions.cs" />
+    <Compile Include="EventHandlerHelper.cs" />
+    <Compile Include="Helper\SQLHelper.cs" />
+    <Compile Include="ICloneable.cs" />
+    <Compile Include="IOHelper.cs" />
+    <Compile Include="IPHelper.cs" />
+    <Compile Include="Trace\ConsoleTrace.cs" />
+    <Compile Include="Trace\EmptyTrace.cs" />
+    <Compile Include="Trace\ITrace.cs" />
+    <Compile Include="MailHelper.cs" />
+    <Compile Include="PagedList.cs" />
+    <Compile Include="Pair.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflection\TypeExtensions.cs" />
+    <Compile Include="Reflection\TypeHelper.cs" />
+    <Compile Include="StringHelper.cs" />
+    <Compile Include="SystemEnvironment.cs" />
+    <Compile Include="Thread\ReadableLocker.cs" />
+    <Compile Include="Thread\WriteableLocker.cs" />
+    <Compile Include="Trace\TraceHelper.cs" />
+    <Compile Include="ValidateCode.cs" />
+    <Compile Include="BaseModel\ViewModels\RoleUpdateRequestViewModel.cs" />
+    <Compile Include="WebWorkContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="BaseModel\舊架構才會有一些Model放在這\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

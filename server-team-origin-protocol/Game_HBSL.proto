@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package netproto;
+
+enum HBSL_GameMessageClassID {
+    //---------- Server - Client ----------
+    HBSL_GameInfo = 10001;                  // S2C 牌局資訊，於玩家進入牌局或斷線重連時傳送
+	HBSL_AllUserInfo = 10002;            	// C2S 在線玩家
+	HBSL_AllUserInfoResult = 10003;         // S2C 在線玩家結果
+	HBSL_StartGrab = 10004;					// S2C 開始搶紅包
+	HBSL_Grab=10005;						// C2S 搶紅包
+	HBSL_GrabResult = 10006;			    // S2C 搶紅包結果
+	HBSL_FaHB=10007;						// C2S 發紅包
+	HBSL_FaHBResult=10008;					// S2C 發紅包結果
+	HBSL_AllHBInfo=10009;					// C2S 紅包列表
+	HBSL_AllHBInfoResult=10010;				// S2C 紅包列表結果
+	HBSL_Settlement=10011;                  // S2C 結算
+};

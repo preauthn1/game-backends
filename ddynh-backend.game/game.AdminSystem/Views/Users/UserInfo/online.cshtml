@@ -1,0 +1,311 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/jquery.dataTables.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .output_main {
+        display: flex;
+        flex-wrap: wrap;
+        color: #fff;
+        font-size: 1.2em;
+    }
+
+    .output_item {
+        margin:4px;
+        padding: 5px 10px;
+        min-width:75px;
+        border-radius: 9px !important;
+        opacity: .9;
+    }
+
+    .output_item:hover
+    {
+        opacity:.8;
+    }
+
+    .total {
+        background-color: #D23732;
+    }
+
+    .average {
+        background-color: #288CC8;
+    }
+
+    .game {
+        background-color: #85B65B;
+    }
+
+    .align_center {
+        text-align: center;
+    }
+
+    .content {
+        padding: .5%;
+        font-size: 1.2em;
+        font-family: serif;
+    }
+
+    .update_Red {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: red;
+    }
+
+    .update_Green {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: #58ae63;
+    }
+
+    .update_Gray {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: gray;
+    }
+</style>
+
+<div id="online">
+    <div class="output_main">
+        <div v-for="item in filterDatas" v-bind:class="['output_item', item.className]">
+            <div class="align_center">{{item.value}}</div>
+            <div class="align_center">{{item.name}}</div>
+        </div>
+
+        <div v-for="item in eachGameSummary" class="output_item game">
+            <div class="align_center">{{item.TotalCount}}</div>
+            <div class="align_center">{{item.GameName}}</div>
+        </div>
+        
+    </div>
+    <form class="form-inline" id="form_search" method="get">
+        <div class="form-group">
+            <label>游戏</label>
+            @Html.DropDownList("gameID", DataService.Game(), new { @class = "form-control input-small", id = "gameID", v_model = "selectedGameID" })
+        </div>
+        <div class="form-group">
+            @*<label>游戏</label>*@
+            <select class="form-control input-medium" v-model="selectedServerId">
+                <option value="">全部</option>
+                <option v-for="item in filterServerList" :value="item.Id">{{item.ServerName}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button type="button" class="btn btn-default" v-on:click="createTable()"> 搜 索 </button>
+        </div>
+    </form>
+    <div class="content">
+        <table id="online_table" class="display" style="width:100%"></table>
+    </div>
+
+</div>
+
+
+@section initScripts{
+    <script>
+        $(function () {
+            var vApp = new Vue({
+                el: '#online',
+                data: {
+                    eachGameSummary : [],
+                    outputData: [{
+                        name: "总在线",
+                        key: 'totalOnlineCount',
+                        value: "0",
+                        className: 'total'
+                    },
+                    {
+                        name: "安卓在线",
+                        key: 'totalOnlineAndroidCount',
+                        value: "0",
+                        className: 'total'
+                    },
+                    {
+                        name: "IOS在线",
+                        key: 'totalOnlineiOSCount',
+                        value: "0",
+                        className: 'total'
+                    },
+                    {
+                        name: "大厅在线",
+                        key: 'totalOnlineHallCount',
+                        value: "0",
+                        className: 'total'
+                    },
+                    {
+                        name: "正在游戏房间",
+                        key: 'totalOnlineGameRoomCount',
+                        value: "0",
+                        className: 'total'
+                    },
+                    {
+                        name: "当天注册在线",
+                        key: 'totalOnlineRegCount',
+                        value: "0",
+                        className: 'average'
+                    },
+                    {
+                        name: "1-7天注冊在线",
+                        key: 'totalOnlineRegWeeklyCount',
+                        value: "0",
+                        className: 'average'
+                    }
+
+                    /*
+                    {
+                        name: "当天平均在线",
+                        key: 'totalOnlineAvgCount',
+                        value: "0",
+                        className: 'average'
+                    },
+                    {
+                        name: "当天iOS平均在线",
+                        key: 'totalOnlineAvgiOSCount',
+                        value: "0",
+                        className: 'average'
+                    },
+                    {
+                        name: "当天安卓平均在线",
+                        key: 'totalOnlineAvgAndRoidCount',
+                        value: "0",
+                        className: 'average'
+                    },
+
+                    {
+                        name: "当天最高在线",
+                        key: 'totalOnlineMaxCount',
+                        value: "0",
+                        className: 'average'
+                    },
+                    {
+                        name: "当天IOS最高在线",
+                        key: 'totalOnlineMaxiOSCount',
+                        value: "0",
+                        className: 'average'
+                    },
+                    {
+                        name: "当天安卓最高在线",
+                        key: 'totalOnlineMaxAndRoidCount',
+                        value: "0",
+                        className: 'average'
+                    },
+                    */
+                    
+                  ],
+                    filterDatas: [],
+                    selectedGameID: '',
+                    selectedServerId: '',
+                    serverList: {},
+                    filterServerList: {}
+                },
+                methods: {
+                    createTable() {
+                        const url = '/Userinfo/GetOnlineUser'
+                        const thead = [
+                                        {
+                                            "sTitle": "游戏", "mData": "ServerName", "bSortable": true, "sName": 5,
+                                            "render": function (data, type, row) {
+                                                return `<a class="link" target="_blank" href="${row.TableURL}">${data}</a>`;
+                                            }
+                                        },
+                                        {
+                                            "sTitle": "用户ID", "mData": "UserID", "width": "8%",
+                                            "render": function (data, type, row) {
+                                                return `<a class="link" target="_blank" href="/UserInfo/Search?userId=${data}&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">${data}</a>`
+                                            }
+                                        },
+                                        {
+                                            "sTitle": '总充值(第三方 + 官方)', "mData": "SumCharge", "width": "80px", "className": "text_right", "bSortable": true, "sName": 0,
+                                            "render": function (data, type, row) {
+                                                if (data == '0.00') {
+                                                    return '<span class="update_Gray">' + data + '<span>'
+                                                }
+                                                return data;
+                                            }
+                                        },
+                                        { "sTitle": '总兑换', "mData": "SumConvert", "className": "text_right", "bSortable": true, "sName": 1 },
+                                        { "sTitle": '金币', "mData": "Amount", "className": "text_right", "bSortable": true, "sName": 2 },
+                                        { "sTitle": '银行', "mData": "BankAmount", "className": "text_right", "bSortable": true, "sName": 3 },
+                                        {
+                                            "sTitle": '累计输赢', "mData": "TotalGameWinLose", "className": "text_right", "bSortable": true, "sName": 4,
+                                            "render": function (data, type, row) {
+                                                if (data.indexOf('-') != -1) {
+                                                    return '<span class="update_Red">' + data + '<span>'
+                                                }
+                                                return '<span class="update_Green">' + data + '<span>'
+                                            }
+                                        },
+                                        { "sTitle": "渠道", "mData": "AreaName" },
+                                        { "sTitle": "装置", "mData": "HDType" },
+                                        { "sTitle": "IP", "mData": "IP" },
+                                        { "sTitle": "归属地", "mData": "Location" },
+                                        { "sTitle": "注册时间", "mData": "CreateTime" },
+                                        { "sTitle": "房间", "mData": "ServerID" },
+                                        { "sTitle": "游戏赢", "mData": "WinCount" },
+                                        { "sTitle": "游戏输", "mData": "LoseCount" },
+                                        { "sTitle": "时间", "mData": "LastLogonTime" }]
+
+
+
+
+                        const data = {
+                            gameID: vApp.selectedGameID,
+                            serverID: vApp.selectedServerId
+                        }
+
+                        var sortColumn = 0;
+                        var sortDes = 'asc';
+
+                        if ('@ViewBag.column' != '') {
+                            sortColumn = parseInt('@ViewBag.column')
+                        }
+                        if ('@ViewBag.sortDes' != '') {
+                            sortDes = '@ViewBag.sortDes'
+                        }
+
+                        const opt = {
+                            aaSorting: [[sortColumn, sortDes]],
+                        }
+
+                        createDataTable('online', thead, url, data, (json) => {
+
+                            vApp.eachGameSummary = json.eachGameSummary;
+                            vApp.filterDatas = [];
+                            vApp.outputData.map((item) => {
+                                var value = json.output[item.key]
+                                item.value = value
+
+                                if (item.value != -1) {
+                                    vApp.filterDatas.push(item);
+                                }
+                            })
+
+                        }, opt)
+                    },
+                    getServerList: function () {
+                        $.get('/UserInfo/GameServerList', {}, function (data) {
+                            if (data instanceof Array) {
+                                vApp.serverList = data;
+                            }
+                            else {
+                                vApp.serverList = {};
+                            }
+                        });
+                    }
+                }
+            })
+
+            $("#gameID").change(function () {
+
+                vApp.filterServerList = vApp.serverList.filter(function (item, index, array) {
+                    return item.GameID == parseInt(vApp.selectedGameID);
+                });
+                vApp.selectedServerId = ''
+            });
+
+            vApp.createTable()
+            vApp.getServerList();
+        })
+    </script>
+}

@@ -1,0 +1,121 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <div class="form-inline">
+                @Html.Partial("AreaList")
+                <div class="form-group">
+                    <label>游戏</label>
+                    @Html.DropDownList("gameID", DataService.Game("", false), new { @class = "form-control input-small", id = "gameID" })
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" id="searchLog" onclick="query()"> 搜 索 </button>
+                    <button type="button" class="btn btn-default" id="btnSave"> 保存 </button>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <table id="serverrelations_table" class="display" style="width:100%"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section initScripts{
+    <script>
+        var serverrelations_table = null;
+        $(function () {
+            createTable()
+            $('#btnSave').click(function () {
+                let temp = []
+                serverrelations_table.DataTable().rows().iterator('row', function (context, index) {
+                    var node = $(this.row(index).node());
+                    var data = $(this.row(index).data())[0];
+                    temp.push({
+                        AreaID: data.AreaID,
+                        ServerID: data.ServerID,
+                        GameID: data.GameID,
+                        FlagID: data.FlagID,
+                        Status: node.find('input').prop('checked') ? 1 : 0
+                    })
+                })
+
+                $.ajax({
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    url: '/GameManage/AddServerRelations',
+                    type: 'post',
+                    data: JSON.stringify({ data: temp }) //stringify the whole data again
+                })
+                .done(function (result) {
+                    alert('保存成功')
+                    serverrelations_table.DataTable().ajax.reload();
+                })
+            })
+
+
+            $('.group-checkable').change(function () {
+                var set = $(this).attr('data-set');
+                var checked = $(this).is(':checked');
+                $(set).each(function () {
+                    if (checked) {
+                        $(this).attr('checked', true);
+                    } else {
+                        $(this).attr('checked', false);
+                    }
+                });
+                $.uniform.update(set);
+            });
+
+        })
+
+        function query() {
+            serverrelations_table.DataTable().ajax.reload();
+        }
+
+        function createTable() {
+            const head = [
+                            {
+                                "data": null,
+                                "sTitle": `<input type="checkbox" class="group-checkable" data-set=".checkboxes">`,
+                                'render': function (data, type, full, meta) {
+                                    if (data.Status === 1) {
+                                        return `<input type="checkbox" class="checkboxes" value="${data.ServerID}" name="ServerID" checked>`;
+                                    }
+                                    return `<input type="checkbox" class="checkboxes" value="${data.ServerID}" name="ServerID">`;
+                                }
+                            },
+                            { "sTitle": "区厅", "mData": "ServerName" },
+            ]
+            const opt = {
+                "bPaginate": false,
+                "ordering": false,
+                "searching": false,
+                "aoColumns": head,
+                "processing": true,
+                "serverSide": true,
+                "bLengthChange": false,
+                "bPaginate": false,
+                "ajax": {
+                    "type": "POST",
+                    "url": "/GameManage/GetServerRelations",
+                    data: function (d) {
+                        Object.assign(d, {
+                            "areaID": $('#areaID').val(),
+                            "gameID": $('#gameID').val()
+                        });
+                        return d;
+                    }
+                },
+                "destroy": true
+            }
+            serverrelations_table = $("#serverrelations_table").dataTable(opt)
+        }
+
+    </script>
+}

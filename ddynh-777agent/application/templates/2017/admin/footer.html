@@ -1,0 +1,162 @@
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{{ASSETS_PATH}}/js/jquery.min.js"></script>
+<script src="{{ASSETS_PATH}}/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="{{ASSETS_PATH}}/js/ie10-viewport-bug-workaround.js"></script>
+<script src="{{ASSETS_PATH}}/js/layer.js"></script>
+<script src="{{ASSETS_PATH}}/js/zx.js?v=20180314"></script>
+<script src='{{ASSETS_PATH}}/js/example.invalid.js'></script>
+<script>
+    /*$(document).ready(function () {
+        var socket = io('http://example.invalid:8080');
+        socket.on('connect', function(){
+            socket.emit('login', {{groupid}});
+            socket.emit('login2', {{userid}});
+        });
+        socket.on('new_msg', function(msg){
+            console.log(msg);
+            layer.open({
+                content: msg, skin: 'msg', time: 5
+            });
+        });
+        socket.on('new_msg2', function(msg){
+            document.location.href="/admin/logout";
+        });
+    });*/
+</script>
+{% if has_editer %}
+<script src="{{ASSETS_PATH}}/js/bootstrap-wysiwyg.js"></script>
+<script src="{{ASSETS_PATH}}/js/jquery.hotkeys.js"></script>
+<script>
+$(function() {
+    function initToolbarBootstrapBindings() {
+        var fonts = ['Serif', 'Sans', 'Arial', 'Arial Black', 'Courier',
+                'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande', 'Lucida Sans', 'Tahoma', 'Times',
+                'Times New Roman', 'Verdana'
+            ],
+            fontTarget = $('[title=Font]').siblings('.dropdown-menu');
+        $.each(fonts, function(idx, fontName) {
+            fontTarget.append($('<li><a data-edit="fontName ' + fontName + '" style="font-family:\'' + fontName + '\'">' + fontName + '</a></li>'));
+        });
+        $('a[title]').tooltip({
+            container: 'body'
+        });
+        $('.dropdown-menu input').click(function() {
+                return false;
+            })
+            .change(function() {
+                $(this).parent('.dropdown-menu').siblings('.dropdown-toggle').dropdown('toggle');
+            })
+            .keydown('esc', function() {
+                this.value = '';
+                $(this).change();
+            });
+
+        $('[data-role=magic-overlay]').each(function() {
+            var overlay = $(this),
+                target = $(overlay.data('target'));
+            overlay.css('opacity', 0).css('position', 'absolute').offset(target.offset()).width(target.outerWidth()).height(target.outerHeight());
+        });
+        if ("onwebkitspeechchange" in document.createElement("input")) {
+            var editorOffset = $('#editor').offset();
+            $('#voiceBtn').css('position', 'absolute').offset({
+                top: example.invalid,
+                left: editorOffset.left + $('#editor').innerWidth() - 35
+            });
+        } else {
+            $('#voiceBtn').hide();
+        }
+    };
+    initToolbarBootstrapBindings();
+    //$('#editor').wysiwyg();
+    $('.btn-toolbar').each(function(){
+    	var targetid=$(this).attr('data-target');
+    	$(targetid).wysiwyg();
+
+    	$(targetid).bind("DOMSubtreeModified", function() {
+    	    $(targetid+'_textarea').html($(targetid).html());
+    	});
+    	$(targetid).trigger('DOMSubtreeModified');
+    });
+});
+</script>
+<script>
+$(function() {
+    var uploadFiles = [];
+    $("#picture-select").change(function() {
+        uploadFiles = [];
+        $.each(this.files, function(index, fileObj) {
+            uploadFiles.push(fileObj);
+        });
+    });
+
+    $("#uploadBtn").click(function() {
+        $("#uploadBtn").html('上传中...');
+        var value = '';
+        for (var i = 0; i < uploadFiles.length; i++) {
+            var fileObj = uploadFiles[i];
+            upimg = uploadImage(fileObj);
+            //console.log(upimg);
+            value = value + upimg;
+            //console.log(value);
+        }
+        //console.log(value);
+        $("#editor").insertText(value);
+        $('#uploadModal').modal('hide');
+    });
+
+    var uploadImage = function(fileObj) {
+        var img = "";
+        var data = new FormData();
+        data.append('image', fileObj);
+        $.ajax({
+            url: '{{APP_URL}}/ajax/upload?type=image',
+            type: 'POST',
+            contentType: false,
+            data: data,
+            processData: false,
+            cache: false,
+            async: false,
+            success: function(res) {
+                //insertContent('editor', '<img src="' + res + '">');
+                //console.log('<img src="' + res + '">');
+                img = '<img src="' + res + '">';
+            }
+        });
+        //console.log(img);
+        return img;
+    }
+});
+
+$.fn.insertText = function(text) {
+
+    var obj = $(this)[0];
+    var range, node;
+    if (!obj.hasfocus) {
+        obj.focus();
+    }
+
+    if (document.selection && document.selection.createRange) {
+        this.focus();
+        document.selection.createRange().pasteHTML(text);
+        this.focus();
+    } else if (window.getSelection && window.getSelection().getRangeAt) {
+        range = window.getSelection().getRangeAt(0);
+        range.collapse(false);
+        node = range.createContextualFragment(text);
+        var c = node.lastChild;
+        range.insertNode(node);
+        if (c) {
+            range.setEndAfter(c);
+            range.setStartAfter(c)
+        }
+        var j = window.getSelection();
+        j.removeAllRanges();
+        j.addRange(range);
+        this.focus();
+    }
+}
+</script>
+{% endif %}

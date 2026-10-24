@@ -1,0 +1,145 @@
+﻿@model bool
+@{
+    List<game.Entity.Area.Platform> listPlatform = DataService.GetAllPlatform();
+    string name = "platformid";
+    if (
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "userquestionlog" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "getquestionpagelist")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "pay" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "orderlist")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "userstat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "reguser")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "userstat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "getreguserlog")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "onlinestat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "hallonlineuserlog")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "onlinestat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "totalgameonlinelog")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "onlinestat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "gameonlineuserlog")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "onlinestat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "serveronlineuserlog")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "onlinestat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "maxgameonlineuserlog")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "onlinestat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "daymaxtotalgameonlinelog")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "moneystat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "banksourcestatlog")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "moneystat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "summoneylog")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "userstat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "getlogonuserlog")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "areastat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "statallareadata")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "onlinestat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "maxserveronlineuserlog")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "agentreportlog" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "list")
+       )
+    {
+        name = "platformids";
+        listPlatform = DataService.GetAllPlatform().FindAll(m => SiteHelper.GetPlatformIDs().Contains(m.Id));
+    }
+
+    if (
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "info" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "downloadList")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "message" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "send")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "onlinestat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "maxhallonlineuserlog")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "areastat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "statallareadatadaysummary")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "areastat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "statallareadataday")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "areastat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "statallareadatamonth")
+       ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "areastat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "statallareadatadata")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "userstat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "getkeeplog")
+        )
+    {
+        name = "platformid";
+        listPlatform = DataService.GetAllPlatform().FindAll(m => SiteHelper.GetPlatformIDs().Contains(m.Id));
+    }
+
+    //3rd party get platform
+    if (
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "payment" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "orderlist")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "money" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "convertlog")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "gamemessage" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "list")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "moneystat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "moneysourcestatlog")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "moneystat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "gametaxlog")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "moneystat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "gameservertaxlog")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "userstat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "alluser")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "userquestionlog" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "getlogonquestionpagelist")
+        )
+    {
+        name = "platformids";
+        listPlatform = DataService.GetPlatformByAdminId(ViewBag.operatorID);
+    }
+    if (
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "payment" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "infosetting")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "payment" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "amountlist")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "gamemessage" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "add")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "gamemessage" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "edit")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "gamemaster" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "gameserverlist")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "userstat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "getactiveuserkeeplog")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "userstat" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "getchargekeeplog")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "message" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "smslog")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "message" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "smssetting")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "message" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "list")
+        ||
+        (Request.RequestContext.RouteData.Values["controller"].ToString().ToLower() == "message" && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "inbox")
+        )
+    {
+        listPlatform = DataService.GetPlatformByAdminId(ViewBag.operatorID);
+    }
+}
+
+@if (listPlatform.Count > 0)
+{
+    listPlatform = listPlatform.OrderBy(x=> x.Id).ToList();
+    if (Model)
+    {
+        <div class="form-group _clear">
+            <label class="_hide control-label col-md-4 xing ">平台</label>
+            <div class="col-md-8">
+                <select class="form-control input-small" id="@name" name="@name">
+                    @foreach (var p in listPlatform)
+                    {
+                        <option value="@p.Id">@p.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="form-group _clear">
+            <label class="_hide">平台</label>
+            <select class="form-control input-small" id="@name" name="@name">
+                <option value="">--不限--</option>
+                @foreach (var p in listPlatform)
+                {
+                    <option value="@p.Id">@p.Name</option>
+                }
+            </select>
+        </div>
+    }
+}

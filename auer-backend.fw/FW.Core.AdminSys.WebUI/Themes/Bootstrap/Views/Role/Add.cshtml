@@ -1,0 +1,61 @@
+﻿@using FW.Core.AdminSys.WebUI
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>新增角色
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="addRoleFrm" method="post" class="form-horizontal form-bordered">
+                    <div class="form-body">
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3">角色名称</label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control input-medium" name="roleName" id="roleName">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @Html.OkWithRight()
+                            @Html.Back(@Url.Action("List"))
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+@section initScripts
+{
+    <script>
+        $(function () {
+            $("#addRoleFrm").validate({
+                rules: {
+                    roleName: {
+                        required: true,
+                        minlength: 2,
+                        maxlength:16
+                    }
+                },
+                messages: {
+                    roleName: {
+                        required: "角色名称不能为空",
+                        minlength: "角色名长度不能低于2个字符",
+                        maxlength:"角色名长度不能超出16个字符"
+                    }
+                }
+            });
+        })
+    </script>
+}
+

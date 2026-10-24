@@ -1,0 +1,201 @@
+﻿
+
+@model  CompanyReportViewModel
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+
+                <input type="hidden" value="false" id="isExport" name="isExport" />
+
+                <div class="form-group">
+                    <label>平台</label>
+                    @Html.Partial("_DropdownPlatform", new DropdownPartialSettingViewModel(FirstOptionValueEnum.DefaultSelectAll))
+                </div>
+
+                @Html.Partial("_AreaSelectRelatePlatform")
+
+                <div class="form-group">
+                    <label>时间</label>
+                    <input type="text" class="form-control " style="width:180px" id="beginTime" name="beginTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@Model.QueryBeginTime">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="endTime" name="endTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd'})" placeholder="结束时间" autocomplete="off" value="@Model.QueryEndTime">
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default" onclick="global_changeExportType('false')"> 搜 索 </button>
+                    <button type="submit" class="btn btn-default" onclick="global_changeExportType('true')"> 汇 出 </button>
+                </div>
+            </form>
+
+            <div style="text-align:right;">
+                <button class="btn" onclick="global_showMyModal()">各渠道总计</button>
+            </div>
+
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover progressTable">
+                    <thead>
+                        <tr>
+                            <th>统计时间</th>
+                            <th>渠道名称</th>
+                            <th class="algin-r">公司输赢</th>
+                            <th class="algin-r">税收</th>
+                            <th class="algin-r">优惠</th>
+                            <th class="algin-r">人工加扣款</th>
+                            <th class="algin-r">全民代理提现</th>
+                            <th class="algin-r">抢庄牛牛彩金</th>
+                            <th class="algin-r">封锁扣除金币</th>
+                            <th class="algin-r">出款手续费</th>
+                            <th class="algin-r">公司盈亏</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Items != null)
+                        {
+                            foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>@item.Date</td>
+                                    <td>@item.AreaName</td>
+                                    <td class="algin-r">@item.WinLoss.ToCash()</td>
+                                    <td class="algin-r">@item.Tax.ToCash()</td>
+                                    <td class="algin-r">@item.Bonus.ToCash()</td>
+                                    <td class="algin-r">@item.ManualChangeAmount.ToCash()</td>
+                                    <td class="algin-r">@item.AgentWithdrawal.ToCash()</td>
+                                    <td class="algin-r">@item.QZNNBonus.ToCash()</td>
+                                    <td class="algin-r">@item.BlockReduceAmount.ToCash()</td>
+                                    <td class="algin-r">@item.WithdrawalFee.ToCash()</td>
+                                    <td class="algin-r">@item.CompanyNetAmount.ToCash()</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                    <tfoot>
+                        @if (Model.Items != null)
+                        {
+                        <tr>
+                            <th>&nbsp;</th>
+                            <th>全部加总</th>
+                            <th class="algin-r">@(Model.Items.Sum(x => x.WinLoss).ToCash())</th>
+                            <th class="algin-r">@(Model.Items.Sum(x => x.Tax).ToCash())</th>
+                            <th class="algin-r">@(Model.Items.Sum(x => x.Bonus).ToCash())</th>
+                            <th class="algin-r">@(Model.Items.Sum(x => x.ManualChangeAmount).ToCash())</th>
+                            <th class="algin-r">@(Model.Items.Sum(x => x.AgentWithdrawal).ToCash())</th>
+                            <th class="algin-r">@(Model.Items.Sum(x => x.QZNNBonus).ToCash())</th>
+                            <th class="algin-r">@(Model.Items.Sum(x => x.BlockReduceAmount).ToCash())</th>
+                            <th class="algin-r">@(Model.Items.Sum(x => x.WithdrawalFee).ToCash())</th>
+                            <th class="algin-r">@(Model.Items.Sum(x => x.CompanyNetAmount).ToCash())</th>
+                        </tr>
+                        }
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="modal_empty_template" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width:1000px">
+        <div class="modal-content" style="padding:15px;">
+
+            <div style="padding:20px;text-align:center;">
+                <h4>
+                    <b>
+                        各渠道总计
+                    </b>
+                </h4>
+                <div style="text-align:center;color:#888;">
+                    @Model.QueryBeginTime - @Model.QueryEndTime
+                </div>
+            </div>
+
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover progressTable">
+                    <thead>
+                        <tr>
+                            <th>渠道名称</th>
+                            <th class="algin-r">公司输赢</th>
+                            <th class="algin-r">税收</th>
+                            <th class="algin-r">优惠</th>
+                            <th class="algin-r">人工加扣款</th>
+                            <th class="algin-r">全民代理提现</th>
+                            <th class="algin-r">抢庄牛牛彩金</th>
+                            <th class="algin-r">封锁扣除金币</th>
+                            <th class="algin-r">出款手续费</th>
+                            <th class="algin-r">公司盈亏</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.GroupByResult != null)
+                        {
+                            foreach (var item in Model.GroupByResult)
+                            {
+                                <tr>
+                                    <td>@item.AreaName</td>
+                                    <td class="algin-r">@item.WinLoss.ToCash()</td>
+                                    <td class="algin-r">@item.Tax.ToCash()</td>
+                                    <td class="algin-r">@item.Bonus.ToCash()</td>
+                                    <td class="algin-r">@item.ManualChangeAmount.ToCash()</td>
+                                    <td class="algin-r">@item.AgentWithdrawal.ToCash()</td>
+                                    <td class="algin-r">@item.QZNNBonus.ToCash()</td>
+                                    <td class="algin-r">@item.BlockReduceAmount.ToCash()</td>
+                                    <td class="algin-r">@item.WithdrawalFee.ToCash()</td>
+                                    <td class="algin-r">@item.CompanyNetAmount.ToCash()</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                    <tfoot>
+                        @if (Model.GroupByResult != null)
+                        {
+                            <tr>
+                                <th>全部加总</th>
+                                <th class="algin-r">@(Model.GroupByResult.Sum(x => x.WinLoss).ToCash())</th>
+                                <th class="algin-r">@(Model.GroupByResult.Sum(x => x.Tax).ToCash())</th>
+                                <th class="algin-r">@(Model.GroupByResult.Sum(x => x.Bonus).ToCash())</th>
+                                <th class="algin-r">@(Model.GroupByResult.Sum(x => x.ManualChangeAmount).ToCash())</th>
+                                <th class="algin-r">@(Model.GroupByResult.Sum(x => x.AgentWithdrawal).ToCash())</th>
+                                <th class="algin-r">@(Model.GroupByResult.Sum(x => x.QZNNBonus).ToCash())</th>
+                                <th class="algin-r">@(Model.GroupByResult.Sum(x => x.BlockReduceAmount).ToCash())</th>
+                                <th class="algin-r">@(Model.GroupByResult.Sum(x => x.WithdrawalFee).ToCash())</th>
+                                <th class="algin-r">@(Model.GroupByResult.Sum(x => x.CompanyNetAmount).ToCash())</th>
+                            </tr>
+                        }
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    关闭
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section initScripts{
+    <script>
+        $(function () {
+            var pid = getQueryString("platformid")
+            $("#platformid").children().each(function () {
+                if ($(this).val() == pid) {
+                    $(this).attr("selected", "true");
+                }
+            });
+            var aid = getQueryString("areaID")
+            $("#areaID").children().each(function () {
+                if ($(this).val() == aid) {
+                    $(this).attr("selected", "true");
+                }
+            });
+        })
+    </script>
+}

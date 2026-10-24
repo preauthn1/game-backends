@@ -1,0 +1,89 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+}
+
+<style>
+    .payGateway {
+        display: flex;
+    }
+
+    .gateway_btn {
+        display: flex;
+        align-items: center;
+        padding-left: 2%;
+    }
+</style>
+
+<div class="row" id="pay_paytype">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>第三方金流代码</th>
+                            <th>名稱</th>
+                            <th>交易代码</th>
+                            <th>代付类型</th>
+                            <th>币别</th>
+                            <th>付款类型</th>
+                            <th>最小金额限制</th>
+                            <th>最大金额限制</th>
+                            <th>固定金额列表</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in tableList">
+                            <td>{{item.GWName}}</td>
+                            <td>{{item.DisplayName}}</td>
+                            <td>{{item.TradeCode}}</td>
+                            <td>{{(item.Type==1) ? 'Payin' : 'Payout'}}</td>
+                            <td>{{item.Currencies}}</td>
+                            <td>{{item.BankCode}}</td>
+                            <td>{{(item.AmountFixed == true) ? '-' : item.MinAmount/100}}</td>
+                            <td>{{(item.AmountFixed == true) ? '-' : item.MaxAmount/100}}</td>
+                            <td>{{(item.AmountFixed == false) ? '-' : item.FixedAmount.split(",").map(el => {return el / 100;})}}</td>
+                            
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-offset-5 col-md-7">
+            @Html.Back("/Payment/PayGatewayList")
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+
+            var vApp = new Vue({
+                el: '#pay_paytype',
+                data: {
+                    payinList: [],
+                    payoutList: [],
+                    tableList: {},
+                    cloneTableList: {},
+                    payGatewayList: [],
+                    isShow: false
+                },
+                methods: {
+                    getTableList: function () {
+                        $.get('/payment/GetPayType', { 'targetID': '@ViewBag.TargetID', '_r': Math.random() }, function (data) {
+                            if (data instanceof Object) {
+                                vApp.tableList = data.payment;
+                            }
+                            else {
+                                vApp.tableList = {};
+                            }
+                        });
+                    }
+                }
+            });
+            vApp.getTableList();
+        })
+    </script>
+}

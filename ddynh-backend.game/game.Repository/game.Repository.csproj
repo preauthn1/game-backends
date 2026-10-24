@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://example.invalid/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{763FF625-B0E2-4619-9854-7767E5770FCE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>game.Repository</RootNamespace>
+    <AssemblyName>game.Repository</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\..\using\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="FW.Core.Helper">
+      <HintPath>..\..\using\FW.Core.Helper.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdminSys\AdminLogConfig.cs" />
+    <Compile Include="AdminSys\AdminUserConfig.cs" />
+    <Compile Include="AdminSys\QuickActionConfig.cs" />
+    <Compile Include="AdminSys\RightConfig.cs" />
+    <Compile Include="AdminSys\RoleConfig.cs" />
+    <Compile Include="AdminSys\RoleRightConfig.cs" />
+    <Compile Include="AdminSys\UserRightConfig.cs" />
+    <Compile Include="AdminSys\UserRoleConfig.cs" />
+    <Compile Include="Agent\AgentReportLogConfig.cs" />
+    <Compile Include="Agent\AgentTransferTypeConfig.cs" />
+    <Compile Include="Agent\AgentApplyInfoConfig.cs" />
+    <Compile Include="Agent\AgentUserInfoConfig.cs" />
+    <Compile Include="Area\AreaConfig.cs" />
+    <Compile Include="Area\AreaGameListConfig.cs" />
+    <Compile Include="Area\CompanyConfig.cs" />
+    <Compile Include="Area\PlatformAdminUserConfig.cs" />
+    <Compile Include="Area\PlatformConfig.cs" />
+    <Compile Include="Customer\QuestionHandleRecordsConfig.cs" />
+    <Compile Include="Customer\QuestionListConfig.cs" />
+    <Compile Include="Customer\QuestionSitesConfig.cs" />
+    <Compile Include="Customer\ReplyContentConfig.cs" />
+    <Compile Include="Customer\ReplyTypeConfig.cs" />
+    <Compile Include="Customer\QuestionTypeConfig.cs" />
+    <Compile Include="ForbidUser\ForbidUserConfig.cs" />
+    <Compile Include="ForbidUser\ForbidUserLogConfig.cs" />
+    <Compile Include="Game\RobotServerConfigConfig.cs" />
+    <Compile Include="Game\WinAnnConfigConfig.cs" />
+    <Compile Include="Game\CertificationConfig.cs" />
+    <Compile Include="Game\ForbidChatUserConfig.cs" />
+    <Compile Include="Game\ForbidIPAddressConfig.cs" />
+    <Compile Include="Game\GameConfig.cs" />
+    <Compile Include="Game\GameMessageConfig.cs" />
+    <Compile Include="Game\GameServerConfig.cs" />
+    <Compile Include="Game\GameUserOnLineConfig.cs" />
+    <Compile Include="Game\HallUserOnLineConfig.cs" />
+    <Compile Include="Game\NumAdditionConfig.cs" />
+    <Compile Include="Game\PlazaServerConfig.cs" />
+    <Compile Include="Game\UserGameInfoConfig.cs" />
+    <Compile Include="Message\MessageConfig.cs" />
+    <Compile Include="Message\ReceiveUserConfig.cs" />
+    <Compile Include="Message\SendUserConfig.cs" />
+    <Compile Include="Money\BankConfig.cs" />
+    <Compile Include="Money\BankSourceTypeConfig.cs" />
+    <Compile Include="Money\CashConfig.cs" />
+    <Compile Include="Money\SystemConfigConfig.cs" />
+    <Compile Include="Money\MoneySourceGroupConfig.cs" />
+    <Compile Include="Money\MoneySourceTypeConfig.cs" />
+    <Compile Include="Notify\AttrConfig.cs" />
+    <Compile Include="Pay\CDPayOrderConfig.cs" />
+    <Compile Include="Pay\CDPayTypeConfig.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stat\AgentTransferSourceLogConfig.cs" />
+    <Compile Include="Agent\AgentTransferLogConfig.cs" />
+    <Compile Include="Stat\AreaDataDayConfig.cs" />
+    <Compile Include="Stat\AreaDataMonth_AreaConfig.cs" />
+    <Compile Include="Stat\AreaDataMonthConfig.cs" />
+    <Compile Include="Stat\BankSourceLogConfig.cs" />
+    <Compile Include="Stat\DayMaxGameOnLineUserLogConfig.cs" />
+    <Compile Include="Stat\DayMaxHallOnLineUserLogConfig.cs" />
+    <Compile Include="Stat\DayMaxServerOnLineUserLogConfig.cs" />
+    <Compile Include="Stat\DayMaxTotalGameOnLineLogConfig.cs" />
+    <Compile Include="Stat\GameOnLineRobotLogConfig.cs" />
+    <Compile Include="Stat\GameOnLineUserLogConfig.cs" />
+    <Compile Include="Stat\HallOnLineUserLogConfig.cs" />
+    <Compile Include="Stat\KeepLogConfig.cs" />
+    <Compile Include="Stat\LogonUserLogConfig.cs" />
+    <Compile Include="Stat\MoneySourceLogConfig.cs" />
+    <Compile Include="Stat\RegUserLogConfig.cs" />
+    <Compile Include="Stat\ServerOnLineRobotLogConfig.cs" />
+    <Compile Include="Stat\ServerOnLineUserLogConfig.cs" />
+    <Compile Include="Stat\SumMoneyLogConfig.cs" />
+    <Compile Include="Stat\TotalGameOnLineLogAreaConfig.cs" />
+    <Compile Include="Stat\TotalGameOnLineRobotLogConfig.cs" />
+    <Compile Include="Stat\TotalGameOnLineLogConfig.cs" />
+    <Compile Include="Users\CSOnBoardConfig.cs" />
+    <Compile Include="Users\FocusUserConfig.cs" />
+    <Compile Include="Users\GiveNameConfig.cs" />
+    <Compile Include="Stat\GradeSettingConfig.cs" />
+    <Compile Include="Users\QuestionConfig.cs" />
+    <Compile Include="Users\SavePwdConfig.cs" />
+    <Compile Include="Users\UserInfoChangeLogConfig.cs" />
+    <Compile Include="Users\UserInfoConfig.cs" />
+    <Compile Include="Warning\UserFocusConfig.cs" />
+    <Compile Include="Warning\WarningLogConfig.cs" />
+    <Compile Include="Warning\WarningStatusConfig.cs" />
+    <Compile Include="Warning\WarningTypeConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\game.Entity\game.Entity.csproj">
+      <Project>{44448B04-8148-4324-BA1C-1EFC54F0E1DD}</Project>
+      <Name>game.Entity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

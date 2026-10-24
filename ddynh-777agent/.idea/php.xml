@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/anframework/vendor/aliyuncs/oss-sdk-php" />
+      <path value="$PROJECT_DIR$/anframework/vendor/orx0r/slim3-controller" />
+      <path value="$PROJECT_DIR$/anframework/vendor/twig/twig" />
+      <path value="$PROJECT_DIR$/anframework/vendor/paragonie/random_compat" />
+      <path value="$PROJECT_DIR$/anframework/vendor/aiens/cookie" />
+      <path value="$PROJECT_DIR$/anframework/vendor/PHPExcel/Classes" />
+      <path value="$PROJECT_DIR$/anframework/vendor/nikic/fast-route" />
+      <path value="$PROJECT_DIR$/anframework/vendor/container-interop/container-interop" />
+      <path value="$PROJECT_DIR$/anframework/vendor/slim/php-view" />
+      <path value="$PROJECT_DIR$/anframework/vendor/sybio/image-workshop" />
+      <path value="$PROJECT_DIR$/anframework/vendor/slim/twig-view" />
+      <path value="$PROJECT_DIR$/anframework/vendor/bryanjhv/slim-session" />
+      <path value="$PROJECT_DIR$/anframework/vendor/slim/slim" />
+      <path value="$PROJECT_DIR$/anframework/vendor/slim/csrf" />
+      <path value="$PROJECT_DIR$/anframework/vendor/symfony/css-selector" />
+      <path value="$PROJECT_DIR$/anframework/vendor/symfony/translation" />
+      <path value="$PROJECT_DIR$/anframework/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/anframework/vendor/symfony/http-foundation" />
+      <path value="$PROJECT_DIR$/anframework/vendor/composer" />
+      <path value="$PROJECT_DIR$/anframework/vendor/guzzlehttp/guzzle" />
+      <path value="$PROJECT_DIR$/anframework/vendor/symfony/psr-http-message-bridge" />
+      <path value="$PROJECT_DIR$/anframework/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/anframework/vendor/symfony/dom-crawler" />
+      <path value="$PROJECT_DIR$/anframework/vendor/guzzlehttp/promises" />
+      <path value="$PROJECT_DIR$/anframework/vendor/monolog/monolog" />
+      <path value="$PROJECT_DIR$/anframework/vendor/doctrine/cache" />
+      <path value="$PROJECT_DIR$/anframework/vendor/doctrine/common" />
+      <path value="$PROJECT_DIR$/anframework/vendor/illuminate/container" />
+      <path value="$PROJECT_DIR$/anframework/vendor/doctrine/collections" />
+      <path value="$PROJECT_DIR$/anframework/vendor/illuminate/database" />
+      <path value="$PROJECT_DIR$/anframework/vendor/doctrine/dbal" />
+      <path value="$PROJECT_DIR$/anframework/vendor/illuminate/pagination" />
+      <path value="$PROJECT_DIR$/anframework/vendor/doctrine/annotations" />
+      <path value="$PROJECT_DIR$/anframework/vendor/illuminate/contracts" />
+      <path value="$PROJECT_DIR$/anframework/vendor/doctrine/inflector" />
+      <path value="$PROJECT_DIR$/anframework/vendor/illuminate/support" />
+      <path value="$PROJECT_DIR$/anframework/vendor/pimple/pimple" />
+      <path value="$PROJECT_DIR$/anframework/vendor/doctrine/lexer" />
+      <path value="$PROJECT_DIR$/anframework/vendor/overtrue/socialite" />
+      <path value="$PROJECT_DIR$/anframework/vendor/overtrue/wechat" />
+      <path value="$PROJECT_DIR$/anframework/vendor/nesbot/carbon" />
+      <path value="$PROJECT_DIR$/anframework/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/anframework/vendor/psr/log" />
+    </include_path>
+  </component>
+</project>

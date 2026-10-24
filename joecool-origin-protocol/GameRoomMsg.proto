@@ -1,0 +1,77 @@
+syntax = "proto2";
+
+package netproto;
+
+//登录房间
+message LoginGameRoomInfo {
+    required int32 UserID = 1;   //用户ID
+    required string Cer = 2;     //用户证书
+    required string HDCode = 3;  //设备码
+    required int32 HDType = 4;   //设备类型
+};
+
+//登录房间结果
+message LoginGameRoomRet {
+    required int32 Code = 1;                          //登录结果代码
+    required string Message = 2;                      //提示消息
+    optional LoginGameRoomInfo LoginRequestData = 3;  //登录数据
+    optional UserRoomLogonData UserData = 4;          //用户数据
+    optional RoomInfo RoomInfo = 5;
+};
+
+//用户登录房间数据
+message UserRoomLogonData {
+    required int32 UserID = 1;        //用户ID
+    required int32 UserType = 2;      //用户类型
+    required string NickName = 3;     //昵称
+    required int32 FaceID = 4;        //头像
+    required int32 Sex = 5;           //性别
+    required int64 CashAmount = 6;    //现金数
+    required int32 WinCount = 7;      //赢
+    required int32 LoseCount = 8;     //输
+    required int32 DrawCount = 9;     //平
+    optional string ServerAddr = 10;  //需要重连的房间地址信息
+    optional string GameBuff = 11;
+    required int64 TradeId = 12;         //每次進入遊戲房間會獲取一個唯一的值
+    optional int32 LastWinLose = 13;     //上一次輸贏結果 0輸 1贏
+    required int64 SumCharge = 14;       //充值金額
+    required bool HasBindPay = 15;       //是否綁定支付寶或銀行卡之一
+    required int64 SumConvert = 16;      //總兌換
+    optional int64 ExperienceCash = 17;  //體驗金幣
+    optional string LoginName = 18;      //手機號隱碼
+    optional string AlipayAccount = 19;  //支付寶帳號隱碼
+    optional int64 TimeSeq = 20;         //登入時間, 用於到帳金額判斷
+};
+
+//用户坐下
+message UserSit {
+    required int32 TableNo = 1;
+    required int32 SeatNo = 2;
+};
+
+//游戏版本号信息
+message GameVerInfo {
+    required string AndroidVersion = 1;
+    required string IOSVersion = 2;
+};
+
+//房间信息
+message RoomInfo {
+    required int32 GameID = 1;
+    required string GameName = 2;
+    required string Flag = 3;
+    required int32 BaseScore = 4;
+};
+
+//報名參加活動
+message GameStartMsg {
+    required int32 GameID = 1;
+    required int32 UserID = 2;
+    optional LoginGameRoomInfo LoginRequestData = 3;  //登录数据
+}
+//回傳參加活動結果
+message GameStartRetMsg {
+    required string ErrMsg = 1;
+    required int32 RtnCode = 2;
+    optional LoginGameRoomInfo LoginRequestData = 3;  //登录数据
+}

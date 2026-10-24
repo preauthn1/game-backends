@@ -1,0 +1,69 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+{% autoescape false %}{{formSearch}}{% endautoescape %}
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                <th data-options="{name:'id',align:'center'}">代理ID</th>
+                <th data-options="{name:'name',align:'center'}">代理名称</th>
+                <th data-options="{name:'channel',align:'center'}">渠道</th>
+                <th data-options="{name:'player_id',align:'center'}">玩家ID</th>
+                <th data-options="{name:'level',align:'center'}">等级</th>
+                <th data-options="{name:'min_money',align:'center'}">充值下限</th>
+                <th data-options="{name:'money',align:'center'}">账号金额</th>
+                <th data-options="{name:'transfer',align:'center',items:[{'0':'关闭'},{'1':'<font color=\'green\'>开启</font>'}]}">快速转账</th>
+                <th data-options="{name:'clock',align:'center',items:[{'0':'未打卡'},{'1':'<font color=\'green\'>已打卡</font>'},{'2':'永久'}]}">打卡状态</th>
+                <th data-options="{name:'remark',align:'center'}">备注</th>
+                <th data-options="{name:'created_at',align:'center'}">创建时间</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<script type="text/javascript">
+function clear_login(){
+    var ids = getCustomFields("datagrid-test-filter",'id');
+    if(!ids){
+        BJUI.alertmsg('warn', '请勾选')
+        return;
+    }
+    BJUI.ajax('doajax', {
+        url:"{{agentApiRoute}}/clearlogin_opt",
+        type:'POST',
+        data:{id:ids},
+        loadingmask: true,
+        datagrids:"datagrid-test-filter",
+        confirmMsg:"确定要操作吗?"
+    });
+}
+
+function dialog_PassReset(){
+    var ids = getCustomFields("datagrid-test-filter",'id');
+    if(!ids){
+        BJUI.alertmsg('warn', '请勾选')
+        return;
+    }
+    BJUI.dialog({
+        id:'dialog_PassReset',
+        url:"{{agentPageRoute}}/passreset_opt",
+        data:{id:ids},
+        title:'密码重置',
+    });
+}
+
+function getCustomFields(tableid,fields){
+    var data = $.CurrentNavtab.find("#"+tableid).data('selectedDatas') || [];
+    var fields = fields || '';
+    str = '';
+    if(fields){
+        for(i in data){
+            if(data[i][fields]){
+                str += data[i][fields]+',';
+            }
+        }
+    }else{
+        str = data[0];
+    }
+    return str;
+}
+</script>

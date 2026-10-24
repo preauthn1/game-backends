@@ -1,0 +1,110 @@
+variables:
+  SLACK_TOKEN: [REDACTED]"
+  SLACK_BOT_NAME: "gitlab_ci_機器人"  
+  SLACK_CHANNEL: "backend_jenkins"  
+  SLACK_API_URL: "https://example.invalid/api/chat.postMessage"    
+  JENKINS_URL: "http://0.0.0.0:8080"
+  JENKINS_TOKEN_USER: "111e63c3c2ea9748457d7de03c0ba2dcc2"    
+  JENKINS_TOKEN_JOB: "Terpro_DDYNN_PGS_2019"    
+
+stages:
+  - trigger-jenkins-Dev
+  - trigger-jenkins-UAT
+  - trigger-jenkins-UAT-GamePlayAPI
+  - trigger-jenkins-Production
+  - trigger-jenkins-Production-Payment
+  - trigger-jenkins-Production-GamePlayAPI
+  - send-slack-notify  
+  
+
+#--------------------------------------------------------
+#--------------------------------------------------------
+# 注意事項，Jenkins那邊的工作記得要設定 Trigger builds remotely
+#--------------------------------------------------------
+#--------------------------------------------------------
+
+#觸發jenkins (Dev)
+step-trigger-jenkins-Dev:
+  stage: trigger-jenkins-Dev
+  tags:
+    - dotnet
+  only:
+    - master    
+  script:
+    - STATUS=$(curl -s -o /dev/null -w '%{http_code}' -X POST -u admin:$JENKINS_TOKEN_USER "$JENKINS_URL/job/DD.AdminSys.Build/build?token=[REDACTED]")
+    - echo $STATUS
+    - if [ $STATUS != 201 ]; then exit -1; fi     
+
+#觸發jenkins (UAT)
+step-trigger-jenkins-UAT:
+  stage: trigger-jenkins-UAT
+  tags:
+    - dotnet
+  only:
+    - gitlab_ci_test
+    - UAT    
+  script:
+    - STATUS=$(curl -s -o /dev/null -w '%{http_code}' -X POST -u admin:$JENKINS_TOKEN_USER "$JENKINS_URL/job/DD.AdminSys.UAT/build?token=[REDACTED]")
+    - if [ $STATUS != 201 ]; then exit -1; fi     
+        
+#觸發jenkins (UAT_UAT_GamePlayAPI)
+step-trigger-jenkins-UAT-GamePlayAPI:
+  stage: trigger-jenkins-UAT-GamePlayAPI
+  tags:
+    - dotnet
+  only:
+    - UAT_GamePlayAPI
+  script:
+    - STATUS=$(curl -s -o /dev/null -w '%{http_code}' -X POST -u admin:$JENKINS_TOKEN_USER "$JENKINS_URL/job/DD.API.Gamplay.UAT/build?token=[REDACTED]")
+    - if [ $STATUS != 201 ]; then exit -1; fi       
+        
+#觸發jenkins (Production)
+step-trigger-jenkins-Production:
+  stage: trigger-jenkins-Production
+  tags:
+    - dotnet
+  only:
+    - Production    
+  script:
+    - STATUS=$(curl -s -o /dev/null -w '%{http_code}' -X POST -u admin:$JENKINS_TOKEN_USER "$JENKINS_URL/job/DD.AdminSys.Production/buildWithParameters?token=[REDACTED]")
+    - if [ $STATUS != 201 ]; then exit -1; fi  
+    
+    
+#觸發jenkins (Production_Payment) 支付API
+step-trigger-jenkins-Production-Payment:
+  stage: trigger-jenkins-Production-Payment
+  tags:
+    - dotnet
+  only:
+    - Production_Payment    
+  script:
+    - STATUS=$(curl -s -o /dev/null -w '%{http_code}' -X POST -u admin:$JENKINS_TOKEN_USER "$JENKINS_URL/job/DD.Website.Production/buildWithParameters?token=[REDACTED]")
+    - if [ $STATUS != 201 ]; then exit -1; fi
+        
+#觸發jenkins (Production_Payment) 三方遊戲對接API
+step-trigger-jenkins-Production-GamePlayAPI:
+  stage: trigger-jenkins-Production-GamePlayAPI
+  tags:
+    - dotnet
+  only:
+    - Production_GamePlayAPI    
+  script:
+    - STATUS=$(curl -s -o /dev/null -w '%{http_code}' -X POST -u admin:$JENKINS_TOKEN_USER "$JENKINS_URL/job/DD.API.Gamplay.Production/buildWithParameters?token=[REDACTED]")
+    - if [ $STATUS != 201 ]; then exit -1; fi
+        
+    
+    
+#若中途失敗，發送slack通知
+step-send-slack-notify:
+  stage: send-slack-notify
+  tags:
+    - dotnet
+  except:
+    - master
+  script:
+    - var_msg="pipeline 建置失敗 $CI_PROJECT_URL/pipelines/$CI_PIPELINE_ID ($CI_COMMIT_REF_NAME) " 
+    - curl -H "Content-Type:application/x-www-form-urlencoded" -X POST --data "token=[REDACTED]" "$SLACK_API_URL"
+  when: on_failure
+    
+    
+    

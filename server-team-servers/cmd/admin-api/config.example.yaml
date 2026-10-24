@@ -1,0 +1,41 @@
+server:
+  addr: :80
+
+# Logger Configurations
+logger:
+  level: debug            # panic | fatal | error | warn | info | debug | trace 
+  formatter: text         # text | json
+  reportCaller: true
+  output:
+    - type: stdout        # stdout
+
+auth:
+  admin:
+    users:
+      - username: target
+        password: [REDACTED]
+        allowRooms:
+          - 203000410
+          - 203100410
+          - 203200410
+      - username: admin
+        password: [REDACTED]
+        allowRooms:
+          - 203000410
+          - 203100410
+          - 203200410
+
+  token:
+    [REDACTED] abcdefg
+    expire: 1h
+
+api:
+  schema: https
+  addr: example.invalid
+  cer: 851b-222e5f24024b
+
+grpc:
+  rooms:
+    - game: lhd
+      serverid: 211000410
+      addr: localhost:3100

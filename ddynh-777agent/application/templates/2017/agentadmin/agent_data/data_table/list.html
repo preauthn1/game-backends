@@ -1,0 +1,38 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+<div class="row">
+        <div class="col-sm-12">
+           <div class="bjui-row col-4">
+                <label class="row-label">总计平台销售：</label>
+                <div class="row-input">{{initPageData.total_sale}}</div>
+                <label class="row-label">本页总计平台销售：</label>
+                <div class="row-input" id="total_curpage_sale"></div>
+            </div>
+        </div>
+        <div class="col-sm-12" style="margin-bottom: 10px;">
+            {% autoescape false %}{{formSearch}}{% endautoescape %}
+        </div>
+    </div>
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                {% for v in columnsData %}
+                <th data-options="{{v.dataOptions}}">{{v.title}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+    </table>
+</div>
+<script type="text/javascript">
+$(document).on('bjui.afterInitUI', function(e) {
+    var total_curpage_sale = 0;
+    var allData = $.CurrentNavtab.find('#datagrid-test-filter').data('allData');
+    for (i in allData) {
+        if(parseInt(allData[i].sale)>=0){
+            total_curpage_sale += parseInt(allData[i].sale);
+        }
+    }
+    $("#total_curpage_sale").html(total_curpage_sale);
+});
+</script>

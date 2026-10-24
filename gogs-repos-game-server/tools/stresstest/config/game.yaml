@@ -1,0 +1,8 @@
+GameId: 14
+ServerId: 88
+SiteId: 2
+WorkerCount: 10000
+TfAPI: http://example.invalid/ServerNode/Transfer?data=%s
+Intervals:  500    #間隔500毫秒登入下一個user
+#STAGE: http://example.invalid/ServerNode/Transfer?data=%s
+#QA: http://0.0.0.0:160/ServerNode/Transfer?data=%s

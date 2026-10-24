@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = "二维码URL";
+}
+
+@model Repository.ViewModel.AgentUser
+
+<div class="box box-primary">
+    <!-- /.box-header -->
+    <form action="@Url.Action("AddPlatformInfo", "Admin", new { Area = "Agent" })" class="form-horizontal" method="post">
+        <div class="box-body">
+            <div class="form-group">
+                <label class="col-sm-12">URL</label>
+                <div class="col-sm-12">                  
+                    <input type="url" class="form-control" id="Domain" name="Domain" value="@(ViewBag.Domain)">
+                </div>
+            </div>            
+            <div class="form-group">
+                <label class="col-sm-12">平台</label>
+                <div class="col-sm-12">                        
+                    @Html.DropDownList("PlatformID", null, "---", new { @class = "form-control select2" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-primary btn-block">确认</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section head{
+    <!-- Select2 -->
+    <link href="~/Areas/Agent/Content/plugins/select2/select2.css" rel="stylesheet" />
+}
+@section scripts{
+    <!-- Select2 -->
+    <script src="~/Areas/Agent/Content/plugins/select2/select2.full.js"></script>
+    <!-- Page script -->
+    <script type="text/javascript">
+        var $PlatformID = $("#PlatformID");
+
+        $(function () {
+            $PlatformID.select2(
+            {
+                placeholder: '请选择',
+                allowClear: true
+            }).on('change', function (e) {
+                console.log($(this).val());
+            });
+        })
+    </script>
+}
+

@@ -1,0 +1,17 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+{% autoescape false %}{{formSearch}}{% endautoescape %}
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                <th data-options="{name:'id',align:'center'}">自增ID</th>
+                <th data-options="{name:'agent_id',align:'center'}">代理ID</th>
+                <th data-options="{name:'ip',align:'center'}">登录IP</th>
+                <th data-options="{name:'area',align:'center'}">地区</th>
+                <th data-options="{name:'created_at',align:'center'}">登录时间</th>
+                <th data-options="{name:'remark',align:'center'}">备注</th>
+            </tr>
+        </thead>
+    </table>
+</div>

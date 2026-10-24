@@ -1,0 +1,115 @@
+﻿@using FW.Core.Helper.Enum
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .content {
+        padding: .5%;
+        font-size: 1.2em;
+        font-family: serif;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                <div class="form-group">
+                    <label>标题</label>
+                    <input type="text" class="form-control input-medium" id="title" name="title" placeholder="标题">
+                </div>
+                <div class="form-group">
+                    <label>消息类型</label>
+                    <select class="form-control input-small" id="type" name="type">
+                        <option value="">--不限--</option>
+                        @foreach (game.Entity.Message.MessageType item in Enum.GetValues(typeof(game.Entity.Message.MessageType)))
+                        {
+                            <option value="@item.ToString().ToLower()">@item.GetDisplayName()</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                </div>
+            </form>
+            <div class="content">
+                <table id="message_table" class="display" style="width:100%"></table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+
+        function createTable() {
+            const url = '/Message/GetMessageList'
+            const thead = [{ "sTitle": "创建时间", "mData": "CreateTime", "width": "10%" },
+                            { "sTitle": "所属平台", "mData": "Platform", "width": "8%" },
+                             {
+                                 "sTitle": "用户ID", "mData": "FromUserID", "width": "8%",
+                                 "render": function (data, type, row) {
+                                     if (data) {
+                                         return `<a class="link" target="_blank" href="/UserInfo/Search?userId=${data}&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">${data}</a>`
+                                     } else {
+                                         return '--'
+                                     }
+                                 }
+                             },
+                            { "sTitle": "消息类型", "mData": "Type" },
+                            { "sTitle": "消息编号", "mData": "Id", "className": "text_right", "width": "8%", },
+                            { "sTitle": "标题", "mData": "Title", "width": "20%", },
+                            { "sTitle": "消息内容", "mData": "MsgContent", "width": "35%", },
+                            {
+                                "data": null,
+                                "mRender": function (data, type, full) {
+
+                                    var delete_token = [REDACTED]"DelMsg", "get")`
+                                    var delete_control = ''
+
+                                    if (delete_token === 'True') {
+                                        delete_control = `
+                                                           <div class ="pointer delete-control">
+                                                            <div class ="btn-trash"></div>
+                                                            <span>删除<span>
+                                                           </div>`
+                                    }
+
+                                    return `<div class="control">${delete_control}<div>`
+                                }
+                            }]
+
+            var title = $('#title').val()
+            var type = $('#type').val()
+
+            const data = {
+                title: title,
+                type: type
+            }
+            createDataTable('message', thead, url, data)
+        }
+
+
+        $(function () {
+            fillFormData('form_search');
+            createTable()
+
+            $('#message_table tbody').on('click', '.delete-control', function () {
+                var tr = $(this).closest('tr');
+                var row = dataTable.row(tr);
+                var data = row.data()
+
+                var option = {
+                    isAjax: true,
+                    isReload: false,
+                    callback: function () {
+                        dataTable.ajax.reload(null, false);
+                    }
+                }
+                swDelConfirmUrl(`DelMsg?id=${data.Id}`, '确定要刪除么？', option);
+            })
+        })
+    </script>
+}

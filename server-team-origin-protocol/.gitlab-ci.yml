@@ -1,0 +1,18 @@
+stages:
+  - build-and-copy
+build:
+  stage: build-and-copy
+  image: znly/protoc
+  variables:
+    OUTPUT: $CI_PROJECT_DIR/src
+    DEST_NAME: proto
+  script:
+    - sh ./scripts/build-proto.sh
+  tags:
+    - protobuf
+  artifacts:
+    name: "protobuf"
+    untracked: false
+    expire_in: 1 week
+    paths:
+      - $OUTPUT

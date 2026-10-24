@@ -1,0 +1,157 @@
+syntax = "proto2";
+
+package netproto;
+
+//倍率选择消息
+message ChoseOdds {
+    required int32 ot = 1;    //选择倍率的类型 1 闲家倍率选择 2 庄家倍率选择
+    required int32 Odds = 2;  //玩家选择的倍率索引 0 1 2 3.... 0不抢
+};
+
+//倍率选择相关响应
+message ChoseOddsRet {
+    required int32 Code = 1;    //错误码
+    required string Msg = 2;    //错误描述
+    optional int32 UserId = 3;  //玩家id
+    optional int32 SeatNo = 4;  //座位号
+    optional int32 Ot = 5;      //倍率选择类型 1 闲家倍率选择 2 庄家倍率选择
+    optional int32 Odds = 6;    //玩家选择的倍率索引
+};
+
+//操作相关消息
+message RoleOpt {
+    required int32 Ot = 1;  //操作类型  1 玩家叫牌操作 2 玩家完成操作
+};
+
+//操作相关消息响应
+message RoleOptRet {
+    required int32 Code = 1;    //错误码
+    required string Msg = 2;    //错误描述
+    required int32 UserId = 3;  //玩家id
+    required int32 SeatNo = 4;  //座位号
+    required int32 Ot = 5;      //操作类型 1 玩家叫牌操作 2 玩家完成操作
+};
+
+//广播倍率相关信息
+message QZ21NotifyOdds {
+    repeated int32 Odds = 1;  //倍率信息
+    required int32 Oce = 2;   //倍率类型 1 闲家倍率选择 2 庄家倍率选择
+};
+
+/*
+当前游戏进度
+enum GameStep{
+        QZ21StepBegin	=1;//游戏开始发送抢庄倍率等
+        QZ21StepQiangZhuang=2;//玩家选择抢庄倍率阶段
+        QZ21StepQzAnimotion=3;//播放抢庄动画阶段
+        QZ21StepXJBet=4;//闲家选择倍率阶段
+        QZ21StepXJComplete=5;//闲家叫牌阶段
+        QZ21StepZJComplete = 6;//庄家发牌叫牌阶段
+        QZ21StepShow=7;//比牌阶段
+        QZ21StepSettlement=8;//结算阶段
+        QZ21StepEnd=9;//游戏结束
+};
+*/
+
+//广播超时相关信息
+message QZ21NotifyTimeOutOpt {
+    required int32 TimeOut = 1;  //超时时间
+    required int32 Step = 2;     //当前游戏进度
+};
+//广播玩家倍率选择相关信息
+message QZ21NotifyChoseOdds {
+    required int32 Seat = 1;    //座位号
+    required int32 Odds = 2;    //玩家选择的倍率
+    required int32 UserId = 3;  //玩家id
+    required int32 Ot = 4;      // 1 闲家倍率选择 2 庄家倍率选择
+};
+//广播玩家操作状态
+message QZ21NotifyRoleStatus {
+    required int32 Seat = 1;    //座位号
+    required int32 Roe = 2;     //玩家操作状态 1 玩家叫牌操作 2 玩家完成操作
+    required int32 UserId = 3;  //玩家id
+};
+//牌定义
+message Qz21Card {
+    required int32 Number = 1;  //牌点数
+    required int32 Color = 2;   //花色
+};
+
+message Qz21Js {
+    required int32 UserId = 1;  //用户id
+    required int64 Money = 2;   //用户输赢情况
+}
+
+//亮牌数组
+message QZ21NotifyShowArr {
+    repeated QZ21NotifyShow ShowArr = 1;  //亮牌数组
+};
+
+//亮牌
+message QZ21NotifyShow {
+    required int32 Seat = 1;      //座位号
+    required int32 UserId = 2;    //玩家id
+    required int32 Point = 3;     //点数
+    repeated Qz21Js Js = 4;       //输赢情况
+    repeated Qz21Card Cards = 5;  //牌
+};
+//结算项
+message SettlementItem {
+    required int32 Id = 1;         //玩家id
+    required int32 Seat = 2;       //座位号
+    required string NickName = 3;  //玩家昵称
+    required int32 Point = 4;      //点数
+    required int64 Money = 5;      //金币
+};
+//广播游戏结算信息
+message QZ21NotifySettlement {
+    repeated SettlementItem Sli = 1;  //结算信息
+    required int32 BankerId = 2;      //庄家id
+};
+
+message RobItem {
+    required int32 UserId = 1;  //用户id
+    required int32 Odds = 2;    //玩家选择的倍率
+}
+
+message RobBankerPlayer {
+    repeated RobItem rbs = 1;  //用户之间出现抢庄的信息
+}
+
+//广播庄家信息
+message QZ21NotifyBanker {
+    required int32 Seat = 1;           //庄家座位号
+    required int32 UserId = 2;         //玩家id
+    required int32 Odds = 3;           //庄家选择的倍率
+    optional RobBankerPlayer Rbp = 4;  //抢庄动画信息
+};
+//玩家信息
+message UserInfo {
+    required int32 Seat = 1;       //玩家座位
+    required int32 XjBet = 2;      //闲家倍率选择
+    required int32 ZjBet = 3;      //庄家倍率选择
+    required int32 Point = 4;      //玩家点数
+    repeated Qz21Card Cards = 5;   //玩家手牌
+    required int32 Status = 6;     //玩家状态 1叫牌 2完成
+    required int64 Money = 7;      //本局金币数
+    required int32 UserId = 8;     //玩家id
+    required string NickName = 9;  //玩家昵称
+};
+
+//游戏信息推送
+message QZ21GameInfoPush {
+    repeated UserInfo Ui = 1;         //玩家信息
+    required int32 BankerSeat = 2;    //庄家座位信息
+    required int32 Step = 3;          //游戏进度
+    required int32 TimeOut = 4;       //超时剩余时间
+    required int32 BankerId = 5;      //庄家id
+    repeated int32 ZjOdds = 6;        //庄家倍率配置信息
+    repeated int32 XjOdds = 7;        //闲家倍率配置信息
+    required int32 TotalTimeOut = 8;  //总超时时间
+};
+
+//游戏配置推送
+message QZ21GameDeskCfg {
+    required int32 Difen = 1;    //底分
+    required int32 TimeOut = 2;  //完成一局后的超时时间
+}

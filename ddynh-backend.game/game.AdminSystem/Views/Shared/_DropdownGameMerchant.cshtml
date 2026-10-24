@@ -1,0 +1,27 @@
+﻿@model DropdownPartialSettingViewModel
+
+@{
+    DropdownPartialSettingViewModel myModel = Model;
+    myModel = myModel ?? new DropdownPartialSettingViewModel();
+
+    string name = myModel.DOM_ElementName ?? "gameMerchantID";
+    var listPlatform = DataService.GetGameMerchants();
+}
+
+@if (listPlatform.Count > 0)
+{
+    <select class="form-control input-small" style="width:180px !important;" id="@name" name="@name" @(myModel.IsLockSelect ? "disabled='disabled'" : "")>
+
+        @if (myModel.FirstOption != null)
+        {
+            <option value="@myModel.FirstOption.Value">@myModel.FirstOption.Text</option>
+        }
+
+        @foreach (var p in listPlatform)
+        {
+            <option value="@p.GameMerchantID" @(p.GameMerchantID.ToString() == myModel.DefaultSelectValue ? "selected='selected'" : "") >
+                @p.GameMerchantName
+            </option>
+        }
+    </select>
+}

@@ -1,0 +1,44 @@
+syntax = "proto2";
+
+package netproto;
+
+enum DCHJK_GameMessageClassID {
+    //---------- Server - Client ----------
+    DCHJK_GameInfo = 10001;                   // S2C 牌局資訊，於玩家進入牌局或斷線重連時傳送
+    DCHJK_AllUserInfo = 10002;                // S2C 玩家資訊，當玩家人數或狀態有變動時傳送
+    DCHJK_WaitingStart = 10003;               // S2C 等待遊戲開始，此階段玩家可自由進出遊戲
+    DCHJK_StartBetting = 10004;               // S2C 開始下注
+    DCHJK_Bet = 10005;                        // C2S 玩家下注
+    DCHJK_BetResult = 10006;                  // S2C 玩家下注結果
+    DCHJK_StopBetting = 10007;                // S2C 玩家停止下注
+    DCHJK_StopBettingAnimationOK = 10008;     // C2S 玩家停止下注動畫播放完成
+    DCHJK_WhosTurn = 10009;                   // S2C 現在輪到哪一個玩家動作
+    DCHJK_UserCutCards = 10010;               // S2C 進入切牌階段
+    DCHJK_CutCards = 10011;                   // C2S 玩家切牌
+    DCHJK_CutCardsResult = 10012;             // S2C 玩家切牌結果，切牌時間到時，玩家若尚未切牌，則 server 自動傳送切牌結果
+    DCHJK_CutCardsAnimationOK = 10013;        // C2S 切牌動畫播放完成
+    DCHJK_Deal = 10014;                       // S2C 發牌
+    DCHJK_DealAnimationOK = 10015;            // C2S 發牌動畫播放完成
+    DCHJK_InsuranceOrNot = 10016;             // S2C 詢問玩家是否買保險
+    DCHJK_TakeInsurance = 10017;              // C2S 玩家買保險
+    DCHJK_TakeInsuranceResult = 10018;        // S2C 玩家買保險結果
+    DCHJK_DealerPeeksCards = 10019;           // S2C 莊家瞇牌，若有玩家買保險時傳送
+    DCHJK_DealerPeeksCardsDone = 10020;       // C2S 莊家瞇牌動畫播放完成
+    DCHJK_Settlement_Insurance = 10021;       // S2C 保險結算
+    DCHJK_Settlement_Insurance_OK = 10022;    // C2S 保險結算動畫播放完成，若莊家為 BJ，server 會傳送 WaitingStart，開始新局，否則會傳送 StartPlaying 進入玩家操作階段
+    DCHJK_StartPlaying = 10023;               // S2C 進入玩家操作階段
+    DCHJK_LastGame = 10024;                   // S2C 最後一局
+    DCHJK_UserPlaying = 10025;                // C2S 玩家動作
+    DCHJK_UserPlayingResult = 10026;          // S2C 玩家動作結果
+    DCHJK_Settlement_Dealer = 10027;          // S2C 莊家開牌/結算
+    DCHJK_Settlement_Dealer_OK = 10028;       // C2S 莊家開牌/結算動畫播放完成
+    DCHJK_SelectSeat = 10029;                 // C2S 玩家選座位
+    DCHJK_SelectSeat_OK = 10030;              // S2C 玩家選座位結果
+    DCHJK_KickTip = 10031;                    // S2C 踢人倒數提示
+
+    //---------- SysPool ----------
+    DCHJK_GetSysPoolDynamicSetting = 20001;    // 取得動態水線區間表
+    DCHJK_GetSysPoolDynamicSettingRet = 20002; // 回傳動態水線區間表
+    DCHJK_UpdateSysPoolData = 20003;           // 更新水池資料表
+    DCHJK_UpdateSysPoolDataRet = 20004;        // 更新水池資料表回傳值
+};

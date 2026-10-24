@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "分成比例设定";
+}
+
+@model  List<UserAgent_UserRate>
+
+@Html.Action("Index", "Customer")
+
+<form action="@Url.Action("Edit", "Customer", new { Area = "Agent" })" class="form-horizontal" method="post">
+    <div class="row">
+        @Html.Hidden("id")
+        @foreach (var item in Model)
+        {
+            var index = Model.IndexOf(item);
+            if (index % 2 == 0)
+            {
+                @Html.Raw("<div class='col-md-4'>")
+            }
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@(item.UserLevel).@(((UserLevel)item.UserLevel).ToDescription())</h3>
+                </div>
+                <div class="box-body">
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <p class="margin">一级<code> 上限 @(item.UseSystemStage1) %</code></p>
+                                <input type="number" class="form-control" name="[@index].UseStage1" step="0.01" min="0" max="@(item.UseSystemStage1.ToString())" value="@(item.UseStage1)">
+                            </div>
+                            <div class="col-xs-12">
+                                <p class="margin">二级<code> 上限 @(item.UseSystemStage2) %</code></p>
+                                <input type="number" class="form-control" name="[@index].UseStage2" step="0.01" min="0" max="@(item.UseSystemStage2.ToString())" value="@(item.UseStage2)">
+                            </div>
+                            <div class="col-xs-12">
+                                <p class="margin">三级<code> 上限 @(item.UseSystemStage3) %</code></p>
+                                <input type="number" class="form-control" name="[@index].UseStage3" step="0.01" min="0" max="@(item.UseSystemStage3.ToString())" value="@(item.UseStage3)">
+                            </div>
+                            <input type="hidden" name="[@index].UseSystemStage1" value="@(item.UseSystemStage1)">
+                            <input type="hidden" name="[@index].UseSystemStage2" value="@(item.UseSystemStage2)">
+                            <input type="hidden" name="[@index].UseSystemStage3" value="@(item.UseSystemStage3)">
+                            <input type="hidden" name="[@index].UserID" value="@(item.UserID)">
+                            <input type="hidden" name="[@index].UserLevel" value="@(item.UserLevel)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            if (index % 2 == 1)
+            {
+                @Html.Raw("</div>")
+            }
+        }             
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-block">确认修改</button>
+        </div>
+    </div>   
+</form>
+

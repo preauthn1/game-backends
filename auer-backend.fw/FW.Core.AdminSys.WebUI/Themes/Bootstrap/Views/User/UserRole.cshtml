@@ -1,0 +1,62 @@
+﻿@using FW.Core.AdminSys.WebUI
+@{
+   FW.Core.AdminSys.Provider.Entity.AdminUser user = ViewBag.user;
+    List<FW.Core.AdminSys.Provider.Entity.Role> roles = ViewBag.roles;
+
+    List<int> urs = ViewBag.userRoles;
+}
+<form method="post">
+    <div class="row">
+        <div class="col-md-12 ">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i>修改账号 [ @user.LoginName ] 角色
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="dataTables-wrapper">
+                        <div class="row" style="margin-left: 10px; margin-right: 10px">
+                            @Html.OkWithRight()
+                            @Html.Back(@Url.Action("List"))
+                            <input type="hidden" name="id" value="@user.UserID" />
+                        </div>
+
+                        <div class="table-scrollable">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>角色ID</th>
+                                        <th>角色名</th>
+
+                                    </tr>
+                                </thead>
+                                @foreach (var role in roles)
+                                {
+                                    string checkedSign = "";
+                                    if (urs.Contains(role.RoleID))
+                                    {
+                                        checkedSign = "checked";
+                                    }
+                                    <tr>
+                                        <td><input type="checkbox" name="ck" value="@role.RoleID" @checkedSign /></td>
+                                        <td>@role.RoleID</td>
+                                        <td>@role.RoleName</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </form>
+
+
+

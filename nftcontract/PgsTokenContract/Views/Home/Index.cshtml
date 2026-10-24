@@ -1,0 +1,228 @@
+﻿@using target.Utility;
+
+@{
+    ViewData["Title"] = "區塊鏈";
+}
+
+<div class="text-center">
+
+    <div style="padding: 35px">
+
+
+        <form id="myForm" style="text-align: left;">
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">NFT類型</label>
+
+                <select id="TargetContractAddress" name="TargetContractAddress" class="form-control">
+                    <option value="@(ContractConfig.NFTContract.ContractAddress)">888 (老虎機)</option>
+                    <option value="@(ContractConfig.NFTContractDragonTiger.ContractAddress)">龍虎鬥</option>
+                </select>
+
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputEmail1">NFT名稱</label>
+                <input type="text" class="form-control" name="Name" placeholder="名稱">
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputPassword1">擁有者錢包位址</label>
+                <input type="text" class="form-control" value="0x4042ec3d2f89963671100d384706c9Cb771DE4AF" name="OwnerAddress" placeholder="擁有者錢包位址">
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputPassword1">RTP</label>
+                <input type="text" class="form-control" name="RTP" placeholder="RTP" value="96">
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="saveSubmit()">儲存送出</button>
+
+            <hr />
+
+
+            <div style="margin-top:25px;">
+                <b>區塊練交易結果</b>
+                <div id="resultTxt" class="txtResult" style="display:none;">
+                </div>
+            </div>
+
+        </form>
+
+
+        <form id="myForm" style="text-align: left;">
+
+
+            <div style="margin-top:55px;">
+
+                <a href="https://example.invalid/" target="_blank" style="text-decoration:underline;">
+                    explore連結
+                </a>
+
+                <a href="https://example.invalid/" target="_blank" style="text-decoration: underline;margin-left: 15px;">
+                    explore連結(正式鏈)
+                </a>
+
+                <a href="https://example.invalid/" target="_blank" style="text-decoration:underline;margin-left:15px;">
+                    opensea連結
+                </a>
+
+                <a href="https://example.invalid/" target="_blank" style="text-decoration:underline;margin-left:15px;">
+                    opensea連結(正式鏈)
+                </a>
+
+                <a href="https://example.invalid/gastracker" target="_blank" style="text-decoration:underline;margin-left:15px;">
+                    gastracker
+                </a>
+
+            </div>
+
+            <div style="margin-top:125px;">
+
+                <hr />
+
+                <div style="text-align:right;">
+                    <b>其他資訊</b>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">
+                        ChainID
+                        @if (SettingHelper.Contract_ProviderChainID == 137)
+                        {
+                        <span style="background: #ee4242; padding: 3px 10px; font-size: 18px; border-radius: 10px; font-size: 14px; color: #FFF;">
+                            正式鏈
+                        </span>
+                        }
+                    </label>
+                    <input type="text" class="form-control" value="@(ContractConfig.SlotsLogicContract.ChainID)" disabled="disabled" />
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">投注合約 (老虎機888)</label>
+                    <input type="text" class="form-control" value="@(ContractConfig.SlotsLogicContract.ContractAddress)" disabled="disabled" />
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">投注合約 (龍虎鬥)</label>
+                    <input type="text" class="form-control" value="@(ContractConfig.DragonTigerLogicContract.ContractAddress)" disabled="disabled" />
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">NFT合約 (888)</label>
+                    <input type="text" class="form-control" value="@(ContractConfig.NFTContract.ContractAddress)" disabled="disabled" />
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">NFT合約 (龍虎鬥)</label>
+                    <input type="text" class="form-control" value="@(ContractConfig.NFTContractDragonTiger.ContractAddress)" disabled="disabled" />
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Token合約</label>
+                    <input type="text" class="form-control" value="@(ContractConfig.PgsTokenContract.ContractAddress)" disabled="disabled" />
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Config環境</label>
+                    <input type="text" class="form-control" value="@(RuntimeHelper.EnvironmentName)" disabled="disabled" />
+                </div>
+
+                <div style="text-align:right;margin-top:35px;">
+                    <b>其他資訊(2)</b>
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">預設錢包位址</label>
+                    <input type="text" class="form-control" value="@ContractConfig.DefaultSenderAddress" disabled="disabled" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">是否啟用排程</label>
+                    <input type="text" class="form-control" value="@(SettingHelper.IsCreateRoundJobEnable.ToString())" disabled="disabled" />
+                </div>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+
+</div>
+
+
+@section Scripts{
+
+    <script>
+
+        $(function () {
+            console.log("ready!");
+        });
+
+
+        function saveSubmit() {
+
+            $("#overlay").show();
+
+            var formObject = $("#myForm").serializeArray();
+
+            var jsonBody = {};
+
+            $.map(formObject, function (n, i) {
+                jsonBody[n['name']] = n['value'];
+            });
+
+            $.ajax({
+                url: '/NFT/mint',
+                data: JSON.stringify(jsonBody),
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json;charset=utf-8",
+                success: function (res) {
+
+                    $("#overlay").hide();
+                    console.log(res);
+                    let txt = res.data.result.result;
+                    alert('送出完成! 請參考單號:\n' + txt);
+                    $("#resultTxt").show();
+                    $("#resultTxt").text(txt);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+
+                    console.log(xhr.status);
+                    console.log(xhr.responseJSON);
+
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        alert(xhr.responseJSON.message);
+                        $("#overlay").hide();
+                    }
+
+                }
+            });
+        }
+
+    </script>
+
+}
+
+
+
+<style>
+
+
+    .txtResult 
+    {
+        color: #ae1e1e;
+        background: #ffbebe;
+        border-radius: 5px;
+        padding: 5px 10px;
+    }
+
+    .form-control {
+        max-width: 600px;
+    }
+</style>

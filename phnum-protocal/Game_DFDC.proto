@@ -1,0 +1,27 @@
+syntax = "proto2";
+
+package netproto;
+
+enum DFDC_GameMessageClassID {
+    DFDCSettingID = 10001;              // 设置相关 S2C (DFDC_Setting)
+    DFDCGameStartID = 10002;            // 遊戲開始C2S
+    DFDCGameResult = 10003;             // 遊戲結果S2C (DFDC_GameResultReel)
+    DFDCStateID = 10004;                // 遊戲狀態S2C (DFDC_GameStatus)
+    DFDCFreeOrPayID = 10005;            // 遊戲要付費或免費 (DFDC_FreeOrPayMsg)
+    DFDCGetJackpotPoolID = 10006;       // 取得jackpot pool 水池 (DFDC_GetJackpotMsg)
+    DFDCGetJackpotPoolRetID = 10007;    // 回傳jackpot pool 水池 X
+    DFDCUpdateJackpotPoolID = 10008;    // 更新jackpot pool 水池 (DFDC_GetJackpotRet)
+    DFDCJackpotPoolS2CID = 10009;       // S2C 更新Client Jackpot 值 (DFDC_JackpotPoolS2CMsg)
+    DFDCBetRetID = 10010;               // S2C下注結果 (DFDC_BetRet)
+    DFDCGoldenSymbolID = 10011;         // S2C 黃金符號列表 (DFDC_GoldenSymbolList)
+    DFDCBonusGameID = 10012;            // S2C 進入Bonus Game (DFDC_BonusGame)
+    DFDCBonusGameIconID = 10013;        // C2S 玩家Bonus Game選擇 (DFDC_BonusGameDetail)
+    DFDCSysPoolID = 10014;              // 多福多財水池載入
+    DFDCSysPoolRetID = 10015;           // 多福多財水池結果
+    DFDCJackpotBonusGameID = 10016;     // 多福多財BonusGame紀錄(DFDC_JackpotBonusGameRecord)
+    DFDCJackpotBonusGameRetID = 10017;  // 多福多財讀取BonusGame紀錄(DFDC_JackpotBonusGameRet)
+    DFDCJackpotBonusDetailID = 10018;   // 多福多財接收BonusGame紀錄(DFDC_JackpotBonusGameDetail)
+    DFDCUserRecoverID = 10019;          // S2C 開始遊戲時殘餘資料(DFDC_UserRecover)
+    DFDCLoadGameHistoryID = 10020;      // C2S 查詢遊戲歷程紀錄(DFDC_GetGameLog)
+    DFDCLoadGameHistoryRetID = 10021;   // S2C 查詢歷程紀錄結果(Slot_SendHistoryData)
+};

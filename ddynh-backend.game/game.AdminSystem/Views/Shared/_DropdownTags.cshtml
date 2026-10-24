@@ -1,0 +1,26 @@
+﻿@model DropdownPartialSettingViewModel
+
+@{
+    DropdownPartialSettingViewModel myModel = Model;
+    myModel = myModel ?? new DropdownPartialSettingViewModel();
+
+    string name = myModel.DOM_ElementName ?? "tagID";
+    var list = DataService.GetAllTags();
+}
+
+<select class="form-control" id="@name" name="@name" style="width:180px;" @(Model.IsLockSelect ? "disabled='disabled'" : "")>
+
+    @if (myModel.FirstOption != null)
+    {
+        <option value="@myModel.FirstOption.Value">@myModel.FirstOption.Text</option>
+    }
+
+    @foreach (var a in list)
+    {
+        <option value="@a.TagID" @(a.TagID.ToString() == Model.DefaultSelectValue ? "selected='selected'" : "")>
+            @string.Format("{0}", a.TagName)
+        </option>
+    }
+
+</select>
+

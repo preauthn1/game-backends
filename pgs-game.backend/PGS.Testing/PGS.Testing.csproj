@@ -1,0 +1,52 @@
+﻿<Project Sdk="example.invalid.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="example.invalid.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
+    <PackageReference Include="coverlet.collector" Version="1.0.1" />
+    <PackageReference Include="NSubstitute" Version="4.2.1" />	
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\target.BL\target.BL.csproj" />
+    <ProjectReference Include="..\target.DA\target.DA.csproj" />
+    <ProjectReference Include="..\target.Models\target.Models.csproj" />
+    <ProjectReference Include="..\target.Utility\target.Utility.csproj" />
+    <ProjectReference Include="..\target.Web.Modules\target.Web.Modules.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="SpecialCaseTest\SingleWallet\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="GeoIPCountry.mmdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="GeoLite2-City-2023.mmdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

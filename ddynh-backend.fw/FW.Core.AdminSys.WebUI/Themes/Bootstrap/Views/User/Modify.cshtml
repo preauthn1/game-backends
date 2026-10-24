@@ -1,0 +1,188 @@
+﻿
+@{
+    List<SelectListItem> listArea = ViewBag.UserType;
+}
+@model FW.Core.AdminSys.Provider.Entity.AdminUser
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>修改用户
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="addUserFrom" method="post" class="form-horizontal form-bordered">
+                    <div class="form-body">
+                         <div class="form-group">
+                            <label class="control-label col-md-3">用户名</label>
+                            <div class="col-md-3">
+                                <input type="hidden" name="userID" value="@Model.UserID" />
+                                <input type="text" id="loginName" name="loginName" class="form-control input-medium" placeholder="请输入用户名" value="@Model.LoginName">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">用户显示名称</label>
+                            <div class="col-md-3">
+                                <input type="text" id="displayName" name="displayName" class="form-control input-medium" placeholder="请输入用户显示名称" value="@Model.DisplayName">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">密码</label>
+                            <div class="col-md-3">
+                                <input type="password" id="password" name="password" class="form-control input-medium" placeholder="请输入密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">确认密码</label>
+                            <div class="col-md-3">
+                                <input type="password" id="rePassword" name="rePassword" class="form-control input-medium" placeholder="请再次输入密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">状态</label>
+                            <div class="col-md-6">
+                                @{
+                                    string statusForbidden = "";
+                                    string statusNormal = "";
+
+                                    if (Model.Status == 0)
+                                    {
+                                        statusForbidden = "checked";
+                                    }
+                                    if (Model.Status == 1)
+                                    {
+                                        statusNormal = "checked";
+                                    }
+
+                                }
+                                <div class="radio-list">
+                                    <label class="radio-inline">
+                                        <input type="radio" id="status" name="status" value="0" @statusForbidden />冻结
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" id="status" name="status" value="1" @statusNormal />正常
+                                    </label>
+                                </div>
+
+                                <div style="background: #ffe9d5;color: #e27425;padding:10px;">
+                                    <div>
+                                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                        若冻结帐号，将会一并清除赋予的权限角色与帐号权限
+                                    </div>                                    
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3">创建时间</label>
+                            <div class="col-md-3">
+                                @Model.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3">最后登录时间</label>
+                            <div class="col-md-3">
+                                @Model.LastLogonTime.ToString("yyyy-MM-dd HH:mm")
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">最后登录IP</label>
+                            <div class="col-md-3">
+                                @Model.LastLogonIPAddress
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">金钥</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly style="color:red" id="secretKey" name="secretKey" value="@ViewBag.secretKey">
+                                <button id="btnQRCode" type="button" class="btn" onclick="GetQRCode()" style="">重新产生QRCode</button>
+                                <button id="btnResetQRCode" type="button" class="btn" onclick="ResetQRCode()" style="">重置QRCode</button>
+                                <img id="imgQRCode" src="@ViewBag.QrCodeUrl" class="rounded float-right" alt="" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @Html.OkWithRight()
+                            @Html.Back()
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section initScripts
+{
+    <script>
+        $.validator.addMethod("isRequired", function (value, element) {
+
+            if ($("#password").val() != "" && value == "") {
+                return false;
+            }
+            return true;
+
+        });
+
+        $("#addUserFrom").validate({
+            rules: {
+                loginName: {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 16
+                },
+                password: {
+                   // required: true,
+                    minlength: 6,
+                    maxlength: 16
+                },
+                rePassword: {
+                    isRequired: true,
+                    minlength: 6,
+                    maxlength: 16,
+                    equalTo: "#password"
+                }
+            },
+            messages: {
+                loginName: {
+                    required: "用户名不能为空",
+                    minlength: "用户名长度至少为1位字符",
+                    maxlength: "用户名长度不能超出16位字符"
+                },
+                password: {
+                    required: "密码不能为空",
+                    minlength: "密码长度至少为6位字符",
+                    maxlength: "密码长度不能超出16位字符"
+                },
+                rePassword: {
+                    isRequired: "请再次输入密码",
+                    minlength: "密码长度至少为6位字符",
+                    maxlength: "密码长度不能超出16位字符",
+                    equalTo: "两次输入密码不一致"
+                }
+            }
+        });
+        function ResetQRCode() {
+            $("#secretKey").val(0);
+        }
+        function GetQRCode() {
+            const url = "/User/GetQRCode";
+
+            $.getJSON(url, {}, function (result) {
+                if (result.success) {
+                    $("#imgQRCode").attr('src', result.url);
+                    $("#secretKey").val(result.key);
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,31 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+    <div class="row">
+        <form class="form-inline" action="{{agentApiRoute}}/change" data-toggle="ajaxform" data-options='{"closeCurrent":true,"tabid":"sider-menu-1003","confirmMsg":"确定要更改？"}'>
+            <div class="col-sm-6">
+                <div class="bjui-row col-1">
+                    <label class="row-label">修改密码</label>
+                    <div class="row-input"></div>
+                    <label class="row-label">用户账号：</label>
+                    <div class="row-input">
+                        <input type="text" class="form-control input-nm" name="account" value="" data-rule="required">
+                    </div>
+                    <label class="row-label">原密码：</label>
+                    <div class="row-input">
+                        <input type="text" class="form-control input-nm" name="oldPassword" value="" data-rule="required">
+                    </div>
+                    <label class="row-label">新密码：</label>
+                    <div class="row-input">
+                        <input type="text" class="form-control input-nm" name="newPassword" value="" data-rule="required">
+                    </div>
+                    <label class="row-label">再次输入新密码：</label>
+                    <div class="row-input">
+                        <input type="text" class="form-control input-nm" name="repeatPassword" value="" data-rule="required">
+                    </div>
+                    <div style="text-align: center;">
+                        <button type="submit" class="btn btn-primary">修 改</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

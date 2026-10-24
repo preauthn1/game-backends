@@ -1,0 +1,33 @@
+﻿<div class="modal fade" id="showWinPrizeLog" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal.large modal-size" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">指定开奖操作查询</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="search-group">
+                    <div>时间范围</div>
+                    <div>
+                        <input type="text" class="form-control " style="width:180px" id="beginTimeLog" name="beginTimeLog" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString("yyyy-MM-dd 00:00")">
+                    </div>
+                    <div>
+                        到
+                    </div>
+                    <div>
+                        <input type="text" class="form-control " style="width:180px" id="endTimeLog" value="" name="endTimeLog" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-default" v-on:click="createWinPrizeLogTable()"> 搜 索 </button>
+                    </div>
+                </div>
+                <table id="WinPrizeLog_table" class="display" style="width:100%;"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>

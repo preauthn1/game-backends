@@ -1,0 +1,162 @@
+﻿@model  List<game.Entity.Game.HallVersionInfo>
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>版本管理
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="HallVersionForm" method="post" class="form-horizontal form-bordered">
+                    <input type="hidden" id="AndroidVersion" name="AndroidVersion" />
+                    <input type="hidden" id="IOSVersion" name="IOSVersion" />
+                    <input type="hidden" id="AndroidVersion2" name="AndroidVersion2" />
+                    <input type="hidden" id="IOSVersion2" name="IOSVersion2" />
+                    <div class="form-body">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>广场版本号</th>
+                                    <th>安卓临时版本号</th>
+                                    <th>安卓真实版本号</th>
+                                    <th>iOS 临时版本号</th>
+                                    <th>iOS 真实版本号</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr class="tr-ta">
+                                        <td>@Html.Label(item.PlatformName)</td>
+                                        <td>
+                                            @Html.TextBox("_androidVersion", item.AndroidVersion.Trim(), new
+                                       {
+                                           placeholder = "请输入安卓真实版本号",
+                                           data_anplatformid = item.PlatformID,
+                                           data_anplatformname = item.PlatformName,
+                                           id = "_androidVersion",
+                                           @class = "form-control input-small"
+                                       })
+                                        </td>
+
+                                        <td>
+                                            @Html.TextBox("_androidVersion2", item.AndroidVersion2.Trim(), new
+                                       {
+                                           placeholder = "请输入安卓临时版本号",
+                                           data_anplatformid2 = item.PlatformID,
+                                           data_anplatformname2 = item.PlatformName,
+                                           id = "_androidVersion2",
+                                           @class = "form-control input-small",
+                                           style = "background-color:yellow;"
+                                       })
+                                        </td>
+
+
+                                        <td>
+                                            @Html.TextBox("_IOSVersion", item.IOSVersion.Trim(), new
+                                       {
+                                           placeholder = "请输入iOS真实版本号",
+                                           data_iosplatformid = item.PlatformID,
+                                           data_iosplatformname = item.PlatformName,
+                                           id = "_IOSVersion",
+                                           @class = "form-control input-small"
+                                       })
+                                        </td>
+
+
+                                        <td>
+                                            @Html.TextBox("_IOSVersion2", item.IOSVersion2.Trim(), new
+                                       {
+                                           placeholder = "请输入iOS临时版本号",
+                                           data_iosplatformid2 = item.PlatformID,
+                                           data_iosplatformname2 = item.PlatformName,
+                                           id = "_IOSVersion2",
+                                           @class = "form-control input-small",
+                                           style = "background-color:yellow;"
+                                       })
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-6 col-md-9">
+                            @Html.OkWithRight()
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+            $('#HallVersionForm').submit(function () {
+
+                let errorMsg = ''
+
+                let newan = ''
+                $('[name=_androidVersion]').each(function (i, e) {
+                    if (!verification($(e).val())) {
+                        errorMsg = `安卓版本号内容错误(${$(e).data('anplatformname')})`
+                        return false;
+                    }
+                    const value = $(e).data('anplatformid') + '_' + $(e).val()
+                    newan += newan.length === 0 ? value : `,${value}`;
+                });
+
+                let newan2 = ''
+                $('[name=_androidVersion2]').each(function (i, e) {
+                    if (!verification($(e).val())) {
+                        errorMsg = `安卓临时版本号内容错误(${$(e).data('anplatformname2')})`
+                        return false;
+                    }
+                    const value = $(e).data('anplatformid2') + '_' + $(e).val()
+                    newan2 += newan2.length === 0 ? value : `,${value}`;
+                });
+
+                let newios = '';
+                $('[name=_IOSVersion]').each(function (i, e) {
+                    if (!verification($(e).val())) {
+                        errorMsg = `iOS 版本号内容错误(${$(e).data('iosplatformname')})`
+                        return false;
+                    }
+                    const value = $(e).data('iosplatformid') + '_' + $(e).val()
+                    newios += newios.length === 0 ? value : `,${value}`;
+                })
+
+
+                let newios2 = '';
+                $('[name=_IOSVersion2]').each(function (i, e) {
+                    if (!verification($(e).val())) {
+                        errorMsg = `iOS 临时版本号内容错误(${$(e).data('iosplatformname2')})`
+                        return false;
+                    }
+                    const value = $(e).data('iosplatformid2') + '_' + $(e).val()
+                    newios2 += newios2.length === 0 ? value : `,${value}`;
+                })
+
+                if (errorMsg) {
+                    alert(errorMsg)
+                    return false;
+                }
+
+                $('#AndroidVersion').val(newan);
+                $('#IOSVersion').val(newios);
+
+                $('#AndroidVersion2').val(newan2);
+                $('#IOSVersion2').val(newios2);
+            });
+
+            function verification(str) {
+                return /^[0-9]+\.?[0-9]+\.?[0-9]+\.?[0-9]*$/.test(str)
+            }
+        })
+    </script>
+}

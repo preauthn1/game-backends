@@ -1,0 +1,57 @@
+﻿@model game.Entity.Customer.ReplyType
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>修改快速回复类型
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="form1" method="post" class="form-horizontal form-bordered">
+                    <input type="hidden" value="@Model.Id" name="Id" />
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">类型名称</label>
+                            <div class="col-md-7">
+                                <input type="text" name="TypeName" class="form-control input-medium" placeholder="请输入类型名称" value="@Model.TypeName" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">排序值</label>
+                            <div class="col-md-7">
+                                <input type="number" name="Sort" class="form-control input-medium" placeholder="请输入排序值" value="@Model.Sort" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-5 col-md-7">
+                            @Html.OkWithRight()
+                            @Html.Back()
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+            $("#form1").validate({
+                rules: {
+                    TypeName: {
+                        required: true,
+                        maxlength: 32
+                    },
+                    Sort: {
+                        required: true
+                    }
+                }
+            });
+        })
+    </script>
+}

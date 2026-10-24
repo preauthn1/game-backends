@@ -1,0 +1,140 @@
+﻿@model game.Entity.Agent.AgentUserInfo
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>修改代理
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="modifyAgentForm" method="post" class="form-horizontal form-bordered">
+                    <input type="hidden" name="Id" value="@Model.Id">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">所属平台</label>
+                            <div class="col-md-9">
+                                <span>@Model.Platform.Name</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">游戏账号ID</label>
+                            <div class="col-md-9">
+                                <span>@Model.UserID</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">游戏账号昵称</label>
+                            <div class="col-md-9">
+                                <span>@Model.User.NickName</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">名称</label>
+                            <div class="col-md-9">
+                                <input type="text" id="Name" name="Name" value="@Model.Name" class="form-control input-medium" placeholder="请输入名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">微信号</label>
+                            <div class="col-md-9">
+                                <input type="text" id="WXNo" name="WXNo" value="@Model.WXNo" class="form-control input-medium" placeholder="请输入微信号">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">QQ号</label>
+                            <div class="col-md-9">
+                                <input type="text" id="QQ" name="QQ" value="@Model.QQ" class="form-control input-medium" placeholder="请输入QQ号">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">分组</label>
+                            <div class="col-md-9">
+                                <input type="text" id="GroupName" name="GroupName" value="@Model.GroupName" class="form-control input-medium" placeholder="请输入分组">
+                            </div>
+                        </div>
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">是否显示</label>
+                            <div class="col-md-9">
+                                @{
+                                    string isShowYes = "";
+                                    string isShowNo = "";
+                                    if (Model.IsShow)
+                                    {
+                                        isShowYes = "checked";
+                                    }
+                                    else
+                                    {
+                                        isShowNo = "checked";
+                                    }
+
+                                }
+                                <div class="radio-list">
+                                    <label class="radio-inline">
+                                        <input type="radio" id="IsShow" name="IsShow" value="True" @isShowYes />是
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="IsShow" value="False" @isShowNo />否
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @Html.OkWithRight()
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+@section initScripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $('#modifyAgentForm').validate({
+                rules: {
+                    Name: {
+                        required: true,
+                        maxlength: 16
+                    },
+                    WXNo: {
+                        required: true,
+                        maxlength: 20
+                    },
+                    QQ: {
+                        required: true,
+                        maxlength: 20
+                    },
+                    GroupName: {
+                        required: true,
+                        maxlength: 16
+                    }
+                },
+                messages: {
+                    Name: {
+                        required: '名称不能为空',
+                        maxlength: '名称长度不能超出10位'
+                    },
+                    WXNo: {
+                        required: '微信号不能为空',
+                        maxlength: '微信号长度不能超出20位'
+                    },
+                    QQ: {
+                        required: 'QQ号不能为空',
+                        maxlength: 'QQ号长度不能超出20位'
+                    },
+                    GroupName: {
+                        required: '分组不能为空',
+                        maxlength: '分组长度不能超出16位'
+                    }
+                }
+            });
+        });
+    </script>
+}

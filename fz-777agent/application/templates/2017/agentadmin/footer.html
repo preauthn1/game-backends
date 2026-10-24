@@ -1,0 +1,14 @@
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{{BJUI_PATH}}/other/ie10-viewport-bug-workaround.js"></script>
+    <script src="{{ASSETS_PATH}}/js/date-time/moment.min.js"></script>
+	<script src="{{ASSETS_PATH}}/js/date-time/daterangepicker.min.js"></script>
+	<script src="{{BJUI_PATH}}/js/custom.js?v=20171218"></script>
+</body>
+</html>
+<script type="text/javascript">
+//页面加载完回调函数
+$(document).on('bjui.afterInitUI', function(e) {
+	//var $navtab = $(e.target);
+	dateTimeRangePicker();
+})
+</script>

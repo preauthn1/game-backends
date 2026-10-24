@@ -1,0 +1,66 @@
+game:
+  jjbx:
+    id: 1004
+    name: 金吉報喜
+    group: slot
+    room:
+      - port: 13801
+        serverid: 410
+        proto: jjbx-test
+        configs: 
+          gameserver.dat: |
+            [gameserver]
+            gameid=1004				 	// 游戏ID
+            gamename=金吉報喜  		 	// 游戏名称
+            flag=1				     	// 显示名称,客户端可根据此名称将房间分类显示
+            minplayer=1              	// 游戏最小人数
+            maxplayer=1          		// 游戏最大人数
+            tablecount=20			 	// 桌子数
+            seatcount=1		    		// 椅子数
+            loginmoney=0			 	// 进入游戏最小积分
+            scoremode=3					// 0 即时写分 1退房间写分
+            maxuser=480					// 最大人数
+            taxscale=0					// 抽水比例
+            readywaittime=10			// 举手超时时间,单位秒
+            reghallserverinterval=5		// 注册广场时间间隔,单位秒
+            basescore=100				// 底分
+            deallog=2					// 牌局记录器类型0 不记录 ,1 文本, 2 db
+            mincarrymoney=20            // 下注攜帶金額限制
+            single=0					//单间房是否可直接入场 0:不可 1：可
+            settlescore=10000   		//大於SettleScore分時結算
+            settleround=3  			//大於SettleRound局時結算
+
+            [gamequeue]
+            gamematchwaitmintime=1		// 撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		// 撮合时间间隔范围大值,单位秒
+            againstsameip=0				// 同IP不分配一起
+            againstlastgame=0			// 最后一次游戏过的用户不分配一起
+            gameendaction=0				// 游戏结束后动作,0 无动作 1 准备
+            queuetype=1					// 撮合类型 0 时间随机 1 固定人数
+            queueusercount=1			// 排队人数
+            queuetimeout=2				// 排队人数超时
+          slotconfig.dat: |
+            [slotsetting]
+            endactiontime=1				                            // 结算动画超时
+            betcount=5,10,15,25,50,100        // 一次下注的数量
+            betrate=8,18,38,68,88 //玩家可上調的基本押注數量的倍率
+
+            slotpattern=7                                           // 參考csv SlotPattern類型, 可多個用逗號分
+            releasepattern=8    // 放分
+            bitepattern=11       // 咬分
+            bigwinrule=25,75,150,250   								//client動畫播放階段,以Bet為主
+            bigwinnotify=25                                         // 當下注16, Total=6400(16*400) 得獎超過6400才廣播.
+
+            [description]
+            payline.desc=游戏有243条赔付线，滚轮上由左至右连续出现3个以上的相同符号，即可获得该图标的得分奖励！\n只赔付每条线中赢取最高的奖金，奖金派发按照赔付线从最左至最右转轴的顺序。\n游戏出现故障时，所有赔付和游戏都视为无效。
+            w1.title=百搭
+            w1.desc=百搭可代表任何符号，除了福符号，百搭只出现在第2、3、4转轴。
+            g1.title=福
+            g1.desc=转轴出现6或6个以上福符号时，便可进入选择特别奖
+            g7.title=黄钱币
+            g7.desc=出现在免费游戏与节节高特别奖中，在免费游戏中，可代表任何符号，只出现在第2、3、4转轴
+
+            g8.title=绿钱币
+            g8.desc=出现在节节高特别奖中，累积画面上所有钱币的奖金。
+            b1.title=+1 旋转
+            b1.desc=出现在节节高特别奖中，每次出现可额外获得一次免费游戏。

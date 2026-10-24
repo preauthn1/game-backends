@@ -1,0 +1,102 @@
+syntax = "proto2";
+
+package netproto;
+
+//设置
+message LHJ_Setting {
+    repeated int32 BetCount = 1;               //一次下注的数量
+    repeated LHJ_ReelSetting ReelSetting = 3;  //動態輪軸
+    optional int32 RowCounts = 4;              //顯示結算的行數
+    required int32 TotalPayLine = 5;           //總共多少賠付線
+    repeated int32 BigWinStep = 6;             // BigWin各階段演出條件
+};
+
+//遊戲要付費或免費
+message LHJ_FreeOrPayMsg {
+    required int32 FreeCount = 1;  //免費次數(0.付費)
+};
+
+//輪軸的圖片順序設置
+message LHJ_ReelSetting {
+    required int32 RealID = 1;                 //輪軸編號
+    repeated LHJ_SymbolGroup SymbolGroup = 2;  //該輪軸群組的符號
+    optional int32 RowIndex = 3;               //行數
+};
+
+//該輪軸群組的符號
+message LHJ_SymbolGroup {
+    required int32 SymbolID = 1;  //符號
+    required string SymbolName = 2;  //符號Name(client圖片使用) 符號類型(符號可組合，e.g. w1,w2,w3代表w1+w2+w3的組合，並以w1為主要辨識符號),s = scatter,w1~wN = wild (wj = 普通=> e.g. 女王 ; w2 =
+                                     //特殊=> e.g. 法老),p1~pN 一般的符號,b1~bN bonus的符號
+    required int32 Order = 3;  //群組Order
+};
+
+//游戏輪軸结果
+message LHJ_GameResultReel {
+    repeated int32 SymbolID = 1;
+    repeated LHJ_ReelSetting ReelSetting = 2;    //結果起始號碼
+    repeated LHJ_PayLineGroup PayLineGroup = 3;  //	賠付線
+    optional int32 WinMoney = 4;                 //結算金額
+};
+
+//賠付線結果(派彩線)
+message LHJ_PayLineGroup {
+    required int32 PayLineID = 1;  //賠付線號碼
+    repeated LHJ_PayLineDetail PayLineDetail = 2;
+    optional int32 WinMoney = 3;  //賠付線金額
+};
+
+//連線與得獎符號
+message LHJ_PayLineDetail {
+    required int32 ReelID = 1;  //第幾個輪軸
+    required int32 SymbolID = 2;
+    required bool Blink = 3;       //是否亮符號
+    required bool Line = 4;        //是否畫線
+    optional int32 BetNumber = 5;  //是否乘倍數目
+    optional int64 BetMoney = 6;   //是否乘倍金額
+}
+
+//遊戲狀態
+message LHJ_GameStatus {
+    required int32 State = 1;  //状态
+}
+
+//下注金額
+message LHJ_StartBet {
+    required int32 Money = 1;
+}
+
+//下注回覆
+message LHJ_BetRet {
+    required int32 Ret = 1;  // 0下注成功，-1用户金额不足，-2下注的类型未找到，-3庄家不能下注，-4此类下注已达到上限，-5非下注階段，-6用户金额小於下注限制
+    required int64 Money = 2;  //用户的下注金額
+}
+
+//查詢slot jackpot
+message LHJ_GetJackpotMsg {
+    required int32 ServerID = 1;
+    required int32 FlagID = 2;
+    required int32 TableNo = 3;
+    required int32 JackpotID = 4;
+}
+//回傳slot jackpot
+message LHJ_GetJackpotRet {
+    required int32 ServerID = 1;
+    required int32 FlagID = 2;
+    required int32 TableNo = 3;
+    required int32 JackpotID = 4;
+    required int64 SpinStack = 5;
+    required int64 PoolAmount = 6;
+    required int64 JPAmountOut = 7;
+}
+
+// S2C更新Jackpot值
+message LHJ_JackpotPoolS2CMsg {
+    repeated LHJ_JackpotPoolDetail JackpotPoolID = 1;
+}
+// Jackpot水池內容
+message LHJ_JackpotPoolDetail {
+    required int32 JackpotID = 1;
+    required int64 Syspool = 2;
+    optional string Level = 3;
+}

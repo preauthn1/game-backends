@@ -1,0 +1,76 @@
+﻿using FW.Core.Helper;
+using FW.Core.Helper.Enum;
+using FW.Core.Repository;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace game.Entity.Users
+{
+    
+
+    /// <summary>
+    /// 用户信息变更类型
+    /// </summary>
+    public enum UserInfoChangeType : byte
+    {
+        /// <summary>
+        /// 基本信息
+        /// </summary>
+        [EnumDescription("基本信息")]
+        BaseInfo = 0,
+        /// <summary>
+        /// 用户名
+        /// </summary>
+        [EnumDescription("用户名")]
+        LoginName = 1,
+        /// <summary>
+        /// 昵称
+        /// </summary>
+        [EnumDescription("昵称")]
+        NickName = 2,
+        /// <summary>
+        /// 密码
+        /// </summary>
+        [EnumDescription("密码")]
+        Pwd = 3,
+        /// <summary>
+        /// 性别
+        /// </summary>
+        [EnumDescription("性别")]
+        Sex = 4,
+        /// <summary>
+        /// 证件号码
+        /// </summary>
+        [EnumDescription("证件号码")]
+        Identity = 5,
+        /// <summary>
+        /// 手机
+        /// </summary>
+        [EnumDescription("手机")]
+        Mobile = 6,
+        /// <summary>
+        /// Email
+        /// </summary>
+        [EnumDescription("Email")]
+        Email = 7,
+        /// <summary>
+        /// 密保
+        /// </summary>
+        [EnumDescription("密保")]
+        Question = 8,
+        /// <summary>
+        /// 领取电话
+        /// </summary>
+        [EnumDescription("领取电话")]
+        GiftMobile = 9,
+
+        /// <summary>
+        /// 支付帐号
+        /// </summary>
+        [EnumDescription("支付帐号")]
+        Payment = 10
+    }
+}

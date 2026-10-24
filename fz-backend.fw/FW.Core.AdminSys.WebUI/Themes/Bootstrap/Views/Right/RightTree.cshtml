@@ -1,0 +1,160 @@
+﻿@using FW.Core.AdminSys.WebUI
+@model Tuple<List<FW.Core.AdminSys.Provider.Entity.Right>, List<int>>
+@{
+    List<int> checkedRights = Model.Item2;
+    this.Layout = null;
+}
+<style type="text/css">
+    .ul_tree li {
+        border-top: 1px solid #ddd;
+    }
+
+    .ul_tree li p {
+        margin: auto;
+        height: 35px;
+        line-height: 35px;
+    }
+
+    .ul_tree li p:hover {
+        background: #eaeaea;
+    }
+
+    .odd-even {
+        background: #f9f9f9;
+    }
+
+    .ul_tree > li > ul {
+        display: none;
+    }
+</style>
+<h4>
+   <input type="checkbox" name="chk_all" id="tree_all"/> 全选
+</h4>
+                <ul class="ul_tree">
+                    @foreach (var right in Model.Item1.Where(r => r.ParentID == 0 || r.ParentID == r.RightID).OrderByDescending(r => r.Sort).ToList())
+                    {
+                        string checkedSign = "";
+
+                        if (checkedRights.Contains(right.RightID))
+                        {
+                            checkedSign = "checked=checked";
+                        }
+
+                        <li>
+                            <p class="tree-control">
+                                <input type="checkbox" name="ck" value="@right.RightID" @checkedSign />
+                                <span class="tree_open glyphicon glyphicon-plus tree-control"></span>
+                                <span class="tree-control">@right.RightName</span>
+                            </p>
+                            @{
+                        var childModel = new Tuple<List<FW.Core.AdminSys.Provider.Entity.Right>, int, string, List<int>>(Model.Item1, right.RightID, "　　 　　", Model.Item2);
+                        Html.RenderPartial("FW.Core.AdminSys.WebUI.Themes.Bootstrap.Views.Right.RightTreeView", childModel);
+                            }
+                        </li>
+                    }
+                </ul> 
+
+<script type="text/javascript">
+    $(function () {
+        //奇偶显示
+        background_show();
+        //缩放
+        $(".ul_tree p").click(function (e) {
+            var _this = $(this);
+            var current = $(e.target);
+            if (current.hasClass("tree-control"))
+            {
+                var op = "";
+                if (current.prop("tagName") == "P") {
+                    op = current.find(".tree_open");
+                }
+                else {
+                   op= current.parent().find(".tree_open");
+                }
+                var childrens = _this.siblings("ul");
+                if (childrens.length>0) {
+                    if (childrens.is(":hidden")) {
+                        $(op).removeClass("glyphicon-plus").addClass("glyphicon-minus");
+                        childrens.show(50);
+                    }
+                    else {
+                        childrens.hide(50);
+                        $(op).removeClass("glyphicon-minus").addClass("glyphicon-plus");
+                    }
+                }
+            }
+        });
+        //选择
+        $(".ul_tree li>p>input").click(function () {
+            var _this = $(this);
+            if (_this.prop("checked"))
+            {
+                var checkboxs = _this.closest("li").find("ul>li input:checkbox:not(:checked)");
+                var allcheckbox = $(".ul_tree input[type=checkbox]");
+                var checkedlen = allcheckbox.filter(":checked").length;
+                if (allcheckbox.length == (checkedlen+checkboxs.length))
+                {
+                    checkboxs.push($("#tree_all"));
+                }
+                checkbox_change(checkboxs, true);
+            }
+          else
+            {
+                var checkboxs = _this.closest("li").find("ul>li input:checkbox:checked");
+                checkboxs.push($("#tree_all"));
+                checkbox_change(checkboxs, false);
+                //checkbox_change($("#tree_all"),false);
+            }
+        });
+        //全选
+        $("#tree_all").click(function () {
+            var _this = $(this);
+            if (_this.prop("checked")) {
+               
+               var checkboxs= $(".ul_tree input:not(:checked)");
+               checkbox_change(checkboxs, true);
+            }
+            else
+            {
+                var checkboxs = $(".ul_tree input:checked");
+                checkbox_change(checkboxs,false);
+            }
+
+        });
+        //开始时全选设计
+        startcheckall_set();
+    })
+    //选择时改变checkbox的选项和显示
+    function checkbox_change(checkboxs, ischecked)
+    {
+        checkboxs.each(function () {
+            var _this_ = $(this);
+            _this_.prop("checked", ischecked);
+            if (ischecked) {
+                _this_.parent("span").addClass("checked");
+            }
+            else
+            {
+                _this_.parent("span").removeClass("checked");
+            }
+        });
+    }
+    //奇偶背景显示
+    function background_show() {
+        var p = $(".ul_tree p:even");
+        p.addClass("odd-even");
+    };
+    //页面加载时全选选项设置
+    function startcheckall_set()
+    {
+        var checkboxs = $(".ul_tree input[type=checkbox]");
+        var checkedlen = checkboxs.filter(":checked").length;;
+        if (checkboxs.length ==checkedlen)
+        {
+            checkbox_change($("#tree_all"), true);
+        }
+    }
+</script>
+
+
+

@@ -1,0 +1,41 @@
+syntax = "proto2";
+
+package netproto;
+
+message Http_Result {
+    required bool result = 1;     //结果
+    required string message = 2;  //返回结果信息
+};
+
+message Http_UserList {
+    repeated Http_UserInfo UserInfo = 1;   //用戶信息
+}
+
+message Http_UserInfo {
+    required int32 UserID = 1;        //用户ID
+    required int32 UserType = 2;      //用户类型
+    required string NickName = 3;     //昵称
+    required int32 FaceID = 4;        //头像
+    required int32 Sex = 5;           //性别
+    required int64 CashAmount = 6;    //现金数
+    required string GameBuff = 7;     //單控參數
+    required Http_RTPData UserRTPData = 8; //RTP數據
+}
+
+//RTP數據
+message Http_RTPData {
+    required Http_RTPDataPackage AllGame = 1; //全部遊戲
+    required Http_RTPDataPackage Game = 2; //單個遊戲
+}
+
+message Http_RTPDataPackage {
+    required Http_RTPDataPackageDetail Total = 1; //總RTP
+    required Http_RTPDataPackageDetail LastThirty = 2; //30日內RTP
+    required Http_RTPDataPackageDetail LastSeven = 3; //7日內RTP
+    required Http_RTPDataPackageDetail Today = 4; //當日RTP
+}
+
+message Http_RTPDataPackageDetail {
+    required int64 BetAmount = 1; //有效投注額
+    required int64 PayAmount = 2; //返還金額
+}

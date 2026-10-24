@@ -1,0 +1,344 @@
+﻿{
+  "name": "Game",
+  "gameListIcon": [
+    {
+      "GameID": 15,
+      "Image": "/Content/GameIcon/Sichuan.jpg"
+    },
+    {
+      "GameID": 13,
+      "Image": "/Content/GameIcon/BJL.jpg"
+    },
+    {
+      "GameID": 14,
+      "Image": "/Content/GameIcon/BY.jpg"
+    },
+    {
+      "GameID": 21,
+      "Image": "/Content/GameIcon/HHNN.jpg"
+    },
+    {
+      "GameID": 20,
+      "Image": "/Content/GameIcon/HHDZ.jpg"
+    },
+    {
+      "GameID": 19,
+      "Image": "/Content/GameIcon/BRNN.jpg"
+    },
+    {
+      "GameID": 11,
+      "Image": "/Content/GameIcon/LHD.jpg"
+    },
+    {
+      "GameID": 9,
+      "Image": "/Content/GameIcon/SGJ.jpg"
+    },
+    {
+      "GameID": 3,
+      "Image": "/Content/GameIcon/ZJH.jpg"
+    },
+    {
+      "GameID": 2,
+      "Image": "/Content/GameIcon/QZNN.jpg"
+    },
+    {
+      "GameID": 1,
+      "Image": "/Content/GameIcon/DDZ.jpg"
+    }
+  ],
+  "AreaJsonSetting": [
+    {
+      "type": "string",
+      "name": "大廳樣版",
+      "key": "Template",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "预设",
+          "value": "0"
+        },
+        {
+          "name": "UI_4_1",
+          "value": "UI_4_1"
+        },
+        {
+          "name": "UI_4_2",
+          "value": "UI_4_2"
+        },
+        {
+          "name": "UI_4_3",
+          "value": "UI_4_3"
+        },
+        {
+          "name": "UI_4_4",
+          "value": "UI_4_4"
+        },
+        {
+          "name": "UI_6_1",
+          "value": "UI_6_1"
+        },
+        {
+          "name": "UI_7_1",
+          "value": "UI_7_1"
+        }
+      ]
+    },
+    {
+      "type": "string",
+      "name": "BundleID",
+      "key": "BundleID",
+      "model": "Info",
+      "placeholder": "请输入BundleID名称",
+      "input": "text"
+    },
+    {
+      "type": "string",
+      "name": "AppName",
+      "key": "AppName",
+      "model": "Info",
+      "placeholder": "请输入AppName名称",
+      "input": "text"
+    },
+
+    {
+      "type": "string",
+      "name": "AppleID",
+      "key": "AppleID",
+      "model": "Info",
+      "placeholder": "请输入AppleID名称",
+      "input": "text"
+    },
+
+    {
+      "type": "number",
+      "name": "伺服器選項",
+      "key": "ServerOption",
+      "model": "Info",
+      "placeholder": "请输入伺服器選項",
+      "input": "number"
+    },
+
+    {
+      "type": "number",
+      "name": "APP識別ID",
+      "key": "StaticSiteID",
+      "model": "Info",
+      "placeholder": "请输入StaticSiteID",
+      "input": "number"
+    },
+
+    {
+      "type": "int",
+      "name": "是否顯示全民代理",
+      "key": "Agent",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "关闭",
+          "value": 0
+        },
+        {
+          "name": "开启",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "type": "int",
+      "name": "是否显示兑换",
+      "key": "FlagExchage",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "关闭",
+          "value": 0
+        },
+
+        {
+          "name": "开启",
+          "value": 1
+        }
+      ]
+    },
+
+    {
+      "type": "int",
+      "name": "兑换文字类型",
+      "key": "ExchangeFontType",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "兑换",
+          "value": 0
+        },
+
+        {
+          "name": "福利",
+          "value": 1
+        },
+
+        {
+          "name": "清算",
+          "value": 2
+        },
+
+        {
+          "name": "提現",
+          "value": 3
+        }
+      ]
+    },
+
+    {
+      "type": "string",
+      "name": "久聊ID",
+      "key": "JiuLiaoId",
+      "model": "JiuLiao",
+      "placeholder": "请输入久聊ID",
+      "input": "text"
+    },
+    {
+      "type": "string",
+      "name": "久聊密鑰",
+      "key": "JiuLiaoSecrety",
+      "model": "JiuLiao",
+      "placeholder": "请输入久聊密鑰",
+      "input": "text"
+    },
+    {
+      "type": "string",
+      "name": "久聊APP顯示名稱",
+      "key": "JiuLiaoName",
+      "model": "JiuLiao",
+      "placeholder": "请输入久聊ID",
+      "input": "text"
+    },
+    {
+      "type": "string",
+      "name": "下載網址",
+      "key": "DownloadUrl",
+      "model": "JiuLiao",
+      "placeholder": "请输入下載網址",
+      "input": "text"
+    },
+    {
+      "type": "boolean",
+      "name": "界面控制标识",
+      "input": "checkboxlist",
+      "list": [
+        {
+          "name": "显示在线充值",
+          "key": "UIFlagPay"
+        },
+        {
+          "name": "显示代理充值",
+          "key": "UIFlagAgent"
+        },
+        {
+          "name": "显示代理招商",
+          "key": "UIFlagApplyAgent"
+        },
+        {
+          "name": "显示九聊",
+          "key": "UIFlagJiuLiao"
+        },
+        {
+          "name": "显示闪付",
+          "key": "UIFlagShanFu"
+        }
+      ]
+    },
+    {
+      "type": "int",
+      "name": "是否顯示新代理",
+      "key": "Club2Agent",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "关闭",
+          "value": 0
+        },
+        {
+          "name": "开启",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "type": "boolean",
+      "name": "新代理模式控制",
+      "input": "checkboxlist",
+      "list": [
+        {
+          "name": "抽水",
+          "key": "UIClub2AgentMode1"
+        },
+        {
+          "name": "流水",
+          "key": "UIClub2AgentMode2"
+        },
+        {
+          "name": "裂变",
+          "key": "UIClub2AgentMode3"
+        },
+        {
+          "name": "净利润",
+          "key": "UIClub2AgentMode4"
+        },
+        {
+          "name": "无限极",
+          "key": "UIClub2AgentMode5"
+        },
+        {
+          "name": "礼码",
+          "key": "UIClub2AgentMode6"
+        }
+      ]
+    },
+    {
+      "type": "int",
+      "name": "是否显示彩金池",
+      "key": "ShowCaiJinchi",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "关闭",
+          "value": 0
+        },
+        {
+          "name": "开启",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "type": "boolean",
+      "name": "功能條件控制 (打勾代表or)",
+      "input": "checkboxlist",
+      "list": [
+        {
+          "name": "兌換",
+          "key": "ConvertAndOr"
+        },
+        {
+          "name": "顯示所有遊戲",
+          "key": "AllGameAndOr"
+        },
+        {
+          "name": "VIP代理充值",
+          "key": "VIPAgentAndOr"
+        },
+        {
+          "name": "顯示客服",
+          "key": "CSAndOr"
+        }
+      ]
+    }	
+  ]
+}

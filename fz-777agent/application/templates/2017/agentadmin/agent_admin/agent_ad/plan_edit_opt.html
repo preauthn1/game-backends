@@ -1,0 +1,43 @@
+<style type="text/css">
+    .bjui-row{padding: 0;}
+</style>
+<div class="bjui-pageContent">
+    <form action="{{agentApiRoute}}" class="datagrid-edit-form" data-toggle="ajaxform" data-data-type="jsonp" data-options="{closeCurrent:true,tabid:'sider-menu-4005'}">
+        <div class="row">
+            {% for k,plan in params.agentPlans %}
+            <div class="col-sm-3">
+                <div class="bjui-row">
+                    <h4 class="text-center">方 案 {{plan.id}}</h4>
+                    <input type="hidden" name="plans[{{k+1}}][id]" value="{{plan.id}}">
+                    <label class="row-label">总充值≥</label>
+                    <div class="row-input required">
+                        <input type="Number" class="form-control" name="plans[{{k+1}}][total_recharge]" value="{{plan.total_recharge}}" data-rule="required" {% if plan.id==1 %}disabled="disabled"{%endif%}>
+                    </div>
+                    <!--<label class="row-label">单次充值/转入</label>
+                    <div class="row-input required">
+                        <input type="Number" class="form-control" name="plans[{{k+1}}][single_recharge]" value="{{plan.single_recharge}}" data-rule="required" {% if plan.id==1 %}disabled="disabled"{%endif%}>
+                    </div>-->
+                    <label class="row-label">总转入≥</label>
+                    <div class="row-input required">
+                        <input type="Number" class="form-control" name="plans[{{k+1}}][total_agent_recharge]" value="{{plan.total_agent_recharge}}" data-rule="required" {% if plan.id==1 %}disabled="disabled"{%endif%}>
+                    </div>
+                    <label class="row-label">总抽水≥</label>
+                    <div class="row-input required">
+                        <input type="Number" class="form-control" name="plans[{{k+1}}][total_pump]" value="{{plan.total_pump}}" data-rule="required" {% if plan.id==1 %}disabled="disabled"{%endif%}>
+                    </div>
+                    <label class="row-label">优先显示的代理</label>
+                     <div class="row-input">
+                        <input type="text" class="form-control" name="plans[{{k+1}}][agents]" value="{{plan.agents}}" data-rule="required">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </form>
+</div>
+<div class="bjui-pageFooter">
+    <ul>
+        <li><button type="button" class="btn-close" data-icon="close">取消</button></li>
+        <li><button type="submit" class="btn-default" data-icon="save">保存</button></li>
+    </ul>
+</div>

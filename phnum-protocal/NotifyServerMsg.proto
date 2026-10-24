@@ -1,0 +1,86 @@
+syntax = "proto2";
+
+package netproto;
+
+message NotifyServerRegInfo {
+    required int32 ServerID = 1;         //服务器ID
+    optional int32 GameID = 2;           //游戏ID
+    required int32 ServerType = 3;       //服务器类型
+    optional int32 HostAndBackup = 4;    // 0正式 2備援
+    optional string GameServerAddr = 5;  //遊戲ip
+    optional string FlagID = 6;          //場次
+};
+
+message AnnInfo {
+    required int32 ID = 1;
+    required int32 PlatformID = 2;
+    required string MsgContent = 3;
+};
+
+message AnnList {
+    repeated AnnInfo Ann = 1;
+};
+message AttrChange {
+    required int32 UserID = 1;   //用户ID
+    required int32 TypeID = 2;   //属性类型 0 金币变化 1 新邮件 2充值到账 3充值金额配置变化 4客服未讀訊息更動
+    optional int64 Param = 3;    //当类型为0，2时为金币变化数量,其它时无用
+    optional string SParam = 4;  //当类型为3时，由平台号与配置组成 1_xxx 1为平台ID,xxx为充值金额配置信息
+};
+message AttrChangeList {
+    repeated AttrChange Attrs = 1;
+};
+message ServerStop {
+    required int32 Type = 1;
+    required int32 Status = 2;
+    optional int32 GameID = 3;
+    optional int32 ServerID = 4;
+    required string Message = 5;
+};
+message ServerStopWhiteIPList {
+    repeated string IP = 1;
+};
+message HostAndBackUp {
+    required HostInfo Master = 1;
+    required HostInfo Slave = 2;
+};
+
+message HostInfo {
+    required int32 GameID = 1;
+    required int32 ServerID = 2;
+    optional string GameServerAddr = 3;
+};
+
+message PayOrderList {
+    required int32 ServerID = 1;
+    repeated PayOrderInfo PayOrderList = 2;
+}
+
+message PayOrderInfo {
+    required int32 UserID = 2;
+    required int64 Amount = 3;
+    required int64 TimeSeq = 4;
+}
+
+message HallUserList {
+    required int32 ServerID = 1;
+    repeated int32 UserIDList = 2;
+}
+
+message UserNotifyList {
+    required int32 ServerID = 1;
+    repeated UserNotifyInfo InfoList = 2;
+}
+
+message UserNotifyInfo {
+    required int64 Idx = 1;
+    required int32 UserID = 2;
+    required int32 Type = 3;
+    required string Message = 4;
+    required string CreateTime = 5;
+    required int64 TimeSeq = 6;
+}
+
+message UpdateUserNotifyIdx {  //大廳用
+    required int32 UserID = 1;
+    required int64 Idx = 2;
+}

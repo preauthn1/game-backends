@@ -1,0 +1,77 @@
+syntax = "proto2";
+
+package netproto;
+
+import "GameMsg.proto";
+
+message SRNN_GameStep{
+	required int32 Step=1;
+};
+message SRNN_QiangZhuang{
+	required int32 Times=1;
+};
+
+message SRNN_ConfirmZhuang{
+	optional int32 ZhuangUserID=1;
+	optional int32 Times=2;
+	repeated SRNN_UserBet UserBets=3;
+};
+message SRNN_UserBet{
+	required int32 UserID=1;
+	required int32 Times=2;
+	required bool SystemSet=3;
+};
+message SRNN_XianJiaBetTimes{
+	required int32 Times=1;
+};
+message SRNN_NotifyXianJiaBetTimes{
+	repeated SRNN_UserBet UserBets = 1;
+};
+message SRNN_LastPokerCard{
+	required PokerCard Card=1;
+};
+message SRNN_UserCardGroup{
+	repeated PokerCard CardsThree=1;
+	repeated PokerCard CardsTwo=2;
+};
+message SRNN_GameRet{
+	required SRNN_UserRet ZhuangRet=1;
+	repeated SRNN_UserRet UserRet=2;
+};
+
+message SRNN_UserRet{
+	required GameUser User=1;
+	required int64 WinLose=2;
+	required int32 NiuNiuRet=3;
+	required int32 NiuNiuRetNumber=4;
+	required int32 NiuNiuBetTimes=5;
+	repeated PokerCard CardGroup=6;
+};
+message SRNN_GameSetting{
+	repeated int32 ZhuangBetTimes=1;
+	repeated int32 XianBetTimes=2;
+	required int32 QiangZhuangTimeout=3;
+	required int32 XianBetTimeout=4;
+	required int32 CardGroupTimeout=5;
+	required int32 BaseScore=6;
+	required int32 TableNo=7;
+	required int32 GameID=8;
+	required int32 ReadyTimeout=9;
+};
+message SRNN_GameScene{
+	required int32 GameStep=1;
+	optional UserPoker UserPoker=2;
+	optional SRNN_ConfirmZhuang ZhuangInfo=3;
+	optional SRNN_NotifyXianJiaBetTimes XianInfo=4;
+	optional int32 ElapsedSeconds = 5;
+	optional SRNN_GameRet GameRet=6;
+	repeated int32 FinishedGroupUsers = 7;
+	optional SRNN_UserBetInfo UserBetInfo=8;
+};
+message SRNN_NotifyUserGroupFinish{
+	optional int32 UserID=1;
+};
+message SRNN_UserBetInfo{
+	repeated int32 ZhuangBetTimes=1;
+	repeated int32 XianBetTimes=2;
+};

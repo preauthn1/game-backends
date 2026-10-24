@@ -1,0 +1,244 @@
+syntax = "proto2";
+
+package netproto;
+
+import "GameMsg.proto";
+
+//下注设置
+message CD21_Setting {
+    repeated int32 BetCount = 1;       //一次下注的数量
+    required int32 BetMoney = 2;       //一次下注的钱
+    required int64 BetMoneyLimit = 3;  //下注上限
+};
+
+//状态消息
+message CD21_Sate {
+    required int32 State = 1;  //状态
+    required int32 Time = 2;   //此状态的剩余时间
+};
+
+//用户断线重连下注消息
+message CD21_UserBetInfo {
+    required int64 UserMoney = 1;
+    repeated CD21_BroadCastBet BetInfo = 2;
+};
+
+//广播用户下注的数组
+message CD21_BroadCastBetArr {
+    required int32 UserID = 1;
+    repeated CD21_BroadCastBet BroadCastBetArr = 2;
+};
+
+//广播用户下注内容数据结构
+message CD21_BroadCastBet {
+    required int32 Type = 1;
+    required int64 Money = 2;
+};
+
+//用户下注数组
+message CD21_BetArr {
+    repeated CD21_Bet BetArr = 1;
+};
+
+//用户下注数据结构
+message CD21_Bet {
+    required int32 BetType = 1;
+    required int32 Count = 2;
+};
+
+// 21點下注的结果
+message CD21_BetRet {
+    required int32 Ret = 1;  // 0下注成功，-1用户金额不足，-2下注的类型未找到，-3庄家不能下注，-4此类下注已达到上限，-5不可同时下注龙与虎，-6用户金额小於下注限制
+    required int64 Money = 2;      //用户的钱，下注以后的金额。
+    optional int32 Type = 3;       //下注超过限制的下注类型
+    repeated CD21_Bet BetArr = 4;  //用户下注数据
+}
+
+// 21點發牌
+message CD21_Fapai {
+    repeated CD21_cardContent Content = 1;  //用户下注数据
+    required int32 LastTurn = 2;            //是否最後一局 0沒有紅牌 1~4第幾張發紅牌
+}
+
+// 21點發牌
+message CD21_cardContent {
+    required int32 SitNo = 1;         //座位的編號
+    repeated PokerCard SitPoker = 2;  //座位上的撲克牌
+    required int32 CardNumber = 3;    //牌點總合
+}
+
+// 21點玩家投降/保險
+message CD21_UserCheck {
+    required bool surrender = 1;  //投降
+    required bool insurence = 2;  //保險
+    required bool cancel = 3;     //取消
+}
+
+// 21點玩家可操作行為
+message CD21_UserInfo {
+    required int32 SitNo = 1;    //座位號
+    required bool hit = 2;       //要牌
+    required bool stand = 3;     //停牌
+    required bool split = 4;     //分牌
+    required bool double = 5;    //加倍
+    required bool bust = 6;      //爆牌
+    required int32 OptTime = 7;  //操作時間
+};
+
+//游戏用户赢钱结果
+message CD21_GameResultUserMoney {
+    repeated CD21_GameSettlement ResultUserMoney = 1;  //贏多少錢
+};
+
+//游戏用户切牌信息
+message CD21_BroadCastCutpaiID {
+    required int32 SitNo = 1;  //哪個座位號切牌
+};
+
+//廣播游戏用户切牌信息
+message CD21_BroadCastCutpaiRetID {
+    required int32 SitNo = 1;  //哪個座位號切牌
+    required int64 Place = 2;  //切哪個位置
+};
+
+//游戏用户底注信息
+message CD21_UserBetDiZhuID {
+    required int32 SitNo = 1;  //座位號
+    required int64 Money = 2;  //底注金額
+};
+
+//玩家遊戲結算金額
+message CD21_GameSettlement {
+    required int32 SitNo = 1;          //座位號
+    required int64 TotalWin = 2;       //贏多少錢
+    repeated CD21_WinBlock Block = 3;  //哪些區塊贏錢，>6為玩家分牌區域
+};
+
+//玩家贏錢區域
+message CD21_WinBlock {
+    required int64 SelfWin = 1;  //贏多少錢
+    required int32 Block = 2;    //哪些區塊贏錢
+    required bool NoWin = 3;     //是否平手
+}
+
+// 21點發牌
+message CD21_Yaopai {
+    required int32 SitNo = 1;         //座位的編號
+    repeated PokerCard SitPoker = 2;  //發下的撲克牌
+    required bool LastTurn = 3;       //是否最後一局
+    required bool Double = 4;         //玩家是否加倍
+    required int32 CardTotal = 5;     //牌點總和
+}
+
+// 21點莊家翻牌
+message CD21_FanPai {
+    repeated PokerCard SitPoker = 1;  //發下的撲克牌
+    required int32 CardTotal = 2;     //牌點總和
+}
+
+// 21點操作時間
+message CD21_WaitOptSeat {
+    required int32 SitNo = 1;    //座位的編號
+    required int32 OptTime = 2;  //操作時間
+}
+
+// 21點動作座位
+message CD21_SitNo {
+    required int32 SitNo = 1;  //座位的編號
+}
+
+//用户断线重连数据结构
+message CD21_UserInfoArr {
+    required int32 CurrOptSeatno = 1;
+    required int32 OptTime = 2;    //剩餘時間
+    required int32 TotalTime = 3;  //完整時間
+};
+
+//用户分牌後的牌結構
+message CD21_SplitCard {
+    required int32 SitNo = 1;              //座位的編號
+    repeated PokerCard SitPoker = 2;       //發下的撲克牌
+    required int32 SplitSitNo = 3;         //分牌的座位的編號
+    repeated PokerCard SplitSitPoker = 4;  //分牌發下的撲克牌
+    required int32 CardTotal = 5;          //牌點總和
+    required int32 SplitCardTotal = 6;     //分牌後點總和
+}
+
+//莊家要牌廣播
+message CD21_ZhuangYaoPai {
+    required int32 SitNo = 1;         //座位的編號
+    repeated PokerCard SitPoker = 2;  //發下的撲克牌
+    required int32 CardTotal = 3;     //牌點總和
+}
+
+//斷線重連下注場景
+message CD21_RecoverScene {
+    required int32 UserID = 1;
+    repeated CD21_RecoverBetInfo RecoverBetArr = 2;
+}
+
+//其他玩家下注內容
+message CD21_RecoverBetInfo {
+    required int32 Type = 1;
+    required int64 Money = 2;
+}
+
+//广播用户下注的数组
+message CD21_BroadCastSpecialBet {
+    required int32 UserID = 1;
+    required int32 Type = 2;
+    required int64 Money = 3;
+};
+
+//准备时间
+message CD21_ReadyTime {
+    required int32 ReadyTime = 1;
+};
+
+//玩家斷線重連的牌
+message CD21_UserPokerRecover {
+    repeated CD21_PokerRecover PokerRecover = 1;
+}
+
+//玩家的牌
+message CD21_PokerRecover {
+    required int32 SitNo = 1;
+    repeated PokerCard SitPoker = 2;
+    required int32 CardTotal = 3;
+    required bool double = 4;
+};
+
+//玩家斷線重連後的金額
+message CD21_WinLoseRecover {
+    required int32 UserId = 1;
+    repeated CD21_WinLoseDetail WinLoseBlock = 2;
+    required int64 WinLose = 3;
+};
+
+//玩家斷線重連後的金額
+message CD21_WinLoseDetail {
+    required int64 SelfWin = 1;  //贏多少錢
+    required int32 Block = 2;    //哪些區塊贏錢
+};
+
+//玩家觀戰資訊
+message CD21_WatchData {
+    repeated CD21_WatchDetail WatchDetail = 1;
+};
+
+//玩家觀戰資訊
+message CD21_WatchDetail {
+    required int32 UserID = 1;  //哪個玩家
+    required bool Watch = 2;    //是否觀戰
+};
+
+//廣播下注结果
+message CD21_GetAllUserBetList {
+    repeated CD21_GetAllUserBet GetAllUserBet = 1;  //玩家已下注多少金額 S2C
+}
+
+//廣播下注结果
+message CD21_GetAllUserBet {
+    required int32 UserID = 1;    //哪個玩家
+    required int64 BetMoney = 2;  //下注多少錢
+}

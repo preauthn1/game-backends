@@ -1,0 +1,288 @@
+﻿@model UserInfoModel
+
+<h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">用户详情</h4>
+
+<div class="row show-grid">
+    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <strong><img style="height:64px;" src="/Content/HeadIcon/sprite_@(Model.UserInfo.FaceID).png"></strong>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">        
+        @if (Model.UserInfo.AgentApplyStatus == 1)
+        {    
+            using (Html.BeginForm("AddAgentApply", "Profit", new { Area = "Agent" }, FormMethod.Post, new { @class = "form-inline", id = "AddAgentApply" }))
+            {
+                <strong>
+                    <strong>ID：<span class="text-red">@Model.UserInfo.UserID</span></strong>
+                    <input type="hidden" name="targetID" value="@Model.UserInfo.UserID">
+                    <button type="button" class="btn btn-default btn-sm" id="btnAgentApply">申请代理</button>
+                </strong>
+            }
+
+        }
+        else
+        {
+            <strong>ID：<span class="text-red">@Model.UserInfo.UserID</span></strong>
+        }
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>账号：<span class="text-red">@Model.UserInfo.LoginName</span></strong>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>性别：<span class="text-red">@Model.UserInfo.Sex.ToDescription()</span></strong>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>等级：<span class="text-red">@Model.UserInfo.GradeID</span></strong>
+    </div>
+</div>
+
+<hr class="hr-sm1">
+
+<div class="row show-grid">
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>帐号身分：<span class="text-red">@Model.UserInfo.UserType.ToDescription()</span></strong>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>平台：<span class="text-red">@Model.UserInfo.PlatformName</span></strong>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>渠道ID：<span class="text-red">@Model.UserInfo.AreaID</span></strong>
+    </div>    
+</div>
+
+<hr class="hr-sm1">
+
+<div class="row show-grid">
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>渠道名称：<span class="text-red">@Model.UserInfo.AreaName</span></strong>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>注册设备：<span class="text-red">@Model.UserInfo.HDType.ToDescription()</span></strong>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>注册时间：<span class="text-red">@Model.UserInfo.CreateTime.ToString("yyyy-MM-dd HH:mm")</span></strong>
+    </div>
+</div>
+
+<hr class="hr-sm1">
+
+<div class="row show-grid">    
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>累计登录次数：<span class="text-red">@Model.UserInfo.SumLoginTimes</span></strong>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>账号狀態：<span class="text-red">@Html.Raw(Model.UserInfo.UserStatus == 0 ? "冻结" : "正常")</span></strong>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>帐号身分：<span class="text-red">@Model.UserInfo.UserType.ToDescription()</span></strong>
+    </div>
+
+</div>
+
+<hr class="hr-sm1">
+
+<div class="row show-grid">    
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>平台：<span class="text-red">@Model.UserInfo.PlatformName</span></strong>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>渠道ID：<span class="text-red">@Model.UserInfo.AreaID</span></strong>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>渠道名称：<span class="text-red">@Model.UserInfo.AreaName</span></strong>
+    </div>
+</div>
+
+<hr class="hr-sm1">
+
+<div class="row show-grid">
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>注册设备：<span class="text-red">@Model.UserInfo.HDType.ToDescription()</span></strong>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>注册时间：<span class="text-red">@Model.UserInfo.CreateTime.ToString("yyyy-MM-dd HH:mm")</span></strong>
+    </div>
+    
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <strong>累计登录次数：<span class="text-red">@Model.UserInfo.SumLoginTimes</span></strong>
+    </div>    
+    <hr class="hr-sm1">
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        
+            @if (UserHelper.IsAdmin)
+            {
+                using (Html.BeginForm("ChangeUserStatus", "Profit", new { Area = "Agent" }, FormMethod.Post, new { @class = "form-inline", id = "ChangeUserStatus" }))
+                {
+                    <strong>
+                        账号狀態：<span class="text-red">@Html.Raw(Model.UserInfo.UserStatus == 0 ? "冻结" : "正常")</span>
+                        @Html.HiddenFor(x => x.UserInfo.UserStatus)
+                        @Html.HiddenFor(x => x.UserInfo.UserID)
+                        <button type="button" class="btn btn-default btn-sm" id="btnUserStatus">@(Model.UserInfo.UserStatus == 0 ? "解冻" : "冻结")</button>
+                    </strong>
+                }
+            }
+            else
+            {
+                <strong>账号狀態：<span class="text-red">@Html.Raw(Model.UserInfo.UserStatus == 0 ? "冻结" : "正常")</span></strong>
+            }
+
+</div>
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        @if (Model.UserInfo.ModifyStatus == 1)
+        {
+            using (Html.BeginForm("UpdateUserRate", "Profit", new { Area = "Agent" }, FormMethod.Post, new { @class = "form-inline", id= "UpdateUserRate" }))
+            {
+            <strong>净利润比例：
+                <input type="number" name="UserInfo.UserRate" id="UserRate" style="width: 25%;" value="@Model.UserInfo.UserRate" > 
+                <input type="hidden" name="UserInfo.UserID" value="@Model.UserInfo.UserID"> 
+                <button type="button" class="btn btn-default btn-sm" id="btnUserRate">设定</button>
+                <code id="maxVal" data-max="@(Model.UserInfo.TopUseRrate * 0.1)">上限@(Model.UserInfo.TopUseRrate * 0.1)%</code>
+            </strong>
+            }
+        }
+        else
+        {
+            <strong>净利润比例：<span class="text-red">@Model.UserInfo.UserRate</span></strong>
+        }
+    </div>
+</div>
+
+<hr class="hr-sm1">
+
+
+<h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">用户相關</h4>
+
+<div class="row show-grid">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>支付宝真实姓名：@Html.Raw(string.IsNullOrWhiteSpace(Model.UserInfo.RealName) ? "<span class='label label-danger'>未绑定</span>" : "<span class='label label-success'>已绑定</span>")</strong>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>支付宝账号：@Html.Raw(string.IsNullOrWhiteSpace(Model.UserInfo.AlipayAccount) ? "<span class='label label-danger'>未绑定</span>" : "<span class='label label-success'>已绑定</span>")</strong>
+    </div>
+</div>
+
+<hr class="hr-sm1">
+
+<div class="row show-grid">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>銀聯真实姓名ID：@Html.Raw(string.IsNullOrWhiteSpace(Model.UserInfo.UnionpayRealName) ? "<span class='label label-danger'>未绑定</span>" : "<span class='label label-success'>已绑定</span>")</strong>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>銀聯账号：@Html.Raw(string.IsNullOrWhiteSpace(Model.UserInfo.UnionpayAccount) ? "<span class='label label-danger'>未绑定</span>" : "<span class='label label-success'>已绑定</span>")</strong>
+    </div>
+</div>
+
+<hr class="hr-sm1">
+
+<div class="row show-grid">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>注册手机号：@Html.Raw(Model.UserInfo.LoginName.StartsWith("Fast") ? "<span class='label label-danger'>未绑定</span>" : "<span class='label label-success'>已绑定</span>")</strong>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>注册IP：<span class="text-red">@Model.UserInfo.CreateIPAddress </span></strong>
+    </div>
+</div>
+
+<hr class="hr-sm1">
+
+<div class="row show-grid">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>最后登录IP： <span class="text-red">@Model.UserInfo.LastLogonIPAddress</span></strong>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>最后登录时间：<span class="text-red">@Model.UserInfo.LastLogonTime.ToString("yyyy-MM-dd HH:mm")</span></strong>
+    </div>
+</div>
+
+<hr class="hr-sm1">
+
+<h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">用户金币 &nbsp;<small>计算方式 : 累计充值 - 游戏输赢汇总 - 累计兑换 - 保险箱 = 现金数</small></h4>
+
+<div class="row show-grid">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>总金额数： <span class="text-red">@Model.UserInfo.AllCoinAmount.ToCash()</span></strong>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>现金数：<span class="text-red">@Model.UserInfo.CashAmount.ToCash()</span></strong>
+    </div>
+</div>
+
+<hr class="hr-sm1">
+
+<div class="row show-grid">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>累计税收数： <span class="text-red">@Model.UserInfo.SumTax.ToCash()</span></strong>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>
+            累计充值数(第三方 + 官方 + 免费金币)：
+            <span class="text-red">@Model.UserInfo.SumCharge.ToCash()</span> +
+            <span class="text-red">@Model.UserInfo.SumAgentCharge.ToCash()</span> +
+            <span class="text-red">@(Model.UserInfo.SumFreeMoney == null ? "0" : Model.UserInfo.SumFreeMoney.Value.ToCash())</span> =
+            <span class="text-red">@Model.UserInfo.SumChargeTotal.ToCash()</span>
+        </strong>
+    </div>
+</div>
+
+<hr class="hr-sm1">
+
+<div class="row show-grid">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>
+            累计兑换数(总数 + 手续费)：
+            <span class="text-red">@Model.UserInfo.SumConvert.ToCash()</span> +
+            <span class="text-red">@Model.UserInfo.SumConvertTax.ToCash()</span> =
+            <span class="text-red">@Model.UserInfo.SumConvertTotal.ToCash()</span>
+        </strong>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>保險箱数： <span class="text-red">@Model.UserInfo.BankAmount.ToCash()</span></strong>
+    </div>
+</div>
+
+<hr class="hr-sm1">
+
+<div class="row show-grid">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <strong>管理員修改金幣：<span class="text-red">@(Model.UserInfo.SumAdminMoney == null ? "0" : Model.UserInfo.SumAdminMoney.Value.ToCash())</span></strong>
+    </div>
+</div>
+
+<hr class="hr-sm1">
+
+<h4 style="background-color:#f7f7f7; font-size: 18px; text-align: center; padding: 7px 10px; margin-top: 0;">用户游戏信息 &nbsp;<small>已扣除税收</small></h4>
+<table id="example3" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>游戏名称</th>
+            <th>赢的局数</th>
+            <th>输的局数</th>
+            <th>平的局数</th>
+            <th>输赢金币数</th>
+            <th>游戏时长(秒)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.UserGameInfo != null)
+        {           
+            foreach (var item in Model.UserGameInfo)
+            {
+            <tr>
+                <td>@item.GameName</td>
+                <td>@item.WinCount</td>
+                <td>@item.LoseCount</td>
+                <td>@item.DrawCount</td>
+                <td>@item.Score.ToCash()</td>
+                <td>@SiteHelper.GetTimeStr(item.GameTime)</td>
+            </tr>
+            }            
+        }
+    </tbody>
+</table>
+
+<script>
+    $('#example3').DataTable({
+        "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+        "searching": false,
+        responsive: true
+    });   
+</script>

@@ -1,0 +1,206 @@
+syntax = "proto2";
+
+package netproto;
+
+//游戏阶段定义
+enum SSSGameStep {
+    SSSGameStepNull = 1;
+    SSSGameStepBegin = 2;           //游戏开始阶段
+    SSSGameStepCardTypeChoose = 3;  //玩家牌型选择阶段(普通牌型、特熟牌型)
+    SSSGameStepCombine = 4;         //组牌阶段
+    SSSGameStepAnimotion = 5;       //比牌开始动画
+    SSSGameStepCompareH = 6;        //前墩比牌阶段
+    SSSGameStepCompareB = 7;        //中墩比牌阶段
+    SSSGameStepCompareF = 8;        //后墩比牌阶段
+    SSSGameStepCompareSpecial = 9;  //特殊牌型比较阶段
+    SSSGameStepUserGun = 10;        //玩家打枪阶段
+    SSSGameStepSettlement = 11;     //结算阶段
+    SSSGameStepEnd = 12;            //游戏结束阶段
+};
+
+//普通牌型
+enum SSSDunCardsNomalType {
+    TongHuaShun = 1;  //同花顺
+    ZhaDan = 2;       //炸弹
+    HuLu = 3;         //葫芦
+    TongHua = 4;      //同花
+    ShunZi = 5;       //顺子
+    SanTiao = 6;      //三条
+    ChongSan = 7;     //冲三
+    LiangDui = 8;     //两对
+    YiDui = 9;        //一对
+    SanPai = 10;      //散牌
+};
+
+//特殊牌型
+enum SSSDunCardsSpecialType {
+    TongHuaShiSanShui = 101;   //同花十三水
+    ShiSanShui = 102;          //十三水
+    ShiErHuangZu = 103;        //十二皇族
+    SanTongHuaShun = 104;      //三同花顺
+    SanFenTianXia = 105;       //三分天下
+    QuanDa = 106;              //全大
+    QuanXiao = 107;            //全小
+    CouYiSe = 108;             //凑一色
+    ShuangGuaiChongSan = 109;  //五对三条
+    SanChongJiaDan = 110;      //五对三条
+    SiTaoSantiao = 111;        //五对三条
+    WuDuiSanTiao = 112;        //五对三条
+    LiuDuiBan = 113;           //六对半
+    SanTongHua = 114;          //三同花
+    SanShunZi = 115;           //三顺子
+};
+
+//墩类型定义
+enum SSSDunType {
+    DunTypeHead = 1;  //头墩
+    DunTypeBody = 2;  //中墩
+    DunTypeFoot = 3;  //后墩
+};
+
+//牌定义
+message SCard {
+    required int32 Number = 1;  //牌点
+    required int32 Color = 2;   //花色
+};
+
+//墩定义
+message Dun {
+    optional int32 Sdt = 1;    //墩类型 类型为 SSSDunType
+    optional int32 Ct = 2;     //牌型   类型为 SSSDunCardsNomalType
+    repeated SCard Cards = 3;  //牌组
+};
+
+//手牌
+message HandCards {
+    optional Dun Head = 1;  //前墩
+    optional Dun Body = 2;  //中墩
+    optional Dun Foot = 3;  //后墩
+};
+
+//牌型选择请求 是否选择特殊牌型
+message ChooseSpecialCardType {
+    required bool Special = 1;       //是否选择的特殊牌型
+    required int32 SpecialType = 2;  //特殊牌型 类型为 SSSDunCardsSpecialType 如果不是特殊牌型 则为0
+    optional HandCards Hcs = 3;      //组好的手牌
+};
+
+//牌型选择响应
+message ChooseSpecialCardTypeRet {
+    required int32 Code = 1;         //返回值 0成功 非零失败
+    required string Msg = 2;         //错误描述     类型为 SSSDunCardsSpecialType
+    required int32 SeatNo = 3;       //玩家座位号
+    required int32 SpecialType = 4;  //特殊牌型 类型为 SSSDunCardsSpecialType 如果不是特殊牌型 则为0
+};
+
+//推送房间配置信息
+message PushGameCfg {
+    required int32 TimeOut = 1;  //游戏间隔超时时间
+    required int32 DiFen = 2;    //底分
+};
+
+//比牌结算项
+message SettlementCell {
+    required int32 Win = 1;   //赢的水数
+    required int32 Lose = 2;  //输的水数
+};
+
+//单个角色恢复所需信息
+message RoleRecoverInfo {
+    required int32 SeatNo = 1;        //玩家座位号
+    required bool IsSpecial = 2;      //是否选择特殊牌型
+    required int32 Sct = 3;           //特殊牌型类型
+    required HandCards Hcs = 4;       //手牌信息
+    repeated SettlementCell Sis = 5;  //输赢信息 (每墩牌的比较结果)
+    repeated int32 GunReciver = 6;    //打枪信息，是否打枪， 被打枪者的位置信息
+    required bool ZuPaiOver = 7;      //组牌完成
+};
+
+//推送房间信息 断线重连
+//断线重连 根据Step 字段进行判断，如果Step<SSSGameStepCompareH 则RoleRecoverInfo 的手牌信息中只有自己的手牌信息，其他玩家手牌信息不可见并且结算信息为空
+//如果Step>=SSSGameStepCompareH则 RoleRecoverInfo中的手牌信息包含所有玩家的手牌信息
+message PushGameInfo {
+    repeated RoleRecoverInfo Rris = 1;  //断线重连恢复所需数据信息
+    repeated SItem Sts = 2;             //结算信息
+    required int32 Step = 3;            //游戏进度
+    required int32 TimeOut = 4;         //总超时
+    required int32 LastTime = 5;        //剩余时间
+    repeated SCard Cards = 6;           //牌组
+};
+
+//组牌完成请求
+message CompleteCardComb {
+    required HandCards Hcs = 1;   //组好的手牌
+    required bool IsSpecial = 2;  //是否是特殊牌型
+    required int32 St = 3;        //特殊牌型类型 SSSDunCardsSpecialType
+};
+
+//组牌完成消息响应
+message CompleteCardCombRet {
+    required int32 Code = 1;  //返回值 0成功 非零失败
+    required string Msg = 2;  //错误描述     类型为 SSSDunCardsSpecialType
+};
+
+//广播用户牌型选择 是特殊牌型还是普通牌型
+message NotifyUserCardTypeChoose {
+    required int32 SeatNo = 1;  //玩家座位号
+    required bool Special = 2;  //是否选择的特殊牌型
+};
+
+//牌型比较 数据项
+message CompareItem {
+    required Dun D = 1;         //墩
+    required int32 SeatNo = 2;  //玩家座位号
+    required int32 Lose = 3;    //输的分数
+    required int32 Win = 4;     //赢的分数
+}
+
+//广播用户牌型 普通牌型比较
+message NotifyUserCards {
+    repeated CompareItem Ci = 1;  //输赢信息
+};
+
+//牌型比较 数据项
+message SpecialCompareItem {
+    repeated SCard Cards = 1;        //牌组
+    required int32 SeatNo = 2;       //玩家座位号
+    required int32 Lose = 3;         //输的分数
+    required int32 Win = 4;          //赢的分数
+    required int32 SpecialType = 5;  //特殊牌型 类型为 SSSDunCardsSpecialType 如果不是特殊牌型 则为0
+}
+
+//广播用户特殊牌型比较
+message NotifyUserSpecial {
+    repeated SpecialCompareItem Sci = 1;  //输赢信息
+};
+
+message UserGun {
+    required int32 Attacter = 1;  //打枪者
+    repeated int32 Recvers = 2;   //被打枪的人
+    required bool IsAll = 3;      //是否是全垒打
+}
+
+//广播用户打枪消息
+message NotifyUserGun {
+    repeated UserGun Ugs = 1;  //打枪信息
+};
+
+//结算项
+message SItem {
+    required int32 SeatNo = 1;  //玩家座位号
+    required int32 Coins = 2;   //输赢金币
+    required int32 Amount = 3;  //总计
+    required int32 Win = 4;     //赢的水数
+    required int32 Lose = 5;    //输的水数
+};
+
+//广播结算消息 游戏中的总计与结算消息放在一起
+message NotifySSSSettlement {
+    repeated SItem Sis = 1;  //结算信息
+};
+
+//广播阶段超时信息
+message NotifyOptTimeOut {
+    required int32 Step = 1;     //游戏进度  SSSGameStep
+    required int32 TimeOut = 2;  //当前进度超时时间
+};

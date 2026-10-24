@@ -1,0 +1,318 @@
+﻿@section pageLevelPlugins{    
+    <script>
+        var queryPlatformURL = "@Url.Action("GetPayTypeAll", "Pay")"
+        var queryPaymentURL = "@Url.Action("GetUnionPlatformPayType", "Pay")"
+        var updatePaymentURL = "@Url.Action("SetUnionPlatformPayType", "Pay")"    
+        jQuery.bootstrapLoading = {
+            start: function (options) {
+                var defaults = {
+                    opacity: 1,
+                    //loading页面透明度
+                    backgroundColor: "#fff",
+                    //loading页面背景色
+                    borderColor: "#bbb",
+                    //提示边框颜色
+                    borderWidth: 1,
+                    //提示边框宽度
+                    borderStyle: "solid",
+                    //提示边框样式
+                    loadingTips: "Loading, please wait...",
+                    //提示文本
+                    TipsColor: "#666",
+                    //提示颜色
+                    delayTime: 1000,
+                    //页面加载完成后，加载页面渐出速度
+                    zindex: 999,
+                    //loading页面层次
+                    sleep: 0
+                    //设置挂起,等于0时则无需挂起
+
+                }
+                var options = $.extend(defaults, options);
+
+                //获取页面宽高
+                var _PageHeight = document.documentElement.clientHeight,
+                _PageWidth = document.documentElement.clientWidth;
+                //在页面未加载完毕之前显示的loading Html自定义内容
+                var _LoadingHtml = '<div id="loadingPage" style="position:fixed;left:0;top:0;_position: absolute;width:100%;height:' + _PageHeight + 'px;background:' + options.backgroundColor + ';opacity:' + options.opacity + ';filter:alpha(opacity=' + options.opacity * 100 + ');z-index:' + options.zindex + ';"><div id="loadingTips" style="position: absolute; cursor1: wait; width: auto;border-color:' + options.borderColor + ';border-style:' + options.borderStyle + ';border-width:' + options.borderWidth + 'px; height:80px; line-height:80px; padding-left:80px; padding-right: 5px;border-radius:10px;  background: ' + options.backgroundColor + ' url(https://example.invalid/media/3oEjI6SIIHBdRxXI40/giphy.gif) no-repeat -95px center; color:' + options.TipsColor + ';font-size:20px;">' + options.loadingTips + '</div></div>';
+                //呈现loading效果
+                $("body").append(_LoadingHtml);
+                //获取loading提示框宽高
+                var _LoadingTipsH = document.getElementById("loadingTips").clientHeight,
+                _LoadingTipsW = document.getElementById("loadingTips").clientWidth;
+                //计算距离，让loading提示框保持在屏幕上下左右居中
+                var _LoadingTop = _PageHeight > _LoadingTipsH ? (_PageHeight - _LoadingTipsH) / 2 : 0,
+                _LoadingLeft = _PageWidth > _LoadingTipsW ? (_PageWidth - _LoadingTipsW) / 2 : 0;
+
+                $("#loadingTips").css({
+                    "left": _LoadingLeft + "px",
+                    "top": _LoadingTop + "px"
+                });
+
+                //监听页面加载状态
+                document.onreadystatechange = PageLoaded;
+                //当页面加载完成后执行
+                function PageLoaded() {
+                    if (document.readyState == "complete") {
+                        var loadingMask = $('#loadingPage');
+
+                        setTimeout(function () {
+                            loadingMask.animate({
+                                "opacity": 0
+                            },
+                            options.delayTime,
+                            function () {
+                                $(this).hide();
+                            });
+                        },
+                        options.sleep);
+                    }
+                }
+            },
+            end: function () {
+                $("#loadingPage").remove();
+            }
+        }
+    </script>
+}
+<style>
+    .state-icon {
+        left: -5px;
+    }
+    .list-group-item-primary {
+        color: rgb(255, 255, 255);
+        background-color: rgb(66, 139, 202);
+    }
+    /* DEMO ONLY - REMOVES UNWANTED MARGIN */
+    .well .list-group {
+        margin-bottom: 0px;
+    }
+</style>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-inline">
+            <div class="form-group">
+                <label lass="control-label">平台</label>
+                <select class="form-control input-medium" id="platformlist">
+                    <option selected>请选择平台...</option>
+                </select>
+            </div>          
+        </form>
+    </div>
+</div>  
+
+<div class="row">
+    <div class="col-md-12">
+        <h4>支付選項</h4>
+        <div class="well" style="max-height: 600px;overflow: auto;">
+            <ul id="paymentlist" class="list-group checked-list-box"></ul>
+            <br />
+        </div>
+        <button class="btn dark col-md-12" id="get-checked-data">
+            <i class="fa fa-file-o"></i>
+            设定
+        </button>
+    </div>
+</div>
+
+
+@section initScripts{    
+    <script>      
+        var sendData = {}
+        $(document).ready(function () {
+            $.bootstrapLoading.start({ loadingTips: "正在处理数据，请稍候..." });
+            $.ajax({
+                url: queryPlatformURL,
+                method: "GET",
+                crossDomain: true,
+                dataType: 'json',
+                headers: {
+                    'Access-Control-Allow-Origin': '*'
+                },
+                success: function (data) { 
+                    $.each(data.paltform, function (i, item) {                       
+                        addCheckboxByPlatform("platformlist", item["id"], item["name"]);
+                    });
+
+                    //帶入所有支付方式
+                    $.each(data.payment, function (i, item) {
+                        var name = item.GWID + '.[' + item.GatewayName + '] ' + item.TypeName;
+                        addItemByPayment("paymentlist", item.GWID, name, item.TypeID);
+                    });                   
+                   
+
+                    $('.list-group.checked-list-box .list-group-item').each(function () {
+                        // Settings
+                        var $widget = $(this),
+                            $checkbox = $('<input type="checkbox" class="hidden" />'),
+                            color = ($widget.data('color') ? $widget.data('color') : "primary"),
+                            style = ($widget.data('style') == "button" ? "btn-" : "list-group-item-"),
+                            settings = {
+                                on: {
+                                    icon: 'glyphicon glyphicon-check'
+                                },
+                                off: {
+                                    icon: 'glyphicon glyphicon-unchecked'
+                                }
+                            };
+
+                        $widget.css('cursor', 'pointer')
+                        $widget.append($checkbox);
+
+                        // Event Handlers
+                        $widget.on('click', function () {
+                            $checkbox.prop('checked', !$checkbox.is(':checked'));
+                            $checkbox.triggerHandler('change');
+                            updateDisplay();
+                        });
+                        $checkbox.on('change', function () {
+                            updateDisplay();
+                        });
+
+
+                        // Actions
+                        function updateDisplay() {
+                            var isChecked = $checkbox.is(':checked');
+
+                            // Set the button's state
+                            $widget.data('state', (isChecked) ? "on" : "off");
+
+                            // Set the button's icon
+                            $widget.find('.state-icon')
+                                .removeClass()
+                                .addClass('state-icon ' + settings[$widget.data('state')].icon);
+
+                            // Update the button's color
+                            if (isChecked) {
+                                $widget.addClass(style + color + ' active');
+                            } else {
+                                $widget.removeClass(style + color + ' active');
+                            }
+                        }
+
+                        // Initialization
+                        function init() {
+
+                            if ($widget.data('checked') == true) {
+                                $checkbox.prop('checked', !$checkbox.is(':checked'));
+                            }
+
+                            updateDisplay();
+
+                            // Inject the icon if applicable
+                            if ($widget.find('.state-icon').length == 0) {
+                                $widget.prepend('<span class="state-icon ' + settings[$widget.data('state')].icon + '"></span>');
+                            }
+                        }
+                        init();
+                    });
+
+                    $.bootstrapLoading.end();
+                }
+            });
+
+
+            //切換平台時
+            $('#platformlist').change(function () {               
+                var Pid = $("#platformlist option:selected").val();
+
+                Clearcheck("paymentlist");
+
+                if (Pid == undefined)
+                    return;
+
+                $.bootstrapLoading.start({ loadingTips: "正在处理数据，请稍候..." });
+                $.ajax({
+                    url: queryPaymentURL + "?platformID=" + Pid,
+                    method: "GET",
+                    crossDomain: true,
+                    dataType: 'json',
+                    headers: {
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    success: function (data) { 
+                        $.each(data.payment, function (i, item) {
+                            getOnlinePayment("paymentlist", item.GWID, item.TypeID);
+                        });
+                    },
+                    complete: function () {
+                        $.bootstrapLoading.end();
+                    }
+                });
+
+            })
+
+            $('#get-checked-data').on('click', function (event) {
+                var data = $('#paymentlist li.active').map(function () {
+                    return {
+                        GWID: $(this).attr("gwid"),
+                        TypeID: $(this).attr("paytype"),
+                        Status: ($(this).hasClass("active") ? 1 : 0)
+                    };
+                }).get();             
+             
+                var Pid = $("#platformlist option:selected").val();
+                $.bootstrapLoading.start({ loadingTips: "正在处理数据，请稍候..." });
+
+                $.ajax({
+                    type: "POST",
+                    url: updatePaymentURL,
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    data: jQuery.param({ platformID: Pid, gateway: JSON.stringify(data) }),
+                    success: function (data) {                       
+                        swal({ type: 'success', title: data.msg })
+                    },
+                    complete: function () {
+                        $.bootstrapLoading.end();
+                    }
+                });
+
+            });
+        });
+
+        //平台选项
+        function addCheckboxByPlatform(areaname, key, name) {
+            var container = $('#' + areaname);
+            var inputs = container.find('input');
+            var id = inputs.length + 1;
+            $('<option />', { value: key, text: name }).appendTo(container);
+        }
+
+        //支付选项
+        function addItemByPayment(areaname, key, name, paytype) {
+            var lin = key.toString() + paytype.toString();
+            var ul = document.getElementById(areaname);
+            var li = document.createElement("li");
+            li.setAttribute("id", lin); // added line
+            li.setAttribute("gwid", key);
+            li.setAttribute("paytype", paytype);
+            li.setAttribute("data-color", "info");
+            li.append(name);
+            $('#' + areaname).append(li);
+            $('#' + lin.toString()).addClass("list-group-item");
+        }
+
+        function Clearcheck(areaname) {
+            $('#' + areaname + ' > li').removeClass('active');
+            $('#' + areaname + ' > li').removeClass('list-group-item-info');
+            $('#' + areaname + ' > li > span').removeClass('glyphicon-check');
+            $('#' + areaname + ' > li > span').addClass('glyphicon-unchecked');
+            $('#' + areaname + ' > li  >input').prop('checked', false);
+        }
+
+        //支付选项
+        function getOnlinePayment(areaname, key, paytype) {
+            var lin = '#' + key.toString() + paytype.toString();
+         
+            $(lin).addClass("active");
+            $(lin).addClass("list-group-item-info");
+            $(lin + ' > span').removeClass("glyphicon-unchecked");
+            $(lin + ' > span').addClass("glyphicon-check");
+            $(lin + ' > input').prop('checked', true);
+        }
+
+        
+    </script>
+}

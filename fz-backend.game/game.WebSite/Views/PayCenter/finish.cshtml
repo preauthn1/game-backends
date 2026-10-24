@@ -1,0 +1,84 @@
+﻿
+<html>
+
+
+
+<head>
+    <title>支付成功</title>
+
+    <style>
+        body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .content {
+            height: 22vh;
+            width: 25vw;
+        }
+
+        img {
+            height: 100%;
+            width: 100%;
+        }
+
+        .cantain {
+            flex: .5;
+        }
+
+        .text {
+            font-size: 7em;
+            font-weight: bold;
+            font-family: fantasy;
+        }
+
+        .btn {
+            background-color: #4CAF50;
+            border: none;
+            color: #FFFFFF;
+            padding: 15px 32px;
+            text-align: center;
+            -webkit-transition-duration: 0.4s;
+            transition-duration: 0.4s;
+            margin: 16px 0 !important;
+            text-decoration: none;
+            font-size: 4em;
+            cursor: pointer;
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div class="content">
+            <img src="~/Content/tick-inside-circle.png" />
+        </div>
+        <div class="cantain">
+            <span class="text">支付成功</span>
+        </div>
+        <div>
+            <button type="button" id="btn" class="btn" onclick="submit">关闭</button>
+        </div>
+    </div>
+
+
+<script>
+
+    function submit() {
+        window.close();
+    }
+
+</script>
+</body>
+
+</html>

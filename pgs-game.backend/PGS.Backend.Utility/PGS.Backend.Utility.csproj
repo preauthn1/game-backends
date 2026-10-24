@@ -1,0 +1,32 @@
+﻿<Project Sdk="example.invalid.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <UserSecretsId>eca5ceed-56f5-40c2-97a3-793f6b974452</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.Docs.v1" Version="1.74.0.4134" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.75.0.4192" />
+    <PackageReference Include="Google.Apis.Sheets.v4" Version="1.75.0.4178" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.32" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\target.Models\target.Models.csproj" />
+    <ProjectReference Include="..\target.Utility\target.Utility.csproj" />
+    <ProjectReference Include="..\target.Web.Modules\target.Web.Modules.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="myGoogleToken.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="myGoogleToken_gmail_account.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+
+
+</Project>

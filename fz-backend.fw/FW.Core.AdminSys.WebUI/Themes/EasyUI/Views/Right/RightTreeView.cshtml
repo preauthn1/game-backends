@@ -1,0 +1,36 @@
+﻿@using KCKJ.Core.AdminSys.WebUI
+@model Tuple<List<KCKJ.Core.AdminSys.Provider.Entity.Right>, int, string, List<int>>
+@{
+    this.Layout = null;
+    int parentID = Model.Item2;
+    var rights = Model.Item1.Where(r => r.ParentID == parentID)
+        .OrderByDescending(r => r.Sort)
+        .ToList();
+    string padding = Model.Item3;
+    var checkedRights = Model.Item4;
+    if (checkedRights == null)
+    {
+        checkedRights = new List<int>(); 
+    }
+
+    foreach (var rt in rights)
+    {
+        string checkedSign = "";
+
+        if (checkedRights.Contains(rt.RightID)) {
+            checkedSign = "checked=checked";
+        }
+        
+        @:<tr>
+            @:<td><input type="checkbox" name="ck" value="@rt.RightID" @checkedSign /></td>
+            @:<td>
+                @String.Format("{0} {1}", padding, rt.RightName);
+            @:</td>
+            @: </tr>
+        
+        var childModel = new Tuple<List<KCKJ.Core.AdminSys.Provider.Entity.Right>, int, string, List<int>>(Model.Item1, rt.RightID, Model.Item3 +  "---- ----", Model.Item4);
+
+        Html.RenderPartial("KCKJ.Core.AdminSys.WebUI.Themes.EasyUI.Views.Right.RightTreeView", childModel);
+    }
+    
+}

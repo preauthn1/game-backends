@@ -1,0 +1,91 @@
+﻿@using KCKJ.Core.Web.Mvc
+@using KCKJ.Core.Helper
+@using KCKJ.Core.AdminSys.WebUI
+@model KCKJ.Core.Helper.PagedList<KCKJ.Core.AdminSys.Provider.Entity.AdminUser>
+
+<p style="margin-top: 15px; margin-bottom: 10px">
+    @Html.AddWithRight()
+    @Html.ModifyWithRight(href: "#")
+    @Html.DeleteWithRight(href: "#")
+</p>
+
+<table class="easyui-datagrid" data-options="singleSelect:true,fitColumns:true" style="width:950px">
+    <thead>
+        <tr>
+            <th data-options="field:'ck'"></th>
+            <th data-options="field:'UserID',width:100">用户ID</th>
+            <th data-options="field:'LoginName',width:150">用户名</th>
+            <th data-options="field:'Status',width:80">状态</th>
+            <th data-options="field:'CreateTime',width:200">创建时间</th>
+            <th data-options="field:'LastLogonTime',width:200">最后登录时间</th>
+            <th data-options="field:'LastLogonIPAddress',width:200">最后登录IP</th>
+            <th data-options="field:'UserRight',width:100"></th>
+            <th data-options="field:'UserRole',width:100"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.PageData)
+        {
+            <tr>
+                <td><input type="checkbox" name="ck" value="@user.UserID" /></td>
+                <td>@user.UserID</td>
+                <td>@user.LoginName</td>
+                <td>@user.Status</td>
+                <td>@user.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@user.LastLogonTime.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@user.LastLogonIPAddress</td>
+                <td>
+                @Html.LinkWithRight(action: "UserRight", method:"Get", value:"用户权限", href: Url.Action("UserRight", new { id = user.UserID }))
+                
+                <td>
+                    @Html.LinkWithRight(action: "UserRole", method: "Get", value: "用户角色", href: Url.Action("UserRole", new { id = user.UserID }))
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div style="width:850px">
+    <div class="pagination">
+        <div class="paginationc">
+            @Html.Pager(Model)
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("#btnModify").click(function () {
+            var id = $(":checkbox:checked").val();
+            if (typeof id == "undefined") {
+                $.messager.alert('提示', '请选择一项数据');
+                return;
+            }
+
+            var url = "@Url.Action("Modify")";
+            url = url + "?id=";
+            url = url + id;
+            window.location.href = url;
+        });
+
+        $("#btnDel").click(function () {
+            var id = $(":checkbox:checked").val();
+            if (typeof id == "undefined") {
+                $.messager.alert('提示', '请选择一项数据');
+                return;
+            }
+
+            $.messager.confirm('确认', '您确认想要删除记录吗？', function (r) {
+                if (r) {
+                    var url = "@Url.Action("Del")";
+                    url = url + "?id=";
+                    url = url + id;
+                    window.location.href = url;
+                    return;
+                }
+            });
+
+        });
+
+    })
+
+</script>

@@ -1,0 +1,163 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+<style>
+    .content {
+        padding: .5%;
+        font-size: 1.2em;
+        font-family: serif;
+    }
+
+    .venderSetting {
+        display: flex;
+        align-items: center;
+        height: 4em;
+        font-size: 1.4em;
+    }
+
+    .vender {
+        display: flex;
+        align-items: center;
+        padding: 5.5px;
+        margin-left: 10px;
+        color: #fff;
+        background-color: #84B357;
+        border-radius: 5px !important;
+        cursor: pointer;
+    }
+
+    .none {
+        background-color: #555;
+    }
+</style>
+
+<div class="row" id="setting">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_PlatformSelect", false)
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="setSms()"> 新 增 </button>
+                </div>
+            </form>
+            <div class="content">
+                <table id="smssetting_table" class="display" style="width:100%"></table>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="smsModal" tabindex="-1" role="dialog" aria-labelledby="smsModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">请填写发送厂商资讯</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @Html.Partial("_PlatformSelect", true)
+                    <div class="form-group">
+                        <label class="control-label col-md-4">状态</label>
+                        <div class="col-md-8">
+                            <select class="form-control input-small" name="smsStatus" id="smsStatus">
+                                <option value="1">开启</option>
+                                <option value="0">关闭</option>
+                            </select>
+                        </div>
+                    </div>
+                    @Html.Partial("_smsVenderSelect", true)
+                    <div class="form-group">
+                        <label class="control-label col-md-4 xing" id="IsRangeYes">发送厂商资讯</label>
+                        <div class="col-md-8">
+                            <textarea rows="10" cols="50" id="smsInfo" name="smsInfo" class="form-control input-xxlarge" placeholder="请输入发送厂商资讯"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="margin-top:230px;">
+                    <input type="hidden" name="smsId" id="smsId" value="">
+                    <input type="hidden" name="venderId" id="venderId" value="">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="setSMSVender()">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section initScripts{
+    <script>
+        function createTable() {
+            const url = '/Message/GetSMSSettings';
+            const thead = [
+                { "sTitle": "所属平台", "mData": "PlatformName" },
+                { "sTitle": "发送厂商", "mData": "SMSName" },
+                { "sTitle": "发送厂商资讯", "mData": "SMSInfo" },
+                { "sTitle": "状态", "mData": "StatusName" },
+                {
+                    "sTitle": "编辑",
+                    "render": function (data, type, row) {
+                        return `<a class="btn btn-default drak" onclick='setSms(${row.ID}, ${row.PlatformId}, ${row.SMSId}, "${row.SMSName}", ${row.SMSInfo}, ${row.Status})'>编辑</a>`
+                    }
+                }
+            ];
+
+            var platformId = $('#platformid').val()
+
+            const data = {
+                platformId: platformId
+            }
+            createDataTable('smssetting', thead, url, data);
+        }
+
+        $(function () {
+            var vApp = new Vue({
+                el: '#setting',
+                data: {
+                    venderList: []
+                }
+            })
+            fillFormData('form_search')
+            createTable()
+        })
+        function setSms(id, platformId, venderId, venderName, info, status) {
+            $('#smsId').val(id);
+            $('select[name="platformid"]:eq(1)').val(platformId);
+            $('#smsVenderId').val(venderId);
+            $('#venderName').val(venderName);
+            $('#smsInfo').val(JSON.stringify(info));
+            if (status == 1) {
+                $('#smsStatus option[value=1]').attr('selected', 'selected');
+            }
+            else {
+                $('#smsStatus option[value=0]').attr('selected', 'selected');
+            }
+            $('#smsModal').modal('show');
+        }
+
+        function setSMSVender() {
+            var smsId = $('#smsId').val();
+            var platformId = $('select[name="platformid"]:eq(1)').val();
+            var smsVenderId = $('#smsVenderId').val();
+            //var info = encodeURI(JSON.stringify($('#smsInfo').val()));
+            var info = encodeURI($('#smsInfo').val());
+            var status = $('#smsStatus').val();
+            $('#smsModal').modal('hide');
+            var option = {
+                isAjax: true,
+                isReload: true
+            }
+
+            var url = "SetSMSSetting?SMSID=" + smsId + "&PlatformId=" + platformId + "&SMSVenderId=" + smsVenderId + "&info=" + info + "&status=" + status;
+            swDelConfirmUrl(url,
+                "确定修改此数据吗？",
+                option);
+        }
+    </script>
+}

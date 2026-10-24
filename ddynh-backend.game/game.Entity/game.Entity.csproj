@@ -1,0 +1,549 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://example.invalid/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{44448B04-8148-4324-BA1C-1EFC54F0E1DD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>game.Entity</RootNamespace>
+    <AssemblyName>game.Entity</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FW.Core.Helper, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\using\FW.Core.Helper.dll</HintPath>
+    </Reference>
+    <Reference Include="FW.Core.Repository">
+      <HintPath>..\..\using\FW.Core.Repository.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\..\using\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DTO\Event\PromotionEventLotteryResultModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\APL\APLFishBetRecordResponseModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\APL\QueryNotSettleBetRecordBriefModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\APL\APLGameMerchantApiModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\APL\APLGameMerchantApiQueryBetRecordModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\BG\BGGameMerchantConfigJsonModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\BG\BGGameMerchantApiQueryBetRecordRequestModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\BG\BGBaseResponseModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\BG\BGQueryFishBetRecordsResponseModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\BG\BGQueryBetRecordsResponseModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\BG\BGQueryUserResponseModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\BG\BGReportSummaryResponseModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\BG\BGTextResponseModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\BG\BGTransferRecordResponseModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\BG\BGWalletAmountResponseModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\ThirdPartyCommon\ThirdPartyGameMerchantDailyReportSummaryResultModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\ThirdPartyCommon\ThirdPartyGameMerchantApiQueryDailyReportSummaryParameterModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\_Base\SplitDateTimeBetRecordModel.cs" />
+    <Compile Include="DTO\StoreProcedure\FlowAmount\UpdateFlowAmountResultModel.cs" />
+    <Compile Include="DTO\StoreProcedure\GameMerchant\QueryNotCalculateFlowAmountModel.cs" />
+    <Compile Include="DTO\StoreProcedure\GameMerchant\BetRecordDailySummaryModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\EGaming\EGamingGameMerchantApiResponseModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\EGaming\EGamingGameMerchantApiModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\Log\ExternalApiRequestLogEntity.cs" />
+    <Compile Include="DTO\GameMerchantApi\Job\JobTriggerFetchBetRecordParameterModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\_Base\Account\ThirdPartyGameMerchantApiCreateAccountResultModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\_Base\Account\ThirdPartyGameApiAccountCreateResultModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\ThirdPartyCommon\ThirdPartyGameApiCommonParameterModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\_Base\Wallet\ThirdPartyGameApiTransferRecordResultModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\_Base\Wallet\ThirdPartyGameMerchantApiWalletAmountRequestModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\_Base\Wallet\ThirdPartyGameMerchantApiWalletTransferRequestModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\_Base\Account\ThirdPartyGameApiAccountExistResultModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\_Base\Wallet\ThirdPartyGameApiWalletTransferResultModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\_Base\Wallet\ThirdPartyGameApiWalletAmountResultModel.cs" />
+    <Compile Include="DTO\GameMerchantApi\ThirdPartyCommon\ThirdPartyGameMerchantLaunchResultModel.cs" />
+    <Compile Include="DTO\StoreProcedure\MSSQL\QuerySystemJobResultModel.cs" />
+    <Compile Include="DTO\ThirdPartyPay\YungShengPay.cs" />
+    <Compile Include="DTO\Users\UpdateUserBalanceParameterModel.cs" />
+    <Compile Include="EF\AdminSys\Organization.cs" />
+    <Compile Include="EF\AdminSys\DomainConfig.cs" />
+    <Compile Include="EF\AdminSys\OrganizationPlatformMapping.cs" />
+    <Compile Include="EF\AdminSys\SystemAdminRightSetting.cs" />
+    <Compile Include="DTO\Area\AreaConfigJsonModel.cs" />
+    <Compile Include="DTO\Area\AreaBriefModel.cs" />
+    <Compile Include="DTO\Event\PromotionEventAreaCountModel.cs" />
+    <Compile Include="DTO\RandomGatewayResultModel.cs" />
+    <Compile Include="DTO\ThirdPartyPay\D1FPay.cs" />
+    <Compile Include="DTO\ThirdPartyPay\DSDFPay.cs" />
+    <Compile Include="DTO\ThirdPartyPay\GoldSoarPay.cs" />
+    <Compile Include="DTO\ThirdPartyPay\GoPay.cs" />
+    <Compile Include="DTO\ThirdPartyPay\JBPay.cs" />
+    <Compile Include="DTO\ThirdPartyPay\LiMaFuPay.cs" />
+    <Compile Include="DTO\ThirdPartyPay\SFPay.cs" />
+    <Compile Include="DTO\ThirdPartyPay\SFTPay.cs" />
+    <Compile Include="DTO\ThirdPartyPay\SpeedPay.cs" />
+    <Compile Include="DTO\ThirdPartyPay\WonderfulskyPay.cs" />
+    <Compile Include="DTO\Users\UserInfoBriefModel.cs" />
+    <Compile Include="DTO\ThirdPartyPay\LeHuiPay.cs" />
+    <Compile Include="EF\Payment\ConvertGateway.cs" />
+    <Compile Include="Enums\AdminSys\UpdateCashAuditTypeEnum.cs" />
+    <Compile Include="Enums\Attributes\ValueFormat.cs" />
+    <Compile Include="Enums\Attributes\DocumentMemo.cs" />
+    <Compile Include="Enums\Attributes\EnumSettingValue.cs" />
+    <Compile Include="Enums\CommonErrorTypeEnum.cs" />
+    <Compile Include="Enums\Event\ValueFormatRestrictionEnum.cs" />
+    <Compile Include="Enums\Event\EventAwardTypeEnum.cs" />
+    <Compile Include="Enums\Event\EventBonusTypeEnum.cs" />
+    <Compile Include="Enums\Event\EventRuleTypeEnum.cs" />
+    <Compile Include="Enums\Event\ApplyEventTypeEnum.cs" />
+    <Compile Include="Enums\Event\AnnouncementDisplayModeEnum.cs" />
+    <Compile Include="Enums\Event\EventItemTagsEnum.cs" />
+    <Compile Include="Enums\Event\PromotionEventPositionType.cs" />
+    <Compile Include="DTO\ThirdPartyPay\IronPay.cs" />
+    <Compile Include="DTO\ThirdPartyPay\ThirdPartyPay.cs" />
+    <Compile Include="DTO\ThirdPartyPay\THPay.cs" />
+    <Compile Include="DTO\ThirdPartyPay\DDPay.cs" />
+    <Compile Include="DTO\ThirdPartyPay\HFZCPay.cs" />
+    <Compile Include="Enums\GameMerchant\APL\APLBetRecordStatusEnum.cs" />
+    <Compile Include="Enums\GameMerchant\BG\BGModuleEnum.cs" />
+    <Compile Include="Enums\GameMerchant\BG\BGBetRecordStatusEnum.cs" />
+    <Compile Include="Enums\GameMerchant\GameMerchantJobCategoryEnum.cs" />
+    <Compile Include="Enums\GameMerchant\GameMerchantStatusEnum.cs" />
+    <Compile Include="Enums\GameMerchant\GameMerchantJobTypeEnum.cs" />
+    <Compile Include="Enums\GameMerchant\TransferTypeEnum.cs" />
+    <Compile Include="Enums\GameMerchant\GameMerchantWalletTypeEnum.cs" />
+    <Compile Include="Enums\GameMerchant\ThirdPartyTransferRecordStatusEnum.cs" />
+    <Compile Include="Enums\GameMerchant\GameMerchantEnum.cs" />
+    <Compile Include="Enums\Game\GameListEnum.cs" />
+    <Compile Include="Enums\Game\HallSkinEnum.cs" />
+    <Compile Include="Enums\Game\SlotGameHistoryLogTypeEnum.cs" />
+    <Compile Include="Enums\Game\SlotGameHistoryGameTypeEnum.cs" />
+    <Compile Include="Enums\Money\SourceTypeEnum.cs" />
+    <Compile Include="Enums\NormalActiveStatusEnum.cs" />
+    <Compile Include="Enums\BankSourceChangeType.cs" />
+    <Compile Include="Enums\Game\GameMessageStatus.cs" />
+    <Compile Include="Enums\Game\MonitorUserActive.cs" />
+    <Compile Include="Enums\Game\NumAdditionType.cs" />
+    <Compile Include="Enums\Game\ProtectNodeStatus.cs" />
+    <Compile Include="Enums\Game\Status.cs" />
+    <Compile Include="Enums\Game\Behavior.cs" />
+    <Compile Include="Enums\Game\FlagType.cs" />
+    <Compile Include="Enums\Game\ConvertConfigStatus.cs" />
+    <Compile Include="Enums\Notify\NotifyAttrTypeEnum.cs" />
+    <Compile Include="Enums\Pay\ConvertTypeEnum.cs" />
+    <Compile Include="Enums\Pay\CDOrderStatus.cs" />
+    <Compile Include="Enums\Pay\CDPayTypeStatus.cs" />
+    <Compile Include="Enums\Pay\PaySystemEnum.cs" />
+    <Compile Include="Enums\Pay\PaytypeEnum.cs" />
+    <Compile Include="Enums\Pay\ThirdPaymentErrorEnum.cs" />
+    <Compile Include="Enums\SMSStatus.cs" />
+    <Compile Include="Enums\ConvertLogStatus.cs" />
+    <Compile Include="Enums\ForbidType.cs" />
+    <Compile Include="Enums\MessageType.cs" />
+    <Compile Include="Enums\MoneySourceChangeType.cs" />
+    <Compile Include="Enums\OriginType.cs" />
+    <Compile Include="Enums\HandleStatus.cs" />
+    <Compile Include="Enums\Popular.cs" />
+    <Compile Include="Enums\ClientType.cs" />
+    <Compile Include="Enums\MessageStatus.cs" />
+    <Compile Include="Enums\Sort.cs" />
+    <Compile Include="EF\Agent\AgentApplyInfo.cs" />
+    <Compile Include="EF\Agent\AgentReportLog.cs" />
+    <Compile Include="EF\Agent\AgentTransferInfo.cs" />
+    <Compile Include="EF\Agent\TransferLog.cs" />
+    <Compile Include="EF\Agent\AgentTransferType.cs" />
+    <Compile Include="EF\Agent\AgentUserInfo.cs" />
+    <Compile Include="EF\Area\Area.cs" />
+    <Compile Include="EF\Area\AreaAdminUser.cs" />
+    <Compile Include="EF\Area\AreaGame.cs" />
+    <Compile Include="EF\Area\AreaGameList.cs" />
+    <Compile Include="EF\Area\Company.cs" />
+    <Compile Include="EF\Area\Platform.cs" />
+    <Compile Include="EF\Area\PlatformAdminUser.cs" />
+    <Compile Include="EF\Area\PlatformDownload.cs" />
+    <Compile Include="EF\Customer\QuestionHandleRecords.cs" />
+    <Compile Include="EF\Customer\QuestionList.cs" />
+    <Compile Include="EF\Customer\QuestionSites.cs" />
+    <Compile Include="EF\Customer\ReplyContent.cs" />
+    <Compile Include="EF\Customer\ReplyType.cs" />
+    <Compile Include="EF\Customer\QuestionType.cs" />
+    <Compile Include="Enums\FlowLimit\FlowLimitStatus.cs" />
+    <Compile Include="Enums\FlowLimit\FlowLimitType.cs" />
+    <Compile Include="Enums\RightType.cs" />
+    <Compile Include="Enums\CodeType.cs" />
+    <Compile Include="Enums\ThirdPartyPay\GoldSoarPay.cs" />
+    <Compile Include="Enums\ThirdPartyPay\GoPay.cs" />
+    <Compile Include="Enums\ThirdPartyPay\LeHuiPay.cs" />
+    <Compile Include="Enums\ThirdPartyPay\SFPay.cs" />
+    <Compile Include="Enums\ThirdPartyPay\SFTPay.cs" />
+    <Compile Include="Enums\ThirdPartyPay\SpeedPay.cs" />
+    <Compile Include="Enums\ThirdPartyPay\ThirdPartyPay.cs" />
+    <Compile Include="Enums\ThirdPartyPay\THPay.cs" />
+    <Compile Include="Enums\ThirdPartyPay\HFZCPay.cs" />
+    <Compile Include="Enums\TimeType.cs" />
+    <Compile Include="Enums\Users\TagUniqueKeyEnum.cs" />
+    <Compile Include="Enums\Users\GiveNameType.cs" />
+    <Compile Include="Enums\Users\QuestionStatus.cs" />
+    <Compile Include="Enums\Users\LastCalcRankType.cs" />
+    <Compile Include="Enums\Users\UserInfoChangeType.cs" />
+    <Compile Include="Enums\Users\RankType.cs" />
+    <Compile Include="Enums\Users\TicketType.cs" />
+    <Compile Include="Enums\Users\UserType.cs" />
+    <Compile Include="Enums\Users\HDType.cs" />
+    <Compile Include="Enums\Users\Sex.cs" />
+    <Compile Include="Enums\WarningStatusStatus.cs" />
+    <Compile Include="Enums\WarningTypeStatus.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Event\EventSettingAwardItemEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Event\EventSettingLotteryConditionsItemEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Area\AreaGameListRawEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Area\GameAliasNameRawEntity.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryTagsRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryUserTagMappingRequestViewModel.cs" />
+    <Compile Include="RawEntityModel\CenterDB\User\TagsRawEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\User\UserTagMappingRawEntity.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryUserMemoRequestViewModel.cs" />
+    <Compile Include="RawEntityModel\CenterDB\User\UserMemoRawEntity.cs" />
+    <Compile Include="RawEntityModel\LogDB\APLFishBetRecordRawEntity.cs" />
+    <Compile Include="RawEntityModel\LogDB\BGBetRecordRawEntity.cs" />
+    <Compile Include="RawEntityModel\LogDB\BGFishBetRecordRawEntity.cs" />
+    <Compile Include="RawEntityModel\LogDB\GameLogRawEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\GameMerchant\GameMerchantJobSettingRepository.cs" />
+    <Compile Include="RawEntityModel\LogDB\APLBetRecordRawEntity.cs" />
+    <Compile Include="RawEntityModel\LogDB\DataMigratePendingQueueRawEntity.cs" />
+    <Compile Include="RawEntityModel\LogDB\JobExecuteRecordRawEntity.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryThirdPartyDataMigratePendingQueueRequestViewModel.cs" />
+    <Compile Include="RawEntityModel\LogDB\ThirdPartyDataMigratePendingQueueRawEntity.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryBGFishBetRecordRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryAPLFishBetRecordRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryBGBetRecordRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryBGDataMigratePendingQueueRequestViewModel.cs" />
+    <Compile Include="RawEntityModel\PerGame\DetailLogRawEntity.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryDetailLogRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QuerySlotGameHistoryLogRequestViewModel.cs" />
+    <Compile Include="RawEntityModel\LogDB\SlotGameHistoryLogRawEntity.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryAPLDataMigratePendingQueueRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryAPLBetRecordRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryEGamingDataMigratePendingQueueRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryGameAliasNameRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryGameLogRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryThirdPartyBetFlowAmountCalculateRecordRequestViewModel.cs" />
+    <Compile Include="RawEntityModel\LogDB\ThirdPartyBetFlowAmountCalculateRecordRawEntity.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryJobExecuteRecordRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryAreaGameListRequestViewModel.cs" />
+    <Compile Include="RawEntityModel\NotifyDB\AttrRawEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\GameMerchant\GameMerchantPlatformConfigRawEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\GameMerchant\GameMerchantRawEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Event\EventDetailLogEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Event\EventSettingEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Event\EventSettingRuleItemEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Event\EvnetSettingBonusEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Event\PromotionEventAreaMappingEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Event\PromotionEventItemEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Event\PromotionEventEntity.cs" />
+    <Compile Include="EF\ForbidUser\ForbidAccount.cs" />
+    <Compile Include="EF\ForbidUser\ForbidUser.cs" />
+    <Compile Include="EF\ForbidUser\ForbidUserLog.cs" />
+    <Compile Include="EF\Game\Advertisement.cs" />
+    <Compile Include="EF\Game\AreaConfig.cs" />
+    <Compile Include="EF\Game\FishPlayerPool.cs" />
+    <Compile Include="EF\Game\GameAliasName.cs" />
+    <Compile Include="EF\Game\HallSkin.cs" />
+    <Compile Include="EF\Game\PlatformGameServer.cs" />
+    <Compile Include="EF\Game\GameSort.cs" />
+    <Compile Include="EF\Game\MonitorUser.cs" />
+    <Compile Include="EF\Game\Certification.cs" />
+    <Compile Include="EF\Game\ProtectNodeLog.cs" />
+    <Compile Include="EF\Game\ServerRelations.cs" />
+    <Compile Include="EF\Game\SuperToolAssignRewardDetail.cs" />
+    <Compile Include="EF\Game\SuperToolAssignReward.cs" />
+    <Compile Include="EF\Game\SuperToolChangeLog.cs" />
+    <Compile Include="EF\Game\SuperToolDetailInfo.cs" />
+    <Compile Include="EF\Game\SuperToolFishRanking.cs" />
+    <Compile Include="EF\Game\SuperToolFishSystemRecord.cs" />
+    <Compile Include="EF\Game\SuperToolFishSystemReward.cs" />
+    <Compile Include="EF\Game\SuperToolTodayRanking.cs" />
+    <Compile Include="EF\Game\SuperToolTodayUser.cs" />
+    <Compile Include="EF\Game\SuperToolVIPUser.cs" />
+    <Compile Include="EF\Game\SuperToolVIPUser_ZJH.cs" />
+    <Compile Include="HttpClient\Response.cs" />
+    <Compile Include="EF\Message\SMS.cs" />
+    <Compile Include="EF\Message\SMSSetting.cs" />
+    <Compile Include="EF\Money\BankLogSourceType.cs" />
+    <Compile Include="EF\Money\BankSourceType.cs" />
+    <Compile Include="EF\Money\ConvertSuspicious.cs" />
+    <Compile Include="EF\Game\ForbidChatUser.cs" />
+    <Compile Include="EF\Game\ForbidIPAddress.cs" />
+    <Compile Include="EF\Game\HallVersionInfo.cs" />
+    <Compile Include="EF\Game\RobotServerConfig.cs" />
+    <Compile Include="EF\Game\WinAnnConfig.cs" />
+    <Compile Include="EF\Game\Game.cs" />
+    <Compile Include="EF\Game\GameLog.cs" />
+    <Compile Include="EF\Game\GameMessage.cs" />
+    <Compile Include="EF\Game\GameServer.cs" />
+    <Compile Include="EF\Game\GameUserOnLine.cs" />
+    <Compile Include="EF\Game\HallUserOnLine.cs" />
+    <Compile Include="EF\Game\HallVersion.cs" />
+    <Compile Include="EF\Game\NumAddition.cs" />
+    <Compile Include="EF\Game\PlazaServer.cs" />
+    <Compile Include="EF\Game\UserGameInfo.cs" />
+    <Compile Include="EF\Game\WinPrizeLog.cs" />
+    <Compile Include="EF\Game\WinLostLeaderboard.cs" />
+    <Compile Include="EF\Message\Message.cs" />
+    <Compile Include="EF\Message\MessageList.cs" />
+    <Compile Include="EF\Message\ReceiveUser.cs" />
+    <Compile Include="EF\Message\SendUser.cs" />
+    <Compile Include="EF\Money\Bank.cs" />
+    <Compile Include="EF\Money\BankLog.cs" />
+    <Compile Include="EF\Game\SystemConfig.cs" />
+    <Compile Include="EF\Money\Cash.cs" />
+    <Compile Include="MoneyAttribute.cs" />
+    <Compile Include="EF\Money\ConvertLog.cs" />
+    <Compile Include="EF\Money\MoneyLog.cs" />
+    <Compile Include="EF\Money\MoneySourceGroup.cs" />
+    <Compile Include="EF\Money\MoneySourceType.cs" />
+    <Compile Include="NoAuthorizationAttribute.cs" />
+    <Compile Include="EF\Notify\Attr.cs" />
+    <Compile Include="EF\Notify\SMSVenderInfo.cs" />
+    <Compile Include="EF\Notify\VCode.cs" />
+    <Compile Include="EF\Payment\PayTypeCategoryMapping.cs" />
+    <Compile Include="EF\Payment\PlatformPayTypeSetting.cs" />
+    <Compile Include="EF\Payment\CDMerchantList.cs" />
+    <Compile Include="EF\Payment\CDMerchantUUID.cs" />
+    <Compile Include="EF\Payment\CDPayOrder.cs" />
+    <Compile Include="EF\Payment\Error.cs" />
+    <Compile Include="EF\Payment\PayGateway.cs" />
+    <Compile Include="EF\Payment\PayinData.cs" />
+    <Compile Include="EF\Payment\PayType.cs" />
+    <Compile Include="EF\Pay\CDPayOrder.cs" />
+    <Compile Include="EF\Pay\CDPayType.cs" />
+    <Compile Include="EF\Pay\OrderListDTO.cs" />
+    <Compile Include="EF\Pay\OrderLog.cs" />
+    <Compile Include="RawEntityModel\AdminSysDB\RoleRightEntity.cs" />
+    <Compile Include="RawEntityModel\AdminSysDB\UserRightEntity.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryAttrRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryPlatformGameMerchantJobSettingRequestViewModel.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Game\CertificationRawEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Game\GameUserListRawEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\User\CashRawEntity.cs" />
+    <Compile Include="RawEntityModel\LogDB\ApiRequestLog_ExternalApiRawEntity.cs" />
+    <Compile Include="RawEntityModel\LogDB\EGamingBetRecordRawEntity.cs" />
+    <Compile Include="DTO\StoreProcedure\Users\OnlineGameUserSummarySpResultModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryApiRequestLog_ExternalApiRequestViewModel.cs" />
+    <Compile Include="ViewModel\Event\AppEvent\PromotionEventLuckyRouletteExtrViewModel.cs" />
+    <Compile Include="ViewModel\Event\AppEvent\PromotionEventViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryEGamingBetRecordRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryCashRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryUserGameLaunchSummaryRequestViewModel.cs" />
+    <Compile Include="RawEntityModel\CenterDB\User\UserGameLaunchSummaryRawEntity.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryGameUserListRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryCertificationRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryTransferRecordRequestViewModel.cs" />
+    <Compile Include="RawEntityModel\CenterDB\GameMerchant\TransferRecordRawEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Game\GameListRawEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Payment\PayGatewayConvertTypeMappingEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Payment\PayGatewayEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Payment\ConvertGatewayEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Payment\MerchantInfoEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Payment\UnionpayBankCodeEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Payment\UnionpayBankPlatformMappingEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Server\ServerPlatformRelationsEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Area\PlatformAdminUserEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Area\AreaEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\User\FlowAmountLimitLog.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Game\GameCategoryEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Game\GameCategorySettingEntity.cs" />
+    <Compile Include="RawEntityModel\CenterDB\User\UserInfoRawEntity.cs" />
+    <Compile Include="ViewModel.GamePlayAPI\Core\ApiResponseModel.cs" />
+    <Compile Include="ViewModel.GamePlayAPI\GameLaunchViewModel.cs" />
+    <Compile Include="ViewModel.GamePlayAPI\WalletTransferViewModel.cs" />
+    <Compile Include="ViewModel\Game\GameCategorySettingViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryGameCategorySettingRequestViewModel.cs" />
+    <Compile Include="ViewModel\Game\GameCategoryViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryGameCategoryRequestViewModel.cs" />
+    <Compile Include="RawEntityModel\CenterDB\User\UserGameInfoEntity.cs" />
+    <Compile Include="ViewModel\AdminSys\PayTypeManagementAmountListModel.cs" />
+    <Compile Include="EF\Pay\PayGateway.cs" />
+    <Compile Include="EF\Pay\PlatformLog.cs" />
+    <Compile Include="EF\PerLog\DetailLog.cs" />
+    <Compile Include="EF\PerLog\OnlineUser.cs" />
+    <Compile Include="EF\PerLog\PerGameLog.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="EF\AdminSys\AdminLog.cs" />
+    <Compile Include="EF\AdminSys\AdminUser.cs" />
+    <Compile Include="EF\AdminSys\QuickAction.cs" />
+    <Compile Include="EF\AdminSys\Right.cs" />
+    <Compile Include="EF\AdminSys\Role.cs" />
+    <Compile Include="EF\AdminSys\RoleRight.cs" />
+    <Compile Include="EF\AdminSys\UserRight.cs" />
+    <Compile Include="EF\AdminSys\UserRole.cs" />
+    <Compile Include="EF\Stat\AgentTotal.cs" />
+    <Compile Include="EF\Stat\AgentTransferSourceLog.cs" />
+    <Compile Include="EF\Agent\AgentTransferLog.cs" />
+    <Compile Include="EF\Stat\AreaDataDay.cs" />
+    <Compile Include="EF\Stat\AreaDataMonth_Area.cs" />
+    <Compile Include="EF\Stat\AreaDataMonth.cs" />
+    <Compile Include="EF\Stat\BankSourceLog.cs" />
+    <Compile Include="EF\Stat\ActiveUserKeepLog.cs" />
+    <Compile Include="EF\Stat\ChargeKeepLog.cs" />
+    <Compile Include="EF\Stat\DayMaxGameOnLineUserLog.cs" />
+    <Compile Include="EF\Stat\DayMaxHallOnLineUserLog.cs" />
+    <Compile Include="EF\Stat\DayMaxServerOnLineUserLog.cs" />
+    <Compile Include="EF\Stat\DayMaxTotalGameOnLineLog.cs" />
+    <Compile Include="EF\Stat\GameOnlineChatData.cs" />
+    <Compile Include="EF\Stat\GameOnLineRobotLog.cs" />
+    <Compile Include="EF\Stat\GameOnLineUserLog.cs" />
+    <Compile Include="EF\Stat\GameServerTaxLog.cs" />
+    <Compile Include="EF\Stat\ServerOnLineRobotLog.cs" />
+    <Compile Include="EF\Stat\SystemGainLog.cs" />
+    <Compile Include="EF\Stat\GameTaxLog.cs" />
+    <Compile Include="EF\Stat\HallOnLineUserLog.cs" />
+    <Compile Include="EF\Stat\KeepLog.cs" />
+    <Compile Include="EF\Stat\LogonUserLog.cs" />
+    <Compile Include="EF\Stat\MoneySourceLog.cs" />
+    <Compile Include="EF\Stat\RegUserLog.cs" />
+    <Compile Include="EF\Stat\ServerOnLineUserLog.cs" />
+    <Compile Include="EF\Stat\SumMoneyLog.cs" />
+    <Compile Include="EF\Stat\TotalGameOnLineRobotLog.cs" />
+    <Compile Include="EF\Stat\TotalGameOnLineLog.cs" />
+    <Compile Include="EF\Stat\TotalGameOnLineLogArea.cs" />
+    <Compile Include="EF\Stat\TransferSourceLog.cs" />
+    <Compile Include="EF\Stat\UserGameTotalRank.cs" />
+    <Compile Include="EF\Stat\UserMoneyReport.cs" />
+    <Compile Include="EF\SystemLog\ApiRequestLog.cs" />
+    <Compile Include="EF\Users\CSOnBoard.cs" />
+    <Compile Include="EF\Users\EventBonus.cs" />
+    <Compile Include="EF\Users\EventContest.cs" />
+    <Compile Include="EF\Users\EventDetailLog.cs" />
+    <Compile Include="EF\Users\EventLog.cs" />
+    <Compile Include="EF\Users\EventRank.cs" />
+    <Compile Include="EF\Users\EventReward.cs" />
+    <Compile Include="EF\Users\EventSetting.cs" />
+    <Compile Include="EF\Users\FocusUser.cs" />
+    <Compile Include="EF\Users\GiveName.cs" />
+    <Compile Include="EF\Stat\GradeSetting.cs" />
+    <Compile Include="EF\Users\LogonLog.cs" />
+    <Compile Include="EF\Users\LogonQuestionLog.cs" />
+    <Compile Include="EF\Users\QuestionLog.cs" />
+    <Compile Include="EF\Users\QuestionLogViewModel.cs" />
+    <Compile Include="EF\Users\RegCountLog.cs" />
+    <Compile Include="EF\Users\RegUserInfo.cs" />
+    <Compile Include="EF\Users\SavePwd.cs" />
+    <Compile Include="EF\Users\UserDetailInfoDTO.cs" />
+    <Compile Include="EF\Users\UserFlowLimit.cs" />
+    <Compile Include="EF\Users\UserIdentity.cs" />
+    <Compile Include="EF\Users\UserInfo.cs" />
+    <Compile Include="EF\Users\UserInfoChangeLog.cs" />
+    <Compile Include="EF\Users\UserInfoDetail.cs" />
+    <Compile Include="EF\Users\UserInfoToken.cs" />
+    <Compile Include="EF\Users\UserRank.cs" />
+    <Compile Include="EF\Users\UserTicket.cs" />
+    <Compile Include="EF\Users\UserTicketSummary.cs" />
+    <Compile Include="EF\Users\VIPUserInfo.cs" />
+    <Compile Include="ViewModel\Area\AreaConfigSyncSettingModel.cs" />
+    <Compile Include="ViewModel\ConvertLog\ConvertGatewayViewModel.cs" />
+    <Compile Include="ViewModel\Event\ModifyEventRuleRequestModel.cs" />
+    <Compile Include="ViewModel\Event\EachOrganizationPlatformCountViewModel.cs" />
+    <Compile Include="ViewModel\Area\SyncAreaRequestModel.cs" />
+    <Compile Include="ViewModel\Event\CopyEventRequestModel.cs" />
+    <Compile Include="ViewModel\Payment\PayGatewayConvertTypeMappingUpdateRequestModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryGameListRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryGameMerchantPlatformConfigRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryGameMerchantRequestViewModel.cs" />
+    <Compile Include="ViewModel\StatReport\CompanyReportSPResultModel.cs" />
+    <Compile Include="ViewModel\Base\UpdateEditorRequestModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\MoneyLogQueryFilterModel.cs" />
+    <Compile Include="ViewModel\Payment\UpdatePlatformSettingPriorityRequestModel.cs" />
+    <Compile Include="ViewModel\Users\UserGameInfoViewModel.cs" />
+    <Compile Include="ViewModel.WebSite\ImageUploadResultViewModel.cs" />
+    <Compile Include="ViewModel\PostRequestModel\UpdateServerRelationRequestModel.cs" />
+    <Compile Include="ViewModel\PostRequestModel\UpdatePromotionEventAreaMappingRequestModel.cs" />
+    <Compile Include="ViewModel\PostRequestModel\CommonUpdateStatusRequestModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\BaseQueryRequestModel.cs" />
+    <Compile Include="ViewModel\Payment\PayGatewayViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryAllUsersSPRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryConvertGatewayRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryEventSettingRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryFlowAmountLimitRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryAreaRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryCompanyReportRequestModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryDetailLogRequestModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryAdminUserRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryMerchantInfoRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryPayGatewayConvertTypeMappingRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryPayGatewayRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryRoleRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryUnionpayBankCodeRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryUnionpayBankPlatformMappingRequestViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryUserInfoRequestModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryUserGameInfoRequestModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryPromotionEventRequestViewModel.cs" />
+    <Compile Include="ViewModel\TargetRolesAssinRightCountModel.cs" />
+    <Compile Include="ViewModel\EachOrganizationPlatformCountViewModel.cs" />
+    <Compile Include="ViewModel\PostRequestModel\OrganizationrUpdateRequestViewModel.cs" />
+    <Compile Include="ViewModel\PostRequestModel\CreateOrganizationrRequestViewModel.cs" />
+    <Compile Include="ViewModel\PostRequestModel\AutoGenerateRoleAndRightRequestViewModel.cs" />
+    <Compile Include="ViewModel\ConvertLog\UnionpayBankCodeViewModel.cs" />
+    <Compile Include="ViewModel\ConvertLog\UnionpayBankPlatformMappingViewModel.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Payment\ConvertGatewayBankSettingEntity.cs" />
+    <Compile Include="ViewModel\ConvertLog\ConvertGatewayBankSettingViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryConvertGatewayBankSettingRequestViewModel.cs" />
+    <Compile Include="ViewModel\PayGatewayConvertTypeMappingViewModel.cs" />
+    <Compile Include="RawEntityModel\CenterDB\Game\GameServerListEntity.cs" />
+    <Compile Include="ViewModel\Game\GameServerListViewModel.cs" />
+    <Compile Include="ViewModel\QueryFilterModel\QueryGameServerListRequestViewModel.cs" />
+    <Compile Include="ViewModel\UpdateOrganizationPlatformRequestViewModel.cs" />
+    <Compile Include="EF\Warning\UserFocus.cs" />
+    <Compile Include="EF\Warning\WarningLog.cs" />
+    <Compile Include="EF\Warning\WarningStatus.cs" />
+    <Compile Include="EF\Warning\WarningType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\game.Infrastructure\game.Infrastructure.csproj">
+      <Project>{c8931862-d42a-41f5-84c1-9e638ac564d3}</Project>
+      <Name>game.Infrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DTO\Game\" />
+    <Folder Include="RawEntityModel\CenterDB\Template\" />
+    <Folder Include="ViewModel\Template\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

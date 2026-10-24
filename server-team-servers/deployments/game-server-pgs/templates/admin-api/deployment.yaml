@@ -1,0 +1,65 @@
+{{- $root := . }}
+{{- $adminver := .Values.defaultVersion | default "latest" }}
+{{- if $root.Values.versions }}
+  {{- if $root.Values.versions.common }}
+    {{- if index $root.Values.versions.common "admin-api" }}
+    {{- $adminver = index $root.Values.versions.common "admin-api" }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "game-server.fullname" . }}-admin-api
+  labels:
+    {{- include "game-server.labels" . | nindent 4 }}
+  annotations:
+    example.invalid/auto: "true"
+spec:
+  replicas: {{ .Values.adminapi.replicas }}
+  selector:
+    matchLabels:
+      app: admin-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      name: {{ include "game-server.fullname" . }}-admin-api
+      labels:
+        app: admin-api
+        {{- include "game-server.labels" . | nindent 8 }}
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "game-server.fullname" . }}-admin-api
+            items:
+              - key: config.yaml
+                path: config.yaml
+        - name: storage
+          emptyDir: {}
+        - name: tz-config
+          hostPath: 
+            path: /usr/share/zoneinfo/{{ .Values.timezone | default "UTC" }}
+      containers:
+        - name: admin-api
+          image: example.invalid/admin-api:{{ $adminver | default "latest" }}
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /app/config.yaml
+              subPath: config.yaml
+              readOnly: true
+            - name: tz-config
+              mountPath: /etc/localtime
+              readOnly: true

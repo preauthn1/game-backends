@@ -1,0 +1,19 @@
+﻿@model game.Entity.Users.UserInfo
+@if (Model != null)
+{
+<td>
+    <a target="_blank" href="/UserInfo/Search?userId=@Model.Id&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">
+    @Model.Id</a>
+</td>
+<td>
+    <a target="_blank" href="/UserInfo/Search?loginName=@Model.LoginName&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">
+    @Model.LoginName</a>
+</td>
+<td>@Model.GradeID</td>
+}
+else
+{
+<td>　</td>
+<td>　</td>
+<td>　</td>
+}

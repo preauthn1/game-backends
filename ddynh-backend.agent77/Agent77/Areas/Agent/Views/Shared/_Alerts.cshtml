@@ -1,0 +1,30 @@
+@using Agent77.Areas.Agent.Controllers
+@if (TempData.ContainsKey(Alerts.ATTENTION))
+{
+<div class="alert alert-block alert-custom">
+    <a class="close" data-dismiss="alert" href="#">x</a>
+    <h4 class="alert-heading">Attention!</h4>
+    @TempData[Alerts.ATTENTION]
+</div>
+}
+@foreach(string key in Alerts.ALL.Except(new[] {Alerts.ATTENTION}))
+{
+    bool isError = (key == "error");
+
+
+    if (TempData.ContainsKey(key))
+    {
+<div class="alert alert-@key alert-custom">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+
+    @if (isError)
+    {
+        <span style="background: #e43232;border-radius: 50%;width: 20px;height: 20px;display:inline-block;text-align: center;color: #FFF;border:solid 1px #FFF;font-size: 14px;margin-right:5px;font-weight:700;">
+            !
+        </span>
+    }
+
+    @Html.Raw(@TempData[key])
+</div>      
+    }
+}

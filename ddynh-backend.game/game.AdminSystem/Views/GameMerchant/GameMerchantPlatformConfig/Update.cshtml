@@ -1,0 +1,197 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@using game.Infrastructure.Extensions
+@using game.AdminSystem
+
+@model game.AdminSystem.Models.ViewModels.GameMerchantPlatformConfigAdminUpdateViewModel
+
+@{
+
+
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>平台三方游戏商密钥设置
+                </div>
+            </div>
+            <div class="portlet-body form">
+
+                <!-- BEGIN FORM-->
+                <form id="myForm" method="post" class="form-horizontal form-bordered" novalidate="novalidate">
+                    <div class="form-body">
+
+
+
+                        <input type="hidden" id="IsUpdatePage" name="IsUpdatePage" value="@Model.IsUpdatePage" />
+
+
+                        <input type="hidden" value="@Model.ID" name="ID" id="ID" />
+
+
+                        @{
+                            var setting = new DropdownPartialSettingViewModel(FirstOptionValueEnum.MustSelect);
+                            var setting_platform = new DropdownPartialSettingViewModel(FirstOptionValueEnum.MustSelect);
+
+
+                            if (Model.IsUpdatePage)
+                            {
+                                setting.DefaultSelectValue = Model.GameMerchantID.ToString();
+                                setting.IsLockSelect = true;
+
+                                setting_platform.DefaultSelectValue = Model.PlatformID.ToString();
+                                setting_platform.IsLockSelect = true;
+                            }
+
+                        }
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">游戏商</label>
+                            <div class="col-md-3">
+                                @Html.Partial("_DropdownGameMerchant", setting)
+                            </div>
+                        </div>
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">平台</label>
+                            <div class="col-md-3">
+                                @Html.Partial("_DropdownPlatform", setting_platform)
+                            </div>
+                        </div>
+                                                
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">后台网址</label>
+                            <div class="col-md-3">
+                                <input type="text" id="AdminWebSiteUrl" name="AdminWebSiteUrl" class="form-control input-large" value="@Model.AdminWebSiteUrl" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">主要API接口域名</label>
+                            <div class="col-md-3">
+                                <input type="text" id="MerchantApiHost" name="MerchantApiHost" class="form-control input-large" value="@Model.MerchantApiHost" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">三方分配商户代号</label>
+                            <div class="col-md-3">
+                                <input type="text" id="MerchantIdentity" name="MerchantIdentity" class="form-control input-large" value="@Model.MerchantIdentity" placeholder="">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">加密公钥(或主要加密密钥)</label>
+                            <div class="col-md-3">
+                                <input type="text" id="MerchantSecretPublic" name="MerchantSecretPublic" class="form-control input-large" value="@Model.MerchantSecretPublic" placeholder="">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">加密私钥</label>
+                            <div class="col-md-3">
+                                <input type="text" id="MerchantSecretPrivate" name="MerchantSecretPrivate" class="form-control input-large" value="@Model.MerchantSecretPrivate" placeholder="">
+                            </div>
+                        </div>
+
+
+
+                        <div class="extraSettings">
+
+
+
+                            @if (Model.ExtraSetting != null)
+                            {
+                                foreach (var item in Model.ExtraSetting)
+                                {
+                                    <div class="form-group last">
+                                        <label class="control-label col-md-3">额外设置: @item.Key </label>
+                                        <div class="col-md-3">
+                                            <input type="text" name="user@example.invalid" id="@item.Value" class="form-control input-large" value="@item.Value" />
+                                        </div>
+                                    </div>
+
+
+
+                                }
+                            }
+
+                        </div>
+
+
+
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button id="btnOk" type="submit" class="btn dark" style="" onclick=""><i class="fa fa-file-o"></i> 确定</button>
+                            @Html.Back(Url.Action("List", "GameMerchantPlatformConfig"))
+
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section initScripts
+{
+    <script>
+
+    
+        $("#myForm").validate({
+            rules: {
+                              
+                gameMerchantID: {
+                    required: true
+                },
+
+                platformid: {
+                    required: true
+                },
+
+                 MerchantApiHost: {
+                    maxlength: 500
+                },
+
+                 MerchantIdentity: {
+                    maxlength: 200
+                },
+                
+                 MerchantSecretPublic: {
+                    maxlength: 1000
+                },
+                
+                 MerchantSecretPrivate: {
+                    maxlength: 1000
+                },                
+            },
+            messages: {
+                Name: {
+                    required: "不能为空",
+                }
+            }
+        });
+
+    </script>
+}

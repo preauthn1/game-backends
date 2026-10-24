@@ -1,0 +1,142 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Name</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Standard iPhone -->
+    <link rel="apple-touch-icon" sizes="57x57" href="@ViewBag.AppleTouchIconUrl" />
+    <!-- Retina iPhone -->
+    <link rel="apple-touch-icon" sizes="114x114" href="@ViewBag.AppleTouchIconUrl" />
+    <!-- Standard iPad -->
+    <link rel="apple-touch-icon" sizes="72x72" href="@ViewBag.AppleTouchIconUrl" />
+    <!-- Retina iPad -->
+    <link rel="apple-touch-icon" sizes="144x144" href="@ViewBag.AppleTouchIconUrl" />
+
+    <style>
+
+        html, body {
+            margin: 0;
+            height: 100%;
+        }
+
+        .contain {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            background-color: #000;
+        }
+
+        .guid1 {
+            background-image: url("/Content/image/guid-1.png");
+            background-repeat: no-repeat;
+            background-attachment: inherit;
+            background-position: center;
+            background-size: contain;
+            height: 12%;
+            width: 94%;
+        }
+
+        .guid2 {
+            background-image: url("/Content/image/guid-2.png");
+            background-repeat: no-repeat;
+            background-attachment: inherit;
+            background-position: center;
+            background-size: contain;
+            height: 78%;
+            width: 92%;
+        }
+
+        .guid3 {
+            background-image: url("/Content/image/guid-3.png");
+            background-repeat: no-repeat;
+            background-attachment: inherit;
+            background-position: center;
+            background-size: contain;
+            height: 5%;
+            width: 100%;
+        }
+
+        .guid4 {
+            background-image: url("/Content/image/guid-4.gif");
+            background-repeat: no-repeat;
+            background-attachment: inherit;
+            background-position: center;
+            background-size: contain;
+            height: 20%;
+            width: 100%;
+        }
+
+        .guid-close {
+            background-image: url("/Content/image/guid-close.png");
+            background-repeat: no-repeat;
+            background-attachment: inherit;
+            background-position: center;
+            background-size: contain;
+            height: 8%;
+            width: 100%;
+            margin: 10%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contain">
+        <div class="guid1">
+        </div>
+        <div class="guid2">
+        </div>
+        <div class="guid-close">
+        </div>
+        <div class="guid3">
+        </div>
+        <div class="guid4">
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    <script>
+    $(function () {
+        var officialUrl = `@ViewBag.OfficialUrl`
+        let browser = {
+            versions: function () {
+                let u = navigator.userAgent, app = navigator.appVersion;
+                return {
+                trident: u.indexOf('Trident') > -1,
+                presto: u.indexOf('Presto') > -1,
+                webKit: u.indexOf('AppleWebKit') > -1,
+                gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1,
+                mobile: !!u.match(/AppleWebKit.*Mobile.*/),
+                ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/),
+                android: u.indexOf('Android') > -1 || u.indexOf('Adr') > -1,
+                iPhone: u.indexOf('iPhone') > -1,
+                iPad: u.indexOf('iPad') > -1,
+                webApp: u.indexOf('Safari') == -1,
+                weixin: u.indexOf('MicroMessenger') > -1,
+                qq: u.match(/\sQQ/i) == " qq"
+                };
+            }(),
+            language: (navigator.browserLanguage || navigator.language).toLowerCase()
+        };
+
+        if (browser.versions.android) {
+            window.location = officialUrl
+        }
+
+        $('.contain').on('click', function () {
+            if (officialUrl) {
+                window.location = officialUrl
+            } else {
+                alert('无官网位置')
+            }
+        });
+    })
+    </script>
+
+</body>
+</html>

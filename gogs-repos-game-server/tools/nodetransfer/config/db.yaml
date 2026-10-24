@@ -1,0 +1,9 @@
+NodeDB:
+  Host: 0.0.0.0
+  Port: 1333
+  Database: JK_K
+  User: sa
+  Password: [REDACTED]
+  Encrypt: disable
+  Semaphore: 5
+  Pool: 200

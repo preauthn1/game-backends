@@ -1,0 +1,41 @@
+﻿@using KCKJ.Core.AdminSys.WebUI
+@{
+    KCKJ.Core.AdminSys.Provider.Entity.AdminUser user = ViewBag.user;
+    List<KCKJ.Core.AdminSys.Provider.Entity.Role> roles = ViewBag.roles;
+
+    List<int> urs = ViewBag.userRoles;
+}
+
+<form method="post">
+    <div style="padding-left:350px;padding-bottom:20px;padding-top:20px"><h2>@user.LoginName</h2></div>
+    <div style="margin-top:15px;margin-left:20px;margin-bottom:10px">
+        @Html.OkWithRight()
+        @Html.Back(@Url.Action("List"))
+        <input type="hidden" name="id" value="@user.UserID" />
+    </div>
+    <table data-options="singleSelect:true,fitColumns:true" style="width:650px">
+        <thead>
+            <tr>
+                <th data-options="field:'ck'"></th>
+                <th data-options="field:'RightID',width:50">编号</th>
+                <th data-options="field:'RightName',width:200">名称</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var role in roles)
+            {
+                string checkedSign = "";
+                if (urs.Contains(role.RoleID))
+                {
+                    checkedSign = "checked"; 
+                }
+                <tr>
+                    <td><input type="checkbox" name="ck" value="@role.RoleID" @checkedSign /></td>
+                    <td>@role.RoleID</td>
+                    <td>@role.RoleName</td>
+            </tr>
+            }
+        </tbody>
+
+    </table>
+</form>

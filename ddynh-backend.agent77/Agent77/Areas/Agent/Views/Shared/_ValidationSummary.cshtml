@@ -1,0 +1,7 @@
+﻿@if (!ViewData.ModelState.IsValid)
+{
+<div class="alert alert-danger alert-dismissable alert-custom">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    @Html.ValidationSummary(false)
+</div>
+}

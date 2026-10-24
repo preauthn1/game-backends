@@ -1,0 +1,81 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+    <div class="row">
+        <div class="col-sm-12">
+           <div class="bjui-row col-4">
+                <label class="row-label">总计平台销售：</label>
+                <div class="row-input">{{initPageData.total_money}}</div>
+                <label class="row-label">转出余额：</label>
+                <div class="row-input">{{initPageData.total_turn_out}}</div>
+                <label class="row-label">总充值：</label>
+                <div class="row-input">{{initPageData.total_recharge}}</div>
+                <label class="row-label">总计代理余额：</label>
+                <div class="row-input">{{initPageData.total_agent_money}}</div>
+                <label class="row-label">本页总计代理余额：</label>
+                <div class="row-input" id="total_curpage_agent_money"></div>
+            </div>
+        </div>
+        <div class="col-sm-12" style="margin-bottom: 10px;">
+            {% autoescape false %}{{formSearch}}{% endautoescape %}
+        </div>
+    </div>
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                <th data-options="{name:'id',align:'center'}">代理商ID</th>
+                <th data-options="{name:'status',align:'center',type:'select',items:[{'1':'启用'},{'0':'禁用'}]}">状态</th>
+                <th data-options="{name:'telphone',align:'center'}">手机号</th>
+                <th data-options="{name:'transfer',align:'center',width:60,'items':[{'0':'否'},{'1':'是'}]}">快速转账</th>
+                <th data-options="{name:'name',align:'center'}">代理名称</th>
+                <th data-options="{name:'money',align:'center'}">余额</th>
+                <th data-options="{name:'total_recharge',align:'center'}">充值合计</th>
+                <th data-options="{name:'total_turn_out',align:'center'}">转出合计</th>
+                <th data-options="{name:'total_turn_in',align:'center'}">转入合计</th>
+                <th data-options="{name:'weixin',align:'center'}">weixin</th>
+                <th data-options="{name:'qq',align:'center'}">QQ</th>
+				<th data-options="{name:'alipay',align:'center'}">Alipay</th>
+                <th data-options="{name:'created_at',align:'center',width:160}">注册时间</th>
+                <th data-options="{name:'ip',align:'center'}">注册ip</th>
+                <th data-options="{name:'remark',align:'center'}">备注</th>
+                <th data-options="{name:'operation',align:'center',render:datagrid_tree_operation,quicksort:false,quickfilter:false,menu:false}">操作</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<script type="text/javascript">
+/*var total_curpage_agent_money = 0;
+function sumData(value, data){
+    $("table").html(total_curpage_agent_money+=value);
+}*/
+$(document).on('bjui.afterInitUI', function(e) {
+    var total_curpage_agent_money = 0;
+    var allData = $.CurrentNavtab.find('#datagrid-test-filter').data('allData');
+    for (i in allData) {
+        if(parseInt(allData[i].money)>=0){
+            total_curpage_agent_money += parseInt(allData[i].money);
+        }
+    }
+    $("#total_curpage_agent_money").html(total_curpage_agent_money);
+});
+
+function datagrid_tree_operation(value,data) {
+    /*var data = JSON.stringify(data);
+    console.log(data);*/
+    var data = {
+        id:data.id,
+        name:data.name,
+        status:data.status
+    };
+    var data = JSON.stringify(data);
+    var html = '<button type="button" class="btn btn-primary" data-toggle="dialog" data-options=\'{"title":"添加金额", "id":"dialog_add_money", "url":"{{agentPageRoute}}/money_opt", "width":800, "height":300, "data":'+data+',"mask":true,"fresh":true}\'>转账</button>';
+    return html;
+}
+function addMoneyVerify(agent_id,turnInMoney){
+    BJUI.ajax('doajax', {
+        url: "{{agentApiRoute}}/addMoneyVerify",
+        data:{agent_id:agent_id,turnInMoney:turnInMoney},
+        loadingmask: true,
+    });
+}
+</script>

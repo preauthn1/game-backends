@@ -1,0 +1,394 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using Newtonsoft.Json;
+@using game.Entity.Payment;
+@using game.Entity.ViewModels;
+
+@{
+    int selectPlatform = ViewBag.CurrentSelectPlatform;
+    List<string> disabledAreaNames = ViewBag.disabledAreaNames; 
+
+    string tipMsg = "您必须前往 商务号资讯清单(商户密钥设置)、完成商户参数设置";   
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Content/JQuery-ui/jquery-ui.min.js")"></script>
+    <script src="@Url.Content("~/Content/Tokenfield/bootstrap-tokenfield.min.js")"></script>
+    <script src="@Url.Content("~/Content/Tokenfield/bootstrap-tokenfield.min.js")"></script>
+    <link href="@Url.Content("~/Content/JQuery-ui/css/jquery-ui.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Tokenfield/css/bootstrap-tokenfield.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Tokenfield/css/tokenfield-typeahead.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .payGateway {
+        display: flex;
+    }
+
+    .gateway_btn {
+        display: flex;
+        align-items: center;
+        padding-left: 2%;
+    }
+
+    .green-text {
+        color: #3ea924;
+        margin-top: 10px;
+    }
+
+    .redText {
+        color: #fb1010;
+        font-weight: 700;
+    }
+
+
+    .btn-grey {
+        background: #CCC;
+        color: #FFF;
+    }
+</style>
+
+<div class="row" id="payment_amountlist">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+
+                <div class="form-group">
+                    <label>平台</label>
+                    @{
+                        var initialModel = new DropdownPartialSettingViewModel(FirstOptionValueEnum.MustSelect);
+                        initialModel.DefaultSelectValue = selectPlatform == 0 ? "" : selectPlatform.ToString();
+                    }
+
+                    @Html.Partial("_DropdownPlatform", initialModel)
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default"> 搜 索 </button>
+                </div>
+
+            </form>
+
+            <div style="margin-top:15px;">
+
+
+                <div style="display:inline-block;float:right;">
+                    <span aria-hidden="true" style="margin-left:10px;" title="@tipMsg" data-toggle="tooltip" data-original-title="@tipMsg" class="glyphicon glyphicon-question-sign hint-blue myHintText">
+                    </span>
+
+                    <a href="@Url.Action("paygatewaylist" , "payment")" target="_blank" class="">
+                        <span class="hint-blue">看不到特定渠道？</span>
+                    </a>
+                   
+                    <span aria-hidden="true" style="margin-left:10px;" title="前往此页面" data-toggle="tooltip" data-original-title="前往此页面" class="glyphicon glyphicon-question-sign hint-blue myHintText">
+                    </span>
+
+                    <a href="@Url.Action("ModifyAreaConfig" , "GameMaster")" target="_blank" class="">
+                        <span class="hint-blue">如何讓支付介面显示／隐藏？</span>
+                    </a>
+                </div>
+
+            </div>
+
+
+            <div class="table-scrollable">
+
+
+
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                      
+                        <tr>
+                            <th style="width:15%;">支付名称</th>
+                            <th style="width:15%;">支付方式</th>
+                            <th style="width:10%;" class="algin-r">最小金额限制</th>
+                            <th style="width:10%;" class="algin-r">最大金额限制</th>
+                            <th class="algin-c" style="width:10%;">是否是固定金额</th>
+                            <th>固定金额列表</th>
+                            <th>优先权重</th>
+                            <th>当前状态</th>
+                            <th>金币转换比例</th>
+                            <th>功能</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            List<PayTypeManagementAmountListModel> list = ViewBag.list;
+                        }
+
+                        @if (list != null)
+                        {
+                            var GatewayName = "";
+                            foreach (var item in list)
+                            {
+                                if (GatewayName != item.GatewayName)
+                                {
+                                    GatewayName = item.GatewayName;
+                                    <tr>
+                                        <td colspan="10">
+                                            <div style="padding:5px;">
+                                                <b style="font-size:16px;">@item.GatewayName&nbsp;(@item.GWID)</b>
+                                                @if (Html.CheckFunctionPermissionExist("PaymentPlatformSetting", "UpdateAllPriority"))
+                                                {
+                                                    <a class="btn btn-sm default modal-pop" style="float:right;" attr-modal-id="modal_empty_template" attr-source-url="/PaymentPlatformSetting/UpdateAllPriority?platformID=@selectPlatform&gwID=@item.GWID">
+                                                        批量修改权重
+                                                    </a>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+
+                                <tr class="@item.GWID">
+                                    <td style="padding-left:25px;">
+                                        @item.DisplayName
+                                    </td>
+                                    <td typeof="@item.PlatformPayTypeSettingId" style="padding-left:25px;">
+                                        @item.TypeName
+                                    </td>
+                                    <td class="algin-r">@(item.IsRange ? item.MinValue.ToCash() : "-")</td>
+                                    <td class="algin-r">@(item.IsRange ? item.MaxValue.ToCash() : "-")</td>
+                                    <td class="algin-c">@(item.IsRange ? "" : "v")</td>
+                                    <td>
+                                        @(item.IsRange ? "--" : item.AmountSort.Substring(0, (item.AmountSort.Length - (item.AmountSort.Length > 2 ? 2 : 0))).Replace("00,", ","))
+                                    </td>
+                                    <td>@(item.Priority)</td>
+                                    <td>
+                                        <a name="btnStatus" class="btn btn-sm @(item.Status? "btn-success" : "btn-grey")" onclick="setPayTypeDisable(@(item.Status? 2 : 1), @item.PlatformPayTypeSettingId, @item.PayTypeID, @ViewBag.platformId)">@(item.Status ? "开启" : "关闭")</a>
+                                    </td>
+                                    <td>@(item.Scale.ToCash())</td>
+                                    <td>
+                                        @Html.LinkWithRight(action: "UpdatePlatformPayType",
+                                            value: "編輯",
+                                            onclick: "setPayType(" + item.PlatformPayTypeSettingId + ", " + item.PayTypeID + ", '" + GatewayName + " " + item.TypeName + "', '" + item.MinValue + "','" + item.MaxValue + "'," + (item.IsRange ? 1 : 0) + ",'" + item.AmountSort + "', " + item.Scale + ", " + (item.Status ? 1 : 0) + ")",
+                                            href: "#",
+                                            cssName: "btn btn-sm default")
+
+
+                                        @if (Html.CheckFunctionPermissionExist("PaymentPlatformSetting", "UpdatePriority"))
+                                        {
+                                            <a class="btn btn-sm default" href="/PaymentPlatformSetting/UpdatePriority?platformID=@selectPlatform&gwID=@item.GWID&typeEnumID=@item.TypeID&PayTypeID=@item.PayTypeID">
+                                                修改权重
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="platformPayTypeModal" tabindex="-1" role="dialog" aria-labelledby="platformPayTypeModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">请填入<span id="labName"></span>资讯</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="control-label col-md-4 xing">最小金额限制</label>
+                        <div class="col-md-8">
+                            <input type="text" name="MinAmount" id="MinAmount" class="form-control input-medium" placeholder="请输入最小金额" value="" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4 xing">最大金额限制</label>
+                        <div class="col-md-8">
+                            <input type="text" name="MaxAmount" id="MaxAmount" class="form-control input-medium" placeholder="请输入最大金额" value="" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4">是否使用固定金额</label>
+                        <div class="col-md-8">
+                            <select class="form-control input-small" name="IsRange" id="IsRange" onclick="setIsRange()">
+                                <option value="1">固额</option>
+                                <option value="0">非固额</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4" id="IsRangeNo">
+                            固定金额列表
+                        </label>
+
+                        <label class="control-label col-md-4" id="IsRangeYes">
+                            快捷金额列表
+                        </label>
+
+                        <div class="col-md-8">
+                            <input type="text" id="AmountList" name="AmountList" class="form-control success" value="" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4 xing">金币转换比例</label>
+                        <div class="col-md-8">
+                            <input type="text" name="Scale" id="Scale" class="form-control input-medium" placeholder="请输入金币转换比例" value="" />
+                        </div>
+                    </div>
+
+                    <div style="clear:both"></div>
+
+                    <div class="modal-footer">
+                        <input type="hidden" name="Id" id="Id" value="">
+                        <input type="hidden" name="PayTypeId" id="PayTypeId" value="">
+                        <input type="hidden" name="Status" id="Status" value="1" />
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="setPlatformPayType()">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modal_empty_template" tabindex="-1" role="dialog" aria-labelledby="modal_empty_template" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="width:700px;">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section initScripts{
+    <script>
+        function setIsRange() {
+            if ($('#IsRange').val() == 0) {
+                $('#IsRangeYes').show();
+                $('#IsRangeNo').hide();
+            }
+            else {
+                $('#IsRangeYes').hide();
+                $('#IsRangeNo').show();
+            }
+        }
+        
+        function setPayType(id, payTypeId, name, minAmount, maxAmount, isRange, amountList, scale, status) {
+            $('#Id').val(id);
+            $('#PayTypeId').val(payTypeId);
+            $('#labName').text(name);
+            $('#MinAmount').val(minAmount / 100);
+            $('#MaxAmount').val(maxAmount / 100);
+            $('#Scale').val(scale / 100);
+            if (isRange == 1) {
+                $('#IsRange option[value=0]').attr('selected', 'selected');
+                setIsRange();
+            }
+            else {
+                $('#IsRange option[value=1]').attr('selected', 'selected');
+                setIsRange();
+            }
+            amountList = amountList.split(',').map((el) => { el /= 100; return el; }).join(',');
+            $('#AmountList').val(amountList);
+            $('#AmountList').tokenfield('setTokens', amountList);
+            $('#platformPayTypeModal').modal('show');
+        }
+
+        function sortNumber(a, b) {
+            return a - b;
+        }
+
+        function setPlatformPayType() {
+            var id = $('#Id').val();
+            var payTypeId = $('#PayTypeId').val();
+            var platformId = $('#platformid').val();
+            var minAmount = $('#MinAmount').val() * 100;
+            var maxAmount = $('#MaxAmount').val() * 100;
+            var scale = $('#Scale').val() * 100;
+            var isRange = $('#IsRange').val();
+
+            amountList = $('#AmountList').val().split(',').filter((element, index, arr) => { return arr.indexOf(element) === index; }).map((el) => { el *= 100; return el; }).sort(sortNumber).join(',');
+
+            $('#platformPayTypeModal').modal('hide');
+
+            var option = {
+                isAjax: true,
+                isReload: true
+            }
+            var url = "UpdatePlatformPayType?id=" + id + "&payTypeId=" + payTypeId + "&platformId=" + platformId + "&minAmount=" + minAmount + "&maxAmount=" + maxAmount + "&isRange=" + isRange + "&amountList=" + amountList + "&scale=" + scale + "&status=1";
+            swDelConfirmUrl(url,
+                "确定修改此数据吗？",
+                option);
+        }
+
+        function setOrderID(min) {
+            $('#exampleModal').modal('show');
+        }
+
+        function setPayTypeDisable(type, id, payTypeId, platformId) {
+            let result = [];
+            $.ajax({
+                cache: false,
+                dataType: 'text',
+                url: '/Payment/UpdatePayTypeDisable',
+                data: {
+                    type: type,
+                    id: id,
+                    payTypeId: payTypeId,
+                    platformId: platformId,
+                    newfun: 1
+                },
+                contentType: "application/text; charset=utf-8",
+                type: 'get',
+                success: function (val) {
+                    const status = val.status
+                    val
+                    swal({
+                        type: val ? 'success' : 'error',
+                        title: '設定結果',
+                    }).then((result) => {
+                        location.reload();
+                    })
+                },
+                error: function (err) {
+
+                }
+            });
+        }
+
+        $(function () {
+
+
+            fillFormData('form_search');
+            var pid = getQueryString("platformid")
+            $("#platformid").children().each(() => {
+                if ($(this).val() == pid) {
+                    $(this).attr("selected", "true");
+                }
+            });
+
+            $('.myHintText').tooltip();
+
+        })
+
+        $('#AmountList').tokenfield({
+            autocomplete: {
+                source: [],
+                delay: 100
+            },
+            showAutocompleteOnFocus: true,
+            beautify: false
+        }).on('tokenfield:createtoken', (e) => {
+            if (isNaN(e.attrs.value)) {
+                alert('禁止输入非数字');
+                return false;
+            }
+            else {
+                return true;
+            }
+        });
+
+    </script>
+}

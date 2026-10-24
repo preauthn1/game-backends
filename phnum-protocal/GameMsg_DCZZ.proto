@@ -1,0 +1,102 @@
+package netproto;
+
+import "GameMsg.proto";
+
+//---------- Server - Client ----------
+// DCZZ_GameInfo = 10001;                      // S2C 牌局資訊，於玩家進入牌局或斷線重連時傳送
+message DCZZ_Msg_GameInfo {
+    required int32 TimeRemain = 1;                      // 剩餘時間
+    repeated string PokerManual = 2;                    // 遊戲說明
+    repeated int32 ChipValue = 3;                       // 籌碼面額
+    repeated PokerCard DealerCards = 4;                 // 莊家手牌
+    repeated DCZZ_Msg_UserInfo AllUserInfo = 5;         // 所有玩家資訊
+    required int64 BetBaseLimit = 6;                    // 底注額上限
+    required int64 BetSideLimit = 7;                    // 平手額上限
+};
+
+// 玩家資訊
+message DCZZ_Msg_UserInfo {
+    required int32 UserID = 1;                      // 玩家ID，若是空位時，玩家ID = -1
+    required int32 SeatNo = 2;                      // 玩家座位，從 1 開始
+    required int32 State = 3;                       // 玩家狀態，0:空位，1:正常，2:觀戰
+    required int64 Money = 4;                       // 玩家金錢
+    repeated PokerCard HandCards = 5;               // 玩家手牌
+    required int64 Bet_Base = 6;                    // 玩家底注
+    required int64 Bet_Side = 7;                    // 玩家平手注
+    required int64 Bet_Double = 8;                  // 玩家戰爭階段加注
+    required int64 TotalWinLose = 9;                // 總輸贏
+    required bool IsTied = 10;                      // 是否跟莊家平手
+    required bool GetTieAward = 11;                 // 玩家是否於一般階段贏得平手賠付
+    required bool CanEnterWar = 12;                 // 可否進入戰爭階段
+    required bool IsFolded = 13;                    // 玩家是否已棄牌
+    required int64 FoldRecover = 14;                // 玩家於戰爭階段選擇棄牌收回的注碼
+};
+
+// DCZZ_AllUserInfo = 10002;                   // S2C 玩家資訊，當玩家人數或狀態有變動時傳送
+message DCZZ_Msg_AllUserInfo {
+    repeated DCZZ_Msg_UserInfo AllUserInfo = 1;       // 所有玩家資訊
+}
+
+// DCZZ_WaitingStart = 10003;                  // S2C 等待遊戲開始，此階段玩家可自由進出遊戲
+message DCZZ_Msg_WaitingStart {
+    required int32 TimeRemain = 1;      // 剩餘時間
+};
+
+// DCZZ_StartBetting = 10006;                  // S2C 開始下注
+message DCZZ_Msg_StartBetting {
+    required int32 TimeRemain = 1;      // 剩餘時間
+};
+
+// DCZZ_Bet = 10007;                           // C2S 玩家下注
+message DCZZ_Msg_Bet {
+    required int32 BetType = 1;         // 下注類別，0:底注，1:平手注
+    required int64 Bet = 2;             // 下注金額
+};
+
+// DCZZ_BetResult = 10008;                     // S2C 玩家下注結果
+message DCZZ_Msg_BetResult {
+    required int32 SeatNo = 1;          // 下注玩家座位，從 1 開始
+    required int32 BetType = 2;         // 下注類別，0:底注，1:平手注
+    required int64 Bet = 3;             // 下注金額
+    required int64 MoneyRemain = 4;     // 下注後玩家剩餘金錢
+    required int32 Result = 5;          // 下注結果，0:成功，-1:失敗，-2:餘額不足，-3:已停止下注，-4:總押注額超過上限，-5:押注金額<=0
+};
+
+// DCZZ_Deal_Normal = 10011;                   // S2C 一般發牌
+message DCZZ_Msg_Deal_Normal {
+    repeated PokerCard DealerCards = 1;                 // 莊家手牌
+    repeated DCZZ_Msg_UserInfo AllUserInfo = 2;         // 所有玩家資訊
+};
+
+// DCZZ_Settlement_Normal = 10013;             // S2C 一般結算
+message DCZZ_Msg_Settlement_Normal {
+    repeated DCZZ_Msg_UserInfo AllUserInfo = 1;         // 所有玩家資訊
+};
+
+// DCZZ_WarPhase = 10015;                      // S2C 進入戰爭階段，符合資格玩家選擇是否要進入
+message DCZZ_Msg_WarPhase {
+    repeated DCZZ_Msg_UserInfo AllUserInfo = 1;         // 所有玩家資訊
+    required int32 TimeRemain = 2;                      // 剩餘時間
+};
+
+// DCZZ_WarPhaseSelection = 10016;             // C2S 戰爭階段選項
+message DCZZ_Msg_WarPhaseSelection {
+    required int32 Selection = 1;               // 玩家選擇，0:棄牌，1:戰爭
+};
+
+// DCZZ_WarPhaseselectionResult = 10017;       // S2C 戰爭階段選擇結果
+message DCZZ_Msg_WarPhaseselectionResult {
+    required int32 SeatNo = 1;                      // 做選擇的玩家
+    required int32 Selection = 2;                   // 玩家選擇，0:棄牌，1:戰爭
+};
+
+// DCZZ_Deal_War = 10020;                      // S2C 戰爭階段發牌
+message DCZZ_Msg_Deal_War {
+    repeated PokerCard DealerCards = 1;                 // 莊家手牌
+    repeated DCZZ_Msg_UserInfo AllUserInfo = 2;         // 所有玩家資訊
+};
+
+// DCZZ_Settlement_War = 10022;                // S2C 戰爭階段結算
+message DCZZ_Msg_Settlement_War {
+    repeated DCZZ_Msg_UserInfo AllUserInfo = 1;         // 所有玩家資訊
+};

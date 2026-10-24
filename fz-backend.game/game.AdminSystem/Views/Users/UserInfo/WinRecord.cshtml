@@ -1,0 +1,93 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/jquery.dataTables.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .width20 {
+        width: 20%;
+    }
+
+</style>
+
+<div id="winRecordApp">
+    <form class="form-inline" id="form_search">
+        <div class="form-group">
+            <label>ID</label>
+            <input type="text" class="form-control input-small" id="userID" name="userID" placeholder="ID">
+        </div>
+        <div class="form-group">
+            <label>创建时间</label>
+            <input type="text" class="form-control " style="width:180px" id="startTime" name="startTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm',isShowClear:false,readOnly:true})" placeholder="开始时间" value="@Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("yyyy-MM-dd HH:mm")">
+            到
+            <input type="text" class="form-control " style="width:180px" id="endTime" name="endTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <button type="button" class="btn btn-default" v-on:click="createTable()"> 搜 索 </button>
+        </div>
+    </form>
+    <div class="content">
+        <table id="winRecord_table" class="display" style="width:100%"></table>
+    </div>
+
+</div>
+
+
+@section initScripts{
+    <script>
+        $(function () {
+            var vApp = new Vue({
+                el: '#winRecordApp',
+                data: {},
+                methods: {
+                    createTable() {
+                        const thead = [{
+                            "sTitle": "用戶ID", "mData": "UserID", "className": "width20", "bSortable": false,
+                            "render": function (data, type, row) {
+                                return `<a class="link" target="_blank" href="/UserInfo/Search?userId=${data}&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">${data}</a>`
+                            }
+                        },
+                                       { "sTitle": "充值数", "mData": "PayAmount", "className": "text_right", "bSortable": true, "sName": 0 },
+                                       { "sTitle": "兑换数", "mData": "ConvertAmount", "className": "text_right", "bSortable": true, "sName": 1}];
+
+                        var userID = $('#userID').val();
+                        var startTime = $("#startTime").val();
+                        var endTime = $("#endTime").val();
+
+                        const data = {
+                            userID: userID,
+                            startTime: startTime,
+                            endTime: endTime,
+                            _r: Math.random(),
+                        }
+
+                        const opt = {
+                            //"ordering": false,
+                            "searching": false,
+                            "aoColumns": thead,
+                            "processing": true,
+                            "serverSide": true,
+                            "lengthChange": false,
+                            "paginate": false,
+                            "scrollCollapse": true,
+                            "ajax": {
+                                "type": "Get",
+                                "url": '/UserInfo/GetWinLostLeaderboard',
+                                "data": data
+                            },
+                            "destroy": true,
+                            "aaSorting": [[1, "desc"]],
+                        }
+
+                        $("#winRecord_table").dataTable(opt);
+                    }
+                }
+            });
+
+
+            vApp.createTable()
+        })
+    </script>
+}

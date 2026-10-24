@@ -1,0 +1,236 @@
+syntax = "proto2";
+
+package netproto;
+
+//設置消息
+message BY_Setting {
+    required int32 FrameTime = 1;  //每帧间隔时间，单位毫秒
+    repeated BY_BoomSetting BoomSetting = 2;
+    required BY_IceSetting IceSetting = 3;
+    required int32 MaxBoom = 4;
+    required string BackgroundList = 5;                   //背景清單
+    repeated BY_FishSetting FishSetting = 6;              //魚的消息
+    required int32 BaseScore = 7;                         //底分
+    required int32 ZuantoulongxiaMaxBoom = 8;             //钻头龙虾最多炸彈
+    required int32 ZlxReceiveSpeed = 9;                   //磚頭龍蝦砲彈接收速度(ms)
+    optional BY_GameCompetitionSetting Competition = 10;  //比賽活動設定
+    optional int32 GameType = 11;                         //遊戲類型: 0真金 1比賽 3休閒
+}
+
+//比賽活動設定
+message BY_GameCompetitionSetting {
+    optional int32 Time = 1;             //剩餘遊戲時間(秒)
+    optional int32 OnGamingRecover = 2;  // 0不在比賽中. 1比賽中斷線重連
+}
+
+//比賽活動結束訊息
+message BY_GameCompetitionEndMsg {
+    required int32 UserID = 1;
+    required int32 Score = 2;  //分數
+}
+
+//踢出房提示訊息
+message BY_LeaveMsg {
+    required string TipMessage = 1;  //訊息
+    required int32 Time = 2;         //時間
+}
+
+//公告獲得魚
+message BY_NotifyFishMsg {
+    required string TipMessage = 1;  //訊息
+}
+
+//炮彈设置消息
+message BY_BoomSetting {
+    required int32 BoomNumber = 1;     //炮彈編號
+    required string BoomName = 2;      //炮彈名稱
+    required int32 BoomUIType = 3;     //砲彈UI類型
+    required float ShootInterval = 4;  //射击间隔
+    required float BoomSpeed = 5;      //子弹速度
+    required int32 BoomType = 6;       //砲彈類型 1.基本 2.VIP
+    required int32 BoomRate = 7;       //倍率
+    required int32 Rebound = 8;        //反彈次數
+};
+
+//魚設置消息
+message BY_FishSetting {
+    required int32 FishId = 1;      //魚的編號
+    repeated int32 Reward = 2;      //鱼倍率
+    required int32 FishType = 3;    //鱼类型
+    optional float SPBoomArea = 4;  //爆炸半徑 -1表示不使用. 0全部
+}
+
+//冰凍設置消息
+message BY_IceSetting {
+    required int32 IceNumber = 1;     //冰凍編號
+    required string IceName = 2;      //冰凍名稱
+    required int32 IceUIType = 3;     //冰凍UI類型
+    required int32 IceTime = 4;       //冰冻时间
+    required int32 IceResetTime = 5;  //冰冻冷却时间
+    required int32 IceMoney = 6;      //使用金幣
+}
+
+//位置信息
+message BY_Position {
+    required float x = 1;  //坐标系x的值
+    required float y = 2;  //坐标系y的值
+};
+
+//用户发射一颗炮弹C2S
+message BY_ShootC2S {
+    required BY_Position Pos = 1;  //炮弹发射的信息
+    optional int32 FishID = 2;     //锁定的鱼ID
+};
+
+//用户发射一颗炮弹S2C
+message BY_ShootS2C {
+    required BY_Position Pos = 1;   //炮弹发射的信息
+    required int32 UserID = 2;      //用户ID
+    required int32 BoomID = 3;      //炮弹ID
+    optional int32 FishID = 4;      //锁定的鱼ID
+    optional bool IsRobot = 5;      //是否是机器人，true为机器人
+    required int32 BoomNumber = 6;  //炮弹編號
+    optional int32 BoomType = 7;
+};
+
+//用户是否处于锁定状态
+message BY_SuoDingC2S {
+    required bool SuoDing = 1;  //是否锁定
+}
+
+//用户锁定状态
+message BY_SuoDingS2C {
+    required int32 SeatNO = 1;  // 锁定的玩家
+    required bool SuoDing = 2;  //是否锁定
+}
+
+// 用户修改倍率S2C
+message BY_UserChangeRateS2C {
+    required int32 SeatNO = 1;           // 修改倍率的玩家
+    required int32 RateAfterChange = 2;  // 修改后的倍率
+}
+
+// 用户修改倍率C2S
+message BY_UserChangeRateC2S {
+    required int32 RateAfterChange = 1;  // 修改后的倍率
+}
+
+//用户炮弹爆炸C2S
+message BY_BoomC2S {
+    required int32 BoomID = 1;    // 炮弹ID
+    required int32 BoomRate = 2;  // 炮弹倍率
+    repeated int32 FishID = 3;    // 鱼数组
+    optional int32 UserID = 4;    // 机器人的ID
+    optional int32 BoomType = 5;  // 1一般 3磚頭砲
+    optional int32 Delete = 6;    //當boomtype=3, 再使用delete, 0不刪除 1刪除
+};
+
+//用户炮弹爆炸S2C
+message BY_BoomS2C {
+    required int32 BoomID = 1;  //炮弹流水號ID
+};
+
+//用户捕到鱼S2C
+message BY_Fish {
+    required int32 UserID = 1;  //捕到鱼的用户ID
+    required int32 FishID = 2;  //鱼的ID
+    required int64 Money = 3;   //用户增加的钱
+    optional int32 Type = 4;    //触发鱼死亡的类型
+    optional int32 LuckyBonus = 5;
+    optional int32 TeshuFishID = 6;  //被哪個特殊魚打死
+};
+
+//添加一条新的鱼S2C
+message BY_NewFish {
+    required int32 FishID = 1;      //新增的鱼的ID
+    required int32 FishType = 2;    //鱼的种类
+    required int32 FishNumber = 4;  //魚的ID
+    required int32 FishCount = 5;   //魚的數量
+};
+
+//炸弹鱼以后发全屏鱼
+message BY_AllFish {
+    repeated int32 FishID = 1;
+};
+
+//帧消息c2s
+message BY_FrameC2S {
+    required int64 FrameID = 1;  //帧号
+    optional BY_ShootC2S Shoot = 2;
+    optional BY_BoomC2S Boom = 3;
+    optional BY_UserChangeRateC2S UserChangeRate = 4;
+    optional BY_SuoDingC2S SuoDing = 5;
+    optional BY_AllFish AllFish = 6;
+    optional bool UseIce = 7;  //使用冰冻技能
+};
+
+//用户的信息
+message BY_UserInfo {
+    required int32 UserID = 1;  //用户的ID
+    required int64 UserMoney = 2;
+    optional int32 GameCompetitionBonus = 20;  //打死魚的所有總積分
+};
+//帧消息
+message BY_FrameS2C {
+    required int64 FrameID = 1;  //帧号
+    repeated BY_ShootS2C Shoot = 2;
+    repeated BY_BoomS2C Boom = 3;
+    repeated BY_Fish Fish = 4;
+    repeated BY_NewFish NewFish = 5;
+    repeated BY_UserChangeRateS2C UserChangeRate = 6;
+    optional int32 advanceNoticeType = 7;     // 1：鱼潮来临通知从1开始
+    optional BY_FishWaveManage fishWave = 8;  // 鱼潮ID
+    repeated BY_SuoDingS2C SuoDing = 9;
+    repeated int32 PoChan = 10;    // 破产的玩家ID
+    optional int32 BossNear = 11;  // 1表示BOSS来了
+    optional bool IsIce = 12;      // 是否冰冻状态
+    optional bool UseIce = 13;     // 是否使用冰冻技能，在使用冰冻技能后的第一帧传True
+    required bool IsFishWave = 14;
+    optional int32 TeshuNear = 15;             //特殊魚來了
+    optional int32 FishOdds = 16;              // Boss, 特殊魚 fishodds
+    repeated BY_UserInfo UserInfo = 100;       // 用户信息
+    optional BY_FishSwellRate FishSwell = 17;  //魚膨脹
+    optional BY_WinList FishWinList = 18;      //多個得分金額
+    optional int32 GameCompetitionTime = 19;   //比賽剩餘時間(秒)
+};
+
+//多個得分金額
+message BY_WinList {
+    required int32 Time = 1;   //間隔時間
+    repeated int32 Money = 2;  //金額list
+}
+
+// FishID膨脹
+message BY_FishSwellRate {
+    required int32 FishID = 1;
+    required int32 Rate = 2;
+}
+
+//魚潮管理
+message BY_FishWaveManage {
+    required int32 FishWaveID = 1;
+    repeated BY_FishInfoWave FishInfo = 2;
+}
+
+message BY_FishInfoWave {
+    required int32 FishId = 1;
+    required int32 Count = 2;
+    required string PathName = 3;
+    required int32 Interval = 4;
+}
+
+// 断线重连
+message BY_UserRecoverRet {
+    repeated BY_FrameS2C FrameInfo = 1;     // 断线帧数据
+    repeated BY_UserStatus UserStatus = 2;  //用户状态
+    required bool isfishwave = 3;           //魚潮是否進行中
+    optional string fishwavetip = 4;        //魚潮進行中訊息
+};
+
+//玩家状态
+message BY_UserStatus {
+    required int32 UserID = 1;  //用户ID
+    required int32 Rate = 2;    //当前倍率
+    required int64 Money = 3;   //用户当前的钱
+    required bool PoChan = 4;   //是否破产
+};

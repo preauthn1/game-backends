@@ -1,0 +1,83 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+
+@model List<game.Entity.Stat.UserMoneyReport>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">                
+                <div class="form-group">
+                    <label>最高金币</label>
+                    <input type="text" class="form-control input-small" id="amount" name="amount">
+                </div>
+                <div class="form-group">
+                    <select class="form-control input-small" id="count" name="count">
+                        <option value="100">前100名</option>
+                        <option value="50">前50名</option>
+                        <option value="200">前200名</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default"> 搜 索 </button>
+                </div>
+            </form>
+            <div class="table-scrollable">
+                
+                <table class="table table-striped table-bordered table-hover progressTable">
+                    <thead>
+                        <tr>
+                            <th>所属平台</th>
+                            @Html.Partial("~/Views/Shared/_userTHeadPartial.cshtml")
+                            <th  style="width:300px">现金</th> 
+                            <th style="width:300px">保險箱</th> 
+                            <th style="width:300px">合计</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (var item in Model)
+                            {
+                                item.CashAmount = item.CashAmount ?? 0;
+                                item.BankAmount = item.BankAmount ?? 0;
+
+                                <tr>
+                                    <td>@item.User.Area.Platform.Name</td>
+                                    @Html.Partial("~/Views/Shared/_userTBodyPartial.cshtml", item.User)
+                                    <td class="amountProgress2" style="width:300px">@item.CashAmount.Value.ToCash()</td> 
+                                    <td class="amountProgress3" style="width:300px">@item.BankAmount.Value.ToCash()</td>
+                                    <td class="amountProgress3" style="width:300px">@((item.BankAmount + item.CashAmount).Value.ToCash())</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                    @if (Model != null)
+                    {
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>@(Model.Sum(p => p.CashAmount).Value.ToCash())</td>
+                                <td>@(Model.Sum(p => p.BankAmount).Value.ToCash())</td>
+                                <td>@(Model.Sum(p => p.CashAmount + p.BankAmount).Value.ToCash())</td>
+                            </tr>
+                        </tfoot>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+            fillFormData('form_search');
+            ShowProgress($(".progressTable"), "amountProgress", 300);
+            ShowProgress($(".progressTable"), "amountProgress2", 300); ShowProgress($(".progressTable"), "amountProgress3", 300);
+        })
+    </script>
+}

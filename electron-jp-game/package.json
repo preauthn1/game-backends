@@ -1,0 +1,47 @@
+{
+  "name": "target-game",
+  "version": "1.0.1",
+  "description": "A minimal Electron application",
+  "main": "main.js",
+  "build": {
+    "appId": "target.id",
+    "nsis": {
+      "oneClick": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "mac": {
+      "category": "example.invalid.category.type",
+      "icon": "assets/img/pgs_256.ico"
+    },
+    "win": {
+      "artifactName": "${productName}_install_${version}.${ext}",
+      "icon": "assets/img/pgs_256.ico",
+      "publisherName": "Pegasus Gaming",
+      "target": [{
+        "target": "nsis"
+      }]
+    }
+  },
+  "scripts": {
+    "start-dev": "set NODE_ENV=dev && electron .",
+    "start": "electron .",
+    "build": "electron-packager . PgsGame",
+    "dist": "electron-builder"
+  },
+  "repository": "https://example.invalid/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^16.0.1",
+    "electron-builder": "^22.10.5"
+  },
+  "dependencies": {}
+}

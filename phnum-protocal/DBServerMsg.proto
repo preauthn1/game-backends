@@ -1,0 +1,188 @@
+syntax = "proto2";
+
+package netproto;
+
+message DBServerRet {
+    required int32 Code = 1;
+};
+
+message HallServerStart {
+    required int32 ServerID = 1;
+    required string ClientAddr = 2;
+    required string NotifyAddr = 3;
+    required string HttpAddr = 4;
+};
+
+message HallServerStartRet {
+    required int32 Code = 1;
+    required string Message = 2;
+    optional string AndroidVersion = 3;
+    optional string IOSVersion = 4;
+    optional string UpdateDomain = 5;
+    optional string BillDomain = 6;
+    optional string ClubDomain = 7;
+    optional string CustomerDomain = 8;
+    repeated AreaConfig AreaConfigList = 9;
+    repeated AreaShowGameFlag AreaShowGameFlagList = 10;
+    optional string AndroidVersion2 = 11;
+    optional string IOSVersion2 = 12;
+};
+
+message AreaConfig {
+    required int64 AreaID = 1;
+    required string AreaConfig = 2;
+    optional bool NotifyRefresh = 3;
+}
+
+message GetHallAreaMsg {
+    required int64 AreaID = 1;
+    optional bool NotifyRefresh = 2;
+}
+
+message AreaShowGameFlag {
+    required int32 AreaID = 1;
+    required int32 GameID = 2;
+    required int32 FlagID = 3;
+    required int32 ServerID = 4;
+    required int32 Status = 5;  //渠道是否看得到遊戲區廳, 0不行 1可以
+}
+
+message GameServerStart {
+    required int32 ServerID = 1;
+    required string ServerName = 2;
+    required int32 GameID = 3;
+    required string ShowName = 4;
+    required string ClientAddr = 5;
+    required string NotifyAddr = 6;
+    required int32 LoginMoney = 7;
+    required string HttpAddr = 8;
+    optional int32 GroupID = 9;  // 金邊新增
+};
+
+message GameServerStartRet {
+    required int32 Code = 1;
+    required string Message = 2;
+    optional string AndroidVersion = 3;
+    optional string IOSVersion = 4;
+    optional int32 Status = 5;
+    optional string StatusMessage = 6;
+};
+
+message LogoutGameRoomInfo {
+    required int32 UserID = 1;
+    required int64 UpdateAmount = 2;
+    required int64 TaxAmount = 3;
+    required int32 WinCount = 4;
+    required int32 LoseCount = 5;
+    required int32 DrawCount = 6;
+    required string LoginTime = 7;
+    required string LogoutTime = 8;
+    required string IPAddress = 9;
+    required string HDCode = 10;
+    required int32 HDType = 11;
+    required int32 GameTime = 12;
+    required int32 GameID = 13;
+    required int32 ServerID = 14;
+    required int64 LoginMoney = 15;
+    required int32 ScoreUpdateMode = 16;
+    required int64 TradeId = 17;
+    optional int32 LastWinLose = 18;
+    optional int64 FlowAmount = 19;
+    optional int64 CouponAmount = 20;
+};
+
+message UpdateUserScore {
+    required int32 UserID = 1;
+    required int64 Score = 2;
+    required int32 ServerID = 3;
+    required int64 TaxAmount = 4;
+    optional int32 ContestID = 5;
+    optional int64 CouponAmount = 6;
+};
+
+message BlockIP {
+    required string IPAddress = 1;
+    required int32 Sec = 2;
+    required string Memo = 3;
+};
+
+message BlockIPList {
+    repeated string IPAddress = 1;
+};
+
+message DealLog {
+    required int32 ServerID = 1;
+    required string UserGameRet = 2;
+    required string GameBeginTime = 3;
+    required string GameEndTime = 4;
+    required string GameData = 5;
+    required int64 TaxAmount = 6;
+    required int32 GameID = 7;
+    optional int32 TableNo = 8;
+    optional NextJiangRecord NextJiangRecord = 9;
+    optional int32 GroupID = 10;
+};
+
+message NextJiangRecord {
+    required string AdminUser = 1;
+    required string JiangType = 2;
+}
+
+message LogonRobot {
+    required int32 ServerID = 1;
+    required int32 CurrentRobotCount = 2;
+    required int64 MinMoneyAmount = 3;
+    required int64 MaxMoneyAmount = 4;
+    optional int32 GroupID = 5;
+};
+
+message RobotData {
+    required int32 UserID = 1;
+    required int32 UserType = 2;
+    required string NickName = 3;
+    required int32 FaceID = 4;
+    required int32 Sex = 5;
+    required int64 CashAmount = 6;
+    required int32 WinCount = 7;
+    required int32 LoseCount = 8;
+    required int32 DrawCount = 9;
+    required int32 RobotLevelID = 10;
+    optional int32 AvatarFrameID = 11;
+};
+
+message LogonRobotRet {
+    required int32 RobotCount = 1;
+    repeated RobotData UserData = 2;
+};
+
+message LogoutRobot {
+    required int32 ServerID = 1;
+    required int32 RobotUserID = 2;
+};
+
+message GameVer {
+    required int32 ServerID = 1;
+    required int32 GameID = 2;
+};
+
+message UpdateContestUser {
+    required int32 GameID = 1;
+    required int32 UserID = 2;
+    required int32 ContestID = 3;
+    required int32 ContestNo = 4;
+    required int32 FlagID = 5;
+    required int32 TableNo = 6;
+    required int32 PlayTime = 7;
+    required int32 RemainScore = 8;
+    required int32 Score = 9;
+};
+
+message GetConestUser {
+    required int32 GameID = 1;
+    required int32 UserID = 2;
+};
+
+//渠道遊戲
+message GetAreaShowGameFlagListMsg {
+    repeated AreaShowGameFlag AreaShowGameFlagList = 1;
+}

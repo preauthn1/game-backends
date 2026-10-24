@@ -1,0 +1,78 @@
+syntax = "proto2";
+
+package netproto;
+
+import "GameMsg.proto";
+
+message QZNN_GameStep {
+    required int32 Step = 1;
+};
+message QZNN_QiangZhuang {
+    required int32 Times = 1;
+};
+
+message QZNN_ConfirmZhuang {
+    optional int32 ZhuangUserID = 1;
+    optional int32 Times = 2;  //押注倍數 or 金額
+    repeated QZNN_UserBet UserBets = 3;
+};
+message QZNN_UserBet {
+    required int32 UserID = 1;
+    required int64 Times = 2;
+    required bool SystemSet = 3;
+};
+message QZNN_XianJiaBetTimes {  //閒家押注
+    required int64 Times = 1;   //閑家倍數 or 閑家下注金額
+};
+message QZNN_NotifyXianJiaBetTimes {
+    repeated QZNN_UserBet UserBets = 1;
+};
+message QZNN_LastPokerCard {
+    required PokerCard Card = 1;
+};
+message QZNN_UserCardGroup {
+    repeated PokerCard CardsThree = 1;
+    repeated PokerCard CardsTwo = 2;
+};
+message QZNN_GameRet {
+    required QZNN_UserRet ZhuangRet = 1;
+    repeated QZNN_UserRet UserRet = 2;
+};
+
+message QZNN_UserRet {
+    required GameUser User = 1;
+    required int64 WinLose = 2;
+    required int32 NiuNiuRet = 3;
+    required int32 NiuNiuRetNumber = 4;
+    required int32 NiuNiuBetTimes = 5;
+    repeated PokerCard CardGroup = 6;
+    optional int64 JackpotBonus = 7;
+};
+message QZNN_GameSetting {
+    repeated int32 ZhuangBetTimes = 1;
+    repeated int32 XianBetTimes = 2;
+    required int32 QiangZhuangTimeout = 3;
+    required int32 XianBetTimeout = 4;
+    required int32 CardGroupTimeout = 5;
+    required int32 BaseScore = 6;
+    required int32 TableNo = 7;
+    required int32 GameID = 8;
+    required int32 ReadyTimeout = 9;
+};
+message QZNN_GameScene {
+    required int32 GameStep = 1;
+    optional UserPoker UserPoker = 2;
+    optional QZNN_ConfirmZhuang ZhuangInfo = 3;
+    optional QZNN_NotifyXianJiaBetTimes XianInfo = 4;
+    optional int32 ElapsedSeconds = 5;
+    optional QZNN_GameRet GameRet = 6;
+    repeated int32 FinishedGroupUsers = 7;
+    optional QZNN_UserBetInfo UserBetInfo = 8;
+};
+message QZNN_NotifyUserGroupFinish {
+    optional int32 UserID = 1;
+};
+message QZNN_UserBetInfo {  //押注倍數 or 金額範圍
+    repeated int32 ZhuangBetTimes = 1;
+    repeated int64 XianBetTimes = 2;  //閒家押注倍數 or 金額範圍
+};

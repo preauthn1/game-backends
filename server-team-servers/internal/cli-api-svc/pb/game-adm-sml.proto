@@ -1,0 +1,130 @@
+syntax = "proto3";
+
+option go_package = "/cliapisvc";
+
+package cliapisvc;
+
+import "common.proto";
+
+service GameAdminSML {
+    rpc TableDashboard (SMLQueryTableDashBoard) returns ( SMLTableDashboard);
+    rpc TableDashboardStream (SMLQueryTableDashBoard) returns ( stream SMLTableDashboard);
+    rpc Cheat (SMLCheatRequest) returns (Empty);
+    rpc SetSpecialRewardCount (SetSpecialRewardCountRequest) returns (Empty);
+    rpc IncreaseSysPool (IncreaseSysPoolRequest) returns (Empty);
+    rpc AssignNextAward (SMLAssignNextAwardRequest) returns (Empty);
+    rpc SetTableDisabled (SMLSetTableDisabledRequest) returns (Empty);
+}
+
+// 操作返回代碼
+enum SML_ResultCode {
+    SML_ResultCodeSuccess = 0;               // 成功
+
+    SML_ResultCodeMoneyNotEnough = 100;      // 用戶金額不足
+    SML_ResultCodeIllegalBetType = 101;      // 非法的下注區域
+    SML_ResultCodeIllegalBetMoney = 102;     // 非法的下注金額
+    SML_ResultCodeBetTypeOverLimit = 104;    // 此類下注已達上限
+    SML_ResultCodeAlreadyBetOtherSide = 105; // 不能對壓
+    SML_ResultCodeCarryMoneyNotEnough = 106; // 攜帶金額低於限制
+    SML_ResultCodeNotBetStep = 107;          // 非下注狀態
+
+    SML_ResultCodeInvalidArgument = 9400;    // 參數錯誤
+    SML_ResultCodeInternalError = 9500;      // 內部錯誤
+}
+
+// 下注類型
+enum SML_BetType {
+    SML_BetTypeNone = 0;
+
+    SML_BetTypeGoal = 16;           // 進球
+    SML_BetTypeGoalLeft = 17;       // 進球-左
+    SML_BetTypeGoalMiddle = 18;     // 進球-中
+    SML_BetTypeGoalRight = 19;      // 進球-右
+
+    SML_BetTypeSave = 32;           // 守住
+    SML_BetTypeSaveLeft = 33;       // 守住-左
+    SML_BetTypeSaveMiddle = 34;     // 守住-中
+    SML_BetTypeSaveRight = 35;      // 守住-右
+}
+
+// 遊戲階段
+enum SML_Step {
+    SML_StepPrepare = 0;         // 準備中
+    SML_StepStart = 1;           // 遊戲開始表演動畫
+    SML_StepWaitBet = 2;         // 等待下注
+    SML_StepShowAward = 3;       // 開獎動畫
+    SML_StepFinish = 4;          // 遊戲結束狀態
+}
+
+message SMLPlayerInfo {
+    int32 PID = 1;
+    int64 BetAmount = 2;
+    bool IsRobot = 3;
+    int64 Goal = 11;
+    int64 GoalLeft = 12;
+    int64 GoalMiddle = 13;
+    int64 GoalRight = 14;
+    int64 Save = 21;
+    int64 SaveLeft = 22;
+    int64 SaveMiddle = 23;
+    int64 SaveRight = 24;
+}
+
+message SMLBetAreaInfo {
+    int64 Total = 1;                    // 所有下注金額
+    int64 PlayerCount = 2;              // 玩家數量
+    int64 PlayerBetAmount = 3;          // 玩家下注金額
+    int64 RobotCount = 4;               // 機器人數量
+    int64 RobotBetAmount = 5;           // 機器人下注金額
+}
+
+message SMLTableDashboard {
+    int32 TableID = 1;                  // 桌號
+    SML_Step Step = 2;                  // 遊戲狀態
+    SML_BetType NextAward = 3;          // 下一場指定開獎
+    int64 SysPool = 4;                  // 系統水池
+    int64 SysPoolWinLine = 5;           // 系統水池贏錢線
+    repeated SML_BetType History = 6;   // 歷史路單
+    repeated SMLPlayerInfo Players = 7; // 所有玩家
+    bool Cheatable = 8;                 // 現在可否作弊
+    bool Cheating = 9;                  // 是否開啟作弊
+
+    SMLBetAreaInfo Goal = 11;           // 下注區域 進球
+    SMLBetAreaInfo GoalLeft = 12;       // 下注區域 進球-左
+    SMLBetAreaInfo GoalMiddle = 13;     // 下注區域 進球-中
+    SMLBetAreaInfo GoalRight = 14;      // 下注區域 進球-右
+    SMLBetAreaInfo Save = 21;           // 下注區域 守住
+    SMLBetAreaInfo SaveLeft = 22;       // 下注區域 守住-左
+    SMLBetAreaInfo SaveMiddle = 23;     // 下注區域 守住-中
+    SMLBetAreaInfo SaveRight = 24;      // 下注區域 守住-右
+
+    int64 TotalBetAmount = 51; // 今日總下注
+    int64 TotalWinLossAmount = 52; // 今日總輸贏
+    int64 TotalValidAmount = 53; // 今日總流水
+
+    int32 SpecialRewardCount = 101;     // 特殊獎勵次數
+    int32 SpecialRewardRate = 102;      // 特殊獎勵機率 百分比
+
+    repeated SML_BetType NextAwardList = 201; // 下一場指定開獎列表
+    
+    bool TableDisabled = 301; // 是否禁用
+}
+
+message SMLQueryTableDashBoard {
+    int32 TableID = 1; // 桌號
+}
+
+message SMLCheatRequest {
+    int32 TableID = 1; // 桌號
+    int32 KickCnt = 2; // 踢人數
+}
+
+message SMLSetTableDisabledRequest {
+    int32 TableID = 1; // 桌號
+    bool Disabled = 2; // 是否禁用
+}
+
+message SMLAssignNextAwardRequest {
+    int32 TableID = 1; // 桌號
+    SML_BetType NextAward = 2; // 下一場指定開獎
+}

@@ -1,0 +1,68 @@
+game:
+  tbniuniu:
+    id: 7
+    name: 通比牛牛
+    group: poker
+    room:
+      - serverid: 207000410
+        configs:
+          gameserver.dat: |
+            [gameserver]
+            gameid=2070				 //游戏ID
+            gamename=通比牛牛			 //游戏名称
+            flag=41				     //显示名称,客户端可根据此名称将房间分类显示
+            minplayer=2              //游戏最小人数
+            maxplayer=5              //游戏最大人数
+            tablecount=100			 //桌子数
+            seatcount=5				 //椅子数
+            loginmoney=1000			 //进入游戏最小积分
+            scoremode=0					//0 即时写分 1退房间写分
+            maxuser=500					//最大人数
+            taxscale=5					//抽水比例
+            readywaittime=30			//举手超时时间,单位秒
+            reghallserverinterval=5	//注册广场时间间隔,单位秒
+            basescore=20					//底分
+            pokertype=1					//1随机发牌 2 发牌器发牌
+            deallog=2					//牌局记录器类型 0 不记录 1 文本 2 db
+            maxgamecountsametable=2		//同一桌最大游戏次数
+
+            [gamequeue]
+            gamematchwaitmintime=1		//撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		//撮合时间间隔范围大值,单位秒
+            againstsameip=0				//同IP不分配一起
+            againstlastgame=1			//最后一次游戏过的用户不分配一起
+            gameendaction=0				//游戏结束后动作,0 无动作 1 准备
+            queuetype=0					//撮合类型 0 时间随机 1 固定人数
+            queueusercount=1			//排队人数
+            queuetimeout=3				//排队人数超时
+
+            [robot]
+            enable=1										//是否开启机器人
+            logoninterval=60								//加载机器人时间间隔
+            minmneyamount=5000								//机器人最小金币数
+            maxmoneyamount=500000000						//机器人最大金币数
+            queuecheckwaitspan=5,10							//配桌检查时间间隔
+            queueagainwaitspan=3,5							//继续配桌时间间隔
+            tablemaxusercount=3								//配桌时桌子上最大人数
+            tableminusercount=1								//配桌时桌子上最小人数
+            gameendleaveodds=0.2							//游戏结束时离开游戏几率
+            autositwaitspan=300,600								//主动入座时间间隔
+            gameactionwaitspan=1,4							//游戏动作响应时间间隔
+            gamereadywaitspan=3,5							//游戏准备相应时间间隔
+            maxusergameendleaveodds=0.3						//人数达到上限时离开游戏几率
+            maxcardsrndlvl=5								//机器人换牌概率值
+
+            [gamelogic]
+            timeout_basescore=3								//底注超时时间
+            timeout_group=10									//组牌超时时间
+            baseScoreTimes=1,2,3,4							//底注倍数
+            baidaking=1										//百搭鬼牌 0 關閉 1 開啟
+
+          robot.dat: |
+            [csize]
+            cn=1
+
+            [c1]
+            size0=3				//无牛选择倍数
+            size1_9=3			//牛1-9选择倍数
+            size10=3			//牛牛选择倍数

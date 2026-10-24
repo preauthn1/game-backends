@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://example.invalid/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{44448B04-8148-4324-BA1C-1EFC54F0E1DD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>game.Entity</RootNamespace>
+    <AssemblyName>game.Entity</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FW.Core.Helper, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\using\FW.Core.Helper.dll</HintPath>
+    </Reference>
+    <Reference Include="FW.Core.Repository">
+      <HintPath>..\..\using\FW.Core.Repository.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\..\using\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdminSys\DomainConfig.cs" />
+    <Compile Include="AdminSys\Sort.cs" />
+    <Compile Include="Agent\AgentApplyInfo.cs" />
+    <Compile Include="Agent\AgentReportLog.cs" />
+    <Compile Include="Agent\AgentTransferInfo.cs" />
+    <Compile Include="Agent\TransferLog.cs" />
+    <Compile Include="Agent\AgentTransferType.cs" />
+    <Compile Include="Agent\AgentUserInfo.cs" />
+    <Compile Include="Area\Area.cs" />
+    <Compile Include="Area\AreaAdminUser.cs" />
+    <Compile Include="Area\AreaGame.cs" />
+    <Compile Include="Area\AreaGameList.cs" />
+    <Compile Include="Area\Company.cs" />
+    <Compile Include="Area\Platform.cs" />
+    <Compile Include="Area\PlatformAdminUser.cs" />
+    <Compile Include="Area\PlatformDownload.cs" />
+    <Compile Include="Customer\QuestionHandleRecords.cs" />
+    <Compile Include="Customer\QuestionList.cs" />
+    <Compile Include="Customer\QuestionSites.cs" />
+    <Compile Include="Customer\ReplyContent.cs" />
+    <Compile Include="Customer\ReplyType.cs" />
+    <Compile Include="Customer\QuestionType.cs" />
+    <Compile Include="ForbidUser\ForbidAccount.cs" />
+    <Compile Include="ForbidUser\ForbidUser.cs" />
+    <Compile Include="ForbidUser\ForbidUserLog.cs" />
+    <Compile Include="Game\Advertisement.cs" />
+    <Compile Include="Game\AreaConfig.cs" />
+    <Compile Include="Game\Campaign.cs" />
+    <Compile Include="Game\FishPlayerPool.cs" />
+    <Compile Include="Game\GameAliasName.cs" />
+    <Compile Include="Game\GameSort.cs" />
+    <Compile Include="Game\MonitorUser.cs" />
+    <Compile Include="Game\Certification.cs" />
+    <Compile Include="Game\ProtectNodeLog.cs" />
+    <Compile Include="Game\ServerRelations.cs" />
+    <Compile Include="Game\SuperToolAssignRewardDetail.cs" />
+    <Compile Include="Game\SuperToolAssignReward.cs" />
+    <Compile Include="Game\SuperToolChangeLog.cs" />
+    <Compile Include="Game\SuperToolDetailInfo.cs" />
+    <Compile Include="Game\SuperToolFishRanking.cs" />
+    <Compile Include="Game\SuperToolFishSystemRecord.cs" />
+    <Compile Include="Game\SuperToolFishSystemReward.cs" />
+    <Compile Include="Game\SuperToolTodayRanking.cs" />
+    <Compile Include="Game\SuperToolTodayUser.cs" />
+    <Compile Include="Game\SuperToolVIPUser.cs" />
+    <Compile Include="Game\SuperToolVIPUser_ZJH.cs" />
+    <Compile Include="Money\ConvertSuspicious.cs" />
+    <Compile Include="Game\ForbidChatUser.cs" />
+    <Compile Include="Game\ForbidIPAddress.cs" />
+    <Compile Include="Game\HallVersionInfo.cs" />
+    <Compile Include="Game\RobotServerConfig.cs" />
+    <Compile Include="Game\WinAnnConfig.cs" />
+    <Compile Include="Game\Game.cs" />
+    <Compile Include="Game\GameLog.cs" />
+    <Compile Include="Game\GameMessage.cs" />
+    <Compile Include="Game\GameServer.cs" />
+    <Compile Include="Game\GameUserOnLine.cs" />
+    <Compile Include="Game\HallUserOnLine.cs" />
+    <Compile Include="Game\HallVersion.cs" />
+    <Compile Include="Game\NumAddition.cs" />
+    <Compile Include="Game\PlazaServer.cs" />
+    <Compile Include="Game\UserGameInfo.cs" />
+    <Compile Include="Game\WinPrizeLog.cs" />
+    <Compile Include="Game\WinLostLeaderboard.cs" />
+    <Compile Include="Message\Message.cs" />
+    <Compile Include="Message\MessageList.cs" />
+    <Compile Include="Message\ReceiveUser.cs" />
+    <Compile Include="Message\SendUser.cs" />
+    <Compile Include="Money\Bank.cs" />
+    <Compile Include="Money\BankLog.cs" />
+    <Compile Include="Money\BankSourceType.cs" />
+    <Compile Include="Game\SystemConfig.cs" />
+    <Compile Include="Money\Cash.cs" />
+    <Compile Include="MoneyAttribute.cs" />
+    <Compile Include="Money\ConvertLog.cs" />
+    <Compile Include="Money\MoneyLog.cs" />
+    <Compile Include="Money\MoneySourceGroup.cs" />
+    <Compile Include="Money\MoneySourceType.cs" />
+    <Compile Include="NoAuthorizationAttribute.cs" />
+    <Compile Include="Notify\Attr.cs" />
+    <Compile Include="Notify\VCode.cs" />
+    <Compile Include="Pay\CDPayOrder.cs" />
+    <Compile Include="Pay\CDPayType.cs" />
+    <Compile Include="Pay\ConvertGateway.cs" />
+    <Compile Include="Pay\GashPaySettle.cs" />
+    <Compile Include="Pay\OrderListDTO.cs" />
+    <Compile Include="Pay\OrderLog.cs" />
+    <Compile Include="Pay\PayPointConvert.cs" />
+    <Compile Include="Pay\PayTypeEnum.cs" />
+    <Compile Include="Pay\PayGateway.cs" />
+    <Compile Include="Pay\PlatformLog.cs" />
+    <Compile Include="Pay\RedirectData.cs" />
+    <Compile Include="PerLog\DetailLog.cs" />
+    <Compile Include="PerLog\OnlineUser.cs" />
+    <Compile Include="PerLog\PerGameLog.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AdminSys\AdminLog.cs" />
+    <Compile Include="AdminSys\AdminUser.cs" />
+    <Compile Include="AdminSys\QuickAction.cs" />
+    <Compile Include="AdminSys\Right.cs" />
+    <Compile Include="AdminSys\Role.cs" />
+    <Compile Include="AdminSys\RoleRight.cs" />
+    <Compile Include="AdminSys\UserRight.cs" />
+    <Compile Include="AdminSys\UserRole.cs" />
+    <Compile Include="Stat\AgentTotal.cs" />
+    <Compile Include="Stat\AgentTransferSourceLog.cs" />
+    <Compile Include="Agent\AgentTransferLog.cs" />
+    <Compile Include="Stat\AreaDataDay.cs" />
+    <Compile Include="Stat\AreaDataMonth_Area.cs" />
+    <Compile Include="Stat\AreaDataMonth.cs" />
+    <Compile Include="Stat\BankSourceLog.cs" />
+    <Compile Include="Stat\ActiveUserKeepLog.cs" />
+    <Compile Include="Stat\ChargeKeepLog.cs" />
+    <Compile Include="Stat\DayMaxGameOnLineUserLog.cs" />
+    <Compile Include="Stat\DayMaxHallOnLineUserLog.cs" />
+    <Compile Include="Stat\DayMaxServerOnLineUserLog.cs" />
+    <Compile Include="Stat\DayMaxTotalGameOnLineLog.cs" />
+    <Compile Include="Stat\GameOnlineChatData.cs" />
+    <Compile Include="Stat\GameOnLineRobotLog.cs" />
+    <Compile Include="Stat\GameOnLineUserLog.cs" />
+    <Compile Include="Stat\GameServerTaxLog.cs" />
+    <Compile Include="Stat\ServerOnLineRobotLog.cs" />
+    <Compile Include="Stat\SystemGainLog.cs" />
+    <Compile Include="Stat\GameTaxLog.cs" />
+    <Compile Include="Stat\HallOnLineUserLog.cs" />
+    <Compile Include="Stat\KeepLog.cs" />
+    <Compile Include="Stat\LogonUserLog.cs" />
+    <Compile Include="Stat\MoneySourceLog.cs" />
+    <Compile Include="Stat\RegUserLog.cs" />
+    <Compile Include="Stat\ServerOnLineUserLog.cs" />
+    <Compile Include="Stat\SumMoneyLog.cs" />
+    <Compile Include="Stat\TotalGameOnLineRobotLog.cs" />
+    <Compile Include="Stat\TotalGameOnLineLog.cs" />
+    <Compile Include="Stat\TotalGameOnLineLogArea.cs" />
+    <Compile Include="Stat\TransferSourceLog.cs" />
+    <Compile Include="Stat\UserGameTotalRank.cs" />
+    <Compile Include="Stat\UserMoneyReport.cs" />
+    <Compile Include="Users\SevenDaysLoginBonus.cs" />
+    <Compile Include="Users\CSOnBoard.cs" />
+    <Compile Include="Users\EventBonus.cs" />
+    <Compile Include="Users\EventContest.cs" />
+    <Compile Include="Users\EventDetailLog.cs" />
+    <Compile Include="Users\EventLog.cs" />
+    <Compile Include="Users\EventRank.cs" />
+    <Compile Include="Users\EventReward.cs" />
+    <Compile Include="Users\EventSetting.cs" />
+    <Compile Include="Users\FocusUser.cs" />
+    <Compile Include="Users\GiveName.cs" />
+    <Compile Include="Stat\GradeSetting.cs" />
+    <Compile Include="Users\LogonLog.cs" />
+    <Compile Include="Users\LogonQuestionLog.cs" />
+    <Compile Include="Users\QuestionLog.cs" />
+    <Compile Include="Users\QuestionLogViewModel.cs" />
+    <Compile Include="Users\RegCountLog.cs" />
+    <Compile Include="Users\RegUserInfo.cs" />
+    <Compile Include="Users\SavePwd.cs" />
+    <Compile Include="Users\UserDetailInfoDTO.cs" />
+    <Compile Include="Users\UserIdentity.cs" />
+    <Compile Include="Users\UserInfo.cs" />
+    <Compile Include="Users\UserInfoChangeLog.cs" />
+    <Compile Include="Users\UserInfoDetail.cs" />
+    <Compile Include="Users\UserInfoToken.cs" />
+    <Compile Include="Users\UserRank.cs" />
+    <Compile Include="Users\UserTicket.cs" />
+    <Compile Include="Users\UserTicketSummary.cs" />
+    <Compile Include="Users\VIPUserInfo.cs" />
+    <Compile Include="Warning\UserFocus.cs" />
+    <Compile Include="Warning\WarningLog.cs" />
+    <Compile Include="Warning\WarningStatus.cs" />
+    <Compile Include="Warning\WarningType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\game.Infrastructure\game.Infrastructure.csproj">
+      <Project>{c8931862-d42a-41f5-84c1-9e638ac564d3}</Project>
+      <Name>game.Infrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

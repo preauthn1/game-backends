@@ -1,0 +1,98 @@
+﻿@using FW.Core.AdminSys.WebUI
+@model List<FW.Core.AdminSys.Provider.Entity.RightViewModel>
+@{
+    int parentID = ViewBag.parentID;
+    int TopID = ViewBag.TopID;
+    string parentRightUrl = "/Admin/Right/List?parentid=" + TopID.ToString();
+}
+
+<style>
+    .count_0
+    {
+        color:#DDD;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12 ">
+        <div class="table-scrollable">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>名称</th>
+                        <th>类型</th>
+                        <th>标识</th>
+                        <th>页面地址</th>
+                        <th class="algin-c" style="width:10%;">有此权限的帐号</th>
+                        <th class="algin-c" style="width:10%;">有此权限的角色</th>
+                        <th class="algin-c" style="width:5%;">排序</th>
+                        <th class="algin-c" style="width:5%;">显示</th>
+                        <th style="width:15%;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var right in Model)
+                    {
+                        string styleUserCount = string.Format("count_{0}" , right.UserRightCount);
+                        string styleRoleCount = string.Format("count_{0}" , right.RoleRightCount);
+
+                    <tr>
+                        <td>@right.RightID</td>
+                        <td><a href="@Url.Action("List", new {parentID = right.RightID})">@right.RightName</a></td>
+                        <td>@(right.RightType == FW.Core.AdminSys.Provider.Entity.RightType.CommandRight ? "功能" : "页面")</td>
+                        <td>@right.RightToken</td>
+                        <td>@right.PageUrl</td>
+                        <td class="algin-c @styleUserCount " title="@right.UserIDsText"  >@right.UserRightCount</td>
+                        <td class="algin-c @styleRoleCount " title="@right.RoleIDsText"  >@right.RoleRightCount</td>
+                        <td class="algin-c">@right.Sort</td>
+                        <td class="algin-c">@(right.ShowInMenu ? "v" : "")</td>
+                        <td>
+                            @Html.ModifyLinkWithRightHref(href: Url.Action("Modify", new { id = right.RightID }))
+                            &nbsp;&nbsp;
+                            @Html.LinkWithRight(href: "#", action: "Del", onclick: "del(" + @right.RightID + ")")
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+@section RightTab
+{
+   @Html.Tab("返回父级权限","window.location.href='"+parentRightUrl+"'")    
+}
+
+
+@section initScripts
+    {
+    <script>
+        function onChangeTab(token) {
+            if (token == "_right_add_get") {
+                var url = "@Url.Action("Add")";
+                url = url + "?parentID=@parentID";
+
+                window.location.href = url;
+
+                return false;
+            }
+
+            return true;
+        }
+
+        function del(id) {
+            if (confirm('您确认想要删除记录吗？')) {
+                var url = "@Url.Action("Del")";
+                url = url + "?id=";
+                url = url + id;
+                window.location.href = url;
+                return;
+            };
+        }
+    </script>
+}
+
+

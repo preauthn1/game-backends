@@ -1,0 +1,177 @@
+﻿@model game.AdminSystem.Models.ViewModels.PaymentPlatformSettingUpdateAllViewModel
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />   
+    <link href="@Url.Content("~/Content/fontawesome/css/fontawesome.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    label {
+        line-height: 30px;
+    }
+
+    .smallBlock {
+        display: inline-block;
+        padding: 6px;
+    }
+
+        .smallBlock.size-m {
+            width: 225px;
+        }
+
+    .padding-c {
+        padding: 15px 5px 5px 5px !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box grey" style="margin-bottom:0px;">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>批量修改权重
+                </div>
+            </div>
+            <div class="portlet-body form">
+
+
+                <!-- BEGIN FORM-->
+                <form id="updateData" action="/PaymentPlatformSetting/UpdateAllPriority" method="post" class="form-horizontal form-bordered" novalidate="novalidate">
+
+
+
+                    <input type="hidden" id="GWID" name="GWID" value="@Model.GWID" />
+
+                    <input type="hidden" id="PlatformID" name="PlatformID" value="@Model.PlatformID" />
+
+
+                    <div class="form-body">
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">支付厂商名称</label>
+                            <div class="col-md-3 padding-c">
+                                <label>@Model.GWName</label>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">當前可用支付方式权重</label>
+                            <div class="col-md-9">
+
+
+                                <div style=" padding: 5px 15px; color: #5a5a5a; background: #EEE; width: 400px ; margin-top:10px;">
+
+                                    <div class="smallBlock size-m">
+                                        <b>支付方式</b>
+                                    </div>
+                                    <div class="smallBlock">
+                                        <b>权重</b>
+                                    </div>
+
+                                    @foreach (var item in Model.SameTypePaymentGateways.OrderByDescending(x => x.Priority))
+                                    {
+                                        <div>
+
+                                            <div class="smallBlock size-m">@item.TypeName</div>
+                                            <div class="smallBlock">@item.Priority</div>
+                                        </div>
+                                    }
+
+                                </div>
+
+
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">預計全部修改為</label>
+                            <div class="col-md-3">
+                                <input type="text" id="Priority" name="Priority" class="form-control input-medium" value="1">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+
+                            <div class="col-md-3">
+
+                            </div>
+
+
+                            <div class="col-md-9">
+
+                                <div>
+                                    <h5>
+                                        <b>
+
+                                        </b>
+                                    </h5>
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-12" style="text-align:center;">
+                            <button id="btnOk" type="submit" class="btn dark" style="" onclick=""><i class="fa fa-file-o"></i> 确定</button>
+
+
+                            <div style="color: #3a8a31;margin-top:5px;text-align:center;">
+
+                                <i class="fa fa-exclamation-circle"></i>
+
+                                若资料笔数多可能需较长时间，按下储存时，请耐心等候
+                            </div>
+
+                        </div>
+
+                    </div>
+                </form>
+
+
+
+
+                <!-- END FORM-->
+            </div>
+
+
+
+        </div>
+
+    </div>
+</div>
+
+
+@section initScripts
+{
+    <script>
+        $("#updateData").validate({
+            rules: {
+                Priority: {
+                    required: true,
+                    min: 1,
+                    max: 99999
+                }
+            },
+            messages: {
+                Priority: {
+                    required: "不能为空",
+                    min: '不得小於1',
+                    min: '不得大於99999'
+                }
+            }
+        });
+
+    </script>
+}

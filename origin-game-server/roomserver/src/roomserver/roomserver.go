@@ -1,0 +1,125 @@
+package roomserver
+
+import (
+	"conf"
+	"config"
+	"fmt"
+	"gamelogic"
+	"gameserver"
+	"gameserver/serverdefense"
+	"math/rand"
+	"mlog"
+	"mylog"
+	"network"
+	"player"
+	"robot/robotlogic"
+	"roomlogic"
+	"serverhandler"
+	"time"
+	"util"
+)
+
+var GameLogicCreator gamelogic.GameLogicFunc
+
+var RobotLogicCreator robotlogic.RobotLogicFunc
+
+var SuperToolCreator gamelogic.SuperToolFunc
+
+func init() {
+	//初始化机器人逻辑创建函数
+	RobotLogicCreator = robotlogic.EmptyRobotLogicCreator
+	SuperToolCreator = gamelogic.EmptySuperToolCreator
+	go func() {
+		mins := 0
+		for {
+			example.invalid("更換隨機種子, 距離上次更換種子己經過去 %v mins", mins/60)
+			rand.Seed(time.Now().UnixNano())
+			mins = util.RndInt(10, 60*60)
+			time.Sleep(time.Duration(mins) * time.Second)
+		}
+	}()
+}
+
+func StartGameLogicServer() {
+
+	//加载配置信息
+	cfgs := config.GetConfigGroup(conf.ConfigDirName)
+
+	serverInfo := cfgs.GetConfig(gamelogic.CONFIGFILENAME_SERVERINFO)
+	cfg := cfgs.GetConfig(gamelogic.CONFIGFILENAME_GAMESERVER)
+
+	//获取配置信息
+	servercfg := gamelogic.GetGameServerConfig(serverInfo, cfg)
+
+	//初始化 mlog
+	mlog.SetServerString(fmt.Sprintf("%s:%d_%d", servercfg.GameName, servercfg.GameID, servercfg.ServerID))
+
+	//gameserver侦听地址
+	gscfg := network.NewServerCfg(servercfg.ServerAddr, conf.TCPSERVERCONN_ROOM_CLIENT, conf.TCPSERVERNAME_ROOM_CLIENT)
+
+	servermode := serverInfo.GetConfigInt("defense", "servermode")
+	defenseCfg := serverdefense.ParseDefenseConfig(serverInfo)
+	gs := gameserver.NewGameServer([]*network.ServerCfg{gscfg}, servercfg.DBServerAddr, servercfg.NotifyServerAddr, servercfg.HttpServerAddr, int(servercfg.ServerID), conf.ServerType_GameServer, servermode, int(servercfg.GameID), defenseCfg, servercfg.HostAndBackup, servercfg.SuperToolCgf, servercfg.Flag)
+
+	err := gs.Init()
+
+	//初始化mylog queue
+	//mylog.InitDatabaseQueue(serverInfo.GetConfigValue("myconn", "connstring"), serverInfo.GetConfigInt("myconn", "pool"), serverInfo.GetConfigInt("myconn", "perwritecount"), int(servercfg.ServerID), mlog.NewDefaultLogger())
+	mylog.InitMongoDatabaseQueue(serverInfo.GetConfigValue("mongoconn", "connstring"),
+		serverInfo.GetConfigInt("mongoconn", "pool"),
+		serverInfo.GetConfigInt("mongoconn", "perwritecount"),
+		int(servercfg.ServerID), mlog.NewDefaultLogger(),
+		serverInfo.GetConfigValue("mongoconn", "database"),
+		serverInfo.GetConfigValue("mongoconn", "collection"))
+
+	if err != nil {
+		mlog.Error("初始化服务器错误,%v", err)
+		return
+	}
+
+	//创建房间对象
+	room := createRoom(servercfg, gs.GameServerRunCtx.PlayerManager)
+	//超端服務
+	room.SuperToolService = SuperToolCreator(room, gs.GameServerRunCtx.TimerFuncManager, gs.GameServerRunCtx.DBMsgQueue)
+	room.SuperToolService.Start()
+
+	//创建房间逻辑管理器
+	roomligics := gamelogic.NewGameLogicManager(room, cfgs, gs.GameServerRunCtx.TimerFuncManager, GameLogicCreator)
+
+	//房间逻辑模块
+	roomlogicmodule := roomlogic.NewRoomLogicModule(gs, room, roomligics, RobotLogicCreator, cfgs)
+	gs.GameServerRunCtx.ModuleServer.ModuleGroup.Register(roomlogicmodule)
+
+	//hallserver 注册
+	hallregHandler := serverhandler.NewHallServerRegHandler(servercfg.HallServerAddr, room, servercfg.RegHallServerInterval, roomlogicmodule.GetRobotManager())
+	gs.ServerHandler.AddHandler(hallregHandler)
+	roomlogicmodule.SetHallregHandler(hallregHandler)
+	//停服
+	gs.ServerHandler.AddHandler(serverhandler.NewServerStopHandler(roomlogicmodule.ServerStatus, 60, room))
+
+	//初始化RPC IP黑名单
+	gs.InitRPCBlackIPList(roomlogicmodule.RPCMsgHandler)
+
+	//启动服务器
+	err = gs.Start()
+	if err != nil {
+		mlog.Error("服务器启动错误,%v", err)
+		return
+	}
+
+	example.invalid("gameserver  start...")
+	example.invalid(servercfg.String())
+
+	//mlog.System("log off")
+	//mlog.GetCLogger().Enable(false)
+	select {}
+}
+
+//创建房间对象
+func createRoom(cfg *gamelogic.GameServerConfig, playerManager *player.PlayerManager) *gamelogic.Room {
+
+	rumanager := gamelogic.NewRoomUserManager(playerManager)
+	room := gamelogic.NewRoom(cfg, rumanager)
+
+	return room
+}

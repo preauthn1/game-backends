@@ -1,0 +1,25 @@
+﻿CREATE TABLE [dbo].[UserAgentTaxLog] (
+    [ID]               BIGINT     IDENTITY (1, 1) NOT NULL,
+    [LogDate]          DATETIME   NOT NULL,
+    [LogTime]          TINYINT    NOT NULL,
+    [UserID]           INT        NOT NULL,
+    [TaxAmount]        BIGINT     NOT NULL,
+    [Status]           TINYINT    NOT NULL,
+    [UserID1]          INT        NULL,
+    [UserID1Level]     TINYINT    NULL,
+    [UserID1Rate]      FLOAT (53) NULL,
+    [UserID1TaxAmount] BIGINT     NULL,
+    [UserID2]          INT        NULL,
+    [UserID2Level]     TINYINT    NULL,
+    [UserID2Rate]      FLOAT (53) NULL,
+    [UserID2TaxAmount] BIGINT     NULL,
+    [UserID3]          INT        NULL,
+    [UserID3Level]     TINYINT    NULL,
+    [UserID3Rate]      FLOAT (53) NULL,
+    [UserID3TaxAmount] BIGINT     NULL,
+    [User1ConvertID]   BIGINT     NULL,
+    [User2ConvertID]   BIGINT     NULL,
+    [User3ConvertID]   BIGINT     NULL,
+    CONSTRAINT [PK_UserAgentTaxLog] PRIMARY KEY CLUSTERED ([ID] ASC)
+);
+

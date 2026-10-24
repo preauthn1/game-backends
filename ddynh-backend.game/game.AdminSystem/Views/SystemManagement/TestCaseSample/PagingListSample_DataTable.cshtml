@@ -1,0 +1,98 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using game.Entity.Pay
+@using game.AdminSystem.Models.ViewModels
+
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+
+    table td {
+        padding: 7px 10px !important;
+    }
+
+    .row {
+        margin-left: 0px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_PlatformSelect", false)
+                @Html.Partial("_AreaSelectRelatePlatform")
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                </div>
+
+                <div class="hr-s"></div>
+
+            </form>
+
+            <div class="content">
+                <table id="transferInfo_table" class="display" style="width:100%"></table>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section initScripts{
+    <script>
+
+        function createTable() {
+            const url = '/PromotionEvent/AjaxGetEventList'
+            const thead =
+                [
+                    { "sTitle": "活动名称", "mData": "Title", "width": "20%" },
+                    { "sTitle": "活动备注", "mData": "Memo" },
+                    { "sTitle": "开启状态", "mData": "Status", "className": "algin-c" },
+                    { "sTitle": "渠道名称", "mData": "AreaName" },
+                    { "sTitle": "首页中显示", "mData": "IsHomePageVisible", "className": "algin-c" },
+                    { "sTitle": "公告页显示", "mData": "IsAnnounementPageVisible", "className": "algin-c" },
+                    { "sTitle": "建立时间", "mData": "CreateTime" },
+                    { "sTitle": "修改时间", "mData": "UpdateTime" },
+                    { "sTitle": "修改人员", "mData": "UpdateBy", "width": "7%" },
+                    {
+                        "sTitle": "操作", "mData": "Title",
+                        "render": function (data, type, row) {
+
+                            var html = "";
+                            html = html + '<a id="" class="btn btn-sm dark" style="" href="/PromotionEvent/Edit?orgId=7">编辑</a>'
+                            html = html + '<a id="" class="btn btn-sm dark" style="" href="/PromotionEvent/Edit?orgId=7">复制并同步</a>'
+                            return html;
+                        }
+                    }
+                ]
+
+            var platformid = $('#platformid').val();
+            var areaID = $("#areaID").val();
+
+            //将表单上的筛选条件、下拉选单带入api
+            const data =
+            {
+                platformid: platformid,
+                areaID: areaID
+            }
+
+            createDataTable('transferInfo', thead, url, data);
+        }
+
+
+        $(function () {
+            fillFormData('form_search');
+            createTable();
+        })
+
+    </script>
+}

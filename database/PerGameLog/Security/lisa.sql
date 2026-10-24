@@ -1,0 +1,2 @@
+﻿CREATE USER [lisa] WITHOUT LOGIN;
+

@@ -1,0 +1,57 @@
+﻿禮碼 task
+
+1. create table 預產禮碼
+	Table : Club02.dbo.CouponCode
+	SP: Club02.dbo.PrWeb_Coupon_GenderCouponCode
+
+2. create table 取用禮碼
+	Table : Club02.dbo.CouponUserData , Club02.dbo.CouponMultiUserLog
+
+3. table feature: moneylog 新增禮碼欄位
+	script : 1.Tables.sql會處理
+		[LogDB].[Game].[GameLog],[LogDB].[Money].[MoneyLog],[CenterDB].[Money].[Cash] 新增CouponAmount欄位
+		[CenterDB].[Users].[UserInfo] 新增SumCouponAmount欄位	
+
+4. table feature: pergamelog 新增禮碼欄位
+	script : 1.Tables.sql會處理
+		[PerGameLog].[PerLog].[DetailLog] 新增CouponAmount欄位
+	SP : PerGameLog.dbo.PrGs_AddPerGameLog需更新
+	FN : PerGameLog.dbo.Fn_GetUserDetailInfo須更新
+
+5. sp feature:  即時寫分新增禮碼
+	SP : CenterDB.dbo.PrPsWeb_UpdateUserCash
+
+6. sp feature:  退房寫moneylog新增禮碼
+	SP : CenterDB.dbo.PrGs_UserLogout
+
+7. sp feature:  代理後台首頁統計資料
+	SP : Club02.dbo.PrWeb_Coupon_Stat_CouponData_Get
+
+8. sp feature:  玩家查詢
+	SP : Club02.[dbo].[PrWeb_Coupon_CouponDataByUserID_Get]
+
+9. sp feature:  禮碼詳情
+	SP : Club02.[dbo].PrWeb_Coupon_CouponDataByCode_Get
+
+10. sp feature: 禮碼生成工具
+	SP: Club02.dbo.PrWeb_Coupon_CreateCouponQuantity
+
+11. sp feature: 玩家兌換禮碼
+	SP: CenterDB.dbo.PrPs_Coupon_UpdateCouponByUserID
+		(CenterDB呼叫Club02.dbo.PrPs_Coupon_UpdateCouponByUserID)
+
+12. table feature: 玩家資訊新增禮碼欄位
+	script : 1.Tables.sql會處理
+		[CenterDB].[Money].[Cash] 新增CouponAmount欄位
+
+13. sp feature: 玩家資訊新增禮碼欄位
+	SP : CenterDB.dbo.PrPs_User_GetUserInfo
+	     CenterDB.dbo.PrPs_UserLogon_Common
+
+14. create table 己消耗金額統計
+	script : 1.Tables.sql會處理
+		[LogDB].[Stat].[StatisticsMoneySourceLog_New] 新增CouponAmount欄位
+		[LogDB].[Stat].[StatisticsUserAmount_Day] 新增CouponAmount/CouponCount欄位
+
+15. sp feature: 即時寫分時要把使用的禮碼加入統計
+	SP : CenterDB.dbo.PrPsWeb_UpdateUserCash

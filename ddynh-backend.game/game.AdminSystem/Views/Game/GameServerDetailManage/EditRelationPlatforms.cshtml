@@ -1,0 +1,168 @@
+﻿@using FW.Core.Helper.Enum
+@model game.Entity.Game.GameServerRelationViewModel
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+}
+
+
+
+
+<style>
+    .lightlyColor td {
+        color: #CCC;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>伺服器与平台分配
+                </div>
+            </div>
+            <div class="portlet-body form" style="padding:20px !important;">
+
+
+                <div>
+                    <div style="font-size:20px;text-align:center;font-weight:700;" title="伺服器名称">
+                        @Model.ServerName
+                    </div>
+
+                    <div style="font-size:12px;text-align:center;margin-top:5px;color:#888;margin-bottom:10px;">
+                        <span title="顯示名称">
+                            显示名称 (@(Model.ShowName))
+                        </span>
+                    </div>
+                </div>
+
+                <div class="hr-s"></div>
+
+
+                <table id="myForm" class="table">
+
+                    <thead>
+                        <tr>
+                            <th style="width:10%;">平台编号</th>
+                            <th>平台名称</th>
+                            <th>启用开关</th>
+                            <th style="width:30%;"></th>
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+
+                    </tbody>
+
+                    <tr v-bind:class="item.IsActive ? '': 'lightlyColor'" v-for="(item, index) in settings">
+
+                        <td>{{item.Id}}</td>
+                        <td>{{item.Name}}</td>
+                        <td>
+
+                            <button class="btn btn-sm btn-success " v-show="item.IsActive" v-on:click="changeStatus(item.Id , false)">已設置</button>
+                            <button class="btn btn-sm btn-grey" v-show="!item.IsActive" v-on:click="changeStatus(item.Id , true)">未啟用</button>
+
+                        </td>
+                        <td></td>
+                    </tr>
+
+                </table>
+
+                <hr />
+
+                <div style="text-align:center;">
+                    @Html.Back(Url.Action("gameserverlist", "gamemanage"))
+                </div>
+
+
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section initScripts{
+    <script>
+        $(function () {
+
+            var vApp = new Vue({
+                el: '#myForm',
+                data: {
+                    settings: [],
+                    myServerID : '@Model.ServerID'
+                },
+                created: function () {
+                    this.reloadData()
+                },
+                methods:
+                {
+                    reloadData: function () {
+                        
+                        $.ajax({
+                            cache: false,
+                            url: '/GameServerDetailManage/AjaxGetSettings?serverID='+ this.myServerID,
+                            type: 'GET',
+                            contentType: "application/json",
+                            dataType: "json",
+                            success: function (data) {
+
+                                vApp.settings = data;
+
+                            },
+                            error: function (err) {
+                                swal({
+                                    type: 'error',
+                                    title: '操作失败',
+                                    text: err
+                                })
+                            }
+                        });
+                    },
+
+                    changeStatus: function (platformID, targetStatus) {
+
+                        console.log(platformID);
+                        console.log(targetStatus);
+
+
+                        var model =
+                        {
+                            ServerID: this.myServerID,
+                            PlatformID: platformID,
+                            TargetStatus: targetStatus
+                        };
+
+                        $.ajax({
+                            cache: false,
+                            url: '/GameServerDetailManage/CreateOrUpdateStatus',
+                            type: 'POST',
+                            contentType: "application/json",
+                            dataType: "json",
+                            data: JSON.stringify(model),
+                            success: function (data) {
+
+                                vApp.reloadData();
+
+                            },
+                            error: function (err) {
+                                swal({
+                                    type: 'error',
+                                    title: '操作失败',
+                                    text: err
+                                })
+                            }
+                        });
+                    }
+                }
+            });
+
+
+        });
+    </script>
+}

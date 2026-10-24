@@ -1,0 +1,28 @@
+﻿CREATE TABLE [Game].[Slot_FreeSpinRecord](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[UserID] [int] NOT NULL,
+	[GameID] [int] NOT NULL,
+	[UserBet] [bigint] NOT NULL,
+	[FreeSpinGroup] [int] NOT NULL,
+	[Times] [int] NOT NULL,
+	[ChooseRate] [int] NOT NULL,
+	[IsCoupon] [tinyint] NULL,
+	[FlagID] [int] NOT NULL,
+ CONSTRAINT [PK_DFDC_FreeSpinRecord] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
+ CONSTRAINT [IX_Slot_FreeSpinRecord] UNIQUE NONCLUSTERED 
+(
+	[UserID] ASC,
+	[GameID] ASC,
+	[FlagID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [Game].[Slot_FreeSpinRecord] ADD  DEFAULT ((0)) FOR [IsCoupon]
+GO
+
+ALTER TABLE [Game].[Slot_FreeSpinRecord] ADD  CONSTRAINT [DF_Slot_FreeSpinRecord_FlagID]  DEFAULT ((0)) FOR [FlagID]
+GO

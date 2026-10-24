@@ -1,0 +1,30 @@
+syntax = "proto2";
+
+package netproto;
+
+// 糖果屋 遊戲訊息
+enum TGW_GameMessageClassID {
+    // Server to Client 10xxx
+    TGW_SettingID = 10001;      // 設置相關
+    TGW_StatusID = 10002;       // 遊戲狀態
+    TGW_JackpotPoolID = 10003;  // Jackpot 獎池資訊
+    TGW_BetStatusID = 10004;  // 下注狀態 0: 下注成功, -1: 用戶金額不足, -2: 下注的類型未找到, -3: 莊家不能下注, -4: 此類下注已達到上限, -5: 非下注階段, -6: 用戶金額小於下注限制
+    TGW_GameResultID = 10005;  // 遊戲結果 (轉出內容，中獎項目，中獎金額)
+    TGW_BonusGameID = 10006;   // 玩家贏得 BonusGame 並取得BonusGame紀錄
+
+    // Client to Server 11xxx
+    TGW_ActionSpinID = 11001;       // 玩家Spin
+    TGW_ReadJackpotPoolID = 11002;  // 查詢奬池資訊
+
+    // 會一來一回的資訊
+    TGW_LoadHistoryID = 12001;     // 玩家查詢記錄
+    TGW_LoadHistoryRetID = 12002;  // 回傳玩家查詢記錄
+    TGW_ActionPickID = 12003;      // 玩家選則PickGame
+    TGW_ActionPickRetID = 12004;   // Server回覆，玩家選則PickGame
+
+    // Game to DB 13xxx
+    TGW_ReadBonusGameID = 13001;     // 讀取BonusGame資訊
+    TGW_ReadBonusGameRetID = 13002;  // Ret 讀取BonusGame資訊
+    TGW_ResetBonusGameID = 13003;    // 重置BonusGame資訊
+    TGW_RecordBonusGameID = 13004;   // 紀錄BonusGame
+};

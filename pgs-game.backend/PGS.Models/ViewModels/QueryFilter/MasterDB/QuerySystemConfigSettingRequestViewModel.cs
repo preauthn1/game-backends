@@ -1,0 +1,23 @@
+﻿using target.Models.Paging;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace target.Models.ViewModels
+{
+
+    public class QuerySystemConfigSettingRequestViewModel : PaginationParameter
+    {
+
+        /// <summary>
+        /// 請參考 SystemConfigSettingEnum
+        /// </summary>
+        public List<int> IDs { get; set; }
+
+    }
+
+
+}

@@ -1,0 +1,179 @@
+syntax = "proto3";
+
+package netproto;
+
+// [印度切水果] 玩家狀態
+enum INFC_PlayerState {
+    INFC_State_UNSPECIFIED = 0;
+
+    // 比賽中
+    INFC_State_Gaming = 1;
+    // 掛了
+    INFC_State_Dead = 2;
+    // 離線
+    INFC_State_Offline = 3;
+}
+
+// [印度切水果] 遊戲封包編號
+enum INFC_GameMessageClassID {
+    INFC_SClassID_UNSPECIFIED = 0;
+
+    // 遊戲設定 (內容為 INFC_GameSetting)
+    INFC_GameSettingID = 10000;
+    // Proto設定 (內容為 INFC_ProtoSetting)
+    INFC_ProtoSettingID = 10001;
+    // 下注階段(Server主動扣錢)
+    INFC_BetStepID = 10010;
+    // 遊戲開始 (可以開始切)
+    INFC_GameStartID = 10020;
+    // 排行榜 (內容為 INFC_GameRank)
+    INFC_GameRankID = 10030;
+    // 遊戲結果 (內容為 INFC_GameResult)
+    INFC_GameResultID = 10040;
+
+    // 查詢遊戲設定 (免內容，回覆10000)
+    INFC_QueryGameSettingID = 20000;
+    // 查詢Proto設定 (免內容，回覆10001)
+    INFC_QueryProtoSettingID = 20001;
+
+    // 玩家分數異動 (內容為 INFC_IncScore)
+    INFC_IncScoreID = 30000;
+    // 玩家漏切水果
+    INFC_MissID = 30010;
+    // 玩家切到炸彈
+    INFC_BoomID = 30020;
+    // 玩家棄權
+    INFC_GiveupID = 30030;
+}
+
+// [印度切水果] 遊戲設定
+message INFC_GameSetting {
+    // 機台編號
+    int32 TableNo = 1;
+    // 每局扣分
+    int64 Bet = 2;
+    // 開始時間 (UnitTime)
+    int64 StartTime = 3;
+    // 所有玩家
+    repeated INFC_Player Players = 4;
+}
+
+// [印度切水果] Proto設定
+message INFC_ProtoSetting {
+    // 配置
+    repeated INFC_Proto_Pattern Patterns = 1;
+    // 水果屬性
+    repeated INFC_Proto_FruitAttribute FruitAttributes = 2;
+    // 水果發射器
+    repeated INFC_Proto_FruitEmitter FruitEmitters = 3;
+    // 階段群組
+    repeated INFC_Proto_StageGroup StageGroups = 4;
+}
+
+// [印度切水果] 排行榜
+message INFC_GameRank {
+    // 所有玩家
+    repeated INFC_Player Players = 1;
+}
+
+// [印度切水果] 遊戲狀態
+message INFC_Player {
+    // 玩家ID
+    int32 UserID = 1;
+    // 玩家名稱
+    string UserName = 2;
+    // 玩家分數(錢)
+    int64 UserScore = 3;
+    // 目前排名
+    int32 Rank = 4;
+    // 比賽積分
+    int64 Score = 5;
+    // 狀態
+    INFC_PlayerState State = 6;
+    // Miss次數
+    int32 Miss = 7;
+}
+
+// [印度切水果] 分數異動
+message INFC_IncScore {
+    // 分數
+    int64 Score = 1;
+}
+
+// [印度切水果] 遊戲結果
+message INFC_GameResult {
+    int64 WinMoney = 1;
+    INFC_Player Winner = 2;
+    INFC_GameRank Rank = 3;
+}
+
+// [印度切水果] 配置
+message INFC_Proto_Pattern {
+	// Pattern的流水編號
+	int32 PatternID = 1;
+	// 定義Pattern使用的Stage群組編號
+	int32 StageGroupID = 2;
+	// 是否循環
+	int32 IsLoop = 3;
+}
+
+// [印度切水果] 水果屬性
+message INFC_Proto_FruitAttribute {
+    // 流水編號
+	int32 ID = 1;
+	// 群組編號
+	int32 GroupID = 2;
+	// 水果名稱
+	string FruitName = 3;
+	// 水果重量
+    float FruitWeight = 4;
+}
+
+// [印度切水果] 水果發射器
+message INFC_Proto_FruitEmitter {
+    // 流水編號
+	int32 ID = 1;
+	// 發射器群組編號
+	int32 EmitterGroupID = 2;
+	// 發射器編號
+	// 對應Client及4、物件發射規則
+	// 中提及的發射器
+	int32 EmitterID = 3;
+	// 發射器角度範圍最小值
+	// 固定角度則AngleMax填入相同數字
+	float AngleMin = 4;
+	// 發射器角度範圍最大值
+	// 固定角度，則AngleMin填入相同數字
+	float AngleMax = 5;
+	// 發射器力道範圍最小值
+	// 固定力道則ForceMax填入相同數字
+	float ForceMin = 6;
+	// 發射器力道範圍最大值
+	// 固定力道則ForceMin填入相同數字
+	float ForceMax = 7;
+	// 從這組EmitterGroupID開始執行，需延遲幾秒才發射
+	// 發射間隔範圍最小值
+	// 範圍不隨機，則IntervalMax填入相同數字如立即發射，給0
+	float IntervalMin = 8;
+	// 發射間隔範圍最大值
+	// 範圍不隨機，則IntervalMin填入相同數字
+	float IntervalMax = 9;
+	// 水果ID
+	float FruitID = 10;
+}
+
+// [印度切水果] 階段群組
+message INFC_Proto_StageGroup {
+	// StageGroup的群組編號
+	int32 StageGroupID = 1;
+	// 定義Pattern使用的發射器群組
+	int32 EmitterGroupID = 2;
+	// 執行順序
+	int32 OrderID = 3;
+	// 執行時序
+	// 前一個執行完後，間隔多少毫秒再執行
+	// (輸入1000=1秒後再執行)
+	// 如果是第一個，則是遊戲開始後延遲幾秒才開始執行。
+	// 如要立即執行，給0
+	int32 GroupDelayTime = 4;
+}

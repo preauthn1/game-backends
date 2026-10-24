@@ -1,0 +1,374 @@
+variables:
+  SLACK_TOKEN: [REDACTED]"
+  SLACK_BOT_NAME: "gitlab_ci_機器人"  
+  SLACK_CHANNEL: "backend_jenkins"  
+  SLACK_CHANNEL_K8S: "backend_release_k8s"  
+  SLACK_API_URL: "https://example.invalid/api/chat.postMessage"  
+
+stages:
+  - build
+  - test
+  - build-docker
+  - deploy-to-enviroment
+  - send-slack-notify-k8s
+  - send-slack-notify-when-fail
+  
+#確定可以建置成功
+Test Build:
+  stage: build
+  tags:
+    - dotnet
+  only:
+    - develop
+    - develop_file_api
+    - develop_pretest
+    - develop_framework
+    - master
+    - test_ci_script
+    - hotfix
+    - hotfix_v2026
+    - UAT
+    - QA
+  image: example.invalid/dotnet/sdk:8.0
+  artifacts:
+    name: release
+    expire_in: 240 min
+    paths:
+      - release
+  script:
+    - date
+    - dotnet restore target.API.ALL.sln
+    - date
+    - dotnet build target.API.ALL.sln -c Release --no-restore
+    - date
+    - mkdir -p ${CI_PROJECT_DIR}/release
+    - dotnet publish target.API.AdminSys/target.API.AdminSys.csproj
+        -c Release --no-build
+        -o ${CI_PROJECT_DIR}/release/target.API.AdminSys
+    - dotnet publish target.API.Game/target.API.Game.csproj
+        -c Release --no-build
+        -o ${CI_PROJECT_DIR}/release/target.API.Game
+    - dotnet publish target.API.Public/target.API.Public.csproj
+        -c Release --no-build
+        -o ${CI_PROJECT_DIR}/release/target.API.Public
+    - dotnet publish target.API.Vendor/target.API.Vendor.csproj
+        -c Release --no-build
+        -o ${CI_PROJECT_DIR}/release/target.API.Vendor
+    - dotnet publish target.API.ExternalVendor/target.API.ExternalVendor.csproj
+        -c Release --no-build
+        -o ${CI_PROJECT_DIR}/release/target.API.ExternalVendor
+    - dotnet publish target.API.Job/target.API.Job.csproj
+        -c Release --no-build
+        -o ${CI_PROJECT_DIR}/release/target.API.Job
+    # - dotnet publish target.API.File/target.API.File.csproj
+        # -c Release --no-build
+        # -o ${CI_PROJECT_DIR}/release/target.API.File
+
+
+Run Test:
+  stage: test
+  tags:
+    - dotnet
+  image: example.invalid/dotnet/sdk:8.0
+  script:     
+    #- sed -i 's/MinProtocol = TLSv1.2/MinProtocol = TLSv1/' /etc/ssl/openssl.cnf && sed -i 's/CipherString = DEFAULT@SECLEVEL=2/CipherString = DEFAULT@SECLEVEL=1/' /etc/ssl/openssl.cnf
+    #- dotnet test target.Testing/target.Testing.csproj
+    - echo 'done'
+    
+
+# build docker 共用設定 
+.build-docker:
+  stage: build-docker
+  dependencies:
+    - Test Build
+  tags:
+    - dotnet
+  #image: docker:latest
+  image: docker:20.10.16
+  services:
+    - name: docker:20.10.16-dind
+      command: ["--tls=false", '--mtu=1450']
+  variables:
+    DOCKER_HOST: tcp://localhost:2375
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  only:
+    - develop
+    - develop_pretest
+    - develop_framework
+    - UAT
+    - QA
+    - hotfix
+    - hotfix_v2026
+    - master
+  before_script:
+    - docker info
+    - docker login -u "admin" -p "admin123" https://example.invalid
+  script:
+    - IMG_NAME=$(echo "${APP_NAME}" | tr '[:upper:]' '[:lower:]')
+    #- docker pull example.invalid/target/backend/${IMG_NAME}
+    - echo ${CI_COMMIT_SHA:0:8}
+    - echo ${DOCKER_FILE}
+    - docker build -f "${CI_PROJECT_DIR}/DockerFiles/${DOCKER_FILE}" --build-arg APP_NAME=${APP_NAME} --build-arg SHA1=${CI_COMMIT_SHA:0:8} --build-arg PIPE_ID=${CI_PIPELINE_ID} -t example.invalid/target/backend/${IMG_NAME} "${CI_PROJECT_DIR}/release/${APP_NAME}"
+    - docker tag example.invalid/target/backend/${IMG_NAME} example.invalid/target/backend/${IMG_NAME}:${CI_PIPELINE_ID}
+    - docker push example.invalid/target/backend/${IMG_NAME}
+    - docker push example.invalid/target/backend/${IMG_NAME}:${CI_PIPELINE_ID}
+  when: manual
+
+#建置成docker_image
+AdminSys Build:
+  extends: .build-docker
+  variables:
+    APP_NAME: target.API.AdminSys
+    DOCKER_FILE: Dockerfile
+
+Game Build:
+  extends: .build-docker
+  variables:
+    APP_NAME: target.API.Game    
+    DOCKER_FILE: Dockerfile
+
+Public Build:
+  extends: .build-docker
+  variables:
+    APP_NAME: target.API.Public
+    DOCKER_FILE: Dockerfile
+
+Vendor Build:
+  extends: .build-docker
+  variables:
+    APP_NAME: target.API.Vendor
+    DOCKER_FILE: Dockerfile
+
+ExternalVendor Build:
+  extends: .build-docker
+  variables:
+    APP_NAME: target.API.ExternalVendor
+    DOCKER_FILE: Dockerfile
+
+FileAPI Build:
+  extends: .build-docker
+  only:
+    - develop_file_api
+  variables:
+    APP_NAME: target.API.File
+    DOCKER_FILE: Dockerfile_FileAPI    
+    
+JobAPI Build:
+  extends: .build-docker
+  variables:
+    APP_NAME: target.API.Job
+    DOCKER_FILE: Dockerfile
+    
+    
+#觸發k8s部屬
+.deploy-to-enviroment:
+  stage: deploy-to-enviroment
+  image: alpine/helm:3.16.1
+  tags:
+    - dotnet
+  only:
+    - develop
+    - develop_pretest
+    - develop_framework
+    - master   
+    - hotfix
+    - hotfix_v2026
+  script:
+    - echo "Deploy test start ..."
+    - helm upgrade backend-api-${APP_NAME} ./helm-charts/backend-api -f ./helm-charts/backend-api/${DEPLOY_VALUES_FILE} --install --namespace ${DEPLOY_NS} 
+      --set image.repository=${APP_IMAGE}
+      --set image.tag=${CI_PIPELINE_ID}
+      --set service.port=${APP_PORT}
+      --set app.name=${APP_NAME}
+    - echo "Deploy test completed!"
+  
+
+DEV AdminSys Deploy:
+  needs:
+    - job: AdminSys Build
+      artifacts: false
+    - job: Test Build
+      artifacts: false
+    - job: Run Test
+      artifacts: false
+  extends: .deploy-to-enviroment
+  variables:
+    APP_NAME: adminsys
+    APP_IMAGE: example.invalid/target/backend/target.api.adminsys
+    APP_PORT: 3102
+    DEPLOY_NS: target-dev
+    DEPLOY_VALUES_FILE: values-adminsys.yaml
+
+DEV Game Deploy:
+  needs:
+    - job: Game Build
+      artifacts: false
+    - job: Test Build
+      artifacts: false
+    - job: Run Test
+      artifacts: false
+  extends: .deploy-to-enviroment
+  variables:
+    APP_NAME: game
+    APP_IMAGE: example.invalid/target/backend/target.api.game
+    APP_PORT: 3100
+    DEPLOY_NS: target-dev
+    DEPLOY_VALUES_FILE: values.yaml
+
+DEV Public Deploy:
+  needs:
+    - job: Public Build
+      artifacts: false
+    - job: Test Build
+      artifacts: false
+    - job: Run Test
+      artifacts: false
+  extends: .deploy-to-enviroment
+  variables:
+    APP_NAME: public
+    APP_IMAGE: example.invalid/target/backend/target.api.public
+    APP_PORT: 3109
+    DEPLOY_NS: target-dev
+    DEPLOY_VALUES_FILE: values.yaml
+
+DEV Vendor Deploy:
+  needs:
+    - job: Vendor Build
+      artifacts: false
+    - job: Test Build
+      artifacts: false
+    - job: Run Test
+      artifacts: false
+  extends: .deploy-to-enviroment
+  variables:
+    APP_NAME: vendor
+    APP_IMAGE: example.invalid/target/backend/target.api.vendor
+    APP_PORT: 3101
+    DEPLOY_NS: target-dev
+    DEPLOY_VALUES_FILE: values.yaml
+
+
+DEV ExternalVendor Deploy:
+  needs:
+    - job: ExternalVendor Build
+      artifacts: false
+    - job: Test Build
+      artifacts: false
+    - job: Run Test
+      artifacts: false
+  extends: .deploy-to-enviroment
+  variables:
+    APP_NAME: externalvendor
+    APP_IMAGE: example.invalid/target/backend/target.api.externalvendor
+    APP_PORT: 3108
+    DEPLOY_NS: target-dev
+    DEPLOY_VALUES_FILE: values.yaml
+
+
+DEV FileAPI Deploy:
+  needs:
+    - job: FileAPI Build
+      artifacts: false
+    - job: Test Build
+      artifacts: false
+    - job: Run Test
+      artifacts: false
+  extends: .deploy-to-enviroment
+  only:
+    - develop_file_api
+  variables:
+    APP_NAME: file
+    APP_IMAGE: example.invalid/target/backend/target.api.file
+    APP_PORT: 3107
+    DEPLOY_NS: target-dev
+    DEPLOY_VALUES_FILE: values.yaml
+        
+    
+DEV JobAPI Deploy:
+  needs:
+    - job: JobAPI Build
+      artifacts: false
+    - job: Test Build
+      artifacts: false
+    - job: Run Test
+      artifacts: false
+  extends: .deploy-to-enviroment
+  variables:
+    APP_NAME: job
+    APP_IMAGE: example.invalid/target/backend/target.api.job
+    APP_PORT: 3106
+    DEPLOY_NS: target-dev
+    DEPLOY_VALUES_FILE: values.yaml 
+    
+   
+  
+#繼承用 發送slack通知
+.step-send-slack-notify-k8s:
+  stage: send-slack-notify-k8s
+  tags:
+    - dotnet
+  only:
+    - develop
+    - develop_pretest
+    - develop_framework
+    - master
+    - hotfix
+    - hotfix_v2026
+  script:  
+    - var_msg="docker建置完成 已更新至dev <$CI_PROJECT_URL/pipelines/$CI_PIPELINE_ID|pipelines/$CI_PIPELINE_ID> ($CI_COMMIT_REF_NAME) ($APP_NAME) \`${CI_COMMIT_SHA:0:8}\` " 
+    - curl -H "Content-Type:application/x-www-form-urlencoded" -X POST --data "token=[REDACTED]" "$SLACK_API_URL"    
+  
+AdminSys Success Slack:
+  needs: 
+    - job: DEV AdminSys Deploy
+      artifacts: false
+  extends: .step-send-slack-notify-k8s
+  variables:
+    APP_NAME: AdminSysAPI  
+  
+Game Success Slack:
+  needs: 
+    - job: DEV Game Deploy
+      artifacts: false
+  extends: .step-send-slack-notify-k8s
+  variables:
+    APP_NAME: GameAPI  
+  
+Public Success Slack:
+  needs: 
+    - job: DEV Public Deploy
+      artifacts: false
+  extends: .step-send-slack-notify-k8s
+  variables:
+    APP_NAME: PublicAPI
+  
+Vendor Success Slack:
+  needs: 
+    - job: DEV Vendor Deploy
+      artifacts: false
+  extends: .step-send-slack-notify-k8s
+  variables:
+    APP_NAME: VendorAPI
+
+ExternalVendor Success Slack:
+  needs: 
+    - job: DEV ExternalVendor Deploy
+      artifacts: false
+  extends: .step-send-slack-notify-k8s
+  variables:
+    APP_NAME: ExternalVendorAPI
+  
+  
+
+#若中途失敗，發送slack通知
+step-send-slack-notify:
+  stage: send-slack-notify-when-fail
+  tags:
+    - dotnet
+  script:  
+    - var_msg="pipeline 建置失敗 $CI_PROJECT_URL/pipelines/$CI_PIPELINE_ID ($CI_COMMIT_REF_NAME) " 
+    - curl -H "Content-Type:application/x-www-form-urlencoded" -X POST --data "token=[REDACTED]" "$SLACK_API_URL"  
+  when: on_failure    
+  
+    

@@ -1,0 +1,606 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/Component/target.js")"></script>
+    <script src="@Url.Content("~/Plugins/momentjs/moment.js")"></script>
+    <script src="https://example.invalid/ajax/libs/lodash.js/4.15.0/lodash.min.js"></script>
+    <link rel="stylesheet" href="https://example.invalid/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link href="@Url.Content("~/Plugins/Vue/css/main.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .gamesEvent_flex {
+        display: flex;
+        position: relative;
+    }
+
+    ._flex_1 {
+        flex: 1;
+    }
+
+    .gamesEvent_contain {
+        display: flex;
+        flex-direction: column;
+        height: 77vh;
+    }
+
+    .gamesEvent_searchBar {
+        display: flex;
+        align-items: center;
+        height: 8vh;
+    }
+
+    .gamesEvent_tool__contain {
+        flex: .18;
+        position: relative;
+    }
+
+    .gamesEvent_action {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        margin: 1vh 0;
+        height: 5vh;
+    }
+
+    .action_icon {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 1.5em;
+        cursor: pointer;
+    }
+
+        .action_icon i {
+            font-size: 1.5em;
+        }
+
+
+    .gamesEvent_dashboard__contain {
+        flex: 1;
+        display: flex;
+    }
+
+    .gamesEvent_contest__contain {
+        flex: .5;
+        overflow: auto;
+    }
+
+    .dashboard_mgmt__contain {
+        display: flex;
+        height: 50%;
+    }
+
+    .dashboard_bonus__contain {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .bonus_list__contain {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+    }
+
+    .bonus_tool {
+        flex: .2;
+    }
+
+    .dashboard_reward__contain {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+    }
+
+    .dashboard_score__contain {
+        height: 50%;
+    }
+
+    .borderStyle {
+        position: relative;
+        border-style: outset;
+        border-color: currentColor;
+        border-width: 7px;
+    }
+
+    .search_group {
+        padding: 1%;
+    }
+
+    .option_contain {
+        display: flex;
+        align-items: center;
+        padding: 1%;
+    }
+
+    .v_searchBar__contain {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        width: 244px;
+        margin: 0 auto 6px;
+    }
+
+        .v_searchBar__contain .frmSearch {
+            width: 100%;
+            height: 32px;
+            line-height: 32px;
+            border: 0;
+            border-radius: 2px;
+            -moz-border-radius: 2px;
+            -webkit-border-radius: 2px;
+            background-color: #26292e;
+            color: #fff;
+            padding-left: 30px;
+            font-size: 12px;
+        }
+</style>
+
+<div class="gamesEvent_contain" id="vApp">
+    <div class="gamesEvent_searchBar borderStyle">
+        <div class="search_group">
+            <label>开始时间</label>
+        </div>
+        <div class="search_group">
+            <input type="text" class="form-control " style="width:180px" id="beginTime" name="beginTime"
+                   onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })"
+                   placeholder="开始时间" value="@DateTime.Now.AddDays(-7).ToString(" yyyy-MM-01 HH:mm")">
+        </div>
+        <div class="search_group">
+            <label>结束时间</label>
+        </div>
+        <div class="search_group">
+            <input type="text" class="form-control " style="width:180px" id="endTime"
+                   value="@DateTime.Now.AddDays(7).ToString(" yyyy-MM-dd HH:mm")" name="endTime"
+                   onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+        </div>
+
+    </div>
+    <div class="gamesEvent_flex _flex_1">
+        <v-loading v-if="isSave"></v-loading>
+        <div class="gamesEvent_tool__contain borderStyle">
+            <v-loading v-if="isGetContest"></v-loading>
+            <div class="gamesEvent_action">
+                <div class="action_icon" v-on:click="addEvent()">
+                    <i class="far fa-plus-square"></i>
+                    <div>新增</div>
+                </div>
+                <div class="action_icon" v-on:click="saveEvent()">
+                    <i class="fas fa-save"></i>
+                    <div>保存</div>
+                </div>
+                <div class="action_icon" v-on:click="searchEvent()">
+                    <i class="fas fa-search"></i>
+                    <div>搜索</div>
+                </div>
+            </div>
+            <div class="v_searchBar__contain">
+                <input class="frmSearch" type="text" placeholder="快速搜尋" v-model="searchContest">
+            </div>
+
+            <v-item v-bind:list="searchlist" v-bind:active="ContestID" v-on:chooseid="chooseContestID"></v-item>
+        </div>
+        <div class="gamesEvent_dashboard__contain">
+            <div class="gamesEvent_contest__contain borderStyle">
+                <v-input label="活动名称" v-model="contestForm.Name" required></v-input>
+                <v-input label="游戏类型" v-model="contestForm.GameID" required type="select" v-bind:items="gameJson"></v-input>
+                <v-input label="开始时间" v-model="contestForm.StartTime" required type="datetime" id="StartTime" placeholder="开始时间"></v-input>
+                <v-input label="结束时间" v-model="contestForm.EndTime" required type="datetime" id="EndTime" placeholder="结束时间"></v-input>
+                <v-input label="是否开启" v-model="contestForm.Status" required type="select" v-bind:items="statusTypes"></v-input>
+                <v-input label="是否显示" v-model="contestForm.Show" required type="select" v-bind:items="showTypes"></v-input>
+                <v-input label="入场时间" v-model="contestForm.Entertime" required type="time" id="Entertime" placeholder="入场时间"></v-input>
+                <v-input label="入场截止时间" v-model="contestForm.Deadline" required type="time" id="Deadline" placeholder="入场截止时间"></v-input>
+                <v-input label="累积赛入场时间" v-model="contestForm.PeriodEntertime" required type="time" id="PeriodEntertime" placeholder="累积赛入场时间"></v-input>
+                <v-input label="累积赛入场截止时间" v-model="contestForm.PeriodDeadline" required type="time" id="PeriodDeadline" placeholder="累积赛入场截止时间"></v-input>
+                <v-input label="累积赛结算周期 (天)" v-model="contestForm.RankInterval" required></v-input>
+                <v-input label="结束后几分结算奖励" v-model="contestForm.RewardAfterMin" type="number" required></v-input>
+                <v-input label="入场费" v-model="contestForm.Charge" required></v-input>
+                <v-input label="游戏时间" v-model="contestForm.PlayTime" type="number" required></v-input>
+                <v-input label="比赛币" v-model="contestForm.Coin" required></v-input>
+            </div>
+            <div class="_flex_1">
+                <div class="dashboard_mgmt__contain">
+                    <div class="dashboard_bonus__contain borderStyle">
+                        <v-loading v-if="isGetBonus"></v-loading>
+                        <div class="bonus_list__contain">
+                            <v-list v-bind:headers="bonus_headers" v-bind:items.sync="bonus_items" @@delete-item="delBonus"></v-list>
+                        </div>
+                        <div class="bonus_tool">
+                            <div class="action_icon" v-on:click="addBonusItem">
+                                <i class="far fa-plus-square"></i>
+                                <div>新增</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard_reward__contain borderStyle">
+                        <v-loading v-if="isGetReward"></v-loading>
+                        <v-list v-bind:headers="reward_headers" v-bind:items.sync="reward_items_day" @@delete-item="delReward"></v-list>
+                        <div class="bonus_tool">
+                            <div class="action_icon" v-on:click="addRewardItem(1)">
+                                <i class="far fa-plus-square"></i>
+                                <div>新增日奖金</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard_reward__contain borderStyle">
+                        <v-loading v-if="isGetReward"></v-loading>
+                        <v-list v-bind:headers="reward_headers" v-bind:items.sync="reward_items_interval" @@delete-item="delReward"></v-list>
+                        <div class="bonus_tool">
+                            <div class="action_icon" v-on:click="addRewardItem(2)">
+                                <i class="far fa-plus-square"></i>
+                                <div>新增周奖金</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard_score__contain borderStyle">
+                    <v-loading v-if="isGetRank"></v-loading>
+                    <v-list v-bind:headers="rank_headers" v-bind:items.sync="rank_items" read>
+                        <div class="option_contain">
+                            <div>比赛时间:</div>
+                            <input type="text" class="form-control " style="width:180px" id="rankTime" name="rankTime"
+                                   onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd', isShowClear: false, readOnly: true, onpicked: vApp.getContestRank, minDate: vApp.minDate, maxDate: vApp.maxDate })"
+                                   placeholder="比赛时间" v-bind:value="rankDate">
+                            <div>排行类型:</div>
+                            <div>
+                                <select name="ContestrRankType" v-on:change="getContestRank" v-model="RankTypeSelected">
+                                    <option value="1">日排行</option>
+                                    <option value="2">累计排行</option>
+                                </select>
+                            </div>
+                            <div class="v_list_option">{{ option.text }}: {{ option.count }}</div>
+                        </div>
+                    </v-list>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        var vApp = new Vue({
+            el: '#vApp',
+            data: {
+                RankTypeSelected: "1",
+                gameJson: JSON.parse(`@Html.Raw(Json.Encode(@ViewBag.GameJson))`),
+                ContestList: [],
+                searchlist: [],
+                ContestID: null,
+                searchContest: null,
+                rankDate: null,
+                minDate: null,
+                maxDate: null,
+
+                bonus_headers: [{ text: '充值到达金额', key: 'OrderReach' }, { text: '免费次数', key: 'FreeTicket' }],
+                reward_headers: [{ text: '排名', key: 'Rank' }, { text: '赠送金币', key: 'Money' }],
+                rank_headers: [{ text: '排名', key: 'Rank' }, { text: 'ID', key: 'UserID' }, { text: '比赛分数', key: 'Score' }],
+                option: {
+                    text: '参与人数',
+                    count: 0
+                },
+                bonus_items: [],
+                reward_items_day: [],
+                reward_items_interval: [],
+                rank_items: [],
+
+                isGetContest: false,
+                isGetBonus: false,
+                isGetReward: false,
+                isGetRank: false,
+                isSave: false,
+
+                contestForm: {
+                    Charge: undefined,
+                    Coin: undefined,
+                    CreateTime: undefined,
+                    Deadline: undefined,
+                    EndTime: undefined,
+                    PeriodEntertime: undefined,
+                    PeriodDeadline: undefined,
+                    Entertime: undefined,
+                    GameID: undefined,
+                    GameName: undefined,
+                    ID: undefined,
+                    Name: undefined,
+                    PlayTime: undefined,
+                    RewardAfterMin: undefined,
+                    Show: undefined,
+                    StartTime: undefined,
+                    Status: undefined,
+                    RankInterval: undefined
+                },
+                statusTypes: [
+                    { value: '0', text: '關' },
+                    { value: '1', text: '開' }
+                ],
+                showTypes: [
+                    { value: '0', text: '否' },
+                    { value: '1', text: '是' }
+                ]
+            },
+            watch: {
+                ContestID (val) {
+                    if (val) {
+                        this.$set(this, 'isGetBonus', true)
+                        this.$set(this, 'isGetReward', true)
+                        this.getBonusAndReward()
+                        vApp.$nextTick(function () {
+                            this.getContestRank()
+                        })
+                    }
+                },
+                searchContest: function (value) {
+                    vApp.searchlist = this.ContestList.filter((x) => {
+                        const Name = x.Name
+                        return value === null ? true : ~Name.indexOf(value)
+                    })
+                },
+            },
+            created: function () {
+                this.init()
+            },
+            methods: {
+                init () {
+                    this.getGamesEventMGMT()
+                },
+                searchEvent () {
+                    this.$set(this, 'searchContest', null)
+                    this.getGamesEventMGMT()
+                },
+                getGamesEventMGMT () {
+                    this.$set(this, 'isGetContest', true)
+                    const beginTime = $(`#beginTime`).val()
+                    const endTime = $(`#endTime`).val()
+
+                    $.get('/Activity/GetGamesEventMGMT', { 'beginTime': beginTime, 'endTime': endTime, '_r': Math.random() }, function (res) {
+                        vApp.$set(vApp, 'ContestList', res)
+                        vApp.$set(vApp, 'searchlist', res)
+                        vApp.$nextTick(function () {
+                            this.$set(this, 'isGetContest', false)
+                            if (res.length > 0) {
+                                const ID = _.get(res, '[0].ID')
+                                vApp.chooseContestID(ID)
+                            }
+                        })
+                    })
+                },
+                getBonusAndReward () {
+                    $.get('/Activity/GetBonusAndReward', { 'contestID': this.ContestID, '_r': Math.random() }, function (res) {
+                        vApp.$set(vApp, 'bonus_items', res.bonus)
+                        vApp.$set(vApp, 'reward_items_day', res.reward_day)
+                        vApp.$set(vApp, 'reward_items_interval', res.reward_interval)
+
+                        vApp.$nextTick(function () {
+                            this.$set(this, 'isGetBonus', false)
+                            this.$set(this, 'isGetReward', false)
+                        })
+                    })
+                },
+                getContestRank () {
+                    const rankTime = $('#rankTime').val()
+                    this.$set(this, 'rankDate', rankTime)
+                    this.$set(this, 'isGetRank', true)
+                    const _RankTypeSelected = this.RankTypeSelected
+
+                    $.get('/Activity/GetContestRank', { 'contestID': this.ContestID, 'rankDate': rankTime, 'rankType': _RankTypeSelected, '_r': Math.random() }, function (res) {
+                        vApp.$set(vApp, 'rank_items', res.rank)
+
+                        const count = res.rank.length
+                        vApp.$nextTick(function () {
+                            this.$set(this, 'isGetRank', false)
+                            this.$set(this.option, 'count', count)
+                        })
+                    })
+                },
+                chooseContestID (id) {
+                    var list = _.clone(this.ContestList)
+                    const data = _.filter(list, function (o) { return o.ID == id })
+                    this.contestForm = Object.assign({}, data[0])
+
+                    const dateNow = moment(Date.now()).format('YYYY-MM-DD')
+                    const startTime = this.contestForm.StartTime
+                    const endTime = this.contestForm.EndTime
+                    const res = moment(endTime).isBefore(dateNow)
+
+                    this.$set(this, 'rankDate', res ? endTime : dateNow)
+                    this.$set(this, 'minDate', startTime)
+                    this.$set(this, 'maxDate', endTime)
+                    this.$set(this, 'ContestID', id)
+                },
+                addEvent () {
+                    let deep = _.clone(this.contestForm)
+                    Object.keys(deep).forEach(function (key, index) {
+                        deep[key] = void 0
+                    })
+                    this.$set(this, 'contestForm', deep)
+                    this.$set(this, 'bonus_items', [])
+                    this.$set(this, 'reward_items_day', [])
+                    this.$set(this, 'reward_items_interval', [])
+                },
+                addBonusItem () {
+                    let deep = _.clone(this.bonus_items)
+                    deep.push({
+                        ID: null,
+                        ContestID: this.ContestID,
+                        _uuid: this._uuid(),
+                        items: {
+                            OrderReach: 0,
+                            FreeTicket: 0
+                        }
+                    })
+                    this.$set(this, 'bonus_items', deep)
+                },
+
+                addRewardItem (type) {
+                    const type_item = type === 1 ? 'reward_items_day' : 'reward_items_interval'
+                    let deep = _.clone(this[type_item])
+                    deep.push({
+                        ID: null,
+                        ContestID: this.ContestID,
+                        _uuid: this._uuid(),
+                        items: {
+                            Rank: 0,
+                            Money: 0,
+                            Type: type
+                        }
+                    })
+
+                    this.$set(this, type_item, deep)
+                },
+                delBonus (id) {
+                    $.post('/Activity/DeleteEventBonus', { id: id }, function (res) {
+                        swal({
+                            type: 'success',
+                            title: res.Message
+                        }).then((result) => {
+                        })
+                    })
+                },
+
+                delReward (id) {
+                    $.post('/Activity/DeleteEventReward', { id: id }, function (res) {
+                        swal({
+                            type: 'success',
+                            title: res.Message
+                        }).then((result) => {
+                        })
+                    })
+                },
+                saveEvent () {
+                    this.$set(this, 'isSave', true)
+                    let promises = []
+                    let newContestID = null
+                    const start = $("#StartTime")[0].value
+                    const end = $("#EndTime")[0].value
+                    const enter = $("#Entertime")[0].value
+                    const dead = $("#Deadline")[0].value
+                    const periodEnter = $("#PeriodEntertime")[0].value
+                    const periodDead = $("#PeriodDeadline")[0].value
+
+                    this.$set(this.contestForm, 'StartTime', start)
+                    this.$set(this.contestForm, 'EndTime', end)
+                    this.$set(this.contestForm, 'Entertime', enter)
+                    this.$set(this.contestForm, 'Deadline', dead)
+                    this.$set(this.contestForm, 'PeriodEntertime', periodEnter)
+                    this.$set(this.contestForm, 'PeriodDeadline', periodDead)
+
+                    $.post('/Activity/UpdateEventContest', this.contestForm, function (res) {
+                        if (!res.Result) {
+                            vApp.$set(vApp, 'isSave', false)
+                            swal({
+                                type: 'error',
+                                title: res.Message
+                            })
+                            return
+                        }
+
+                        contestID = res.Extend
+                        const eventBonus = vApp.bonus_items.map((x) => {
+                            return {
+                                ID: x.ID,
+                                ContestID: contestID !== null ? contestID : x.ContestID,
+                                OrderReach: x.items.OrderReach,
+                                FreeTicket: x.items.FreeTicket
+                            }
+                        })
+
+                        const eventRewardDay = vApp.reward_items_day.map((x) => {
+                            return {
+                                ID: x.ID,
+                                ContestID: contestID !== 0 ? contestID : x.ContestID,
+                                Rank: x.items.Rank,
+                                Money: x.items.Money,
+                                Type: x.items.Type
+                            }
+                        })
+
+                        const eventRewardInterval = vApp.reward_items_interval.map((x) => {
+                            return {
+                                ID: x.ID,
+                                ContestID: contestID !== 0 ? contestID : x.ContestID,
+                                Rank: x.items.Rank,
+                                Money: x.items.Money,
+                                Type: x.items.Type
+                            }
+                        })
+
+                        const eventReward = _.concat(eventRewardDay, eventRewardInterval)
+
+                        eventBonus.forEach(function (bonus) {
+                            const promise = new Promise((resolve, reject) => {
+                                $.post('/Activity/UpdateEventBonus', bonus, function (res) {
+                                    if (res.Result) {
+                                        resolve()
+                                    } else {
+                                        reject(res.Message)
+                                    }
+                                })
+                            })
+                            promises.push(promise)
+                        })
+
+                        eventReward.forEach(function (reward) {
+                            const promise = new Promise((resolve, reject) => {
+                                $.post('/Activity/UpdateEventReward', reward, function (res) {
+                                    resolve()
+                                })
+                            })
+                            promises.push(promise)
+                        })
+
+                        Promise.all(promises).then(values => {
+                            vApp.$set(vApp, 'isSave', false)
+                            swal({
+                                type: 'success',
+                                title: '操作成功'
+                            }).then((result) => {
+                                vApp.reload(contestID)
+                            })
+                        }).catch(function (err) {
+                            vApp.$set(vApp, 'isSave', false)
+                            swal({
+                                type: 'error',
+                                title: err
+                            }).then((result) => {
+                                vApp.reload(contestID)
+                            })
+                        });
+                    })
+                },
+                reload(contestID) {
+                    const data = _.clone(vApp.contestForm)
+                    let contest = _.clone(vApp.ContestList)
+                    let searc = _.clone(vApp.searchlist)
+
+                    if (data.ID === void 0) {
+                        vApp.$set(vApp.contestForm, 'ID', contestID)
+                        data.ID = contestID
+                        contest = _.concat(contest, data)
+                        searc = _.concat(searc, data)
+                    }
+                    else {
+                        contest = contest.map((x) => {
+                            if (x.ID === data.ID) return data
+                            return x
+                        })
+                        searc = searc.map((x) => {
+                            if (x.ID === data.ID) return data
+                            return x
+                        })
+                    }
+
+                    vApp.$set(vApp, 'ContestList', contest)
+                    vApp.$set(vApp, 'searchlist', searc)
+                    vApp.$nextTick(function () {
+                        vApp.chooseContestID(contestID)
+                    })
+                },
+                _uuid() {
+                    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) { var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8; return v.toString(16); });
+                }
+            }
+        })
+    </script>
+}

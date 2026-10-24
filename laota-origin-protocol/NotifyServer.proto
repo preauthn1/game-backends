@@ -1,0 +1,20 @@
+syntax = "proto2";
+
+package netproto;
+
+enum NotifyServerClassID {
+    ServerRegID = 1;
+    AnnID = 2;
+    AttrChangeID = 3;
+    ServerStopID = 4;
+    RefreshVersionID = 5;
+    ServerStopWhiteIPListID = 6;
+    ServerHostAndBackUp = 7;
+    AnnFishRegID = 8;  //註冊捕魚公告
+    AnnFishID = 9;     //捕魚公告
+    PayOrderID = 10;
+    UpdateHallUserListID = 11;      //需要獲取用戶推送消息的UserID
+    UserNotifyRetN2HID = 12;        //發送通知消息 Notify->Hall
+    UserNotifyRetH2CID = 13;        //發送通知消息 Hall->Client
+    UpdateUserNotifyIdxH2NID = 15;  //更新通知序列號 Hall->Notify
+};

@@ -1,0 +1,118 @@
+﻿@using FW.Core.Helper.Enum
+@model game.Entity.Game.GameMessage
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>编辑游戏消息
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="form1" method="post" class="form-horizontal form-bordered">
+                    @Html.HiddenFor(model => model.AllPlatform)
+                    <input hidden value="@Model.Id" id="Id" name="Id" />
+                    <div class="form-body">
+                        @Html.Partial("_PlatformSelect", true)
+                        <div class="form-group" id="div_messge">
+                            <label class="control-label col-md-4 xing">消息内容</label>
+                            <div class="col-md-8">
+                                <textarea id="MsgContent" rows="4" name="MsgContent" class="form-control  input-xlarge" placeholder="请输入消息内容">@Model.MsgContent</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">时间</label>
+                            <div class="col-md-8">
+                                <input type="text" id="BeginTime" name="BeginTime" class="form-control" style="float:left;width:180px" placeholder="请输入开始时间" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm' })" value="@Model.BeginTime.ToString("yyyy-MM-dd HH:mm")" />
+                                <span style="float:left;padding:10px 10px 10px 10px">到</span>
+                                <input type="text" id="EndTime" name="EndTime" class="form-control" style="float:left;width:180px" placeholder="请输入结束时间" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm' })" value="@Model.EndTime.ToString("yyyy-MM-dd HH:mm")" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">全平台</label>
+                            <div class="col-md-8">
+                                <input type="checkbox" id="AllPlatformCheckbox" name="AllPlatformCheckbox" @(Convert.ToBoolean(Model.AllPlatform) ? "checked=\"checked\"" : "") />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">状态</label>
+                            <div class="col-md-8">
+                                <select class="form-control input-small" name="Status">
+                                    @foreach (game.Entity.Game.GameMessageStatus item in Enum.GetValues(typeof(game.Entity.Game.GameMessageStatus)))
+                                    {
+                                        <option value="@item" @Html.IsChoose(item == Model.Status, "select")>@item.GetDisplayName()</option>
+                                    }
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">频率</label>
+                            <div class="col-md-8">
+                                <input type="text" name="Interval" class="form-control input-small" placeholder="请输入排序值" value="@Model.Interval" style="float:left" />
+                                <span style="float:left;padding:10px 10px 10px 10px">秒</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @Html.OkWithRight()
+                            @Html.Back(Url.Action("List"))
+
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+            $('#platformid').val('@Model.PlatformID');
+            $("#form1").validate({
+                rules: {
+                    MsgContent: {
+                        required: true,
+                        maxlength: 512
+                    },
+                    BeginTime: {
+                        required: true
+                    }, EndTime: {
+                        required: true
+
+                    }, Interval: {
+                        required: true,
+                        digits: true
+                    }
+                }
+            });
+            $("#form1").submit(function () {
+                var EndTime = $("#EndTime").val();
+                var BeginTime = $("#BeginTime").val();
+                if (EndTime < BeginTime) {
+                    alert("时间填写有误，请重新填写！");
+                    return false;
+                }
+            });
+
+            $('#AllPlatformCheckbox').change(function () {
+                if ($(this).is(":checked")) {
+                    console.log(123)
+                    $('#AllPlatform').val(1)
+                } else {
+                    console.log(321)
+                    $('#AllPlatform').val(0)
+                }
+            });
+        });
+    </script>
+}

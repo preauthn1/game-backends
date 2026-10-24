@@ -1,0 +1,24 @@
+stages:
+  - Deploy
+
+cm-backend-dev:
+  image: alpine:3.12.12
+  stage: Deploy
+  variables:
+    PRIVATE_TOKEN: [REDACTED]
+    REPO_ENV_TOKEN: [REDACTED]
+    REPO_ENV_URL: http://example.invalid:1688/api/v4/projects/512/trigger/pipeline
+  before_script:
+    - echo ${REPO_ENV_URL}
+    - echo ${CI_COMMIT_REF_NAME}
+    - apk add --update --no-cache curl jq bash
+  script:
+    - pipeline_id=$(curl -s --fail -X POST -F token=[REDACTED] -F ref=main -F variables[SRC_COMMIT_BRANCH]=${CI_COMMIT_BRANCH} -F variables[SRC_PROJECT]=${CI_PROJECT_PATH} -F variables[Message]="${CI_COMMIT_TITLE}" -F variables[SRC_SHA]=${CI_COMMIT_SHA} -F variables[SRC_SHORT_SHA]=${CI_COMMIT_SHORT_SHA} ${REPO_ENV_URL} | jq .id)
+    - echo $pipeline_id;
+    - chmod +x checkstatus.sh
+    - ./checkstatus.sh $pipeline_id
+  tags:
+    - golang
+  only:
+    - dev
+    - main

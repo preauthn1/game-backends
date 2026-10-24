@@ -1,0 +1,68 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@model game.AdminSystem.OrganizationPlatformMappingViewModel
+
+@{
+
+}
+
+
+
+<form method="post">
+    <div class="row">
+        <div class="col-md-12 ">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        修改  @Model.OrgName 关联平台
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="dataTables-wrapper">
+                        <div class="row" style="margin-left: 10px; margin-right: 10px">
+                            @Html.OkWithRight()
+                            @Html.Back(@Url.Action("List"))
+                            <input type="hidden" name="id" value="@Model.OrgId" />
+                        </div>
+
+                        <div class="table-scrollable">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>平台ID</th>
+                                        <th>平台名</th>
+                                        <th>此平台已设定组织数</th>
+
+                                    </tr>
+                                </thead>
+                                @foreach (var item in Model.Platforms)
+                                {
+                                    int currentId = item.Id;
+                                    string checkedSign = "";
+
+                                    if (Model.SelectedPlatformIds.Any(z=> z == currentId))
+                                    {
+                                        checkedSign = "checked";
+                                    }
+
+                                    <tr>
+                                        <td><input type="checkbox" name="ck" value="@item.Id" @checkedSign /></td>
+                                        <td>@item.Id</td>
+                                        <td>@item.Name</td>
+                                        <td>@item.MappingOrgCount</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,40 @@
+﻿CREATE TABLE [dbo].[Unlimit_UserInfo] (
+    [UserID]               INT            NOT NULL,
+    [UserLevel]            INT            NOT NULL,
+    [StageLevel]           TINYINT        NOT NULL,
+    [SumSubUser]           INT            NOT NULL,
+    [SumSubAgent]          INT            NOT NULL,
+    [WithdrawDayLimit]     INT            NOT NULL,
+    [Status]               TINYINT        NOT NULL,
+    [PlatformID]           INT            NOT NULL,
+    [AreaID]               INT            NOT NULL,
+    [TopUserID]            INT            NULL,
+    [CreateTime]           DATETIME       NOT NULL,
+    [AgentCreateTime]      DATETIME       NULL,
+    [UpdateTime]           DATETIME       NULL,
+    [NickName]             VARCHAR (32)   NULL,
+    [Password]             VARCHAR (32)   NULL,
+    [Encrypt]              VARCHAR (10)   NULL,
+    [Relations]            VARCHAR (MAX)  NULL,
+    [Rate]                 INT            NULL,
+    [SumChargeAmount]      BIGINT         CONSTRAINT [DF_Unlimit_UserInfo_SumChargeAmount] DEFAULT ((0)) NULL,
+    [SumConvertAmount]     BIGINT         CONSTRAINT [DF_Unlimit_UserInfo_SumConvertAmount] DEFAULT ((0)) NULL,
+    [SumSubChargeAmount]   BIGINT         CONSTRAINT [DF_Unlimit_UserInfo_SumSubChargeAmount] DEFAULT ((0)) NULL,
+    [SumSubConvertAmount]  BIGINT         CONSTRAINT [DF_Unlimit_UserInfo_SumSubConvertAmount] DEFAULT ((0)) NULL,
+    [SumWithdrawAmount]    BIGINT         CONSTRAINT [DF_Unlimit_UserInfo_SumWithdrawAmount] DEFAULT ((0)) NULL,
+    [SumSubWithdrawAmount] BIGINT         CONSTRAINT [DF_Unlimit_UserInfo_SumSubWithdrawAmount] DEFAULT ((0)) NULL,
+    [CountWithdraw]        INT            CONSTRAINT [DF_Unlimit_UserInfo_CountWithdraw] DEFAULT ((0)) NULL,
+    [CountSubwithdraw]     INT            CONSTRAINT [DF_Unlimit_UserInfo_CountSubwithdraw] DEFAULT ((0)) NULL,
+    [Permission]           INT            CONSTRAINT [DF_Unlimit_UserInfo_Permission] DEFAULT ((1)) NULL,
+    [Memo]                 NVARCHAR (100) NULL,
+    CONSTRAINT [PK_Unlimit_UserInfo] PRIMARY KEY CLUSTERED ([UserID] ASC)
+);
+
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [IDX_Unlimit_UserInfo_UserID_INCLOUD]
+    ON [dbo].[Unlimit_UserInfo]([UserID] ASC)
+    INCLUDE([StageLevel], [PlatformID], [Relations]);
+

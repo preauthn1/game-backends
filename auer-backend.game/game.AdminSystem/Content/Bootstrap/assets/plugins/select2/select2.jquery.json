@@ -1,0 +1,36 @@
+{
+    "name": "select2",
+    "title": "Select2",
+    "description": "Select2 is a jQuery based replacement for select boxes. It supports searching, remote data sets, and infinite scrolling of results.",
+    "keywords": [
+        "select",
+        "autocomplete",
+        "typeahead",
+        "dropdown",
+        "multiselect",
+        "tag",
+        "tagging"
+    ],
+    "version": "3.4.3",
+    "author": {
+        "name": "Igor Vaynberg",
+        "url": "https://example.invalid/ivaynberg"
+    },
+    "licenses": [
+        {
+            "type": "Apache",
+            "url": "http://example.invalid/licenses/LICENSE-2.0"
+        },
+        {
+            "type": "GPL v2",
+            "url": "http://example.invalid/licenses/gpl-2.0.html"
+        }
+    ],
+    "bugs": "https://example.invalid/ivaynberg/select2/issues",
+    "homepage": "http://example.invalid/select2",
+    "docs": "http://example.invalid/select2/",
+    "download": "https://example.invalid/ivaynberg/select2/tags",
+    "dependencies": {
+        "jquery": ">=1.7.1"
+    }
+}

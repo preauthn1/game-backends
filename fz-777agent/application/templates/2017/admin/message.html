@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'admin/header.html' with {'title': title} %}
+
+
+  <body> 
+
+<div class="container-fluid">
+      <div class="row">
+
+      <div class="col-md-12">
+
+
+    <h4>{{message}}</h4>
+    <p>{% if wait %}系统<code>{{wait}}</code>秒后自动跳转，若没有跳转，请点击<a href="{{goto}}"><code>手动跳转</code></a>{% endif %}</p>
+     <p><a href="{{goto}}">点击加速</a></p>
+  
+
+  </div>
+
+  </div>
+  </div>
+
+
+<script> 
+ 
+{% if goto %} 
+   setInterval("window.location.href='{{goto|raw}}'",{{wait}}000);
+{% else %}
+   setInterval("history.go(-1);",{{wait}}000); 
+{% endif %}
+
+</script>
+
+
+  {% include 'admin/footer.html' %}
+
+   
+  </body>
+</html>

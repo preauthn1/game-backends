@@ -1,0 +1,162 @@
+syntax = "proto2";
+
+package netproto;
+
+import "GameMsg.proto";
+
+//---------- Server - Client ----------
+// GameInfo = 10001;                   // S2C 牌局資訊，於玩家進入牌局或斷線重連時傳送
+message JLBPK_GameInfo {
+    required int32 GameState = 1;               // 遊戲狀態，0:等待遊戲開始，1:開始下注，2:發牌，3:加注，4:邊注結算，5:底注結算，6:加注結算
+    repeated string JPSheet = 2;                // Jackpot 賠率表
+    repeated string SpecialSheet = 3;           // 特殊牌賠率表
+    repeated string PokerManual = 4;            // 遊戲說明
+    required int64 JPMoney = 5;                 // Jackpot 金額
+    required int32 TimeRemain = 6;              // 剩餘時間
+    repeated JLBPK_UserInfo UserInfo = 7;       // 所有玩家資訊
+    repeated int32 ChipValue = 8;               // 籌碼面額
+    required int64 Bet_Side = 9;                // 邊注金額
+    required JLBPK_UserCards BankerCards = 10;  // 莊家手牌
+};
+
+// AllUserInfo = 10002;                // S2C 玩家資訊，當玩家人數或狀態有變動時傳送
+message JLBPK_AllUserInfo {
+    repeated JLBPK_UserInfo UserInfo = 1;  // 所有玩家資訊
+};
+
+message JLBPK_UserInfo {
+    required int32 UserID = 1;                // 玩家ID，若是空位時，玩家ID = -1
+    required int32 SeatNo = 2;                // 玩家座位
+    required int32 State = 3;                 // 玩家狀態，0:空位，1:正常，2:觀戰，3:棄牌
+    required int64 Money = 4;                 // 玩家金錢
+    required int64 Bet_Base = 5;              // 玩家底注
+    required int64 Bet_Side = 6;              // 玩家邊注
+    required int64 Bet_Double = 7;            // 玩家加注
+    required bool GetJackpot = 8;             // 玩家是否中 Jackpot
+    required int64 JPMoney = 9;               // 玩家所中 Jackpot 金額
+    required int64 WinLoseMoney = 10;         // 玩家本次輸贏金錢，若值為負數，則為玩家輸掉的金額
+    required JLBPK_UserCards UserCards = 11;  // 玩家手牌
+    required int64 TotalWinLose = 12;         // 玩家總輸贏金錢
+    required int32 Winner = 13;               // 贏家，-1:發牌前狀態，0:和，1:贏，2:輸
+    required int64 MaxBetBase = 14;           // 可以下的最大底注值
+};
+
+// 玩家手牌
+message JLBPK_UserCards {
+    repeated PokerCard Cards = 1;  // 牌組
+                                   // Color，0:梅花，1:方塊，2:紅桃，3:黑桃，4:其他(例如小王、大王、蓋牌）
+                                   // Number，1~13:1(A)~K，15:小王，16:大王，17:蓋牌
+    required int32 Pattern = 2;    // 牌型，0:不成局，1:高牌，2:對子，3:兩對，4:三條，5:順子，6:同花，7:葫蘆，8:四條，9:同花順，10:皇家同花順
+};
+
+// WaitingStart = 10003;               // S2C 等待遊戲開始，此階段玩家可自由進出遊戲
+message JLBPK_WaitingStart {
+    required int32 TimeRemain = 1;  // 剩餘時間
+};
+
+// UserBettingStart = 10006;           // S2C 玩家開始下注
+message JLBPK_UserBettingStart {
+    required int32 TimeRemain = 1;  // 剩餘時間
+};
+
+// Bet = 10007;                        // C2S 玩家下注，底注或邊注
+message JLBPK_Bet {
+    required int32 BetType = 1;  // 下注類別，0:底注，1:邊注
+    required int64 Bet = 2;      // 下注金額
+};
+
+// BetResult = 10008;                  // S2C 玩家下注結果
+message JLBPK_BetResult {
+    required int32 SeatNo = 1;       // 下注玩家座位
+    required int32 BetType = 2;      // 下注類別，0:底注，1:邊注
+    required int64 Bet = 3;          // 下注金額
+    required int64 MoneyRemain = 4;  // 下注後玩家剩餘金錢
+    required int32 Result = 5;  // 下注結果，0:下注成功，-1:玩家餘額不足，-2:已停止下注，-3:已下過邊注，-4:底注超過上限，-5:邊注小於下限，-6:押注金額<=0
+};
+
+// Deal = 10011;                       // S2C 發牌
+message JLBPK_Deal {
+    required JLBPK_UserCards BankerCards = 1;  // 莊家手牌
+    repeated JLBPK_UserInfo UserInfo = 2;      // 所有玩家資訊
+};
+
+// DoubleBetStart = 10013;             // S2C 玩家開始加注
+message JLBPK_DoubleBetStart {
+    required int32 TimeRemain = 1;  // 剩餘時間
+};
+
+// DoubleBetResult = 10015;            // S2C 玩家加注結果
+message JLBPK_DoubleBetResult {
+    required int32 SeatNo = 1;       // 加注玩家座位
+    required int64 MoneyRemain = 2;  // 加注後玩家剩餘金錢
+    required int32 Result = 3;       // 加注結果，0:加注成功，-1:餘額不足-棄牌
+    required int64 Bet = 4;          // 加注金額
+};
+
+// UserFoldCard = 10017;               // S2C 傳送玩家棄牌訊息，玩家於加注倒數時間結束時仍未加注，亦傳送此協定強制棄牌
+message JLBPK_UserFoldCard {
+    required int32 SeatNo = 1;  // 棄牌玩家座位
+};
+
+// ShowCards = 10018;                  // S2C 開牌，邊注結算
+message JLBPK_ShowCards {
+    required JLBPK_UserCards BankerCards = 1;  // 莊家手牌
+    repeated JLBPK_UserInfo UserInfo = 2;      // 所有玩家資訊
+};
+
+// Compensate_BetBase = 10020;         // S2C 賠付，底注結算
+message JLBPK_Compensate_BetBase {
+    repeated JLBPK_UserInfo UserInfo = 1;  // 所有玩家資訊
+};
+
+// Compensate_DoubleBet = 10022;       // S2C 賠付，加注結算
+message JLBPK_Compensate_DoubleBet {
+    repeated JLBPK_UserInfo UserInfo = 1;  // 所有玩家資訊
+};
+
+// UpdateJackpot = 10024;              // S2C 更新 Jackpot 金額
+message JLBPK_UpdateJackpot {
+    required int64 JPMoney = 1;  // Jackpot 金額
+};
+
+//---------- SuperTool ----------
+// JLBPK_SuperTool_GetDealerWeight = 20001;       // 要求莊家牌型權重
+// JLBPK_SuperTool_GetDealerWeightRet = 20002;    // 取得莊家牌型權重
+message JLBPK_SuperTool_Msg_DealerWeightList {
+    repeated JLBPK_SuperTool_Msg_DealerWeight DataList = 1;
+}
+
+message JLBPK_SuperTool_Msg_DealerWeight {
+    required int32 FlagID = 1;          // 房間編號，1:初級場，2:中級場，3:高級場
+    required int32 TableNo = 2;         // 莊家牌型表表號，0 = A 情況、1 = B 情況，依此類推
+    required int32 CardPattern = 3;     // 牌型
+    required int32 Weight = 4;          // 權重值
+}
+
+// JLBPK_SuperTool_GetSetting = 20003;            // 要求超端設定
+// JLBPK_SuperTool_GetSettingRet = 20004;         // 取得超端設定
+message JLBPK_SuperTool_Msg_Setting {
+    required int32 FlagID = 1;              // 房間編號，1:初級場，2:中級場，3:高級場
+    required int64 FlowBase = 2;            // 水線基準
+    required int32 PlayerWeight = 3;        // 預設玩家拿牌權重
+    required int32 DealerWeight = 4;        // 預設莊家拿牌權重
+    required int64 DealerTargetMoney = 5;   // 莊家目標金額
+    required int32 CheatRate = 6;           // 換牌機率
+    required int32 DealerWin = 7;           // 莊家勝利局數
+    required int32 PlayerWin = 8;           // 玩家勝利局數
+    required int32 DealerNotGood = 9;       // 莊家不成局局數
+}
+
+// JLBPK_SuperTool_GetVIPUser = 20005;            // 要求監控玩家清冊
+// JLBPK_SuperTool_GetVIPUserRet = 20006;         // 取得監控玩家清冊
+// JLBPK_SuperTool_UpdateVIPUser = 20007;         // 更新監控玩家資料
+message JLBPK_SuperTool_Msg_VIPUserList {
+    repeated JLBPK_SuperTool_Msg_VIPUser UserList = 1;
+}
+
+message JLBPK_SuperTool_Msg_VIPUser {
+    required int32 UserID = 1;              // 玩家 ID
+    required int32 Weight  =2;              // 玩家拿牌權重
+    required int64 TargetMoney = 3;         // 玩家目標金額
+    required int64 AccumulatedMoney = 4;    // 累積金額
+}

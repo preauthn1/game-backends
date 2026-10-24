@@ -1,0 +1,11 @@
+﻿<th>用户ID</th>
+<th>帐号</th>
+<th>
+    用户等级
+    <!--先寫死 如果要讀DB 要用cache機制處理比較佳-->
+    @{
+        string br = Environment.NewLine;
+        string msg = string.Format("累積充值金額 {0}等級1. 50.00 {0}等級2. 500.00 {0}等級3. 3000.00 {0}等級4. 10000.00 {0}等級5. 30000.00 {0}等級6. 70000.00 {0}等級7. 200000.00 {0}等級8. 500000.00", br);
+    }
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" style="color:#372e2e;" title="@msg"></span>
+</th>

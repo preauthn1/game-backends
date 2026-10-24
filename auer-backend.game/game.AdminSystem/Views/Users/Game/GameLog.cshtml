@@ -1,0 +1,151 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .content {
+        padding: .5%;
+        font-size: 1.2em;
+        font-family: serif;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_userPartial")
+                @Html.Partial("GameServer")
+                <div class="form-group">
+                    <label>IP地址</label>
+                    <input type="text" class="form-control input-small " id="ipAddress" name="ipAddress" placeholder="IP地址">
+                </div>
+                <div class="form-group">
+                    <label>硬件类型</label>
+                    <select id="hDtype" name="hDtype" class="form-control input-small">
+                        <option value="">所有</option>
+                        <option value="1">PC</option>
+                        <option value="2">安卓</option>
+                        <option value="3">苹果</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>硬件码</label>
+                    <input type="text" class="form-control input-small " id="hDcode" name="hDcode" placeholder="硬件码">
+                </div>
+                <div class="form-group">
+                    <label>登入时间</label>
+                    <input type="text" class="form-control " style="width:180px" id="loginBeginTime" name="loginBeginTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="开始时间">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="loginEndTime" name="loginEndTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间">
+                </div>
+                <div class="form-group">
+                    <label>登出时间</label>
+                    <input type="text" class="form-control " style="width:180px" id="logoutBeginTime" name="logoutBeginTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("yyyy-MM-dd HH:mm")">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="logoutEndTime" name="logoutEndTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="search()"> 搜 索 </button>
+                </div>
+            </form>
+            @Html.Partial("_message")
+            <div class="content">
+                <table id="gamelog_table" class="display" style="width:100%"></table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        function createTable() {
+            const url = '/Game/GetGameLog'
+            const thead = [{ "sTitle": "所属平台", "mData": "Platform" },
+                            {
+                                "sTitle": "用户ID", "mData": "UserID", "width": "8%",
+                                "render": function (data, type, row) {
+                                    return `<a class="link" target="_blank" href="/UserInfo/Search?userId=${data}&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">${data}</a>`
+                                }
+                            },
+                            {
+                                "sTitle": "帐号", "mData": "LoginName",  "width": "8%",
+                                "render": function (data, type, row) {
+                                    return `<a class="link" target="_blank" href="/UserInfo/Search?loginName=${data}&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">${data}</a>`
+                                }
+                            },
+                            { "sTitle": "用户等级", "mData": "GradeID", "className": "text_right" },
+                            { "sTitle": "服务器", "mData": "ServerName" },
+                            { "sTitle": "进游戏金币", "mData": "LoginMoney", "className": "text_right" },
+                            { "sTitle": "输赢金币", "mData": "Amount", "className": "text_right" },
+                            { "sTitle": "税收", "mData": "TaxAmount", "className": "text_right" },
+                            { "sTitle": "赢", "mData": "WinCount", "className": "text_right" },
+                            { "sTitle": "输", "mData": "LoseCount", "className": "text_right" },
+                            { "sTitle": "平", "mData": "DrawCount", "className": "text_right" },
+                            { "sTitle": "游戏时间", "mData": "GameTime" },
+                            { "sTitle": "IP地址", "mData": "IPAddress" },
+                            { "sTitle": "硬件类型", "mData": "HDType" },
+                            { "sTitle": "硬件唯一码", "mData": "HDCode" },
+                            { "sTitle": "登入时间", "mData": "LoginTime" },
+                            { "sTitle": "登出时间", "mData": "LogoutTime" }]
+
+            var loginName = $('#loginName').val()
+            var userID = $('#userID').val()
+            var gameID = $('#gameID').val()
+            var serverID = $('#serverID').val()
+            var hDtype = $('#hDtype').val()
+            var hDcode = $('#hDcode').val()
+            var loginBeginTime = $('#loginBeginTime').val()
+            var loginEndTime = $('#loginEndTime').val()
+            var logoutBeginTime = $('#logoutBeginTime').val()
+            var logoutEndTime = $('#logoutEndTime').val()
+
+            const data = {
+                loginName: loginName,
+                userID: userID,
+                gameID: gameID,
+                serverID: serverID,
+                hDtype: hDtype,
+                hDcode: hDcode,
+                loginBeginTime: loginBeginTime,
+                loginEndTime: loginEndTime,
+                logoutBeginTime: logoutBeginTime,
+                logoutEndTime: logoutEndTime
+            }
+
+            createDataTable('gamelog', thead, url, data)
+        }
+
+        function search() {
+            var errorMsg = validateFunc()
+            if (errorMsg) {
+                Msg.alert(errorMsg, 'danger')
+                return false
+            }
+
+            createTable()
+        }
+
+        var validateFunc = function () {
+            var validator = new Validator()
+            validator.add([form_search.loginName, form_search.nickName, form_search.userID], [{
+                strategy: 'isSomeNonEmpty',
+                errorMsg: '账户信息不能全为空,请输入账号或者ID！'
+            }])
+
+            var errorMsg = validator.start()
+            return errorMsg
+        }
+
+        $(function () {
+            var userID = `@ViewBag.userID`;
+            if (userID) {
+                $("#userID").val(userID)
+            }
+
+            fillFormData('form_search');
+            createTable()
+        })
+    </script>
+}

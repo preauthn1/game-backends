@@ -1,0 +1,68 @@
+﻿@model List<FW.Core.AdminSys.Provider.Entity.Right>
+@{
+    List<FW.Core.AdminSys.Provider.Entity.Right> allRights = ViewBag.allRights;
+    FW.Core.AdminSys.Provider.Entity.Right currentRootRight = ViewBag.currentRootRight;
+    FW.Core.AdminSys.Provider.Entity.Right currentPageRight = ViewBag.currentPageRight;
+    Layout = null;
+}
+<ul class="page-sidebar-menu" data-auto-scroll="true" data-slide-speed="200">
+    <li class="sidebar-toggler-wrapper">
+        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+        <div class="sidebar-toggler hidden-phone">
+        </div>
+        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+    </li>
+
+    <!--BEGIN MENU-->
+    <li class="start active" style="display:none">
+        <a href="@Url.Action("Index","Default")">
+            <i class="fa fa-home"></i>
+            <span class="title">
+                系统主页
+            </span>
+            <span class="selected">
+            </span>
+        </a>
+    </li>
+    @if (allRights != null && allRights.Count > 0)
+    {
+        foreach (var rootRight in allRights.Where(p => p.ParentID == 0))
+        {
+            var open = false;
+            if (currentRootRight != null &&  (currentRootRight.RightID == rootRight.RightID || currentRootRight.ParentID == rootRight.RightID))
+            {
+                open = true;
+            }
+            <li id="user@example.invalid" @(open?"class=active open":"")>
+                <a href="javascript:;">
+                    <span class="title">
+                        @rootRight.RightName
+                    </span>
+                    <span class="arrow@(open?" open":"")">
+                    </span>
+                </a>
+                <ul class="sub-menu" style="display: @(open?"block":"none");">
+                    @foreach (var subRight in allRights.Where(p => p.ParentID == rootRight.RightID))
+                    {
+                        var subopen = false;
+                        if (currentPageRight != null && (currentPageRight.RightID == subRight.RightID || currentPageRight.ParentID == subRight.RightID))
+                        {
+                            subopen = true;
+                        }
+                        <li class="tooltips@(subopen?" active":"")" data-container="body" data-placement="right" data-html="true" 
+                            data-original-title="@string.Join(",", allRights.Where(p => p.ParentID == subRight.RightID).Select(x => x.RightName))">
+                            <a href="@subRight.PageUrl">
+                                <i class="fa @subRight.IconCls"></i>
+                                <span class="title">
+                                    @subRight.RightName
+                                </span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+    }
+    <!--END MENU-->
+
+</ul>

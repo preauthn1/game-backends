@@ -1,0 +1,23 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://example.invalid/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8" />
+    @RenderSection("head", false)
+    <script type="text/javascript" src="@Url.Content("~/Content/EasyUI/jquery.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/EasyUI/jquery.easyui.min.js")"></script>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/EasyUI/main.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/EasyUI/themes/default/easyui.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/EasyUI/themes/icon.css")" />
+    <script type="text/javascript" src="@Url.Content("~/Content/EasyUI/locale/easyui-lang-zh_CN.js")"></script>
+
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    @RenderSection("js", false)
+    @RenderSection("css", false)
+</head>
+<body>
+    <div style="margin-left:10px">
+        @RenderBody()
+       
+    </div>
+</body>
+</html>

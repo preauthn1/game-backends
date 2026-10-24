@@ -1,0 +1,42 @@
+﻿
+@model  List<game.Entity.Stat.GradeSetting>
+
+<style>
+    .btn_link {
+        padding-left: 5px;
+        font-weight: bold;
+        text-decoration: underline !important;
+        color: #428bca !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover progressTable">
+                    <thead>
+                        <tr>
+                            <th>等级</th>
+                            <th>用户人数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>
+                                        <a target="_blank" href="/userstat/alluser?gradeID=@item.Id" class="btn_link">@item.UserCount</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

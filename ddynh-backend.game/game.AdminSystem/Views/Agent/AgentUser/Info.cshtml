@@ -1,0 +1,123 @@
+﻿@using FW.Core.Helper.Enum
+@using game.Entity.Agent
+@model AgentUserInfo
+@{
+    //金币
+    var cash = new game.Entity.Money.Cash();
+    if (ViewBag.UserCash != null)
+    {
+        cash = ViewBag.UserCash as game.Entity.Money.Cash;
+    }
+    //银行
+    var bank = new game.Entity.Money.Bank();
+    if (ViewBag.UserBank != null)
+    {
+        bank = ViewBag.UserBank as game.Entity.Money.Bank;
+    }
+}
+
+<br />
+<div class="row">
+    <div class="col-md-4 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>我的基本信息
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <form class="form-horizontal form-bordered">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-5 ">游戏账号ID</label>
+                            <div class="col-md-7">
+                                <a class="link" target="_blank" href="/UserInfo/Search?userId=@(Model.UserID)&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">@Model.UserID</a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 ">游戏账号昵称</label>
+                            <div class="col-md-7">
+                                <span>@Model.User.NickName</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 ">名称</label>
+                            <div class="col-md-7">
+                                <span>@Model.Name</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 ">微信</label>
+                            <div class="col-md-7">
+                                <span>@Model.WXNo</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 ">QQ</label>
+                            <div class="col-md-7">
+                                <span>@Model.QQ</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 ">组名</label>
+                            <div class="col-md-7">
+                                <span>@Model.GroupName</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 ">注册代理时间</label>
+                            <div class="col-md-7">
+                                <span>@Model.CreateTime.ToString("yyyy-MM-dd HH:mm")</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 ">最近登录时间</label>
+                            <div class="col-md-7">
+                                <span>@Model.LastLoginTime.ToString("yyyy-MM-dd HH:mm")</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 ">最近登录IP</label>
+                            <div class="col-md-7">
+                                <span>@Model.LastLoginIP</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 ">是否显示</label>
+                            <div class="col-md-7">
+                                <span>@(Model.IsShow ? "是" : "否")</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>金额信息
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <form id="applyWithdrawalsForm" method="post" action="/Agent/ApplyWithdrawals" class="form-horizontal form-bordered">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-5 ">金币金额</label>
+                            <div class="col-md-7">
+                                <span>@(cash.Amount.ToCash())</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 ">保險箱余额</label>
+                            <div class="col-md-7">
+                                <span>@(bank.Amount.ToCash())</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

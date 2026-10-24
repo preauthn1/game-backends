@@ -1,0 +1,284 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://example.invalid/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CEAB9A96-FB4D-4858-9E69-5D888EC50626}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>game.Service</RootNamespace>
+    <AssemblyName>game.Service</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>..\..\Using\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.50.0\lib\net45\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\using\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\..\using\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="FW.Core.Cache">
+      <HintPath>..\..\using\FW.Core.Cache.dll</HintPath>
+    </Reference>
+    <Reference Include="FW.Core.Engine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\using\FW.Core.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="FW.Core.Helper">
+      <HintPath>..\..\using\FW.Core.Helper.dll</HintPath>
+    </Reference>
+    <Reference Include="FW.Core.Repository, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\using\FW.Core.Repository.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DAO\AdminSysDB\OrganizationPlatformMappingRepository.cs" />
+    <Compile Include="DAO\AdminSysDB\AdminUserRepository.cs" />
+    <Compile Include="DAO\AdminSysDB\UserRightRepository.cs" />
+    <Compile Include="DAO\AdminSysDB\RoleRightRepository.cs" />
+    <Compile Include="DAO\AdminSysDB\SystemAdminRightSettingRepository.cs" />
+    <Compile Include="DAO\AdminSysDB\RoleRepository.cs" />
+    <Compile Include="DAO\AdminSysDB\OrganizationRepository.cs" />
+    <Compile Include="DAO\LogDB\BGFishBetRecordRepository.cs" />
+    <Compile Include="DAO\LogDB\APLFishBetRecordRepository.cs" />
+    <Compile Include="DAO\LogDB\APLFishDataMigratePendingQueueRepository.cs" />
+    <Compile Include="DAO\LogDB\Base\BaseDataMigratePendingQueueRepository.cs" />
+    <Compile Include="DAO\LogDB\BGBetRecordRepository.cs" />
+    <Compile Include="DAO\LogDB\BGDataMigratePendingQueueRepository.cs" />
+    <Compile Include="DAO\LogDB\APLDataMigratePendingQueueRepository.cs" />
+    <Compile Include="DAO\LogDB\APLBetRecordRepository.cs" />
+    <Compile Include="DAO\CenterDB\AreaGameListRepository.cs" />
+    <Compile Include="DAO\CenterDB\GameAliasNameRepository.cs" />
+    <Compile Include="DAO\LogDB\GameLogRepository.cs" />
+    <Compile Include="DAO\LogDB\EGamingDataMigratePendingQueueRepository.cs" />
+    <Compile Include="DAO\LogDB\JobExecuteRecordRepository.cs" />
+    <Compile Include="DAO\MSSQLSystem\MSSQLSystemRepository.cs" />
+    <Compile Include="DAO\NotifyDB\AttrRepository.cs" />
+    <Compile Include="DAO\LogDB\ApiRequestLog_ExternalApiRepository.cs" />
+    <Compile Include="DAO\CenterDB\CashRepository.cs" />
+    <Compile Include="DAO\CenterDB\EventDetailLogRepository.cs" />
+    <Compile Include="DAO\CenterDB\EventSettingAwardItemRepository.cs" />
+    <Compile Include="DAO\CenterDB\EventSettingBonusRepository.cs" />
+    <Compile Include="DAO\CenterDB\EventSettingLotteryConditionsItemRepository.cs" />
+    <Compile Include="DAO\CenterDB\EventSettingRepository.cs" />
+    <Compile Include="DAO\CenterDB\EventSettingRuleItemRepository.cs" />
+    <Compile Include="DAO\CenterDB\PayGatewayRepository.cs" />
+    <Compile Include="DAO\CenterDB\ServerPlatformRelationsRepository.cs" />
+    <Compile Include="DAO\CenterDB\PlatformAdminUserRepository.cs" />
+    <Compile Include="DAO\CenterDB\FlowAmountLimitLogRepository.cs" />
+    <Compile Include="DAO\CenterDB\AreaRepository.cs" />
+    <Compile Include="DAO\CenterDB\PromotionEventAreaMappingRepository.cs" />
+    <Compile Include="DAO\CenterDB\PromotionEventItemRepository.cs" />
+    <Compile Include="DAO\CenterDB\PromotionEventRepository.cs" />
+    <Compile Include="DAO\CenterDB\PayTypeCategoryMappingRepository.cs" />
+    <Compile Include="DAO\CenterDB\PlatformPayTypeSettingRepository.cs" />
+    <Compile Include="DAO\CenterDB\UserInfoRepository.cs" />
+    <Compile Include="DAO\CenterDB\UserGameInfoRepository.cs" />
+    <Compile Include="DAO\CenterDB\GameMerchantPlatformConfigRepository.cs" />
+    <Compile Include="DAO\CenterDB\GameMerchantRepository.cs" />
+    <Compile Include="DAO\CenterDB\GameListRepository.cs" />
+    <Compile Include="DAO\CenterDB\CertificationRepository.cs" />
+    <Compile Include="DAO\CenterDB\GameUserListRepository.cs" />
+    <Compile Include="DAO\LogDB\EGamingBetRecordRepository.cs" />
+    <Compile Include="DAO\LogDB\ApiRequestLogGamePlayApiRepository.cs" />
+    <Compile Include="DAO\LogDB\ApiRequestLogGameApiRepository.cs" />
+    <Compile Include="DAO\LogDB\ApiRequestLogRepository.cs" />
+    <Compile Include="DAO\CenterDB\TransferRecordRepository.cs" />
+    <Compile Include="DAO\CenterDB\UserGameLaunchSummaryRepository.cs" />
+    <Compile Include="DAO\CenterDB\GameMerchantJobSettingRepository.cs" />
+    <Compile Include="DAO\LogDB\ThirdPartyBetFlowAmountCalculateRecordRepository.cs" />
+    <Compile Include="DAO\PerGameLog\DetailLogRepository.cs" />
+    <Compile Include="DAO\LogDB\SlotGameHistoryLogRepository.cs" />
+    <Compile Include="DAO\LogDB\ThirdPartyDataMigratePendingQueueRepository.cs" />
+    <Compile Include="DAO\CenterDB\UserMemoRepository.cs" />
+    <Compile Include="DAO\CenterDB\TagsRepository.cs" />
+    <Compile Include="DAO\CenterDB\UserTagMappingRepository.cs" />
+    <Compile Include="Interface\IEventRuleService.cs" />
+    <Compile Include="Interface\IServerInfoManagementService.cs" />
+    <Compile Include="Interface\IFlowAmountLimitService.cs" />
+    <Compile Include="Interface\IStatReportService.cs" />
+    <Compile Include="Interface\IPromotionEventService.cs" />
+    <Compile Include="Interface\IApiRequestLogService.cs" />
+    <Compile Include="Interface\IAdminRightService.cs" />
+    <Compile Include="Interface\IAdminRoleService.cs" />
+    <Compile Include="Interface\IOrganizationService.cs" />
+    <Compile Include="Interface\IActivityService.cs" />
+    <Compile Include="Interface\IAdminSysService.cs" />
+    <Compile Include="Interface\IAreaService.cs" />
+    <Compile Include="Interface\IAreaStatService.cs" />
+    <Compile Include="Interface\ICustomerService.cs" />
+    <Compile Include="Interface\IForbidChatService.cs" />
+    <Compile Include="Interface\IForbidUserService.cs" />
+    <Compile Include="Interface\IGameMessageService.cs" />
+    <Compile Include="Interface\IGameService.cs" />
+    <Compile Include="Interface\IMessageService.cs" />
+    <Compile Include="Interface\IMoneyService.cs" />
+    <Compile Include="Interface\IMoneyStatService.cs" />
+    <Compile Include="Interface\INotifyService.cs" />
+    <Compile Include="Interface\IPaymentPlatformSettingService.cs" />
+    <Compile Include="Interface\IPaymentService.cs" />
+    <Compile Include="Interface\IRobotOnLineStatService.cs" />
+    <Compile Include="Interface\IOnLineStatService.cs" />
+    <Compile Include="Interface\IPayService.cs" />
+    <Compile Include="Interface\IPerGameLogService.cs" />
+    <Compile Include="Interface\IUserService.cs" />
+    <Compile Include="Interface\IUserStatService.cs" />
+    <Compile Include="Interface\IWarningService.cs" />
+    <Compile Include="Interface\IAgentService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service.Autofac\Service.AdminSys\Interface\ITransferRecordService.cs" />
+    <Compile Include="Service.Autofac\Service.AdminSys\Services\GameListService.cs" />
+    <Compile Include="Service.Autofac\Service.AdminSys\Interface\IGameListService.cs" />
+    <Compile Include="Service.Autofac\Service.AdminSys\Services\GameMerchantPlatformConfigService.cs" />
+    <Compile Include="Service.Autofac\Service.AdminSys\Interface\IGameMerchantPlatformConfigService.cs" />
+    <Compile Include="Service.Autofac\Service.AdminSys\Services\GameMerchantService.cs" />
+    <Compile Include="Service.Autofac\Service.AdminSys\Interface\IGameMerchantService.cs" />
+    <Compile Include="Service.Autofac\Service.AdminSys\Interface\IOnlineUserSummaryService.cs" />
+    <Compile Include="Service.Autofac\Service.AdminSys\Services\OnlineUserSummaryService.cs" />
+    <Compile Include="Service.Autofac\Service.AdminSys\Services\TransferRecordService.cs" />
+    <Compile Include="Service.Autofac\Service.API\Interface\IWalletTransferService.cs" />
+    <Compile Include="Service.Autofac\Service.API\Interface\IPromotionEventApiService.cs" />
+    <Compile Include="Service.Autofac\Service.API\Services\GameLaunchTestCaseService.cs" />
+    <Compile Include="Service.Autofac\Service.API\Services\PromotionEventApiService.cs" />
+    <Compile Include="Service.Autofac\Service.API\Services\GameLaunchService.cs" />
+    <Compile Include="Service.Autofac\Service.API\Interface\IGameLaunchService.cs" />
+    <Compile Include="Service.Autofac\Service.API\Services\WalletTransferService.cs" />
+    <Compile Include="Service.Autofac\Service.ReferenceService\Interface\Base\IBaseThirdPartyGameMerchantApiService.cs" />
+    <Compile Include="Service.Autofac\Service.ReferenceService\Interface\IBGGameMerchantApiService.cs" />
+    <Compile Include="Service.Autofac\Service.ReferenceService\Interface\IServerSideTriggerhNotifyService.cs" />
+    <Compile Include="Service.Autofac\Service.ReferenceService\Interface\IGameMerchantIntegrationCommonService.cs" />
+    <Compile Include="Service.Autofac\Service.ReferenceService\Services\BGGameMerchantApiService.cs" />
+    <Compile Include="Service.Autofac\Service.ReferenceService\Services\ServerSideTriggerhNotifyService.cs" />
+    <Compile Include="Service.Autofac\Service.ReferenceService\Services\GameMerchantIntegrationCommonService.cs" />
+    <Compile Include="Service.Autofac\Service.ReferenceService\Services\EGamingGameMerchantApiService.cs" />
+    <Compile Include="Service.Autofac\Service.ReferenceService\Interface\IEGamingGameMerchantApiService.cs" />
+    <Compile Include="Service.Autofac\Service.ReferenceService\Services\APLGameMerchantApiService.cs" />
+    <Compile Include="Service.Autofac\Service.ReferenceService\Interface\IAPLGameMerchantApiService.cs" />
+    <Compile Include="ServiceHelper\AppLogicHelper.cs" />
+    <Compile Include="ServiceHelper\InstanceHelper.cs" />
+    <Compile Include="ServiceHelper\EvnetRuleInitialHelper.cs" />
+    <Compile Include="Service\Base\BaseThirdPartyGameService.cs" />
+    <Compile Include="Service\EventRuleService.cs" />
+    <Compile Include="Interface\IPayGatewayService.cs" />
+    <Compile Include="Service\PayGatewayService.cs" />
+    <Compile Include="DAO\CenterDB\GameServerListRepository.cs" />
+    <Compile Include="Service\ServerInfoManagementService.cs" />
+    <Compile Include="Service\FlowAmountLimitService.cs" />
+    <Compile Include="Service\StatReportService.cs" />
+    <Compile Include="ServiceHelper\DataSimplifyHelper.cs" />
+    <Compile Include="Service\PromotionEventService.cs" />
+    <Compile Include="Service\AdminRightService.cs" />
+    <Compile Include="Service\AdminRoleService.cs" />
+    <Compile Include="Service\OrganizationService.cs" />
+    <Compile Include="Service\ActivityService.cs" />
+    <Compile Include="Service\AdminSysService.cs" />
+    <Compile Include="Service\AreaService.cs" />
+    <Compile Include="Service\AreaStatService.cs" />
+    <Compile Include="Service\CustomerService.cs" />
+    <Compile Include="Service\ForbidChatService.cs" />
+    <Compile Include="Service\ForbidUserService.cs" />
+    <Compile Include="Service\GameMessageService.cs" />
+    <Compile Include="Service\GameService.cs" />
+    <Compile Include="Service\MessageService.cs" />
+    <Compile Include="Service\MoneyService.cs" />
+    <Compile Include="Service\MoneyStatService.cs" />
+    <Compile Include="Service\NotifyService.cs" />
+    <Compile Include="Service\PaymentPlatformSettingService.cs" />
+    <Compile Include="Service\PaymentService.cs" />
+    <Compile Include="Service\RobotOnLineStatService.cs" />
+    <Compile Include="Service\OnLineStatService.cs" />
+    <Compile Include="Service\AgentService.cs" />
+    <Compile Include="Service\PayService.cs" />
+    <Compile Include="Service\PerGameLogService.cs" />
+    <Compile Include="Service\Base\BaseService.cs" />
+    <Compile Include="Service\SystemLog\ApiRequestLogService.cs" />
+    <Compile Include="Interface\IMerchantInfoService.cs" />
+    <Compile Include="DAO\CenterDB\MerchantInfoRepository.cs" />
+    <Compile Include="Service\MerchantInfoService.cs" />
+    <Compile Include="Interface\IUnionpayBankCodeService.cs" />
+    <Compile Include="DAO\CenterDB\UnionpayBankCodeRepository.cs" />
+    <Compile Include="DAO\CenterDB\ConvertGatewayRepository.cs" />
+    <Compile Include="Service\ConvertGatewayService.cs" />
+    <Compile Include="Interface\IConvertGatewayService.cs" />
+    <Compile Include="Interface\IUnionpayBankPlatformMappingService.cs" />
+    <Compile Include="DAO\CenterDB\UnionpayBankPlatformMappingRepository.cs" />
+    <Compile Include="DAO\CenterDB\ConvertGatewayBankSettingRepository.cs" />
+    <Compile Include="Service\ConvertGatewayBankSettingService.cs" />
+    <Compile Include="Interface\IConvertGatewayBankSettingService.cs" />
+    <Compile Include="DAO\CenterDB\GameCategoryRepository.cs" />
+    <Compile Include="Service\GameCategoryService.cs" />
+    <Compile Include="Interface\IGameCategoryService.cs" />
+    <Compile Include="DAO\CenterDB\GameCategorySettingRepository.cs" />
+    <Compile Include="Service\GameCategorySettingService.cs" />
+    <Compile Include="Interface\IGameCategorySettingService.cs" />
+    <Compile Include="Service\UnionpayBankPlatformMappingService.cs" />
+    <Compile Include="Service\UnionpayBankCodeService.cs" />
+    <Compile Include="Service\UserService.cs" />
+    <Compile Include="Service\UserStatService.cs" />
+    <Compile Include="Service\WarningService.cs" />
+    <Compile Include="Interface\IPayGatewayConvertTypeMappingService.cs" />
+    <Compile Include="DAO\CenterDB\PayGatewayConvertTypeMappingRepository.cs" />
+    <Compile Include="Service\PayGatewayConvertTypeMappingService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\game.Entity\game.Entity.csproj">
+      <Project>{44448B04-8148-4324-BA1C-1EFC54F0E1DD}</Project>
+      <Name>game.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\game.Infrastructure\game.Infrastructure.csproj">
+      <Project>{c8931862-d42a-41f5-84c1-9e638ac564d3}</Project>
+      <Name>game.Infrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Service\Template\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

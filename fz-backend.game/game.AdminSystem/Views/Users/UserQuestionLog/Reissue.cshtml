@@ -1,0 +1,185 @@
+﻿@using FW.Core.Web.Mvc
+@using game.Entity.Pay
+@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using game.Entity.Pay
+
+@model FW.Core.Helper.PagedList<OrderLog>
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+
+<style>
+    .group {
+        margin: .5% .5%;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_userPartial")
+                <div class="form-group">
+                    <label>客服名称</label>
+                    <input type="text" class="form-control input-small" id="CSName" name="CSName" placeholder="客服名称">
+                </div>
+                <div class="form-group">
+                    <label>订单编号</label>
+                    <input type="text" class="form-control input-small" id="orderID" name="orderID" placeholder="订单编号">
+                </div>
+                <div class="form-group">
+                    <label>第三方</label>
+                    <select class="form-control input-small" id="GWID" name="GWID">
+                        <option>--不限--</option>
+                        @foreach (var item in Enum.GetValues(typeof(PayGatewayType)))
+                        {
+                            <option value="@((int)item)">@item.GetDisplayName()</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>支付类型</label>
+                    <select class="form-control input-small" id="payTypeID" name="payTypeID">
+                        <option>--不限--</option>
+                        @foreach (var item in Enum.GetValues(typeof(PayType)))
+                        {
+                            if (item.GetDisplay())
+                            {
+                                <option value="@((int)item)">@item.GetDisplayName()</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>创建时间</label>
+                    <input type="text" class="form-control " style="width:180px" id="StartTime" name="StartTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@Convert.ToDateTime(DateTime.Now.AddDays(-2).ToShortDateString()).ToString("yyyy-MM-dd HH:mm")">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="EndTime" name="EndTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <button type="submit" id="search" class="btn btn-default"> 搜 索 </button>
+                    <button type="submit" class="btn btn-default" name="submitType" value="Export"> 匯 出 </button>
+                </div>
+            </form>
+            <div class="protlet-body">
+                <div class="group">
+                    <button type="button" id="search" class="btn btn-default" data-toggle="modal" data-target="#reissueModal"> 补 单 </button>
+                   
+                </div>
+            </div>
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <td>ID</td>
+                            <td>订单ID</td>
+                            <td>玩家ID</td>
+                            <td>客服名称</td>
+                            <td>补单金额</td>
+                            <td>操作时间</td>
+                            <td>支付方式</td>
+                            <td>支付渠道</td>
+                            <td>附注</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.PageData != null)
+                        {
+                            foreach (var item in Model.PageData)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.OrderID</td>
+                                    <td>
+                                    <a target="_blank" href="/UserInfo/Search?userId=@item.UserID&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">
+                                        @item.UserID
+                                    </a>
+                                    </td>
+                                    <td>@item.CSName</td>
+                                    <td>@item.Amount</td>
+                                    <td>@item.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>@item.TypeName</td>
+                                    <td>@item.GatewayName</td>
+                                    <td>@item.Memo</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="row rpager">
+                <div class="pager">
+                    <div class="pagerc">
+                        @if (Model != null)
+                        {
+                            @Html.Pager(Model)
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Reissue Modal-->
+        <div class="modal fade" id="reissueModal" tabindex="-1" role="dialog" aria-labelledby="reissueModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal.large modal-size" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reissueModalLabel">客服补单</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form_Add" method="post" action="AddForbidAccount" class="form-horizontal form-bordered">
+                            <div>
+                                <label>订单编号</label>
+                                <input type="text" class="form-control input-normal" id="CSOrderID" name="CSOrderID" placeholder="订单编号">
+                            </div>
+
+                            <div>
+                                <label>补单金额</label>
+                                <input type="text" class="form-control input-normal" id="CSAmount" name="CSAmount" placeholder="补单金额">
+                            </div>
+                            <div>
+                                <label>补单备注</label>
+                                <textarea rows="3" name="CSMemo" id="CSMemo" class="form-control  input-normal" placeholder="补单备注"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="FinishedOrderByCS()">提交</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+            $("#form_Add").validate({
+                rules: {
+                    CSOrderID: {
+                        required: true
+                    },
+                    CSAmount: {
+                        required: true
+                    },
+                    CSMemo: {
+                        required: true
+                    }
+                }
+            });
+            fillFormData('form_search');
+        })
+        function FinishedOrderByCS() {
+            if ($("#form_Add").valid()) {
+                const CSOrderID = $('#CSOrderID').val()
+                const CSAmount = $('#CSAmount').val()
+                const CSMemo = $('#CSMemo').val()
+                $.post('/userquestionlog/FinishedOrderByCS', { '_r': Math.random(), CSOrderID, CSAmount, CSMemo }, function (data) {
+                    alert(data.msg)
+                    window.location.replace(location.href)
+                })
+            }
+        }
+    </script>
+}

@@ -1,0 +1,80 @@
+﻿@section pageLevelPlugins{
+<script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+}
+
+<div class="row" id="vApp">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th style="width:90px;">桌号</th>
+                            <th>当前状态</th>
+                            <th style="width:70px;">当前人数</th>
+                            <th style="width:120px;">玩家（机器人）</th>
+                            <th style="width:120px;">当前水池</th>
+
+                            <!-- #48 临时注解 http://0.0.0.0/redmine/issues/48
+                            <th style="width:120px;">总收益</th>
+                            <th style="width:120px;">上局收益</th>
+                            -->
+
+                            <th style="width:90px;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="table in tableList">
+                            <td>{{table.TableNo}}</td>
+                            <td>{{tableStatus[table.Status]}}</td>
+                            <td>{{table.GameUserCount+table.RobotCount}}</td>
+                            <td><span style="color:red;">{{table.GameUserCount}}</span>（{{table.RobotCount}}）</td>
+                            <td>{{ToCash(table.PoolCurrentAmount)}}</td>
+
+                            <!-- #48 临时注解 http://0.0.0.0/redmine/issues/48
+                            <td style="color:red;">{{ToCash(table.SumEarnAmount)}}</td>
+                            <td>{{ToCash(table.LastEarnAmount)}}</td>
+                            -->
+
+                            <td>
+                                <a class="btn btn-sm dark" :href="'/GameLHD/TableDetail?serverID=@(ViewBag.ServerID)&tableNo='+table.TableNo">详细信息</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        var vApp = new Vue({
+            el: '#vApp',
+            data: {
+                serverID: '@ViewBag.ServerID',
+                tableStatus: ['下注中', '开奖中', '开奖动画', '结算动画', '等待开始游戏'],
+                tableList: {}
+            },
+            methods: {
+                ToCash: function (val) {
+                    return ToCash(val);
+                },
+                getTableList: function () {
+                    $.get('/GameLHD/GetTableList', { 'serverID': vApp.serverID, '_r': Math.random() }, function (data) {
+                        if (data instanceof Array) {
+                            vApp.tableList = data;
+                        }
+                        else {
+                            vApp.tableList = {};
+                        }
+                    });
+                }
+            }
+        });
+        
+        vApp.getTableList();
+        setInterval(function () {
+            vApp.getTableList();
+        }, 1000);
+    </script>
+}

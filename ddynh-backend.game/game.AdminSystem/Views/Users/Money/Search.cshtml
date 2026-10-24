@@ -1,0 +1,92 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+@using FW.Core.Helper
+
+@{
+    var user = ViewBag.User as game.Entity.Users.UserInfo;
+    //金币
+    game.Entity.Money.Cash cash = ViewBag.UserCash as game.Entity.Money.Cash;
+    cash = cash ?? new game.Entity.Money.Cash();
+    //保險箱
+    game.Entity.Money.Bank bank = ViewBag.UserBank as game.Entity.Money.Bank;
+    bank = bank ?? new game.Entity.Money.Bank();
+
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_message")
+                @Html.Partial("~/Views/Shared/_userPartial.cshtml")
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default"> 搜 索 </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@if (user != null)
+{
+    <br />
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i>金币查询
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <form id="form1" class="form-horizontal form-bordered">
+                        <div class="form-body">
+                            @Html.Partial("UserInfo", user)
+                            <div class="form-group">
+                                <label class="control-label col-md-5 ">金币金额</label>
+                                <div class="col-md-7">
+                                    <span>@cash.Amount.ToCash()</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 ">保險箱余额</label>
+                                <div class="col-md-7">
+                                    <span>@bank.Amount.ToCash()</span>
+                                </div>
+                            </div>                            
+                        </div>
+
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+@section initScripts{
+    <script>
+        $(function () {
+            var validateFunc = function () {
+                var validator = new Validator()
+                validator.add([form_search.loginName, form_search.nickName, form_search.userID], [{
+                    strategy: 'isSomeNonEmpty',
+                    errorMsg: '账户信息不能全为空,请输入昵称、账号或者ID！'
+                }])
+
+                var errorMsg = validator.start()
+                return errorMsg
+            }
+
+            var form = document.getElementById('form_search')
+            form.onsubmit = function () {
+                var errorMsg = validateFunc()
+                if (errorMsg) {
+                    Msg.alert(errorMsg, 'danger')
+                    return false
+                }
+            }
+
+            fillFormData('form_search');
+        })
+    </script>
+}

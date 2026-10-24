@@ -1,0 +1,189 @@
+debug: true
+workspace:
+  base: /go
+  path: /src/example.invalid/ServerTeam/Servers
+pipeline:
+  go-test:
+    group: test
+    image: golang:1.12
+    environment:
+      GO111MODULE: "on"
+      GOPROXY: http://0.0.0.0:3000
+    volumes:
+      - /go/pkg/mod:/go/pkg/mod
+    commands: 
+      - mkdir -p .cover
+      - go test ./pkg/slot -coverprofile=.cover/pkg.slot.cover
+      - go test ./pkg/slot/baselogic -coverprofile=.cover/pkg.slot.baselogic.cover
+      - go test ./pkg/slot/dbhandler -coverprofile=.cover/pkg.slot.dbhandler.cover
+      - make test-game-dfdc
+      - make test-game-tgw
+      - make test-game-ald
+      - make test-game-wlzb
+    when:
+      branch: [ develop, release/*, feature/*, bugfix/*, hotfix/* ]
+      event: [ pull_request, merge_request ]
+
+  build-init:
+    image: golang:1.12
+    commands:
+      - date=$(TZ=Asia/Taipei date +%Y%m%d)
+      - build_name=$date-build-$DRONE_BUILD_NUMBER
+      - release_folder=./release/$build_name
+      - mkdir -p $release_folder
+      - GIT_HASH=`git rev-parse --short HEAD`
+      - BUILD_TIME=`TZ=Asia/Taipei date +%FT%T%z`
+      - BUILD_NUM=`basename $release_folder`
+      - cd $release_folder
+      - echo "GitTag=$DRONE_TAG" > version.txt
+      - echo "BuildTime=$BUILD_TIME" >> version.txt
+      - echo "GitHash=$GIT_HASH" >> version.txt
+      - echo "BuildNum=$BUILD_NUM" >> version.txt
+      - cat version.txt
+    when:
+      branch: [ develop ]
+      event: [ push ]
+
+  build-linux:
+    group: build
+    image: golang:1.12
+    environment:
+      GOOS: linux
+      GOARCH: amd64
+      CGO_ENABLED: "0"
+      GO111MODULE: "on"
+      GOPROXY: http://0.0.0.0:3000
+    volumes:
+      - /go/pkg/mod:/go/pkg/mod
+    commands:
+      - make build-main
+      - make build-game
+    when:
+      branch: [ develop ]
+      event: [ push ]
+
+  build-windows:
+    group: build
+    image: golang:1.12
+    environment:
+      GOOS: windows
+      GOARCH: amd64
+      GO111MODULE: "on"
+      GOPROXY: http://0.0.0.0:3000
+    volumes:
+      - /go/pkg/mod:/go/pkg/mod
+    commands:
+      - make build-main
+      - make build-game
+    when:
+      branch: [ develop ]
+      event: [ push ]
+
+  copy-to-release:
+    image: target/drone-copy
+    srcdir: release/*
+    destdir: /mnt/release/
+    volumes:
+      - /mnt/release:/mnt/release
+    when:
+      branch: [ develop ]
+      event: [ push ]
+
+  deploy-to-test:
+    image: golang:1.12
+    commands:
+      - release_folder=$(ls -d ./release/*/|head -n 1)
+      - echo $release_folder
+      - build_name=$(basename $release_folder)
+      - curl http://0.0.0.0:888/deploy/$build_name
+      - echo "如需部署 qa 服務器, 請訪問 http://0.0.0.0:888/deploy/$build_name"
+      - echo ${DRONE_TAG##v}
+      - echo "deploy finish"
+    when:
+      branch: [ develop ]
+      event: [ push ]
+  
+  build-init:
+    image: golang:1.12
+    commands:
+      - date=$(TZ=Asia/Taipei date +%Y%m%d)
+      - build_name=$date-build-$DRONE_BUILD_NUMBER
+      - release_folder=./release/$build_name
+      - mkdir -p $release_folder
+      - GIT_HASH=`git rev-parse --short HEAD`
+      - BUILD_TIME=`TZ=Asia/Taipei date +%FT%T%z`
+      - BUILD_NUM=`basename $release_folder`
+      - cd $release_folder
+      - echo "GitTag=$DRONE_TAG" > version.txt
+      - echo "BuildTime=$BUILD_TIME" >> version.txt
+      - echo "GitHash=$GIT_HASH" >> version.txt
+      - echo "BuildNum=$BUILD_NUM" >> version.txt
+      - cat version.txt
+    when:
+      event: [ tag ]
+
+  build-linux:
+    group: build
+    image: golang:1.12
+    environment:
+      GOOS: linux
+      GOARCH: amd64
+      CGO_ENABLED: "0"
+      GO111MODULE: "on"
+      GOPROXY: http://0.0.0.0:3000
+    volumes:
+      - /go/pkg/mod:/go/pkg/mod
+    commands:
+      - make build-main
+      - make build-game
+    when:
+      event: [ tag ]
+
+  build-windows:
+    group: build
+    image: golang:1.12
+    environment:
+      GOOS: windows
+      GOARCH: amd64
+      GO111MODULE: "on"
+      GOPROXY: http://0.0.0.0:3000
+    volumes:
+      - /go/pkg/mod:/go/pkg/mod
+    commands:
+      - make build-main
+      - make build-game
+    when:
+      event: [ tag ]
+
+  copy-to-release:
+    group: release
+    image: target/drone-copy
+    srcdir: release/*
+    destdir: /mnt/release/
+    volumes:
+      - /mnt/release:/mnt/release
+    when:
+      event: [ tag ]
+
+  copy-to-module-server:
+    group: release
+    image: target/go-module-packer:1.0.0
+    volumes:
+      - /root/ssh:/root/.ssh
+    commands:
+      - sh ./scripts/build-module.sh $DRONE_TAG root 0.0.0.0 /opt/athens-storage
+    when:
+      event: [ tag ]
+
+  deploy:
+    image: golang:1.12
+    commands:
+      - release_folder=$(ls -d ./release/*/|head -n 1)
+      - echo $release_folder
+      - build_name=$(basename $release_folder)
+      - echo "如需部署 dev 服務器, 請訪問 http://0.0.0.0:888/deploy/$build_name"
+      - echo "如需部署 qa 服務器, 請訪問 http://0.0.0.0:888/deploy/$build_name"
+      - echo ${DRONE_TAG##v}
+      - echo "deploy finish"
+    when:
+      event: [ tag ]

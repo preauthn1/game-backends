@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href='https://example.invalid/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <link rel="manifest" href="/Scripts/bundle/manifest.json">
+
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="推广代理">
+    <link rel="apple-touch-icon" href="/Scripts/bundle/images/icons/icon-192x192.png">
+
+    <title>代理中心</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/Scripts/bundle/service-worker.js')
+            .then(function (reg) {
+            }).catch(function (err) {
+            });
+        }
+    </script>
+    @RenderBody()
+    @RenderSection("scripts", required: false)
+</body>
+
+</html>

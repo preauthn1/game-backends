@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://example.invalid/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9A4D7D0F-D6E2-4814-8CFB-FDC6644AC840}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FW.Core.Logger</RootNamespace>
+    <AssemblyName>FW.Core.Logger</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\using\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DefaultLogFormatter.cs" />
+    <Compile Include="DepencyRegister.cs" />
+    <Compile Include="EmptyLogger.cs" />
+    <Compile Include="GroupLogger.cs" />
+    <Compile Include="ILogFormatter.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="LogConfig.cs" />
+    <Compile Include="LogConfigHandler.cs" />
+    <Compile Include="LogException.cs" />
+    <Compile Include="LogInfo.cs" />
+    <Compile Include="LogLevel.cs" />
+    <Compile Include="LogManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TxtLogger.cs" />
+    <Compile Include="TxtLoggerBySize.cs" />
+    <Compile Include="TxtLoggerByTime.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FW.Core.Engine\FW.Core.Engine.csproj">
+      <Project>{5110f534-a73a-4a18-9d83-5d9a8ed1a5b9}</Project>
+      <Name>FW.Core.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FW.Core.Helper\FW.Core.Helper.csproj">
+      <Project>{4f70d664-a9b0-4f2b-b461-d2c12548eddc}</Project>
+      <Name>FW.Core.Helper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

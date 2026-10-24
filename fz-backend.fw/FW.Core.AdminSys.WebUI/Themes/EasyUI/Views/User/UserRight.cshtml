@@ -1,0 +1,18 @@
+﻿@using KCKJ.Core.AdminSys.WebUI
+@{
+    KCKJ.Core.AdminSys.Provider.Entity.AdminUser user = ViewBag.user;
+
+    List<int> rrs = ViewBag.userRights;
+}
+
+<form method="post">
+    <div style="padding-left:350px;padding-bottom:20px;padding-top:20px"><h2>@user.LoginName</h2></div>
+    <div style="margin-top:15px;margin-left:20px;margin-bottom:10px">
+        @Html.OkWithRight()
+        @Html.Back(@Url.Action("List"))
+        <input type="hidden" name="id" value="@user.UserID" />
+    </div>
+    <div>
+        @{Html.RenderAction("RightTree", "Right", new { checkedRights = rrs });}
+    </div>
+</form>

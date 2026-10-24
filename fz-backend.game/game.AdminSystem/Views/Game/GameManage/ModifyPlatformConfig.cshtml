@@ -1,0 +1,902 @@
+﻿@using FW.Core.Helper.Enum
+@model game.Entity.Area.Platform
+@{
+    var platformList = ViewBag.PlatformList as List<game.Entity.Area.Platform>;
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/jquery-ui/jquery-ui.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/jquery-ui/jquery-ui.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+<style>
+    .form1 {
+        display: none;
+    }
+
+    .titleStyle {
+        font-size: 15px;
+    }
+
+    .liStyle {
+        border: solid 1px #c3c3c3;
+        font-size: 14px;
+        margin: 10px;
+        padding: 5px;
+    }
+
+    .liDiv {
+        overflow: auto;
+        max-height: 80vh;
+    }
+
+    .aStyle {
+        margin: 0px;
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    .formAction {
+        padding: 20px 10px;
+    }
+
+    #AdForm img {
+        width: 150px;
+        height: 250px;
+    }
+
+    .imgBtn {
+        margin-top: 20px;
+    }
+
+    .msgSpan {
+        color: red;
+        margin-left: 10px;
+    }
+
+    .btnPlatformAdd {
+        background-color: white;
+        color: black;
+        margin-left: 10px;
+    }
+
+    .gameSortList_contain {
+        display:flex;
+    }
+
+    #sortable {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 412px;
+    }
+
+        #sortable li {
+            margin: 3px 3px 3px 0;
+            padding: 1px;
+            float: left;
+            width: 100px;
+            height: 90px;
+            font-size: 1.5em;
+            text-align: center;
+            color: #000;
+        }
+
+            #sortable li:nth-child(8n+1):before {
+                content: "\f091";
+                font-family: FontAwesome;
+                text-decoration: inherit;
+                border: 1px solid #555;
+                background-color: #555;
+                display: block;
+            }
+</style>
+<div  class="row">
+    <div class="col-md-12">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <ul>
+                    <li class="titleStyle">
+                        平台名称
+                        <button type="button" class="btn btnPlatformAdd" data-toggle="modal" data-target="#platform-modal">新增</button>
+                    </li>
+                </ul>
+
+            </div>
+            <div class="portlet-body form">
+                <div>
+                    <div id="scrollDiv" class="col-md-3 liDiv">
+                        <ul>
+                            @foreach (var item in platformList)
+                            {
+                                <li class="liStyle">
+
+                                    <a class="aStyle" href="@(Model.Id == item.Id ? "javascript:void(0);" : "/GameManage/ModifyPlatformConfig/" + item.Id)">
+                                        @item.Name
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+
+                    <div class="tab-content col-md-9" style="border: solid 1px #c3c3c3; padding: 0;">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#platformForm">平台设定</a></li>
+                            <li><a data-toggle="tab" href="#AdForm" onclick="createADTable()">广告设定</a></li>
+                        </ul>
+                        <!-- 平台設定-->
+                        <div class="tab-pane active liDiv" id="platformForm">
+                            <form id="form1" method="post" class="form-horizontal form-bordered">
+                                <input type="hidden" name="PayAmountConfig" value="@Model.PayAmountConfig" />
+                                <input type="hidden" name="GameSortList" :value="GameSortList" />
+								<div class="form-body">
+									<div class="form-group">
+										<label class="control-label col-md-2">平台编号</label>
+										<div class="col-md-9">
+											<input type="text" class="form-control input-medium" readonly name="Id" value="@Model.Id" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2 xing">平台名称</label>
+										<div class="col-md-9">
+											<input type="text" name="Name" class="form-control input-medium" placeholder="请输入平台名称" value="@Model.Name" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2 xing">界面控制标识</label>
+
+										<div class="col-md-9">
+											<input type="hidden" name="UIFlag" value="@Model.UIFlag" />
+											<div class="checkbox-list">
+												<label class="checkbox-inline">
+													<input type="checkbox" id="uiFlagIOS"> 显示IOS充值
+												</label>
+												<label class="checkbox-inline iosShow">
+													<input type="checkbox" id="uiFlagOnline"> 显示在线充值
+												</label>
+												<label class="checkbox-inline iosShow">
+													<input type="checkbox" id="uiFlagAgent"> 显示代理充值
+												</label>
+												<label class="checkbox-inline iosShow">
+													<input type="checkbox" id="uiFlagInvestment"> 显示代理招商
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<div id="vApp" class="form-group">
+										<label class="control-label col-md-2 xing">平台游戏排列顺序</label>
+										<div class="col-md-9">
+											<div class="gameSortList_contain">
+												<ul id="sortable">
+													<li class="ui-state-default" v-for="(no , index) in gameList" :id="no.GameID" :value="no.Sort">
+														{{no.GameName}}
+													</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2 xing">支付方式排序</label>
+										<div class="col-md-9">
+											<input type="hidden" name="PaySort" value="" />
+											<ul class="list-group input-medium pay-sort">
+												<li class="list-group-item" data-value="1">
+													<label>
+														<input type="checkbox" id="paySortAlipay" value="1"> 支付宝
+													</label>
+													<a class="badge badge-info">↑</a>
+												</li>
+												<li class="list-group-item" data-value="2">
+													<label>
+														<input type="checkbox" id="paySortWeixin" value="2"> 微信
+													</label>
+													<a class="badge badge-info">↑</a>
+												</li>
+												<li class="list-group-item" data-value="3">
+													<label>
+														<input type="checkbox" id="paySortBank" value="3"> 银行
+													</label>
+													<a class="badge badge-info">↑</a>
+												</li>
+												<li class="list-group-item" data-value="4">
+													<label>
+														<input type="checkbox" id="paySortQQ" value="4"> QQ钱包
+													</label>
+													<a class="badge badge-info">↑</a>
+												</li>
+											</ul>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="control-label col-md-2 xing">訪客帳號升級贈送金幣</label>
+										<div class="col-md-9">
+											<input type="text" name="GiftMoney" class="form-control input-medium" placeholder="请输入金幣金額" value="@Model.GiftMoney.ToCash()" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2 xing">註冊贈送金幣</label>
+										<div class="col-md-9">
+											<input type="text" name="DefaultMoney" class="form-control input-medium" placeholder="请输入金幣金額" value="@Model.DefaultMoney.ToCash()" />
+										</div>
+									</div>
+
+
+									<div class="form-group">
+										<label class="control-label col-md-2">支付宝充值客户端显示金额</label>
+										<div class="col-md-9">
+											<input type="text" data-payway="1" class="form-control input-inline input-medium" placeholder="请输入充值金额" value="" />
+											<span class="help-inline">多个金额用“.”分割，例如：0.0.0.0.50</span>
+											<span><a href="/pay/paytypelist">(支付渠道規格设定)</a></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2">微信充值客户端显示金额</label>
+										<div class="col-md-9">
+											<input type="text" data-payway="2" class="form-control input-inline input-medium" placeholder="请输入充值金额" value="" />
+											<span class="help-inline">多个金额用“.”分割，例如：0.0.0.0.50</span>
+											<span><a href="/pay/paytypelist">(支付渠道規格设定)</a></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2">银行充值客户端显示金额</label>
+										<div class="col-md-9">
+											<input type="text" data-payway="3" class="form-control input-inline input-medium" placeholder="请输入充值金额" value="" />
+											<span class="help-inline">多个金额用“.”分割，例如：0.0.0.0.50</span>
+											<span><a href="/pay/paytypelist">(支付渠道規格设定)</a></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2">QQ钱包充值客户端显示金额</label>
+										<div class="col-md-9">
+											<input type="text" data-payway="4" class="form-control input-inline input-medium" placeholder="请输入充值金额" value="" />
+											<span class="help-inline">多个金额用“.”分割，例如：0.0.0.0.50</span>
+											<span><a href="/pay/paytypelist">(支付渠道規格设定)</a></span>
+										</div>
+									</div>
+
+
+									<div class="form-group">
+										<label class="control-label col-md-2 xing">升级弹窗内容</label>
+										<div class="col-md-9">
+											<textarea rows="3" name="UpGradeMsg" class="form-control input-xlarge" placeholder="请输入升级弹窗内容">@Model.UpGradeMsg</textarea>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2 xing">公告弹窗内容</label>
+										<div class="col-md-9">
+											<textarea rows="3" name="AnnMsg" class="form-control input-xlarge" placeholder="请输入公告弹窗内容">@Model.AnnMsg</textarea>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2 xing">公告弹窗开关</label>
+										<div class="col-md-7 radio-list">
+											<select class="form-control input-small" id="AnnMsgShow" name="AnnMsgShow">
+												<option value="1" @Html.IsChoose(Model.AnnMsgShow == 1, "select")>开启</option>
+												<option value="0" @Html.IsChoose(Model.AnnMsgShow == 0, "select")>关闭</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2 xing">充值提示文本</label>
+										<div class="col-md-9">
+											<textarea rows="3" name="PayTip" class="form-control input-xlarge" placeholder="请输入充值提示文本">@Model.PayTip</textarea>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2 xing">充值开关</label>
+										<div class="col-md-7 radio-list">
+											<select class="form-control input-small" id="ConvertStatus" name="PayStatus">
+												<option value="1" @Html.IsChoose(Model.PayStatus == 1, "select")>开启</option>
+												<option value="0" @Html.IsChoose(Model.PayStatus == 0, "select")>关闭</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2 xing">充值关闭提示文本</label>
+										<div class="col-md-9">
+											<textarea rows="3" name="PayCloseTip" class="form-control input-xlarge" placeholder="请输入充值关闭提示文本">@Model.PayCloseTip</textarea>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-md-2 xing">常见问题解答</label>
+										<div class="col-md-10">
+											<textarea rows="20" name="FAQContent" class="form-control input-xxlarge" placeholder="请输入常见问题解答">@Model.FAQContent</textarea>
+										</div>
+									</div>
+								</div>
+                                <div class="form-actions">
+                                    <div class="col-md-offset-5 col-md-9">
+                                        <button class="btn gray" v-on:click="save()"> 保存</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- END FORM-->
+                        <!-- 廣告設定-->
+                        <div id="AdForm" class="tab-pane fade">
+                            <button type="button" class="btn btn-light" data-toggle="modal" data-target="#advertisement-modal" onclick="resetForm('')">新增</button>             <div class="row liDiv">
+                                <div class="col-md-12">
+                                    <table class="table table-bordered table-striped table-hover" id="AD_table"></table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END FORM-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- platformModel-->
+<div class="modal fade" id="platform-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("AddPlatform", "GameManage", FormMethod.Post))
+            {
+                <form enctype="multipart/form-data" id="platform-form">
+                    @Html.Hidden("Id", Model.Id)
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">新增平台</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>平台编号</label>
+                            <span class="msgSpan" id="platformMsg"></span>
+                            <input type="number" class="form-control" name="PlatformID" id="PlatformID" value="">
+                        </div>
+                        <div class="form-group">
+                            <label>平台名称</label>
+                            <span class="msgSpan" id="platformNameMsg"></span>
+                            <input type="text" class="form-control" name="PlatformName" id="PlatformName" value="">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="add-platform-button">確定</button>
+                        <button type="button" class="btn btn-default" id="closeModel" data-dismiss="modal">返回</button>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+</div>
+<!-- END-->
+<!-- 新增Model-->
+<div class="modal fade" id="advertisement-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form enctype="multipart/form-data" id="advertisement-form" method="post">
+                @Html.Hidden("PlatformID", Model.Id)
+                <input hidden value="@ViewBag.WebUrl" name="UploadUrl">
+                <input hidden id="fileSize">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">新增广告</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label>档案</label>
+                        <span class="msgSpan" id="flieMsg"></span>
+                        <input type="file" onchange="changeFile('', event)" class="form-control" name="File" id="File" accept="image/x-png,image/jpeg" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">预览</label>
+                        <div style="border: 2px dashed #d6d6d6;">
+                            <img class="img-responsive" id="previewFile" src="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Link">自订连结</label>
+                        <span class="msgSpan" id="linkMsg"></span>
+                        <input type="text" class="form-control" name="Link" id="Link" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="Behavior">开启方式</label>
+                        <select class="form-control" name="Behavior" id="Behavior">
+                            @foreach (var item in Enum.GetValues(typeof(game.Entity.Game.Behavior)))
+                            {
+                                var itemValue = (int)item;
+                                <option value="@itemValue">@item.GetDisplayName() </option>
+
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Behavior">状态</label>
+                        <select class="form-control" name="Status" id="Status">
+                            @foreach (var item in Enum.GetValues(typeof(game.Entity.Game.Status)))
+                            {
+                                var itemValue = (int)item;
+                                <option value="@itemValue">@item.GetDisplayName() </option>
+
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="add-advertisement-button">確定</button>
+                    <button type="button" class="btn btn-default" id="closeModel" data-dismiss="modal">返回</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END-->
+<!-- 修改Model-->
+<div class="modal fade" id="advertisement-editModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form enctype="multipart/form-data" id="advertisement-formEdit" method="post">
+                <input hidden value="" name="PlatformID" id="PlatformIDEdit">
+                <input hidden value="" name="Id" id="IdEdit">
+                <input hidden value="" name="Picture" id="PictureEdit">
+                <input hidden value="@ViewBag.WebUrl" name="UploadUrl">
+                <input hidden id="fileSizeEdit">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">修改广告</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label>档案</label>
+                        <span class="msgSpan" id="flieMsgEdit"></span>
+                        <input type="file" class="form-control" onchange="changeFile('Edit',event)" name="File" id="FileEdit" accept="image/x-png,image/jpeg" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">预览</label>
+                        <div style="border: 2px dashed #d6d6d6;">
+                            <img class="img-responsive" id="previewFileEdit" src="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Link">自订连结</label>
+                        <span class="msgSpan" id="linkMsgEdit"></span>
+                        <input type="text" class="form-control" name="Link" id="LinkEdit" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="Behavior">开启方式</label>
+                        <select class="form-control" name="Behavior" id="BehaviorEdit">
+                            @foreach (var item in Enum.GetValues(typeof(game.Entity.Game.Behavior)))
+                            {
+                                var itemValue = (int)item;
+                                <option value="@itemValue">@item.GetDisplayName() </option>
+
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Behavior">状态</label>
+                        <select class="form-control" name="Status" id="StatusEdit">
+                            @foreach (var item in Enum.GetValues(typeof(game.Entity.Game.Status)))
+                            {
+                                var itemValue = (int)item;
+                                <option value="@itemValue">@item.GetDisplayName() </option>
+
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="edit-advertisement-button">確定</button>
+                    <button type="button" class="btn btn-default" id="closeEditModel" data-dismiss="modal">返回</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END-->
+
+@section initScripts{
+    <script>
+
+        $(function () {
+            var vApp = new Vue({
+                el: '#vApp',
+                data: {
+                    gameList: JSON.parse(`@Html.Raw(Json.Encode(@ViewBag.GamesSort))`),
+                    GameSortList: '',
+                    listLength: 0,
+                    oldData: null,
+                    newData: null
+                },
+
+                mounted: function () {
+                    const init = this.init()
+                    this.$set(this, 'oldData', init)
+                },
+
+                methods: {
+                    init: function () {
+                        var order= $("#sortable .ui-state-default").map(function() {
+                            return { GameID: this.id, Sort: this.value };;
+                        }).get()
+                        this.$set(this, 'listLength', order.length)
+                        return order
+                    },
+
+                    save: function () {
+                        const old = JSON.stringify(vApp.oldData)
+                        const newD = JSON.stringify(vApp.newData)
+                        if (vApp.newData === null|| old === newD) {
+                            this.$set(this, 'GameSortList', '')
+                        } else {
+                            this.$set(this, 'GameSortList',newD)
+                        }
+                        this.$nextTick(function () {
+                            $("#form1").submit()
+                        })
+                    }
+                }
+            })
+
+            $( "#sortable" ).sortable({
+                update: function(event, ui) {
+                    var res= $("#sortable .ui-state-default").map(function(index) {
+                        const length = vApp.listLength
+                        const sort = length - index
+                        return { GameID: this.id, Sort: sort }
+                    }).get()
+                    vApp.$set(vApp, 'newData', res)
+                }
+            });
+
+            $( "#sortable" ).disableSelection();
+
+            var _scrollt = readCookie("scroll_t");
+            $('#scrollDiv')[0].scrollTop = _scrollt;
+
+            $('#form1').validate({
+                rules: {
+                    Name: {
+                        required: true
+                    },
+                    UpGradeMsg: {
+                        required: true,
+                        maxlength: 128
+                    },
+                    AnnMsg: {
+                        required: true,
+                        maxlength: 128
+                    },
+                    PayTip: {
+                        required: true,
+                        maxlength: 128
+                    },
+                    FAQContent: {
+                        required: true
+                    },
+                    GiftMoney: {
+                        required: true,
+                        number: true
+                    },
+                    DefaultMoney: {
+                        required: true,
+                        number: true
+                    }
+                },
+                messages: {
+                    GiftMoney: {
+                        number: '只能使用数字'
+                    },
+                    DefaultMoney: {
+                        number: '只能使用数字'
+                    }
+                }
+            });
+
+            $('#uiFlagIOS').click(function () {
+                if ($(this).is(':checked')) {
+                    $('.iosShow').hide();
+                }
+                else {
+                    $('.iosShow').show();
+                }
+            });
+
+            $('#uiFlagIOS,#uiFlagOnline,#uiFlagAgent,#uiFlagInvestment').click(function () {
+                setUIFlag();
+            });
+
+            var setUIFlag = function () {
+                var flag = '0';
+                if ($('#uiFlagIOS').is(':checked')) {
+                    $('[name="UIFlag"]').val('1000');
+                }
+                else {
+                    if ($('#uiFlagOnline').is(':checked'))
+                        flag += '1';
+                    else
+                        flag += '0';
+                    if ($('#uiFlagAgent').is(':checked'))
+                        flag += '1';
+                    else
+                        flag += '0';
+                    if ($('#uiFlagInvestment').is(':checked'))
+                        flag += '1';
+                    else
+                        flag += '0';
+
+                    $('[name="UIFlag"]').val(flag);
+                }
+            };
+
+            var uiFlag = '@Model.UIFlag';
+            if (uiFlag) {
+                if (uiFlag[0] == '1')
+                    $('#uiFlagIOS').click();
+                if (uiFlag[1] == '1')
+                    $('#uiFlagOnline').click();
+                if (uiFlag[2] == '1')
+                    $('#uiFlagAgent').click();
+                if (uiFlag[3] == '1')
+                    $('#uiFlagInvestment').click();
+            }
+
+            $('.pay-sort .badge').click(function () {
+                $(this).parent().prependTo('.pay-sort');
+                setPaySort();
+            });
+            $('.pay-sort :checkbox').click(function () {
+                setPaySort();
+            });
+
+            var setPaySort = function () {
+                var sort = '';
+                $('.pay-sort :checkbox:checked').each(function (i, e) {
+                    sort += $(e).val() + ',';
+                });
+                if (sort != '')
+                    sort = sort.substr(0, sort.length - 1);
+
+                $('[name="PaySort"]').val(sort);
+            };
+
+            var paySort = '@Model.PaySort'.split(',');
+            for (var i = paySort.length; i > 0; i--) {
+                $('.pay-sort [data-value="' + paySort[i - 1] + '"]').prependTo('.pay-sort');
+                $('.pay-sort :checkbox[value="' + paySort[i - 1] + '"]').click();
+            }
+
+            var payAmountConfig = '@Model.PayAmountConfig';
+            if (payAmountConfig) {
+                var configList = payAmountConfig.split('|');
+                $(configList).each(function (i, e) {
+                    var config = e.split(':');
+                    $(':text[data-payway="' + config[0] + '"]').val(config[1]);
+                });
+            }
+
+            $('#form1').submit(function () {
+                if ($('.pay-sort :checkbox:checked').size() < 1) {
+                    alert('至少需要选择一种支付方式');
+                    return false;
+                }
+
+                var isEmpty = false;
+                var config = '';
+                $(':text[data-payway]').each(function (i, e) {
+                    if ($(e).val() != '') {
+                        config += $(e).data('payway') + ':' + $(e).val() + '|';
+                    }
+                });
+                if (config != '')
+                    config = config.substr(0, config.length - 1);
+
+                $('[name="PayAmountConfig"]').val(config);
+            });
+
+            $('#scrollDiv').scroll(function () {
+                if ($('#scrollDiv').html().length) {
+                    document.cookie = "scroll_t=" + $('#scrollDiv').scrollTop();
+                }
+            });
+
+            $("#add-advertisement-button").click(addAD);
+
+            $("#edit-advertisement-button").click(editAD);
+
+        })
+
+        function readCookie(name) {
+            var searchName = name + "=";
+            var cookies = document.cookie.split(';');
+            for (var i = 0 ; i < cookies.length ; i++) {
+                var c = cookies[i];
+                while (c.charAt(0) == ' ')
+                    c = c.substring(1, c.length);
+                if (c.indexOf(searchName) == 0)
+                    return c.substring(searchName.length, c.length);
+            }
+            return null;
+        }
+
+
+        function changeFile(tag, event){
+
+            var file = event.target.files[0];
+            if (file === undefined) {
+                $("#previewFile"+tag+"").attr('src', '');
+                return;
+            }
+
+            var tmppath = URL.createObjectURL(file);
+            $("#previewFile"+tag+"").attr('src', tmppath);
+            $("#fileSize"+tag+"").val(file.size);
+        }
+
+        function createADTable() {
+            const table =  $(`#AD_table`);
+            const url = '/GameManage/GetAdvertisements'
+            const columns = [
+              { "sTitle": "图片", "mData": "Picture", "width": "15%",
+                  "render": function (data, type, row) {
+                      return "<img  src='"+data+"'>"
+                  }
+              },
+              { "sTitle": "自订连结", "mData": "Link" },
+              { "sTitle": "开启方式", "mData": "BehaviorName", "width": "15%"},
+              { "sTitle": "状态", "mData": "StatusName","width": "8%" },
+              { "sTitle": "建立时间", "mData": "StrCreateTime", "width": "10%"},
+              { "sTitle": "操作", "mData": "Id",  "width": "15%",
+                  "render": function (data, type, row){
+                      return `<button type="button" class="btn dark edit" data-toggle="modal" data-target="#advertisement-editModal" onclick="appendData(this)">修改</button>
+                  <button type="button" class="btn dark" onclick="deleteAD(this)">刪除</button>`;
+                  }
+              }
+            ];
+
+            const platformID = @Model.Id;
+            const opt = {
+                "ordering": false,
+                "searching": false,
+                "aoColumns": columns,
+                "bProcessing": true,
+                "serverSide": true,
+                "bPaginate": false,
+                "ajax": {
+                    "type": "POST",
+                    "url": url,
+                    "data": {
+                        '_r': Math.random(),
+                        'platformID': platformID
+                    }
+                },
+                "destroy": true
+            }
+            table.dataTable(opt)
+        }
+
+        function resetForm(tag){
+            $("#advertisement-form"+tag+"")[0].reset();
+            $("#previewFile"+tag+"").removeAttr("src");
+            $("#flieMsg"+tag+"").text('');
+            $("#linkMsg"+tag+"").text('');
+            $("#fileSize"+tag+"").val(0);
+        }
+
+        function addAD(){
+            if(!validate('')){return;}
+
+            $.ajax({
+                url: '@ViewBag.UploadAdvertisementUrl',
+                type: "POST",
+                data: new FormData($("#advertisement-form")[0]),
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function (data) {
+                    alert(data.msg);
+                    createADTable();
+                    $("#closeModel").click();
+                }
+            });
+        }
+
+        function appendData(ob){
+            resetForm('Edit');
+            const table = $('#AD_table').DataTable();
+            const $tr = $(ob).closest('tr');
+            const row = table.row($tr).data();
+
+            $("#previewFileEdit").attr("src",row.Picture);
+            $("#LinkEdit").val(row.Link);
+            $("#BehaviorEdit").val(row.Behavior);
+            $("#StatusEdit").val(row.Status);
+            $("#IdEdit").val(row.Id);
+            $("#PlatformIDEdit").val(row.PlatformID);
+            $("#PictureEdit").val(row.Picture);
+        }
+
+        function editAD(){
+            if(!validate('Edit')){return;}
+
+            $.ajax({
+                url: '@ViewBag.UploadAdvertisementUrl',
+                type: "POST",
+                data: new FormData($("#advertisement-formEdit")[0]),
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function (data) {
+                    alert(data.msg);
+                    createADTable();
+                    $("#closeEditModel").click();
+                }
+            });
+        }
+
+        function deleteAD(ob){
+            const table = $('#AD_table').DataTable();
+            const $tr = $(ob).closest('tr');
+            const row = table.row($tr).data();
+
+            var id= row.Id;
+            var picture = row.Picture;
+            var uploadURL = '@ViewBag.WebUrl';
+
+            $.ajax({
+                cache: false,
+                dataType: 'json',
+                url: '@ViewBag.DelAdvertisementUrl',
+                data: {
+                    adId: id,
+                    picture: picture,
+                    uploadURL: uploadURL
+                },
+                contentType: "application/x-www-form-urlencoded",
+                type: 'POST',
+                success: function (data) {
+                    alert(data.msg);
+                    createADTable();
+                },
+                error: function (err) {
+                }
+            });
+        }
+
+        function validate(tag){
+            const link = $("#Link"+tag+"").val();
+            const file = $("#File"+tag+"").val();
+            const previewFile = $("#previewFile"+tag+"").attr('src');
+
+            var result = true;
+
+            //if(!link){
+            //    $("#linkMsg"+tag+"").text("*请输入连结");
+            //    result = false;
+            //}
+            if(!file && !previewFile){
+                $("#flieMsg"+tag+"").text("*请选择图片");
+                result = false;
+            }
+
+            if(file){
+                var imgSize = $("#fileSize"+tag+"").val();
+
+                if(imgSize > 1*1024*1024){
+                    $("#flieMsg"+tag+"").text("*图片不可超过1M");
+                    result = false;
+                }
+            }
+            return result;
+        }
+
+
+
+    </script>
+}

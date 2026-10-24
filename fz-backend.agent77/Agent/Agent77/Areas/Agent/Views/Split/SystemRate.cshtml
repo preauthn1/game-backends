@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "代理設定";
+}
+
+@model List<PlatformInfo>
+
+@Html.Action("Index", "Split")
+
+<div class="box box-primary">
+    <!-- form start -->
+
+    <div class="box-body">
+        <!-- 查詢結果 -->
+        <div class="box-header">
+            <h3 class="box-title">搜索结果</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>編號</th>   
+                        <th>平台</th>                      
+                        <th>操作</th>
+                    </tr>
+                </thead>                
+            </table>
+        </div>
+        <!-- /.box-body -->
+    </div>
+</div>
+
+
+<!-- /.box -->
+@section scripts{
+    <!-- Page script -->
+    <script type="text/javascript">
+
+        $(function () {
+
+            //DataTable
+            var table =
+                $('#example1').DataTable({
+                    "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                    "searching": false,
+                    "autoWidth": false,
+                    "serverSide": true,
+                    "deferLoading": 0,
+                    "ajax": {
+                        method: 'post',
+                        url: '@Url.Action("SystemRate", "Split")',                       
+                        "dataSrc": function (json) {
+                            if (json.success == false)
+                                swal("错误", json.message, "error");
+
+                            return json.data;
+                        }
+                    },
+                    columns: [
+                        { name: "PlatformID", data: "PlatformID", width: "10%" },
+                        { name: "PlatformName", data: "PlatformName", width:"80%"},
+                        {
+                            orderable: false,
+                            data: function (data, type, row) {                              
+                                return '<a class="btn btn-sm btn-success" href="/Agent/Split/Edit/' + data.PlatformID + '">編輯</a>';
+                            }
+                        }
+                    ],
+                    responsive: true
+                });
+
+            table.draw();
+        })
+    </script>
+}
+

@@ -1,0 +1,247 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@using game.Infrastructure.Extensions
+@using game.AdminSystem
+
+@model game.AdminSystem.Models.ViewModels.GameCategoryAdminUpdateViewModel
+
+@{
+
+
+}
+
+<style>
+
+    .eachGameSelect label {
+        width: 230px;
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 24px;
+    }
+
+        .eachGameSelect label:hover {
+            background: #EEE;
+        }
+</style>
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>游戏分类管理
+                </div>
+            </div>
+            <div class="portlet-body form">
+
+                <!-- BEGIN FORM-->
+                <form id="myForm" method="post" class="form-horizontal form-bordered" novalidate="novalidate">
+
+
+                    <div class="form-body" style="padding:20px;">
+
+
+                        <button id="btnOk" type="button" class="btn btn-success" onclick="global_showMyModal()"><i class="fa fa-file-o"></i> 新增分类</button>
+                        <button id="btnOk" type="button" class="btn btn-primary" style="" v-on:click="saveChange()"><i class="fa fa-file-o"></i> 储存修改</button>
+
+                        <div class="hr-s"></div>
+
+                        <div v-for="(category, index) in EachCategory" style="margin-top:30px;">
+
+                            <div>
+
+                                <div style="padding:5px;font-size:16px;border-bottom:solid 3px #EEE;">
+
+                                    <input type="text" maxlength="25" v-model="category.Name" />
+                                    <span style="font-size:12px;color:#AAA;">分类名称</span>
+
+
+                                    <div style="display:inline-block;float:right;">
+                                        <input type="checkbox" v-model="category.IsActive" v-bind:id="'active_' + category.Id" />
+                                        <label v-bind:for="'active_' + category.Id" style="color:#888;">
+                                            启用显示
+                                        </label>
+                                    </div>
+                                   
+
+
+                                </div>
+
+                                <div style="padding: 5px 15px;">
+
+                                    <div class="eachGameSelect">
+
+                                        <div style="display:inline-block;" v-for="(item, index) in category.EacgGames">
+                                            <input type="checkbox" v-model="item.IsSelected" v-bind:id="category.Id + '_' + item.GameID" />
+                                            <label v-bind:for="category.Id  + '_' + item.GameID">
+                                                {{item.GameName}}
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="modal_empty_template" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width:700px">
+        <div class="modal-content" style="padding:15px;">
+
+            <div style="text-align:center;">
+                <h4 style="">
+                    建立新分类
+                </h4>
+                <input type="text" id="CategoryName" name="CategoryName" class="form-control input-medium" value="" placeholder="请填写分组名称" style="margin:auto;" maxlength="25">
+            </div>
+
+            <div class="" style="text-align:center;margin-top:20px;">
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="createCategory()">
+                    确定新增
+                </button>
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    关闭
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+@section initScripts
+{
+    <script>
+
+
+        $(function () {
+
+                var vApp = new Vue({
+                el: '#myForm',
+                data: {
+                    EachCategory: @Html.Raw(Model.EachCategory.ConvertToJsonString()),
+                 },
+                 methods: {
+                    saveChange: function (ID) {
+
+                         var model =
+                         {
+                             EachCategory: this.EachCategory
+                         };
+
+                         $.ajax({
+                            cache: false,
+                            url: '/GameCategory/Update',
+                            type: 'POST',
+                            contentType: "application/json",
+                            dataType: "json",
+                            data: JSON.stringify(model),
+                            success: function (data) {
+
+                                if (data.IsSuccess)
+                                {
+                                    alert(data.Message);
+                                    location.reload();
+                                }
+                                else
+                                {
+                                    alert(data.Message);
+                                }
+
+                            },
+                            error: function (err) {
+                                swal({
+                                    type: 'error',
+                                    title: '操作失败',
+                                    text: err
+                                })
+                            }
+                        });
+                    }
+                }
+            });
+
+
+        })
+
+
+        function createCategory() {
+
+            var text = $("#CategoryName").val();
+
+            if (text.length <= 0)
+            {
+                alert('请输入名称');
+                return;
+            }
+
+            var model =
+            {
+                Name : text
+            };
+
+             $.ajax({
+                cache: false,
+                url: '/GameCategory/Create',
+                type: 'POST',
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify(model),
+                success: function (data) {
+
+                    if (data.IsSuccess)
+                    {
+                        alert('新建成功！请确保其他修改已完成储存、再自行刷新此页面。');
+                    }
+                    else
+                    {
+                        alert(data.Message);
+                    }
+
+                },
+                error: function (err) {
+                    swal({
+                        type: 'error',
+                        title: '操作失败',
+                        text: err
+                    })
+                }
+            });
+        }
+
+
+
+
+
+
+    </script>
+}

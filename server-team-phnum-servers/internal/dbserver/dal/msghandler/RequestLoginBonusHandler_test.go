@@ -1,0 +1,65 @@
+package msghandler
+
+import (
+	"testing"
+
+	"example.invalid/golang/protobuf/proto"
+
+	"example.invalid/ServerTeam/Servers/pkg/module"
+	"example.invalid/ServerTeam/Servers/pkg/msg"
+	"example.invalid/ServerTeam/Servers/pkg/netproto"
+	"example.invalid/ServerTeam/Servers/pkg/network"
+	"example.invalid/ServerTeam/Servers/pkg/rpcmsg"
+)
+
+func TestLoginBonusCheck(t *testing.T) {
+	initDBConnection()
+	rpcInfo := netproto.CreateEmptyRPCInfo(1)
+	rpcInfo.UserID = proto.Int32(1000004)
+	rpcMessage := new(rpcmsg.RPCMessage)
+	rpcMessage.RPCInfo = rpcInfo
+
+	msgdata := new(netproto.LoginBonusData)
+
+	msgData, _ := proto.Marshal(msgdata)
+	rpcMessage.MsgData = msgData
+	m := msg.NewMessage(int32(netproto.MessageBClassID_Hall), int32(netproto.HallMsgClassID_RequestLoginBonusID), rpcMessage)
+	handler := new(RequestLoginBonusHandler)
+	if !handler.IsHook(m.BClassID, m.SClassID) {
+		t.Error("hook 錯誤")
+	}
+
+	ctx := new(module.MouduleCtx)
+	clt := new(network.ConnInfo)
+	handler.OnMessage(ctx, clt, m)
+	ret := handler.OnMessage(ctx, clt, m)
+	if ret[0].BClassID != int32(netproto.MessageBClassID_Hall) || ret[0].SClassID != int32(netproto.HallMsgClassID_RequestLoginBonusRetID) {
+		t.Error("OnMessage 錯誤 ")
+	}
+}
+
+func TestApplyLoginBonusID(t *testing.T) {
+	initDBConnection()
+	rpcInfo := netproto.CreateEmptyRPCInfo(1)
+	rpcInfo.UserID = proto.Int32(1000004)
+	rpcMessage := new(rpcmsg.RPCMessage)
+	rpcMessage.RPCInfo = rpcInfo
+
+	msgdata := new(netproto.LoginBonusData)
+
+	msgData, _ := proto.Marshal(msgdata)
+	rpcMessage.MsgData = msgData
+	m := msg.NewMessage(int32(netproto.MessageBClassID_Hall), int32(netproto.HallMsgClassID_ApplyLoginBonusID), rpcMessage)
+	handler := new(RequestLoginBonusHandler)
+	if !handler.IsHook(m.BClassID, m.SClassID) {
+		t.Error("hook 錯誤")
+	}
+
+	ctx := new(module.MouduleCtx)
+	clt := new(network.ConnInfo)
+	handler.OnMessage(ctx, clt, m)
+	ret := handler.OnMessage(ctx, clt, m)
+	if ret[0].BClassID != int32(netproto.MessageBClassID_Hall) || ret[0].SClassID != int32(netproto.HallMsgClassID_RequestLoginBonusRetID) {
+		t.Error("OnMessage 錯誤 ")
+	}
+}

@@ -1,0 +1,1721 @@
+syntax = "proto2";
+
+package netproto;
+
+// 游客登录
+message GuestLogin {
+    required string HDCode = 1;      // 设备码
+    required int32 HDType = 2;       // 设备类型
+    required int32 SiteID = 3;       // 渠道ID
+    required string Version = 4;     // 客户端版本号
+    required int32 PlatformID = 5;   // 平台号
+    optional int32 ServerID = 6;     // 服务器ID
+    optional string InviteCode = 7;  // 邀請碼
+    optional string GuestKey = 8;    // check key
+    optional int32 Area_ID = 9;      // 渠道ID
+};
+
+// 用户登录
+message UserLogin {
+    required string HDCode = 1;     // 设备码
+    required int32 HDType = 2;      // 设备类型
+    required int32 SiteID = 3;      // 渠道ID
+    required string Version = 4;    // 客户端版本号
+    required int32 PlatformID = 5;  // 平台号
+    optional string LoginName = 6;  // 用户名
+    optional string Password = 7;   // 密码
+    optional int32 UserID = 8;      // 用户ID
+    optional string Cer = 9;        // 证书
+    optional int32 Area_ID = 10;    // 渠道ID
+};
+
+// 用户登录结果
+message UserLoginRet {
+    required int32 Code = 1;                  // 登录结果代码
+    required string Message = 2;              // 提示消息
+    optional int32 UserID = 3;                // 用户ID
+    optional string Cer = 4;                  // 用户证书
+    optional string HDCode = 5;               // 设备码
+    optional int32 HDType = 6;                // 设备类型
+    optional UserHallLogonData UserData = 7;  // 用户数据
+    optional int32 Area_ID = 8;               // 渠道ID
+    optional FlowAmountInfo FlowInfo = 9;     // 充值返利活動
+};
+
+// 充值返利活動
+message FlowAmountInfo {
+    optional int32 Status = 1;           // 開關(1,0) (返利活動)
+    optional int32 UnionPlatform = 2;    // 种类(如轰达或77) (返利活動)
+    optional int32 FlowAmountNow = 3;    // 目前流水 (返利活動)
+    optional int32 FlowAmountLimit = 4;  // 流水限制 (返利活動)
+    optional int32 Achievement = 5;      // 是否達標 (返利活動)
+    optional int32 FlowAmountRate = 6;   // 返利百分比 (返利活動)
+    optional int32 BonusRate = 7;        // 兌換金額倍數 (返利活動)
+    optional string CustomerDomain = 8;
+}
+
+// 用户大厅登录数据
+message UserHallLogonData {
+    required string LoginName = 1;                // 用户名
+    required string NickName = 2;                 // 昵称
+    required int32 UserType = 3;                  // 用户类型
+    required int32 Sex = 4;                       // 用户性别
+    required int32 HeadID = 5;                    // 头像ID
+    required bool IsTopWindow = 6;                // 是否弹窗
+    required int64 CashAmount = 7;                // 当前现金数
+    required int64 BankAmount = 8;                // 当前银行数
+    required bool IsGaming = 9;                   // 是否游戏中
+    optional string ServerAddr = 10;              // 服务器地址
+    optional string ServerName = 11;              // 服务器名称
+    required bool IsKick = 12;                    // 是否踢人
+    required bool IsBindGuest = 13;               // 是否绑定游客
+    required int32 UserLevel = 14;                // 用户等级
+    required string LevelKey = 15;                // 等级校验字符串
+    optional string AnnMsg = 16;                  // 弹出公告
+    optional string ConvertRateTipMsg = 17;       // 兑换提示消息
+    optional string BankPwdTipMsg = 18;           // 银行修改密码提示消息
+    optional string UIFlag = 19;                  // UI预留标记
+    optional string PaySort = 20;                 // 充值方式开关与顺序
+    optional string UpGradeMsg = 21;              // 升级提示
+    optional int32 LockGameID = 22;               // 是否在游戏中
+    required bool IsBindZhifubao = 23;            // 是否绑定支付宝
+    optional string Zhifubao = 24;                // 支付宝账号
+    optional string RealName = 25;                // 真实姓名
+    repeated int32 GameList = 26;                 // 游戏列表
+    optional string PayAmountConfig = 27;         // 充值金额配置
+    optional string PayNotifyMsg = 28;            // 充值到账通知信息
+    optional string NotifyFlag = 29;              // 通知标记0没有通知，1有通知  第1位表示是否有新邮件 后面位数备用
+    optional string PayTips = 30;                 // 充值提示说明
+    required bool IsBindBankCard = 31;            // 是否绑定銀行卡
+    optional string BankName = 32;                // 銀行名稱
+    optional string BankCode = 33;                // 銀行代碼
+    optional string BankCardNum = 34;             // 銀行卡號
+    optional string BankRealName = 35;            // 銀行卡姓名
+    optional string PayAmountRange = 36;          // 充值金額範圍配置
+    optional string UISort = 37;                  // 充值分類排序
+    repeated GameList2 GameList2 = 38;            // 游戏列表含狀態
+    repeated Banner Banner = 39;                  // 廣告輪播圖
+    required int32 SumCharge = 40;                // 充值金額
+    required int32 ShowConvertLimit = 41;         // 顯示兌換的充值金額 (單位分)
+    required int32 ShowAllGameLimit = 42;         // 顯示所有遊戲充值金額 (單位分)
+    optional string QuestionContactTip = 43;      // 詢問客服系統提示文字
+    optional int32 AnnMsgShow = 44;               // 公告開關
+    optional bool ClubOpen = 45;                  // 是否開啟代理
+    repeated PaymentInfo PaymentInfoList = 46;    // 支付信息列表
+    optional int32 ConvertBankShow = 47;          // 是否顯示兌換銀行顯示
+    optional int32 ConvertAlipayShow = 48;        // 是否顯示兌換支付寶顯示
+    optional int32 Area_ID = 49;                  // 渠道ID
+    optional int64 ShowVIPAgent = 50;             // 多少金額可以顯示ＶＩＰ代理
+    optional int32 ShopNameID = 51;               // 1=商城 2=支付
+    optional int32 AgentNameID = 52;              // 1=代理支付 2=VIP
+    optional int64 ShowCS = 53;                   // 顯示客服充值金額 (單位分)
+    optional int32 PlaytimeCS = 54;               // 游戏多久显示客服
+    optional int32 PlaytimeConvert = 55;          // 游戏多久显示兑换
+    optional int32 PlaytimeVIPAgent = 56;         // 游戏多久显示充值代理
+    optional int32 ShowConvertBindPhone = 57;     // 是否綁定手機顯示兌換
+    optional int32 ShowAllGameBindPhone = 58;     // 是否綁定手機顯示所有遊戲
+    optional int32 ShowVIPAgentBindPhone = 59;    // 是否綁定手機顯VIP代理
+    optional int32 ShowCSBindPhone = 60;          // 否綁定手機顯示客服
+    optional int32 ShowConvertPopup = 61;         // 是否強制顯示兌換按鈕
+    optional string ConvertPopupText = 62;        // 強制顯示兌換按鈕時的訊息內容    
+    optional int32 WinLossFlowAmount = 63;        // 输赢流水
+    optional int32 ExchangeFlowAmount = 64;       // 兌換所需流水
+    optional int32 DayFlowAmount = 65;            // 当日流水
+    optional int32 SevenDayFlowAmount = 66;       // 近7天流水
+    optional int32 MonthFlowAmount = 67;          // 本月流水
+};
+
+// 支付信息
+message PaymentInfo {
+    required int32 GWID = 1;
+    required int32 TypeID = 2;
+    required string TypeName = 3;
+    required string AmountSort = 4;
+    optional int32 Area_ID = 5;  // 渠道ID
+}
+
+// 廣告輪播圖
+message Banner {
+    required string Picture = 1;
+    required string Link = 2;
+    required int32 Behavior = 3;
+    optional int32 Area_ID = 4;  // 渠道ID
+}
+
+// 游戏列表含狀態
+message GameList2 {
+    required int32 GameID = 1;
+    required int32 Popular = 2;
+    optional string IconName = 3;
+    optional string AliasName = 4;
+    optional string IconTitle = 5;
+    optional string Skin = 6;
+    optional int32 Area_ID = 7;  // 渠道ID
+    optional int32 IsThirdParty = 8; // 是否三方遊戲
+}
+
+// 用户登出
+message UserLogout {
+    required int32 UserID = 1;   // 用户ID
+    required string Cer = 2;     // 证书
+    optional int32 Area_ID = 3;  // 渠道ID
+};
+
+// 平台版本信息
+message HallVerReq {
+    required int64 AreaId = 1;
+    optional int32 Area_ID = 2;  // 渠道ID
+};
+
+// 注意版本号字符串可能为空。这时服务器可能是在出错的情况下。 客户端应该提示错误并退出
+message HallVerInfo {
+    required string AndroidVersion = 1;
+    required string IOSVersion = 2;
+    optional string UpdateDomain = 3;
+    optional string BillDomain = 4;
+    optional string ClubDomain = 5;
+    optional string CustomerDomain = 6;
+    optional string AreaConfig = 7;
+    optional int32 Area_ID = 8;  // 渠道ID
+    optional string AndroidVersion2 = 9;
+    optional string IOSVersion2 = 10;
+    optional string UpdateDomain2=11;
+    optional int64 GiftMoney=12; //綁定贈金
+    optional int64 DefaultMoney=13; //預設金幣
+};
+
+// 所有服务器信息
+message AllGameServerInfo {
+    repeated GameServerInfo ServerList = 1;
+    optional int32 Area_ID = 2;                     // 渠道ID
+    optional GameCategoryList GameCategory = 3;     // 游戏分类清单
+};
+
+// 游戏服务器列表
+message GameServerInfo {
+    required int32 GameID = 1;           //游戏ID
+    required string GameName = 2;        //游戏名称
+    required int32 LoginMoney = 3;       //入场金币数
+    required string Flag = 4;            //标记
+    required string Status = 5;          //状态
+    required int32 BaseScore = 6;        //底分
+    optional int32 Single = 7;           //直接進入取第一個服務器進入, 0=>顯示房間列表, 1=>第一個服務器進入
+    optional string AndroidVersion = 8;  // 客戶端版本號
+    optional string IOSVersion = 9;      // 客戶端版本號
+    optional int32 KickOutMoney = 10;    //入场金币数
+    optional int32 MaxOdd = 11;          // 最高倍數
+    optional int32 GameType = 12;        //遊戲類型: 1.真錢 2.比賽 3.休閒
+    optional int32 Area_ID = 13;         // 渠道ID
+    optional int32 Port = 14;
+    optional int32 ServerID = 15;
+    optional string IPAddress = 16;
+};
+
+// 请求游戏服务器地址
+message RequestGameServerAddrInfo {
+    required string ServerFlag = 1;  //服务器标记
+    required int32 GameID = 2;       //游戏ID
+    optional int32 Area_ID = 3;      // 渠道ID
+};
+
+// 游戏服务器地址信息
+message GameServerAddr {
+    required int32 ServerID = 1;    //服务器ID
+    required string IPAddress = 2;  //服务器地址
+    required int32 Port = 3;        //服务器端口
+    optional int32 Area_ID = 4;     // 渠道ID
+    optional int32 StatusID = 5;    // 0正常, 1異常重連
+};
+
+// 绑定支付宝
+message ZhifubaoInfo {
+    required string Zhifubao = 1;  //支付宝
+    required string RealName = 2;  //实名
+    required string VCode = 3;     //验证码
+    required int32 CodeType = 4;   //验证码类型, 4綁定, 5變更
+    optional int32 Area_ID = 5;    // 渠道ID
+};
+
+// 绑定銀行卡
+message BankCardInfo {
+    required string BankCardNum = 1;  //銀行卡號
+    required string RealName = 2;     //实名
+    required string BankCode = 3;     //銀行代碼
+    required string VCode = 4;        //验证码
+    required int32 CodeType = 5;      //验证码类型, 4綁定, 5變更
+    optional int32 Area_ID = 6;       // 渠道ID
+};
+
+// 修改密码
+message ModifyPassword {
+    required string OldPwd = 1;       //旧密码
+    required string NewPassword = 2;  //新密码
+    optional int32 Area_ID = 3;       // 渠道ID
+};
+
+// 发送验证码
+message SendPhoneVCode {
+    optional string Tel = 1;      //用户手机号码
+    required int32 CodeType = 2;  //验证码类型	 1 注册 2 找回密码 3 找回银行密码 4 綁定兌換帳號資訊 5 變更兌換帳號資訊
+    optional int32 Area_ID = 3;   // 渠道ID
+};
+// 发送验证码结果
+message SendPhoneVCodeRet {
+    required int32 Code = 1;
+    required string Message = 2;
+    required int32 CountDown = 3;
+    required int32 CodeID = 4;
+    optional int32 Area_ID = 5;  // 渠道ID
+};
+
+// 修改头像
+message ModifyFace {
+    required int32 FaceID = 1;
+    optional int32 Area_ID = 2;  // 渠道ID
+};
+
+// 存取款
+message MoneyDeposit {
+    required int64 Amount = 1;
+    optional string MoneyPassword = 2;
+    required int32 OP = 3;       // 0 存款 1 取款
+    optional int32 Area_ID = 4;  // 渠道ID
+};
+
+// 存取款结果
+message MoneyDepositRet {
+    required int64 Amount = 1;
+    required int32 OP = 2;  // 0 存款 1 取款
+    required int32 Code = 3;
+    required string Message = 4;
+    required int64 CurrentMoney = 5;
+    required int64 CurrentBank = 6;
+    optional int32 Area_ID = 7;  // 渠道ID
+};
+
+// 绑定游客账号
+message BindGuestAccount {
+    required string Tel = 1;       // 手机号码
+    required string VCode = 2;     // 验证码
+    required string Password = 3;  // 密码
+    optional int32 Area_ID = 4;    // 渠道ID
+};
+
+// 请求用户大厅信息
+message RequestUserHallInfo {
+    required int32 SiteID = 1;   // 渠道ID
+    optional int32 Area_ID = 2;  // 渠道ID
+};
+
+// 找回账号密码信息
+message FindSetPwdByPhone {
+    required string Tel = 1;       // 手机号码
+    required string VCode = 2;     // 验证码
+    required string Password = 3;  // 密码
+    optional int32 Area_ID = 4;    // 渠道ID
+};
+
+// 修改银行密码
+message ModifyBankPassword {
+    required string OldPwd = 1;       // 旧密码
+    required string NewPassword = 2;  // 新密码
+    optional int32 Area_ID = 3;       // 渠道ID
+};
+
+// 找回银行密码信息
+message FindSetBankPwdByPhone {
+    required string VCode = 1;     // 验证码
+    required string Password = 2;  // 密码
+    optional int32 Area_ID = 3;    // 渠道ID
+};
+
+//邮件详情
+message MailDetail {
+    required int32 ID = 1;         //邮件ID
+    required string Title = 2;     //邮件标题
+    required string Content = 3;   //邮件内容
+    required bool IsRead = 4;      //是否已读
+    required string SendTime = 5;  //发送时间
+    optional int32 Area_ID = 6;    // 渠道ID
+};
+
+//获取邮件列表
+message MailList {
+    repeated MailDetail MailList = 1;  // 邮件列表
+    optional int32 Area_ID = 2;        // 渠道ID
+};
+
+// 获取邮件详情
+message RequestMailDetail {
+    required int32 ID = 1;       // 邮件ID
+    optional int32 Area_ID = 2;  // 渠道ID
+};
+
+// 发送联系客服问题
+message ContactService {
+    required string Msg = 1;
+    required int32 QuestionType = 2;  // 0無分類, 1無法登錄, 2帳號異常, 3其他
+    required int32 PlatformID = 3;
+    required int32 AreaID = 4;
+    optional int32 Area_ID = 5;  // 渠道ID
+};
+
+// 代理详情
+message AgentDeatil {
+    required string Name = 1;     // 代理名称
+    required string WXNo = 2;     // 徽信号
+    required string QQ = 3;       // QQ号
+    optional string Alipay = 4;   // Alipay号
+    optional string Jiuliao = 5;  // 久聊
+    optional int32 Area_ID = 6;   // 渠道ID
+};
+
+// 代理列表
+message AgentList {
+    repeated AgentDeatil AgentList = 1;  // 代理列表
+    optional int32 Area_ID = 2;          // 渠道ID
+};
+
+// 举报代理信息
+message ReportAgent {
+    required int32 AreaID = 1;      // 渠道ID
+    required string AgentName = 2;  // 代理名称
+    required string Content = 3;    // 举报内容
+    optional int32 Area_ID = 4;     // 渠道ID
+};
+
+// 请求代理信息
+message RequestAgentList {
+    required int32 AreaID = 2;   // 渠道ID
+    optional int32 Area_ID = 3;  // 渠道ID
+};
+
+// 代理招商
+message ApplyAgent {
+    required int32 AreaID = 1;   // 渠道ID
+    required string Name = 2;    // 姓名
+    required string Tel = 3;     // 电话
+    required string QQ = 4;      // QQ号码
+    required string WXNo = 5;    // WX号
+    required string Memo = 6;    // 说明
+    optional string Alipay = 7;  // Alipay
+    optional int32 Area_ID = 8;  // 渠道ID
+};
+
+// 兑换金币信息
+message ConvertMoney {
+    required int64 Amount = 1;       // 兑换数量,单位分
+    required int32 ConvertType = 2;  // 兌換方式,1.支付寶 2.銀行卡
+    optional int32 Area_ID = 3;      // 渠道ID
+};
+
+// 创建充值订单请求信息
+message CreatePayOrder {
+    required int32 PayTypeID = 1;  // 充值类型 1.支付宝 2.微信 3.银联 4.QQ钱包
+    required int64 Amount = 2;     // 充值数量,单位分
+    optional int32 Area_ID = 3;    // 渠道ID
+};
+
+// 创建充值订单返回信息
+message CreatePayOrderRet {
+    required int32 code = 1;      // 订单创建结果
+    required string message = 2;  // 返回消息
+    required int32 OrderID = 3;   // 订单编号
+    optional int32 Area_ID = 4;   // 渠道ID
+};
+
+// 获取FAQ信息
+message GetFAQ {
+    required int32 PlatformID = 1;  // 平台ID
+    optional int32 Area_ID = 2;     // 渠道ID
+};
+
+// FAQ信息
+message FAQDetail {
+    required string Content = 1;  // FAQ内容
+    optional int32 Area_ID = 2;   // 渠道ID
+};
+
+// 查詢兌換記錄
+message GetConvertLog {
+    required int32 TnyStatus = 1;  // 狀態
+                                   // {0:"兑换完成",1:"审核中",2:"审核通过",3:"已打款",4:"订单异常",5:"异常帐号",6:"黑名单",7:"账户错误",8:"拒绝兑换",9:"疑似洗钱",10:"补单完成
+                                   // ",11:"退还金币",99:"全部"};
+    required int32 LogRange = 2;  // 1(一周),2(半個月),3(一個月),4(三個月)
+    optional int32 Area_ID = 3;   // 渠道ID
+}
+
+// 兌換記錄
+message ConvertLogDetail {
+    required int64 Amount = 1;       // 兌換金額,單位分
+    required int64 TaxAmount = 2;    // 手續費,單位分
+    required int32 Status = 3;       // 狀態
+    required string Payment = 4;     // 收款方式
+    required string CreateTime = 5;  // 兌換時間
+    optional int32 Area_ID = 6;      // 渠道ID
+}
+
+// 兌換記錄列表
+message ConvertLogList {
+    repeated ConvertLogDetail ConvertLogList = 1;  // 兌換記錄列表
+    optional int32 Area_ID = 2;                    // 渠道ID
+}
+
+// 銀行資訊
+message BankDetail {
+    required string BankCode = 1;  // 銀行代碼
+    required string BankName = 2;  // 銀行名稱
+    optional int32 Area_ID = 3;    // 渠道ID
+}
+
+// 銀行資訊列表
+message BankList {
+    repeated BankDetail BankList = 1;  // 銀行資訊列表
+    optional int32 Area_ID = 2;        // 渠道ID
+}
+
+// 登入獎勵
+message LoginBonusData {
+    required int32 LoginTimes = 1;                     // 己領取次數
+    required int32 RetCode = 2;                        // 領取代碼 0 本日己領取, 1 成功領取, 2可領取, -1 活動不存在, -2
+                                                       // 已領超過七次限制, -3 充值金額不足, -4 帳號未綁定
+    required string RetMsg = 3;                        // 領取訊息
+    optional int64 CurrentAmount = 4;                  // 領取後用戶金幣數量
+    optional int64 GiftCash = 5;                       // 最低充值金額
+    optional int32 Area_ID = 6;                        // 渠道ID    
+    repeated LoginBonusConfig LoginBonusConfigList=7;  //登入獎勵設定
+}
+
+//登入獎勵設定
+message LoginBonusConfig {
+    required int32 Day=1; //日
+    required int64 BonusAmount=2; //獎勵金額(分)
+}
+
+
+// 取得代理資訊
+message AgentData {
+    required int32 UserID = 1;                     // 用戶ID
+    required int32 RetCode = 2;                    // 返回消息 0 代理, -1 非代理
+    required AgentDetailData AgentDetailData = 3;  // 代理詳細資訊
+    repeated AgentDownSteam DownSteamList = 4;     // 代理下線資訊
+    optional int32 Area_ID = 5;                    // 渠道ID
+}
+
+// 代理詳細資訊
+message AgentDetailData {
+    required int32 UserID = 1;          // 用戶ID
+    required int32 Class = 2;           // 階級( 0 系統管理者 1 一級代理  2 二級代理 99 一般玩家  100 渠道代理)
+    required int32 Status = 3;          // 狀態( 0 關閉; 1 開啟 2 審核中)
+    required int32 Level = 4;           // 等級( 1 王者 2 黃金 3 鑽石)
+    required string InviteCode = 5;     // 代理邀請碼
+    required int32 ParentUserID = 6;    // 上級代理ID
+    required int32 TotalFlows = 7;      // 總流水
+    required int32 TotalIncome = 8;     // 總收入
+    required int32 RemainAmount = 9;    // 提領後剩餘可提領金額
+    required int32 CanBeAgent = 10;     // 是否可成為代理 0不行 1可以
+    required string OfficeUser1 = 11;   // 1號諮詢專員
+    required string ParentWeixin = 12;  // 上級的微信號
+    required string DownloadURL = 13;   // 上級的URL
+    required int32 CurrentIncome = 14;  // 總收入
+    required string OfficeUser2 = 15;   // 2號諮詢專員
+    required string OfficeUser3 = 16;   // 3號諮詢專員
+    required string QRUrl = 17;         // 二維碼地址
+    required int32 User1Type = 18;      // 客服代理類別1
+    required int32 User2Type = 19;      // 客服代理類別2
+    required int32 User3Type = 20;      // 客服代理類別3
+    optional int32 Area_ID = 21;        // 渠道ID
+}
+
+// 代理下線資訊
+message AgentDownSteam {
+    required int32 UserID = 1;     // 用戶ID
+    required int32 Yesterday = 2;  // 昨日流水
+    required int32 Today = 3;      // 今日流水
+    optional int32 Area_ID = 4;    // 渠道ID
+}
+
+// 申請代理下線
+message JoinAgentList {
+    required int32 UserID = 1;       // 用戶ID
+    required string InviteCode = 2;  // 邀請碼
+    required int32 RetCode = 3;      // 返回消息 1 成功, -1 失敗(邀請碼錯誤或是代理已綁定)
+    required string RetMsg = 4;      // 結果狀態
+    optional int32 Area_ID = 5;      // 渠道ID
+}
+
+// 申請成為代理
+message ApplyAgentList {
+    required int32 UserID = 1;   // 用戶ID
+    required int32 RetCode = 2;  // 返回消息 1 成功, -1 失敗(邀請碼錯誤或是代理已綁定)
+    required string RetMsg = 3;  // 結果狀態
+    optional int32 Area_ID = 4;  // 渠道ID
+}
+
+// 未讀客服消息數量
+message CSNotiftyCount {
+    required int32 UserID = 1;   // 用戶ID
+    required int32 Count = 2;    // 未讀數量
+    optional int32 Area_ID = 3;  // 渠道ID
+}
+
+// 申請成為代理
+message RequestApplyAgent {
+    required int32 UserID = 1;   // 用戶ID
+    required string Tel = 2;     // 用戶電話
+    required string Weixin = 3;  // 用戶微信
+    optional string QQ = 4;      // 用戶QQ號
+    optional string Email = 5;   // 用戶信箱
+    required string VCode = 6;   // 邀請碼
+    optional int32 Area_ID = 7;  // 渠道ID
+}
+
+// 代理訪問資料傳遞
+message ProxyData {
+    required string data = 1;
+    optional string type = 2;
+    optional int32 Area_ID = 3;  // 渠道ID
+}
+
+// 代理訪問POST資料傳遞
+message ProxyPOSTData {
+    required string Url = 1;
+    required string HtmlData = 2;
+    optional int32 Area_ID = 3;  // 渠道ID
+    optional string type = 4;
+}
+
+// 查詢比賽活動公告
+message GetGameCompetitionMsg {
+    required int32 GameID = 1;
+    required int32 FlagID = 2;
+    optional int32 UserID = 3;
+    optional int32 Area_ID = 4;  // 渠道ID
+}
+
+// 回傳比賽活動公告
+message GameCompetitionMsg {
+    repeated LeaderboardDetail Leaderboard = 1;  // 排行榜
+    required int32 UserID = 2;
+    required int32 BestScore = 3;    // 最好的一次分數
+    optional int32 FreeTimes = 4;    // 免費次數
+    required int32 UserRanking = 5;  // 目前排名
+    repeated string MsgInfo = 6;     // 公告訊息
+    optional int32 Charge = 7;       // 入場費
+    optional int32 PiSaiTime = 8;    // 比賽剩餘時間
+    optional int32 Area_ID = 9;      // 渠道ID
+}
+
+// 排行榜
+message LeaderboardDetail {
+    required string TitleName = 1;                // 頁籤名稱
+    repeated ScoreboardList LeaderboardList = 2;  // 分數排名詳細資料
+    optional int32 Area_ID = 3;                   // 渠道ID
+}
+
+// 分數排名詳細資料
+message ScoreboardList {
+    required int32 SortID = 1;  // 排名
+    required string UserID = 2;
+    required int32 Score = 3;    // 比賽分數
+    optional int32 Area_ID = 4;  // 渠道ID
+}
+
+// 查詢比賽規則 GetGameCompetitionMsg
+message GetGameCompetitionRuleMsg {
+    required int32 GameID = 1;
+    optional int32 Area_ID = 2;  // 渠道ID
+}
+
+// 回傳比賽規則
+message GameCompetitionRuleMsg {
+    required int32 Charge = 1;                // 入場費用
+    required int32 PlayTime = 2;              // 限定的時間(s)
+    required int32 Coin = 3;                  // 固定比賽幣
+    repeated OrderTicketMsg OrderTicket = 4;  // 充值金額對應免費次數
+    repeated RewardDetail RewardInfo = 5;     // 每日和每周獎勵與時間
+    required string StartTime = 6;            // 開始時間
+    required string EndTime = 7;              // 結束時間
+    required int32 Show = 8;                  // 0關閉 1顯示
+    required string EnterTime = 9;            // 最後進入時間
+    required int32 ContestID = 10;            // 比賽活動ID
+    optional int32 Area_ID = 11;              // 渠道ID
+}
+
+// 每日和每周獎勵與時間
+message RewardDetail {
+    required int32 Type = 1;       // 1每日 2每周
+    repeated int32 Bonus = 2;      // 排名的獎勵
+    required string DeadLine = 3;  // 截止時間
+    optional int32 Area_ID = 4;    // 渠道ID
+}
+
+// 充值金額對應免費次數
+message OrderTicketMsg {
+    required int32 ID = 1;          // id
+    required int32 OrderReach = 2;  // 充值金額
+    required int32 FreeTicket = 3;  // 免費次數
+    optional int32 Area_ID = 4;     // 渠道ID
+}
+
+// 更新推播序號
+message ClientUpdateUserNotifyIdx {  // 客戶端用
+    required int64 Idx = 1;
+    optional int32 Area_ID = 2;  // 渠道ID
+}
+
+// 查詢買票入場
+message GetBuyTicketMsg {
+    required int32 GameID = 1;
+    required int32 FlagID = 2;
+    optional int32 UserID = 3;
+    optional int32 Area_ID = 4;  // 渠道ID
+}
+
+// 回傳買票入場
+message BuyTicketMsg {
+    required int32 RetCode = 2;  // 返回消息 1 成功, -1 失敗(邀請碼錯誤或是代理已綁定)
+    required string RetMsg = 3;  // 結果狀態
+    optional int32 Area_ID = 4;  // 渠道ID
+}
+
+// 回傳獎金池
+message JackpotPoolRet {
+    required int64 amount = 1;   // 獎金
+    optional int32 Area_ID = 2;  // 渠道ID
+}
+
+// 查詢全民代理QRCode
+message GetUserQRCodeMsg {
+    required int32 UserID = 1;
+    optional int32 Area_ID = 2;  // 渠道ID
+}
+
+// 回傳全民代理QRCode
+message GetUserQRCodeRet {
+    required int32 UserID = 1;
+    required string QRCode = 2;
+    optional string InviteCode = 3;
+    optional int32 UpperUserID = 4;
+}
+
+// 查詢推廣員Agent Exec
+message GetUserAgentExecMsg {
+    required int32 UserID = 1;
+    optional int32 Area_ID = 2;  // 渠道ID
+}
+
+// 回傳推廣員Agent Exec
+message GetUserAgentExecRet {
+    required int32 AgentAmount = 1;      // 需升級收益
+    required int32 AgentUserAmount = 2;  // 收益
+    required int32 AgentLevel = 3;       // 推廣等級
+    required int32 AgentTaxAmount = 4;   // 今日稅收
+    required int32 AgentTaxBonus = 5;    // 今日收益
+    required int32 AgentTotalUser = 6;   // 推廣人數
+}
+
+// 查詢今日稅收Agent Tax Log
+message GetUserAgentTaxLogMsg {
+    required int32 UserID = 1;
+    required string DateTime = 2;
+    optional int32 Area_ID = 3;  // 渠道ID
+}
+
+// 今日稅收頁面
+message GetUserAgentTaxLogRetList {
+    repeated GetUserAgentTaxLogRet UserAgentTaxLog = 1;
+    required int32 TotalTax = 2;       // 稅收總額
+    required int32 TotalTaxBonux = 3;  // 稅收總額獎勵
+    required int32 TotalPeople = 4;    // 總人數
+}
+
+// 回傳今日稅收Agent Tax Log
+message GetUserAgentTaxLogRet {
+    required int32 UserID = 1;          // 玩家ID
+    required string nickname = 2;       // 玩家昵稱
+    required int32 btaxamount = 3;      // 產生稅收
+    required int32 cdtaxamount = 4;     // 一級+二級產生稅收
+    required int32 totalTaxAmount = 5;  // 稅收收益
+}
+
+// 查詢領取收益頁面
+message GetWithdrawMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+}
+
+// 回傳領取收益頁面
+message GetWithdrawRet {
+    optional int32 Area_ID = 1;  // 渠道ID
+    repeated GetWithdrawList WithdrawList = 2;
+    required int32 TotalTaxAmount = 3;   // 總收益
+    required int32 ConvertAmount = 4;    // 已提現收益
+    required int32 PerformedAmount = 5;  // 今日可提現
+    optional int32 RemainAmount = 6;     // 剩餘收益
+}
+
+// 回傳領取收益頁面的List資料
+message GetWithdrawList {
+    required string LogDate = 1;        // 申請日期
+    required int32 WithdrawAmount = 2;  // 提現金額
+    required string Status = 3;         // 提現狀態
+}
+
+// 馬上提現
+message GetWithdrawOrderMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+    optional int32 Amount = 3;  // 提現金額
+}
+
+// 馬上提現結果
+message GetWithdrawOrderRet {
+    optional int32 Area_ID = 1;
+    optional string ChvMsg = 2;
+}
+
+// 回傳收益規則
+message GetAgentTaxListRet {
+    optional int32 Area_ID = 1;
+    repeated AgentTaxList TaxList = 2;
+}
+
+// 收益規則list
+message AgentTaxList {
+    required int32 Level = 1;
+    required int32 Stage1 = 2;
+    required int32 Stage2 = 3;
+    required int32 Stage3 = 4;
+}
+
+// 查詢推廣等級
+message AgentUserLevelInfomMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+}
+
+// 回傳推廣等級
+message AgentUserLevelInfomRet {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 Stage1 = 2;   // 1級稅收
+    required int32 Stage2 = 3;   // 2級稅收
+    required int32 Stage3 = 4;   // 3級稅收
+}
+
+// 查詢每日收益
+message GetAgentTaxBonusLogMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+}
+
+// 回傳每日收益
+message GetAgentTaxBonusLogRet {
+    optional int32 Area_ID = 1;  // 渠道ID
+    repeated AgentTaxBonusLogList TaxBonusLogList = 2;
+}
+
+message AgentTaxBonusLogList {
+    required string LogDate = 2;             // 時間
+    required int32 BTaxBonusAmount = 3;      // 一級推廣收益
+    required int32 CDTaxBonusAmount = 4;     // 二級三級推廣收益
+    required int32 TotalTaxBonusAmount = 5;  // 收益
+}
+
+// 查詢推廣人數
+message GetUserAgentListMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+}
+
+// 回傳推廣人數
+message GetUserAgentListRet {
+    optional int32 Area_ID = 1;       // 渠道ID
+    required int32 TotalUser = 2;     // 團隊人數
+    required int32 TempBUser = 3;     // 直屬下級
+    required int32 TodayNewUser = 4;  // 今日新增人數
+    required int32 TodayLogin = 5;    // 今日登錄人數
+}
+
+// 查詢閃付支付
+message GetShanFuMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+}
+
+// 回傳閃付
+message GetShanFuRet {
+    required int32 CodeID = 1;  // 200時返回Data
+    required string Data = 2;
+}
+
+// 查詢閃付聊天
+message GetShanFuChatMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+    optional string Type = 3;  // 1.ios  2.android
+    optional string AgentID = 4;
+    optional string AppKey = 5;
+    optional string AppID = 6;
+    optional string DeviceID = 7;
+    optional string UserName = 8;
+}
+
+// 回傳閃付聊天
+message GetShanFuChatRet {
+    required int32 CodeID = 1;  // 200時返回Data
+    required int32 UserID = 2;
+    required string ClientUrl = 3;  // 開視窗
+    optional string AgentID = 4;
+    optional string AppKey = 5;
+    optional string AppID = 6;
+    optional string DeviceID = 7;
+    optional string UserName = 8;
+    optional string TimeStamp = 9;
+    optional string SecretID = 10;
+}
+
+// 玩家/代理信息(淨利潤)
+message NetProfitAgentGetAgentInfoMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+}
+
+// 玩家/代理信息(淨利潤)
+message NetProfitAgentGetAgentInfoRet {
+    required int32 UserID = 1;
+    required string RegDate = 2;              // 注冊時間
+    required int32 ChargeAmount = 3;          // 充值
+    required int32 SelfWithDraw = 4;          // 提現
+    required string Status = 5;               // 是否為代理
+    required int32 TotalUsers = 6;            // 下線數量
+    required int32 SumSubUsers = 7;           // 下線玩家
+    required int32 SumSubAgent = 8;           // 下線代理
+    required int32 SumSubWithDrawAmount = 9;  // 己提現金額
+    optional string QRCode = 10;              // QRCode
+    optional string InviteCode = 11;          //邀請碼
+    optional int32 UpperUserID = 12;          //上級userid
+}
+
+// 新增玩家(淨利潤)
+message NetProfitAgentGetSubUserListMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+    required string Datetime = 3;  // dtStatDate
+}
+
+// 新增玩家(淨利潤)
+// 在近增玩家頁面，是LIST
+message NetProfitAgentGetSubUserListRet {
+    repeated NetProfitAgentGetSubUserList GetSubUserList = 1;
+    required int32 sumCharge = 2;      // 總計充值金額
+    required int32 sumWithDraw = 3;    // 總計提現總額
+    required int32 sumBonus = 4;       // 總計提現金額
+    required int32 totaluserlast = 5;  // 昨日新增人數
+}
+
+message NetProfitAgentGetSubUserList {
+    required int32 UserID = 1;
+    required string RegDate = 2;
+    required int32 SumChargeAmount = 3;    // 充值金額
+    required int32 SumWithDrawAmount = 4;  // 提現總額
+    required int32 BonusAmount = 5;        // 提現金額
+}
+
+// 代理提現紀錄(淨利潤)
+message NetProfitAgentGetAgentWithdrawAmountMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+}
+
+// 代理提現紀錄(淨利潤)
+message NetProfitAgentGetAgentWithdrawAmountRet {
+    repeated NetProfitAgentGetAgentWithdrawAmountList GetAgentWithdrawAmountList = 1;
+    required int32 Sum = 2;  // 總計
+}
+
+message NetProfitAgentGetAgentWithdrawAmountList {
+    required int32 UserID = 1;          // ID
+    required string CreateTime = 2;     // 時間
+    required int32 WithDrawAmount = 3;  // 提現金額
+    required string Status = 4;         // 是否完成
+}
+
+// 提現紀錄(淨利潤)
+message NetProfitAgentGetWithdrawAmountMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+}
+
+// 提現紀錄(淨利潤)
+message NetProfitAgentGetWithdrawAmountRet {
+    repeated NetProfitAgentGetWithdrawAmountList GetWithdrawAmountRet = 1;
+    required int32 Sum = 2;  // 總計
+}
+
+// 提現紀錄(淨利潤)
+message NetProfitAgentGetWithdrawAmountList {
+    required string CreateTime = 1;     // 日期
+    required int32 WithDrawAmount = 2;  // 現提金額
+    required int32 Status = 3;          // 是否完成
+    required string Memo = 4;           // 說明
+}
+
+// 可提現金額查詢(淨利潤)
+message NetProfitAgentGetBonusAmountMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+}
+
+// 可提現金額查詢(淨利潤)
+message NetProfitAgentGetBonusAmountRet {
+    required int32 poolamount = 1;
+}
+
+// 申請提現(淨利潤)
+message NetProfitAgentWithDrawOrderMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;   // ID
+    required int32 Amount = 3;   // 提取金額
+    optional string chvMsg = 4;  // 輸出
+}
+
+// 申請提現(淨利潤)
+message NetProfitAgentWithDrawOrderMsgRet {
+    required string chvMsg = 1;  // 訊息
+}
+
+//查詢渠道可以看到的遊戲區廳Flag
+message GetShowGameFlagByAreaMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+}
+
+// 審核代理申請列表(淨利潤)
+message NetProfitAgentApplyListMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+}
+
+// 審核代理申請列表(淨利潤)
+message NetProfitAgentApplyListRet {
+    repeated NetProfitAgentApplyListList ApplyListList = 1;
+}
+
+// 審核代理申請列表(淨利潤)
+message NetProfitAgentApplyListList {
+    required int32 ApplyUser = 1;
+    required string NickName = 2;
+    required int32 TopUserID = 3;
+    required string TopUserName = 4;
+    required string CreateTime = 5;
+    required string Status = 6;
+    required string UpdateTime = 7;
+}
+
+// 回傳今日兌換詳情
+message NetProfitGetWithdrawDetailMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+    required int32 Datetime = 3;  //查詢日期
+}
+
+// 回復兌換詳情(淨利潤)
+message NetProfitGetWithdrawDetailRet {
+    required int32 YesterdayRecharge = 1;                 // 昨天充值
+    required int32 Sum = 2;                               // 總利潤
+    repeated NetProfitGetWithdrawDetailList LogList = 3;  // 兌換詳情列表
+}
+
+// 回復兌換詳情(淨利潤)
+message NetProfitGetWithdrawDetailList {
+    required int32 YesterdayRecharge = 1;                 // 昨天充值
+    required int32 Sum = 2;                               // 總利潤
+    required NetProfitGetWithdrawDetailList LogList = 3;  // 兌換詳情列表
+}
+
+// 推廣信息(淨利潤)
+message NetProfitAgentGetAgentDetailMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+    optional string chvMsg = 4;  // 輸出
+}
+
+// 推廣信息(淨利潤)
+message NetProfitAgentGetAgentDetailRet {
+    required int32 rate = 1;               // 我的分成比例
+    required int32 sumbonusAmount = 2;     // 總利潤
+    required int32 poolamount = 3;         // 可提現今額
+    required int32 newagenttoday = 4;      // 今日新增代理
+    required int32 newagentlast = 5;       // 昨日新增代理
+    required int32 totalagentuser = 6;     // 所有代理
+    required int32 newusertoday = 7;       // 今日新增玩家
+    required int32 chargelast = 8;         // 昨日充值
+    required int32 convertlast = 10;       // 昨日兌換
+    required int32 bonusamountlast = 11;   // 昨日淨利潤
+    required int32 chargetoday = 12;       // 今日充值
+    required int32 converttoday = 13;      // 今日兌換
+    required int32 bonusamounttoday = 14;  // 今日淨利潤
+    required int32 payusertoday = 15;      // 今日付費用戶
+    required int32 payuserlast = 16;       // 昨日付費用戶
+    required int32 storageamount = 17;     // 庫存金幣
+    required string qrurl = 18;            // 我的推廣連結
+    required int32 withdrawsecs = 19;      // 提現倒數計時
+    required string ChvMsg = 20;           // 訊息
+}
+
+// USER 新增代理(淨利潤)
+message NetProfitAgentGetAgentReportLogMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+    required string Datetime = 3;  //查詢日期
+}
+
+// USER 新增代理(淨利潤)
+message NetProfitAgentGetAgentReportLogRet {
+    required int32 totallastdate = 1;  // 昨天充值
+    required int32 totalagentuser = 2;
+    repeated NetProfitAgentGetAgentReportLogList GetWithdrawDetailList = 3;
+}
+
+// USER 新增代理(淨利潤)
+message NetProfitAgentGetAgentReportLogList {
+    required int32 userid = 1;           // ID
+    required string CreateTime = 2;      // 注冊時間
+    required int32 SumSubUsers = 3;      // 下線人數
+    required int32 SumChargeAmount = 4;  // 充值金額
+    required int32 WithdrawAmount = 5;   // 提現總金額
+    required int32 Counts = 6;           // 提現金額
+}
+
+// 查詢今日兌換詳情(淨利潤)
+message NetProfitAgentGetWithdrawDetailMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+    required string Datetime = 3;  //查詢日期
+}
+
+// 回復今日兌換詳情(淨利潤)
+message NetProfitAgentGetWithdrawDetailRet {
+    repeated NetProfitAgentGetWithdrawDetailList GetWithdrawDetailList = 1;
+    required int32 chargeamountlast = 2;
+    required int32 sum = 3;
+}
+
+// 今日兌換詳情列表
+message NetProfitAgentGetWithdrawDetailList {
+    required string LogDate = 1;       // 日期
+    required int32 UserID = 2;         // ID
+    required int32 ChargeAmount = 3;   // 充值
+    required int32 ConvertAmount = 4;  // 兌換
+    required int32 StorageAmount = 5;  // 庫存
+    required int32 BonusAmount = 6;    // 淨利潤
+}
+
+// USER 取得已開的模式
+message UserAgentUserModeGetMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+}
+
+// USER 取得已開的模式
+message UserAgentUserModeGetRet {
+    required int32 userid = 1;
+    required int32 Mode1 = 2;
+    required int32 Mode2 = 3;
+    required int32 Mode3 = 4;
+    required int32 Mode4 = 5;
+    required int32 Mode5 = 6;
+    required int32 Mode6 = 7;
+    required string chvMsg = 8;
+}
+
+// 無限級開始
+
+// 全民代理(無限級)
+message UserAgentGetWithAmountMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+    required int32 WithdrawAmount = 3;  //提取金額
+}
+
+// 全民代理(無限級)
+message UserAgentGetWithAmountRet {
+    required int32 Status = 1;  // 回傳整數1代表成功，回傳整數0代表失敗
+}
+
+// 我的玩家(無限級)
+message UserAgentGetWithAmountListMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+    required int32 TargetID = 3;  // 查詢玩家ID，當零時是查全部
+    required int32 PageIndex = 4;
+    required int32 PageSize = 5;
+}
+
+// 我的玩家(無限級)
+message UserAgentGetWithAmountListRet {
+    required int32 PageCount = 1;
+    repeated UserAgentGetWithAmountListRetList UserAgentGetWithAmountList = 2;
+}
+
+// 我的玩家(無限級)
+message UserAgentGetWithAmountListRetList {
+    required int32 Userid = 1;         // 使用者ID
+    required string Nickname = 2;      // 使用者ID
+    required int32 Groupoffer = 3;     // 本周團對貢獻
+    required int32 Playeroffer = 4;    // 本周玩家貢獻
+    required int32 Membernumbers = 5;  // 團對人數
+    // required int32 Agent=6; // 直屬下線人數
+    required int32 Belongs = 6;  // 真屬玩家
+    required int32 Type = 7;     // 類型
+}
+
+// 申請提現例表 我的提現 (無限級)
+message UserAgentGetWithdrawAmountListMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+    required int32 PageIndex = 3;
+    required int32 PageSize = 4;
+}
+
+// 申請提現例表 我的提現 (無限級)
+message UserAgentGetWithdrawAmountListRet {
+    required int32 Userid = 1;  // 使用者ID
+    required int32 Bonus = 2;   // 獎勵金額
+    required int32 Rest = 3;    // 己領取金額
+    required int32 Allow = 4;   // 可提現金額
+    required int32 Pagecount = 5;
+    repeated UserAgentGetWithdrawAmountListRetList UserAgentGetWithdrawAmountList = 6;  // 列表
+}
+
+message UserAgentGetWithdrawAmountListRetList {
+    required string Datetime = 1;  // 時間
+    required int32 Noid = 2;       // 單號
+    required int32 Amount = 3;     // 金額
+    required string Type = 4;      // 提現類型
+    required string Account = 5;   // 帳號
+    required int32 Status = 6;     // 狀態 1 是發放 0 是未發放
+}
+
+// 我的業績(無限級)
+message UserAgentResultListMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+    required int32 PageIndex = 3;
+    required int32 PageSize = 4;
+}
+
+// 我的業績(無限級)
+message UserAgentResultListRet {
+    required int32 Result = 1;                                    // 查週總業績
+    required int32 Groupresult = 2;                               // 本週團隊業機績
+    required int32 Directresult = 3;                              // 本週直屬總業績
+    required int32 Bonus = 4;                                     // 金現獎勵
+    required int32 PageCount = 5;                                 // 金現獎勵
+    repeated UserAgentResultListRetList UserAgentResultList = 6;  // 列表
+}
+
+// 我的業績(無限級)
+message UserAgentResultListRetList {
+    required string Time = 1;            // 時間
+    required int32 Dayresult = 2;        // 日總業綪
+    required int32 Daygroupresult = 3;   // 日總團體業綪
+    required int32 Daydirectresult = 4;  // 日直屬業績
+}
+
+// 我的預提(無限級)
+message UserAgentBorrowListMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+    required int32 PageIndex = 3;  // 第幾頁
+    required int32 PageSize = 4;   // 總頁數
+}
+
+// 我的預提(無限級)
+message UserAgentBorrowListRet {
+    required int32 bonusamount = 1;       // 截止本日零點預估現金
+    required int32 AmountLimit = 2;       // 可預提現金額
+    required int32 PreConvertAmount = 3;  // 己預提現金額
+    required int32 RemainAmount = 4;      // 可剩餘提領金額
+    required int32 withdrawlastweek = 5;  // 上星期己提領，在邊邊顯示的
+    required int32 PageCount = 6;         // page count
+    repeated UserAgentBorrowListRetList UserAgentBorrowList = 7;
+}
+
+// 我的預提(無限級)
+message UserAgentBorrowListRetList {
+    required string LogDate = 1;      // 時間
+    required int32 ID = 2;            // 單號
+    required int32 Amount = 3;        // 金額
+    required string ConvertType = 4;  // 提現類型
+    required string Account = 5;      // 提現帳號
+    required string Status = 6;       // 狀態
+}
+
+// 我的獎勵(無限級)
+message UserAgentWinAmountListMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+}
+
+// 我的獎勵(無限級)
+message UserAgentWinAmountListRet {
+    repeated UserAgentWinAmountListRetList UserAgentWinAmount = 1;  // 列表
+}
+
+// 我的獎勵(無限級)
+message UserAgentWinAmountListRetList {
+    required string SendTime = 1;         // 發送時間
+    required int32 Weekresult = 2;        // 周總業綪
+    required int32 Weekgroupresult = 3;   // 周團隊業綪
+    required int32 Weekdirectresult = 4;  // 提現類型
+    required int32 bonus = 5;             // 提現帳號
+    required int32 Status = 6;            // 狀態 回傳1是可提現，其他時就回傳0
+}
+
+// 全民推廣QRCODE(無限級)
+message GetMyPromotionMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+}
+
+// 全民推廣QRCODE(無限級)
+message GetMyPromotionRet {
+    required int32 BossID = 1;             // 上級ID
+    required int32 TeamMember = 2;         // 團隊人數
+    required int32 MyMember = 3;           // 直屬下線人數
+    required int32 TodayNewMember = 4;     // 今日新增的下線人數
+    required int32 TodayActiveMember = 5;  // 今日有登入的下線人數
+    required string QrURL = 6;             // 我的推广二维码
+    required string SystemTime = 7;        // SERVER回傳系統時間
+    optional string InviteCode = 8;        // 邀請碼
+}
+
+// 獎勵說明(無限級)
+message GetRewardTipsMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+}
+
+// 獎勵說明(無限級)
+message GetRewardTipsRet {
+    required string Self = 1;                                // 直销业绩
+    required string AgentA = 2;                              // 推广业绩A
+    required string AgentB = 3;                              // 推广业绩B
+    required string AgentC = 4;                              // 推广业绩C
+    required string AgentD = 5;                              // 推广业绩D
+    required string AgentBonus = 6;                          // 總合
+    repeated GetRewardTipsRetList GetRewardTipsRetData = 7;  // LIST資料
+}
+
+// 獎勵說明(無限級)
+message GetRewardTipsRetList {
+    required int32 lv = 1;
+    required string name = 2;
+    required int32 minamount = 3;
+    required int32 maxamount = 4;
+    required string BonusRate = 5;
+}
+
+// 我的提現 申請提現 按鈕 (無限級)
+message UnlimitConvertOrderMsg {
+    optional int32 Area_ID = 1;        // 渠道ID
+    required int32 UserID = 2;         // 玩家ID
+    required int32 Type = 3;           // 提現類型
+    required string ChvIPaddress = 4;  // IP位置
+    required int32 LngAmount = 5;      // 提領金額
+}
+
+// 我的提現 申請提現 按鈕 (無限級)
+message UnlimitConvertOrderRet {
+    required string ChvMsg = 1;  // 回傳結果
+}
+
+// 我的預提 申請提現 按鈕 (無限級)
+message UnlimitPreConvertOrderMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;   // 玩家ID
+    required int32 Amount = 3;   // 提取金額
+}
+
+// 我的預提 申請提現 按鈕 (無限級)
+message UnlimitPreConvertOrderRet {
+    required string ChvMsg = 1;  // 回傳結果
+}
+
+// 裂變1 - 推廣信息
+message SplitGetMyInfoMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;   // 使用者ID
+}
+
+// 裂變1 - 推廣信息
+message SplitGetMyInfoRet {
+    required int32 RewardAmount = 1;    // 可提現金額
+    required int32 SplitAmount = 2;     // 裂變用戶額
+    required int32 SuccessCount = 3;    // 所有成功人數
+    required int32 SuccessToday = 4;    // 今日成功人數
+    required int32 SuccessLastday = 5;  // 昨日成功人數
+    required string QrURL = 6;          // QRCODE
+    required string Invited = 7;        // 邀請碼
+    optional int32 UpperUserID = 8;     // 上級userid
+    // optional int32 TotalRecruits = 9;
+}
+
+// 裂變2 - 提現紀錄
+message SplitGetMyConvertMsg {
+    optional int32 Area_ID = 1;    // 渠道ID
+    required int32 UserID = 2;     // 使用者ID
+    required int32 PageIndex = 3;  // 第幾頁
+    required int32 PageSize = 4;   // 顯示幾筆
+}
+
+// 裂變2 - 提現紀錄
+message SplitGetMyConvertRet {
+    required int32 PageCount = 1;                          // 回傳頁數
+    required int32 RewardAmount = 2;                       // 總金額
+    repeated SplitGetMyConvertList SplitGetMyConvert = 3;  // 列表
+}
+
+// 裂變2 - 提現紀錄
+message SplitGetMyConvertList {
+    required string LogDate = 1;       // 日期
+    required int32 ConvertAmount = 2;  // 提現金額
+}
+
+// 裂變3 - 說明
+message SplitGetRewardTipsMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;   // 使用者ID
+}
+
+// 裂變3 - 說明
+message SplitGetRewardTipsRet {
+    required int32 ReturenAmount = 1;
+    repeated SplitGetRewardTipsList SplitGetRewardTips = 2;  // 列表
+}
+
+// 裂變3 - 說明
+message SplitGetRewardTipsList {
+    required int32 Level = 1;      // 等級
+    required string RecruitB = 2;  // B人數
+    required string RecruitC = 3;  // C人數
+    required string RecruitD = 4;  // D人數
+    required string RewardB = 5;   // B金額
+    required string RewardC = 6;   // C金額
+    required string RewardD = 7;   // D金額
+}
+
+// 裂變4 - 馬上提現
+message SplitGetMyRewardMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;   // 使用者ID
+}
+
+// 裂變4 - 馬上提現
+message SplitGetMyRewardRet {
+    required int32 MyReward = 1;  // 提領金額
+    required int32 MyWait = 2;    // 倒數計時
+}
+
+// 裂變5 - 提現紀錄 送出提現金額
+message SplitConvertOrderMsg {
+    optional int32 Area_ID = 1;        // 渠道ID
+    required int32 UserID = 2;         // 使用者ID
+    required string ChvIPaddress = 3;  // 網路位置
+    required int32 lngAmount = 4;      // 金額
+}
+
+// 裂變5 - 提現紀錄 送出提現金額
+message SplitConvertOrderRet {
+    required string ChvMsg = 1;  // 回傳訊息
+}
+
+// 裂變6 - 輸入推廣碼
+message SplitBindingInvitedCodeMsg {
+    optional int32 Area_ID = 1;   // 渠道ID
+    required int32 UserID = 2;    // 使用者ID
+    required string Invited = 3;  // CLIEN送出推廣碼
+}
+
+// 裂變6 - 輸入推廣碼
+message SplitBindingInvitedCodeRet {
+    required string ChvMsg = 1;  // SERVER回傳推廣碼驗證結果
+    optional int32 intRetCode = 2;
+}
+
+// 充值返利活動的取得個人流水及限制 請求封包
+message EventChargeBonusAmountMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;   // 使用者ID
+}
+
+// 充值返利活動的取得個人流水及限制 回傳封包
+message EventChargeBonusAmountRet {
+    required int32 NowFlowAmount = 1;    // 目前流水
+    required int32 FlowAmountLimit = 2;  // 流水限制
+    required int32 Rate = 3;             // 返利%數
+    required int32 Times = 4;            // 返利倍數
+    required string ChvMsg = 5;          // 狀態
+}
+
+// 請求 USER 加入下线
+message AddUserRelationMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+    required string InviteCode = 3;
+}
+
+// 回傳 USER 加入下线
+message AddUserRelationRet {
+    required int32 RetCode = 1;
+    required string ChvMsg = 2;
+}
+
+// 請求 兌換禮碼
+message ExchangeCouponMsg {
+    required string ExchangeSequence = 1;  // 禮碼兌換序號
+    optional int32 Area_ID = 2;            // 渠道ID
+}
+
+// 回傳 兌換禮碼
+message ExchangeCouponRetMsg {
+    required int32 RetCode = 1;
+    required string ChvMsg = 2;
+}
+
+// 修改VIP頭像框ID
+message ModifyAvatarFrameMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;
+    required int32 AvatarFrameID = 3;  // VIP頭框像ID
+}
+
+// 修改VIP頭像框ID
+message ModifyAvatarFrameRetMsg {
+    required int32 RetCode = 1;
+    required string ChvMsg = 2;
+}
+
+// VIP 獎勵等級設定清單
+message GradeSettingDataList {
+    required int32 RetCode = 1;
+    required string ChvMsg = 2;
+    repeated GradeSettingData DataList = 3;
+}
+// VIP 獎勵等級設定資訊
+message GradeSettingData {
+    required int32 ID = 1;
+    required int64 Amount = 2;
+    required int32 PromotionAward = 3;
+    required int32 AvatarFrame = 4;
+}
+
+// 取得傳用戶活動清單
+message CampaignGetList {
+    required int32 UserID = 1;
+    optional int32 Area_ID = 2;  // 渠道ID
+}
+
+// 回傳取得傳用戶活動清單
+message CampaignGetListRet {
+    repeated CampaignData CampaignData = 1;
+}
+
+// 回傳取得傳用戶活動清單
+message CampaignData {
+    required int32 ID = 1;
+    required string Picture = 2;
+    required int32 SeqID = 3;
+    required string Title = 4;
+    required int32 CampaignTag = 5;
+    required int32 CampaignBehavior = 6;
+    required string Link = 7;
+    required string StartTime = 8;
+    required string EndTime = 9;
+}
+
+// 請求 取得首充返利活動與該用戶相關資料
+message FirstDepositGetInfoMsg {
+    optional int32 Area_ID = 1;  // 渠道ID
+    required int32 UserID = 2;   // 玩家編號
+}
+
+// 回傳 取得首充返利活動與該用戶相關資料
+message FirstDepositGetInfoRetMsg {
+    required int32 RetCode = 1;
+    optional FirstDepositInfo FirstDepositInfo = 2;              // 首充返利活動資料
+    optional FirstDepositUserRecord FirstDepositUserRecord = 3;  // 首充返利活動該用戶相關資料
+}
+
+// 首充返利活動資料
+message FirstDepositInfo {
+    required string StartTime = 1;        // 活動開始時間
+    required string EndTime = 2;          // 活動結束時間
+    required int64 DepositLimit = 3;      // 單筆充值限制 (單位:分)
+    required int64 WinAmount = 4;         // 需贏得金額 (單位:分)
+    required int64 ReturnAmount = 5;      // 返利金額 (單位:分)
+    required int32 Status = 6;            // 0:關閉，1:開啟
+    required int32 CurrentUserCount = 7;  // 目前玩家數
+}
+
+// 首充返利活動該用戶相關資料
+message FirstDepositUserRecord {
+    required int32 UserID = 1;         // 玩家編號
+    required int64 EventID = 2;        // 對應Table 1的ID
+    required string JoinTime = 3;      // 加入本次活動時間，即單筆充值達到標準的時間
+    required int64 DepositAmount = 4;  // 該次充值金額
+    required int64 WinAmount = 5;      // 累計贏得金額
+    required int32 Flag = 6;           // 領取狀態(0:未領取, 1:已領取)
+    required string CollectTime = 7;   // 領取時間
+    required int64 CollectAmount = 8;  // 領取金額
+    required int32 UserType = 9;       // 用戶帳號身分(1: 正式帳號, 3: 遊客帳號(不能領)
+}
+
+// 請求 領取首充返利回饋金
+message FirstDepositCollectMsg {
+    optional int32 Area_ID = 1;     // 渠道ID
+    required int32 UserID = 2;      // 玩家編號
+    required int64 EventID = 3;     // 對應Table 1的ID
+    optional string IPAddress = 4;  // 玩家IP
+}
+
+// 回傳 領取首充返利回饋金
+message FirstDepositCollectRetMsg {
+    required int32 RetCode = 1;
+    required string RetMessage = 2;
+}
+
+// 查询 活动公告系统 首页弹出
+message PromotionPopup {
+    required int32 Area_ID=1;  //渠道ID
+}
+
+// 回传 活动公告系统 首页弹出
+message PromotionPopupRet {
+    required int32 Area_ID = 1;
+    repeated PromotionPopupContent PopupList = 2; //首页弹出内容List
+}
+
+// 活动公告系统 首页弹出内容
+message PromotionPopupContent {
+    required int32 EventID = 1;
+    required string Title = 2;
+    required string EventStartTime = 3;
+    required string EventEndTime = 4;
+    required string ImageUrl = 5;
+    required int32 Sort = 6;
+    required int32 BehaviorType = 7;
+    required string BehaviorSettingValue = 8;
+}
+
+
+// 查询 活动公告系统 邮件公告页
+message PromotionAnnouncement {
+    required int32 Area_ID = 1;  //渠道ID
+}
+
+// 回传 活动公告系统 邮件公告页
+message PromotionAnnouncementRet {
+    required int32 Area_ID = 1;
+    repeated PromotionAnnouncementContent AnnouncementList = 2; //邮件公告页内容List
+}
+
+// 活动公告系统 邮件公告页内容
+message PromotionAnnouncementContent {
+    required int32 EventID = 1;
+    required string Title = 2;
+    required string EventStartTime = 3;
+    required string EventEndTime = 4;
+    required string ImageUrl = 5;
+    required int32 Sort = 6;
+    required int32 Tags = 7;
+    required int32 DisplayMode = 8;
+    required string Content = 9;
+}
+
+// 分类资讯
+message CategoryInfo {
+    required int32 CategoryID = 1;
+    required string Name = 2;
+}
+
+// 游戏分类IDs
+message GameCategoryIDs {
+    required int32 GameID = 1;
+    required string CategoryIDs = 2;
+}
+
+// 游戏分类设置
+message GameCategoryOption {
+    required int64 AreaID = 1;
+    required int32 IsVisible = 2;
+}
+
+// 游戏分类清单
+message GameCategoryList {
+    repeated CategoryInfo GameTabs = 1;
+    repeated GameCategoryIDs CategoryList = 2;
+    optional int32 IsVisible = 3;
+}
+
+//三方遊戲登入數據 
+message ThirdPartyGameLaunchRequest {
+    required int32 GameID = 1;
+}
+
+//三方遊戲登入數據回傳
+message ThirdPartyGameLaunchResponse {
+    required int32 RetCode = 1; // 1 代表成功, 0 代表失敗
+    required string RetMessage = 2; // 失敗的顯示訊息
+    required string RedirectUrl = 3; // 登入連結
+}
+
+// 活動資訊
+message NewPromotionEvent {
+    required int32 EventID = 1;
+    required string EventName = 2;
+    required int32 EventType = 3;
+    required string StartTime = 4;
+    required string EndTime = 5;
+}
+
+// 獲取活動列表
+message NewPromotionEventList {
+    repeated NewPromotionEvent Events = 1;
+}
+
+// 獲取活動及輪盤資訊
+message NewPromotionEventInfo {
+    required NewPromotionEvent BasicInfo = 1;
+    required NewPromotionLuckyRouletteInfo LuckyRouletteInfo = 2;
+}
+
+// 輪盤資訊
+message NewPromotionLuckyRouletteInfo {
+    required int32 TicketCount = 1;
+    required string EventMsg = 2;
+    required string TipsMsg = 3;
+    repeated NewPromotionBonusItem BonusItems = 4;
+}
+
+// 獎項
+message NewPromotionBonusItem {
+    required int32 BonusID = 1;
+    required string BonusName = 2;
+    required int32 Amount = 3;
+    required int32 BonusType = 4;
+    required string ImageURL = 5;
+}
+
+// 抽獎結果
+message NewPromotionLuckyRouletteData {
+    required bool IsSuccess = 1;
+    required string ResultMsg = 2;
+    required int32 BonusID = 3;
+    required int32 LotteryRemaining = 4; //剩餘次數
+}
+
+// 請求活動及輪盤資訊或抽獎
+message NewPromotionEventInfoRequest {
+    required int32 EventID = 1;
+}

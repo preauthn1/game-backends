@@ -1,0 +1,295 @@
+game:
+  wlzbjp:
+    id: 1006
+    name: 五龍爭霸_彩金版
+    group: slot
+    room:
+      - port: 14001
+        serverid: 435
+        proto: wlzbjp-test
+        configs: 
+          gameserver.dat: |
+            [gameserver]
+            gameid=1006				 	// 游戏ID
+            gamename=五龍爭霸_彩金版            // 游戏名称
+            flag=1				     	// 显示名称,客户端可根据此名称将房间分类显示
+            minplayer=1              	// 游戏最小人数
+            maxplayer=1          		// 游戏最大人数
+            tablecount=100			 	// 桌子数
+            seatcount=1		    		// 椅子数
+            loginmoney=100			 	// 进入游戏最小积分
+            scoremode=3					// 0 即时写分 1退房间写分
+            maxuser=480					// 最大人数
+            taxscale=5					// 抽水比例
+            readywaittime=10			// 举手超时时间,单位秒
+            reghallserverinterval=5		// 注册广场时间间隔,单位秒
+            basescore=100				// 底分
+            deallog=2					// 牌局记录器类型0 不记录 ,1 文本, 2 db
+            mincarrymoney=50            // 下注攜帶金額限制
+            settlescore=10000   		//大於SettleScore分時結算
+            settleround=3  			//大於SettleRound局時結算
+
+            [gamequeue]
+            gamematchwaitmintime=1		// 撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		// 撮合时间间隔范围大值,单位秒
+            againstsameip=0				// 同IP不分配一起
+            againstlastgame=0			// 最后一次游戏过的用户不分配一起
+            gameendaction=0				// 游戏结束后动作,0 无动作 1 准备
+            queuetype=1					// 撮合类型 0 时间随机 1 固定人数
+            queueusercount=1			// 排队人数
+            queuetimeout=2				// 排队人数超时
+          slotconfig.dat: |
+            [slotsetting]
+            endactiontime=1				                            // 结算动画超时
+            betcount=5,10,20,30,60,100                              // 一次下注的数量
+            betrate=60                                          // 玩家可上調的基本押注數量的倍率
+
+            slotpattern=11                                           // 參考csv SlotPattern類型, 可多個用逗號分
+            bigwinrule=45,90,250,975   							//client動畫播放階段,以Bet為主
+            bigwinnotify=400                                        // 當下注16, Total=6400(16*400) 得獎超過6400才廣播.
+
+            [description]
+            w1.title=百搭
+            w1.desc=只出现在一般游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w2.title=百搭
+            w2.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w3.title=百搭
+            w3.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w4.title=百搭
+            w4.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w5.title=百搭
+            w5.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w6.title=百搭
+            w6.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            s1.title=分散符号
+            s1.desc=出现3或更多时，进入免费游戏特别奖。\n免费游戏中，当2个、3个、4个5个出现时，即分别赢得5个、15个、25个、50个额外免费游戏。
+      - port: 14002
+        serverid: 436
+        proto: wlzbjp-test
+        configs:
+          gameserver.dat: |
+            [gameserver]
+            gameid=1006				 	// 游戏ID
+            gamename=五龍爭霸_彩金版            // 游戏名称
+            flag=2				     	// 显示名称,客户端可根据此名称将房间分类显示
+            minplayer=1              	// 游戏最小人数
+            maxplayer=1          		// 游戏最大人数
+            tablecount=5			 	// 桌子数
+            seatcount=1		    		// 椅子数
+            loginmoney=100			 	// 进入游戏最小积分
+            scoremode=3					// 0 即时写分 1退房间写分
+            maxuser=480					// 最大人数
+            taxscale=5					// 抽水比例
+            readywaittime=10			// 举手超时时间,单位秒
+            reghallserverinterval=5		// 注册广场时间间隔,单位秒
+            basescore=100				// 底分
+            deallog=2					// 牌局记录器类型0 不记录 ,1 文本, 2 db
+            mincarrymoney=50            // 下注攜帶金額限制
+            settlescore=10000   		//大於SettleScore分時結算
+            settleround=3  			//大於SettleRound局時結算
+
+            [gamequeue]
+            gamematchwaitmintime=1		// 撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		// 撮合时间间隔范围大值,单位秒
+            againstsameip=0				// 同IP不分配一起
+            againstlastgame=0			// 最后一次游戏过的用户不分配一起
+            gameendaction=0				// 游戏结束后动作,0 无动作 1 准备
+            queuetype=1					// 撮合类型 0 时间随机 1 固定人数
+            queueusercount=1			// 排队人数
+            queuetimeout=2				// 排队人数超时
+          slotconfig.dat: |
+            [slotsetting]
+            endactiontime=1				                            // 结算动画超时
+            betcount=5,10,20,30,60,100                              // 一次下注的数量
+            betrate=60                                          // 玩家可上調的基本押注數量的倍率
+
+            slotpattern=12                                           // 參考csv SlotPattern類型, 可多個用逗號分
+            bigwinrule=45,90,250,975   							//client動畫播放階段,以Bet為主
+            bigwinnotify=400                                        // 當下注16, Total=6400(16*400) 得獎超過6400才廣播.
+
+            [description]
+            w1.title=百搭
+            w1.desc=只出现在一般游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w2.title=百搭
+            w2.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w3.title=百搭
+            w3.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w4.title=百搭
+            w4.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w5.title=百搭
+            w5.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w6.title=百搭
+            w6.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            s1.title=分散符号
+            s1.desc=出现3或更多时，进入免费游戏特别奖。\n免费游戏中，当2个、3个、4个5个出现时，即分别赢得5个、15个、25个、50个额外免费游戏。
+      - port: 14003
+        serverid: 437
+        proto: wlzbjp-test
+        configs:
+          gameserver.dat: |
+            [gameserver]
+            gameid=1006				 	// 游戏ID
+            gamename=五龍爭霸_彩金版            // 游戏名称
+            flag=3				     	// 显示名称,客户端可根据此名称将房间分类显示
+            minplayer=1              	// 游戏最小人数
+            maxplayer=1          		// 游戏最大人数
+            tablecount=5			 	// 桌子数
+            seatcount=1		    		// 椅子数
+            loginmoney=100			 	// 进入游戏最小积分
+            scoremode=0					// 0 即时写分 1退房间写分
+            maxuser=480					// 最大人数
+            taxscale=5					// 抽水比例
+            readywaittime=10			// 举手超时时间,单位秒
+            reghallserverinterval=5		// 注册广场时间间隔,单位秒
+            basescore=100				// 底分
+            deallog=2					// 牌局记录器类型0 不记录 ,1 文本, 2 db
+            mincarrymoney=50            // 下注攜帶金額限制
+
+            [gamequeue]
+            gamematchwaitmintime=1		// 撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		// 撮合时间间隔范围大值,单位秒
+            againstsameip=0				// 同IP不分配一起
+            againstlastgame=0			// 最后一次游戏过的用户不分配一起
+            gameendaction=0				// 游戏结束后动作,0 无动作 1 准备
+            queuetype=1					// 撮合类型 0 时间随机 1 固定人数
+            queueusercount=1			// 排队人数
+            queuetimeout=2				// 排队人数超时
+          slotconfig.dat: |
+            [slotsetting]
+            endactiontime=1				                            // 结算动画超时
+            betcount=5,10,20,30,60,100                              // 一次下注的数量
+            betrate=60                                          // 玩家可上調的基本押注數量的倍率
+
+            slotpattern=13                                           // 參考csv SlotPattern類型, 可多個用逗號分
+            bigwinrule=45,90,250,975   							//client動畫播放階段,以Bet為主
+            bigwinnotify=400                                        // 當下注16, Total=6400(16*400) 得獎超過6400才廣播.
+
+            [description]
+            w1.title=百搭
+            w1.desc=只出现在一般游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w2.title=百搭
+            w2.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w3.title=百搭
+            w3.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w4.title=百搭
+            w4.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w5.title=百搭
+            w5.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w6.title=百搭
+            w6.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            s1.title=分散符号
+            s1.desc=出现3或更多时，进入免费游戏特别奖。\n免费游戏中，当2个、3个、4个5个出现时，即分别赢得5个、15个、25个、50个额外免费游戏。
+      - port: 14004
+        serverid: 438
+        proto: wlzbjp-test
+        configs:
+          gameserver.dat: |
+            [gameserver]
+            gameid=1006				 	// 游戏ID
+            gamename=五龍爭霸_彩金版            // 游戏名称
+            flag=4				     	// 显示名称,客户端可根据此名称将房间分类显示
+            minplayer=1              	// 游戏最小人数
+            maxplayer=1          		// 游戏最大人数
+            tablecount=5			 	// 桌子数
+            seatcount=1		    		// 椅子数
+            loginmoney=100			 	// 进入游戏最小积分
+            scoremode=0					// 0 即时写分 1退房间写分
+            maxuser=480					// 最大人数
+            taxscale=5					// 抽水比例
+            readywaittime=10			// 举手超时时间,单位秒
+            reghallserverinterval=5		// 注册广场时间间隔,单位秒
+            basescore=100				// 底分
+            deallog=2					// 牌局记录器类型0 不记录 ,1 文本, 2 db
+            mincarrymoney=50            // 下注攜帶金額限制
+
+            [gamequeue]
+            gamematchwaitmintime=1		// 撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		// 撮合时间间隔范围大值,单位秒
+            againstsameip=0				// 同IP不分配一起
+            againstlastgame=0			// 最后一次游戏过的用户不分配一起
+            gameendaction=0				// 游戏结束后动作,0 无动作 1 准备
+            queuetype=1					// 撮合类型 0 时间随机 1 固定人数
+            queueusercount=1			// 排队人数
+            queuetimeout=2				// 排队人数超时
+          slotconfig.dat: |
+            [slotsetting]
+            endactiontime=1				                            // 结算动画超时
+            betcount=5,10,20,30,60,100                              // 一次下注的数量
+            betrate=60                                          // 玩家可上調的基本押注數量的倍率
+
+            slotpattern=14                                          // 參考csv SlotPattern類型, 可多個用逗號分
+            bigwinrule=45,90,250,975   							//client動畫播放階段,以Bet為主
+            bigwinnotify=400                                        // 當下注16, Total=6400(16*400) 得獎超過6400才廣播.
+
+            [description]
+            w1.title=百搭
+            w1.desc=只出现在一般游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w2.title=百搭
+            w2.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w3.title=百搭
+            w3.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w4.title=百搭
+            w4.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w5.title=百搭
+            w5.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w6.title=百搭
+            w6.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            s1.title=分散符号
+            s1.desc=出现3或更多时，进入免费游戏特别奖。\n免费游戏中，当2个、3个、4个5个出现时，即分别赢得5个、15个、25个、50个额外免费游戏。
+      - port: 14005
+        serverid: 439
+        proto: wlzbjp-test
+        configs:
+          gameserver.dat: |
+            [gameserver]
+            gameid=1006				 	// 游戏ID
+            gamename=五龍爭霸_彩金版            // 游戏名称
+            flag=5				     	// 显示名称,客户端可根据此名称将房间分类显示
+            minplayer=1              	// 游戏最小人数
+            maxplayer=1          		// 游戏最大人数
+            tablecount=5			 	// 桌子数
+            seatcount=1		    		// 椅子数
+            loginmoney=100			 	// 进入游戏最小积分
+            scoremode=0					// 0 即时写分 1退房间写分
+            maxuser=480					// 最大人数
+            taxscale=5					// 抽水比例
+            readywaittime=10			// 举手超时时间,单位秒
+            reghallserverinterval=5		// 注册广场时间间隔,单位秒
+            basescore=100				// 底分
+            deallog=2					// 牌局记录器类型0 不记录 ,1 文本, 2 db
+            mincarrymoney=50            // 下注攜帶金額限制
+
+            [gamequeue]
+            gamematchwaitmintime=1		// 撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		// 撮合时间间隔范围大值,单位秒
+            againstsameip=0				// 同IP不分配一起
+            againstlastgame=0			// 最后一次游戏过的用户不分配一起
+            gameendaction=0				// 游戏结束后动作,0 无动作 1 准备
+            queuetype=1					// 撮合类型 0 时间随机 1 固定人数
+            queueusercount=1			// 排队人数
+            queuetimeout=2				// 排队人数超时
+          slotconfig.dat: |
+            [slotsetting]
+            endactiontime=1				                            // 结算动画超时
+            betcount=1,2,3,5,10,100                              // 一次下注的数量
+            betrate=30                                          // 玩家可上調的基本押注數量的倍率
+
+            slotpattern=15                                           // 參考csv SlotPattern類型, 可多個用逗號分
+            bigwinrule=30000,40000,50000,500000                     // client動畫播放階段,以Bet為主
+            bigwinnotify=400                                        // 當下注16, Total=6400(16*400) 得獎超過6400才廣播.
+
+            [description]
+            w1.title=百搭
+            w1.desc=只出现在一般游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w2.title=百搭
+            w2.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w3.title=百搭
+            w3.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w4.title=百搭
+            w4.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w5.title=百搭
+            w5.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            w6.title=百搭
+            w6.desc=只出现在免費游戏，可代表任何符号，除了分散符号及黄金背景，只出现在第2、3、4转轴。
+            s1.title=分散符号
+            s1.desc=出现3或更多时，进入免费游戏特别奖。\n免费游戏中，当2个、3个、4个5个出现时，即分别赢得5个、15个、25个、50个额外免费游戏。

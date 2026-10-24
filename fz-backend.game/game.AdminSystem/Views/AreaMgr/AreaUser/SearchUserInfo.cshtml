@@ -1,0 +1,321 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+@using FW.Core.Helper
+@using game.Entity.Users
+
+@model game.Entity.Users.UserInfoDetail
+@{
+    DateTime? beginTime = ViewBag.BeginTime;
+    DateTime? endTime = ViewBag.EndTime;
+    var strBeginTime = beginTime == null ? "" : beginTime.Value.ToString("yyyy-MM-dd HH:mm");
+    var strEndTime = endTime == null ? "" : endTime.Value.ToString("yyyy-MM-dd HH:mm");
+    string rangeDate = "不限";
+    if (beginTime != null && endTime != null)
+    {
+        rangeDate = string.Format("{0}至{1}", beginTime.Value.ToString("yyyy-MM-dd HH:mm"), endTime.Value.ToString("yyyy-MM-dd HH:mm"));
+    }
+    else if (beginTime != null)
+    {
+        rangeDate = string.Format("{0}到现在", beginTime.Value.ToString("yyyy-MM-dd HH:mm"));
+    }
+    else if (endTime != null)
+    {
+        rangeDate = string.Format("{0}之前", endTime.Value.ToString("yyyy-MM-dd HH:mm"));
+    }
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+
+<style>
+    .div_tab {
+        padding: 30px 30px 30px 30px;
+    }
+
+        .div_tab table tr {
+            height: 30px;
+        }
+
+            .div_tab table tr td span {
+                color: red;
+            }
+
+        .div_tab .btn_link {
+            padding-left: 5px;
+            font-weight: bold;
+            text-decoration: underline;
+            color: #428bca;
+        }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_message")
+                @Html.Partial("~/Views/Shared/_userPartial.cshtml")
+                <div class="form-group">
+                    <label>时间范围</label>
+                    <input type="text" class="form-control " style="width:180px" id="beginTime" name="beginTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString("yyyy-MM-01 HH:mm")">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="endTime" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm")" name="endTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间"  autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default"> 搜 索 </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (Model != null)
+{
+    <br />
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i>用户详情
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <form id="form1" class="form-horizontal form-bordered">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <div class="div_tab">
+                                    <table class="col-md-12">
+                                        <tr>
+                                            <td><img style="height:64px;" src="/Content/HeadIcon/sprite_@(Model.FaceID).png"></td>
+                                            <td>ID:<span>@Model.UserID</span></td>
+                                            <td>账号:<span>@Model.LoginName</span></td>
+                                            <td>性别:<span>@Model.Sex.GetDisplayName()</span>　　等级：<span>@Model.GradeID</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>注册设备:<span>@Model.HDType.GetDisplayName()</span></td>
+                                            <td>注册时间:<span> @Model.CreateTime.ToString("yyyy-MM-dd HH:mm")</span></td>
+                                            <td>注册IP:<span>@Model.CreateIPAddress</span></td>
+                                            <td>最后登录时间:<span>@Model.LastLogonTime.ToString("yyyy-MM-dd HH:mm")</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>最后登录IP:<span>@Model.LastLogonIPAddress</span></td>
+                                            <td>累计登录次数:<span>@Model.SumLoginTimes</span></td>
+                                            <td>同IP注册账号数:<span>@Model.StatInfo.SameIPCount</span></td>
+                                            <td>同Mac注册账号数:<span>@Model.StatInfo.SameMacCount</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>封号状态:<span>@Model.ForbidUser</span></td>
+                                            <td>是否允许提问:<span>@Model.ForbidChat 已提问数(@Model.QuestionCount)</span></td>
+                                            <td>真实姓名:<span>@(string.IsNullOrWhiteSpace(Model.RealName) ? "未绑定" : Model.RealName)</span></td>
+                                            <td>支付宝账号:<span>@(string.IsNullOrWhiteSpace(Model.AlipayAccount) ? "未绑定" : Model.AlipayAccount)</span></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-8 col-md-offset-2">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i>用户金币
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div class="form-horizontal form-bordered">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <div class="div_tab">
+                                    <table class="col-md-12">
+                                        <tr>
+                                            <td class="">总金额数:<span>@Model.AllCoinAmount.ToCash()</span></td>
+                                            <td class="">现金数:<span>@Model.CashAmount.ToCash()</span>@Html.LinkWithRightHref(href: string.Format("/AreaUser/UserMoneyLog?userID={0}&beginTime={1}&endTime={2}", Model.UserID, DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.ToString("yyyy-MM-dd HH:mm")), cssName: "btn_link", value: "现金记录")</td>
+                                            <td class="">保險箱数:<span>@Model.BankAmount.ToCash()</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>累计充值数:<span>@Model.SumCharge.ToCash()</span>@Html.LinkWithRightHref(href: string.Format("/AreaUser/UserOrderList?userID={0}&status={1}&createBeginTime={2}", Model.UserID, game.Entity.Pay.CDOrderStatus.Paied, DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd HH:mm")), cssName: "btn_link", value: "充值记录")</td>
+                                            <td>累计税收数:<span>@Model.SumTax.ToCash()</span>@Html.LinkWithRightHref(href: string.Format("/AreaUser/UserGameLog?userID={0}&logoutBeginTime={1}", Model.UserID, DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd HH:mm")), cssName: "btn_link", value: "税收记录")</td>
+                                            <td>累计兑换数:<span>@Model.SumConvert.ToCash()</span></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END FORM-->
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="col-md-8 col-md-offset-2">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i>用户金币 查询时间范围：( @rangeDate )
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div class="form-horizontal form-bordered">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <div class="div_tab">
+                                    <table class="col-md-12">                                        
+                                        <tr>
+                                            <td>充值数:<span>@Model.StatInfo.SumCharge.ToCash()</span>@Html.LinkWithRightHref(href: string.Format("/AreaUser/UserOrderList?userID={0}&status={1}&createBeginTime={2}&createEndTime={3}", Model.UserID, game.Entity.Pay.CDOrderStatus.Paied, strBeginTime, strEndTime), cssName: "btn_link", value: "充值记录")</td>
+                                            <td>税收数:<span>@Model.StatInfo.SumGameTax.ToCash()</span>@Html.LinkWithRightHref(href: string.Format("/AreaUser/UserGameLog?userID={0}&logoutBeginTime={1}&logoutEndTime={2}", Model.UserID, strBeginTime, strEndTime), cssName: "btn_link", value: "税收记录")</td>
+                                            <td>兑换数:<span>@Model.StatInfo.SumConvert.ToCash()</span></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END FORM-->
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="col-md-8 col-md-offset-2">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i>用户游戏信息
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div class="form-horizontal form-bordered">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <div class="div_tab">
+                                    <table class="col-md-12 table table-striped table-bordered table-hover">
+                                        <tr>
+                                            <th>游戏名称</th>
+                                            <th>赢的局数</th>
+                                            <th>输的局数</th>
+                                            <th>平的局数</th>
+                                            <th>输赢金币数</th>
+                                            <th>游戏时长(秒)</th>
+                                        </tr>
+                                        @foreach (var g in Model.GameInfo)
+                                        {
+                                            <tr>
+                                                <td>@g.Game.GameName</td>
+                                                <td>@g.WinCount</td>
+                                                <td>@g.LoseCount</td>
+                                                <td>@g.DrawCount</td>
+                                                <td>@g.Score.ToCash()</td>
+                                                <td>@SiteHelper.GetTimeStr(g.GameTime)</td>
+                                            </tr>
+                                        }
+                                        <tr>
+                                            <td>汇总：</td>
+                                            <td>@Model.GameInfo.Sum(m => m.WinCount)</td>
+                                            <td>@Model.GameInfo.Sum(m => m.LoseCount)</td>
+                                            <td>@Model.GameInfo.Sum(m => m.DrawCount)</td>
+                                            <td>@Model.GameInfo.Sum(m => m.Score).ToCash()</td>
+                                            <td>@SiteHelper.GetTimeStr(Model.GameInfo.Sum(m => m.GameTime))</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END FORM-->
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-8 col-md-offset-2">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i>用户游戏信息 查询时间范围：( @rangeDate )
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div class="form-horizontal form-bordered">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <div class="div_tab">
+                                    <table class="col-md-12 table table-striped table-bordered table-hover">
+                                        <tr>
+                                            <th>游戏名称</th>
+                                            <th>赢的局数</th>
+                                            <th>输的局数</th>
+                                            <th>平的局数</th>
+                                            <th>输赢金币数</th>
+                                            <th>游戏时长(秒)</th>
+                                            <th>详情</th>
+                                        </tr>
+                                        @foreach (var g in Model.StatGameInfo)
+                                        {
+                                            <tr>
+                                                <td>@g.Game.GameName</td>
+                                                <td>@g.WinCount</td>
+                                                <td>@g.LoseCount</td>
+                                                <td>@g.DrawCount</td>
+                                                <td>@g.Score.ToCash()</td>
+                                                <td>@SiteHelper.GetTimeStr(g.GameTime)</td>
+                                                <td>@Html.LinkWithRightHref(href: string.Format("/AreaUser/UserGameLog?userID={0}&gameID={3}&logoutBeginTime={1}&logoutEndTime={2}", Model.UserID, strBeginTime, strEndTime, g.GameID), cssName: "btn_link", value: "详情")</td>
+                                            </tr>
+                                        }
+                                        <tr>
+                                            <td>汇总：</td>
+                                            <td>@Model.StatGameInfo.Sum(m => m.WinCount)</td>
+                                            <td>@Model.StatGameInfo.Sum(m => m.LoseCount)</td>
+                                            <td>@Model.StatGameInfo.Sum(m => m.DrawCount)</td>
+                                            <td>@Model.StatGameInfo.Sum(m => m.Score).ToCash()</td>
+                                            <td>@SiteHelper.GetTimeStr(Model.GameInfo.Sum(m => m.GameTime))</td>
+                                            <td>　</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END FORM-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+@section initScripts{
+    <script>
+        $(function () {
+
+            var validateFunc = function () {
+                var validator = new Validator()
+                validator.add([form_search.loginName, form_search.nickName, form_search.userID], [{
+                    strategy: 'isSomeNonEmpty',
+                    errorMsg: '账户信息不能全为空,请输入昵称、账号或者ID！'
+                }])
+
+                var errorMsg = validator.start()
+                return errorMsg
+            }
+
+            var form = document.getElementById('form_search')
+            form.onsubmit = function () {
+                var errorMsg = validateFunc()
+                if (errorMsg) {
+                    Msg.alert(errorMsg, 'danger')
+                    return false
+                }
+            }
+            fillFormData('form_search');
+        })
+    </script>
+}

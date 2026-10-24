@@ -1,0 +1,10 @@
+﻿GRANT CONNECT TO [xbuser];
+
+
+GO
+GRANT VIEW DEFINITION TO [xbuser];
+
+
+GO
+GRANT CONNECT TO [lisa];
+

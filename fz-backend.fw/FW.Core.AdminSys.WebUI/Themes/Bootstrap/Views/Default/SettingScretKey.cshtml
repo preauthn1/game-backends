@@ -1,0 +1,61 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>请先扫描个人金钥</title>
+    <style>
+        .login {
+            background-color: #444 !important;
+        }
+
+
+        .content {
+            background-color: #fff;
+            width: 300px;
+            margin: 0 auto;
+            margin-top: 100px;
+            margin-bottom: 0px;
+            padding: 30px;
+            padding-top: 20px;
+            padding-bottom: 15px;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+            padding-left: 0;
+            padding-right: 0;
+            color: white;
+            text-shadow: none;
+            background-color: #555555;
+            border-width: 0;
+            padding: 7px 14px;
+            font-size: 12px;
+            outline: none !important;
+            -webkit-box-shadow: none !important;
+            border-radius: 0 !important;
+        }
+    </style>
+</head>
+<body class="login">
+    <div class="content">
+        <div id="bootstrap_alerts"></div>
+        <form method="post" action="saveQRCode">
+            <div>
+                <label class="">扫描个人金钥<br><font color="red" size="+4">如果没有扫描将无法登录</font></label>
+                <div class="">
+                    <input type="hidden" id="userID" value="@ViewBag.UserID" name="userID">
+                    <input type="hidden" id="secretKey" value="@ViewBag.SecretKey" name="secretKey">
+                    <img id="imgQRCode" src="@ViewBag.QrCodeUrl" class="rounded float-right" alt="" />
+                </div>
+            </div>
+            <div class="">
+                <input type="submit" value="已扫描完成，返回登入" class="btn-block" />
+            </div>
+        </form>
+    </div>
+</body>
+</html>

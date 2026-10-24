@@ -1,0 +1,74 @@
+﻿
+@{
+    Layout = null;
+}
+
+@model Unlimit_GetUserSumData
+
+<div class="row">
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-blue-gradient"><i class="fa fa-fw fa-user"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">总奖励</span>
+                <span class="info-box-number">@(Model.PoolAmount.ToCash())</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <!-- /.col -->
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-red"><i class="fa fa-fw fa-cny"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">总推广人数</span>
+                <span class="info-box-number">@(string.Format("{0:N0}", Model.Totaluser))</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <!-- /.col -->
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-green"><i class="fa fa-fw fa-money"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">直推人数</span>
+                <span class="info-box-number">@(string.Format("{0:N0}", Model.SubDirectUser))</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-yellow-active"><i class="fa fa-fw fa-money"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">总业绩</span>
+                <span class="info-box-number">@Model.TotalPerformance.ToCash()</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <!-- fix for small devices only -->
+    <div class="clearfix visible-sm-block"></div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-blue-gradient"><i class="fa fa-fw fa-user"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">本周业绩</span>
+                <span class="info-box-number">@Model.WeekTotalPerformance.ToCash()</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <!-- /.col -->    
+</div>

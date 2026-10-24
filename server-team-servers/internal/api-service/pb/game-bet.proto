@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+option go_package = "/apisvc";
+
+package apisvc;
+
+// 下注相關服務
+service GameBetService {
+  // 下注扣錢
+  rpc PlaceBet(PlaceBetReq) returns (PlaceBetRes);
+  // 統計單日押注
+  rpc Summary(SummaryReq) returns (SummaryRes);
+}
+
+message PlaceBetReq {
+  // 驗證
+  string AccessToken = 1;
+  // 服務器 ID
+  int32 ServerID = 2;
+  // Trade ID
+  int64 TradeID = 3;
+  // 下注金額(分數)
+  int64 BetAmount = 4;
+  // IP 位置
+  string IPAddress = 5;
+  // 備註
+  string Memo = 6;
+}
+
+message PlaceBetRes {
+  // 下注後金額(分數)
+  int64 AfterAmount = 1;
+  // 交易序號
+  string TransactionNo = 2;
+}
+
+message SummaryReq {
+  // 服務器 ID
+  int32 ServerID = 1;
+  // 開始時間 UTC 時間 格式 `YYYY-MM-DD HH-mm-ss`
+  string Begin = 2;
+  // 結束時間 UTC 時間 格式 `YYYY-MM-DD HH-mm-ss`
+  string End = 3;
+}
+
+message SummaryRes {
+  // 服務器 ID
+  int32 ServerID = 1;
+  // 下注總計
+  int64 BetAmount = 2;
+  // 輸贏總計
+  int64 WinLossAmount = 3;
+  // 流水總計
+  int64 ValidAmount = 4;
+}

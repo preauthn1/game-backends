@@ -1,0 +1,97 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using game.Entity.Pay
+@using game.AdminSystem.Models.ViewModels
+@using game.Entity.Money
+
+@{ 
+   
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+
+<div class="row tableListPage">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+
+               
+                @*<div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                </div>*@
+
+
+                <div class="hr-s"></div>
+
+            </form>
+
+            <div class="content">
+                <table id="myTable_table" class="display border-r" style="width:100%"></table>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section initScripts{
+    <script>
+
+        function createTable() {
+
+            const urlEdit = '/UnionpayBankCode/Update';
+            const url = '/UnionpayBankCode/GetList'
+            const thead =
+                [
+                    { "sTitle": "系统编号", "mData": "Code", "className": "algin-c" ,"width": "7%"},
+                    { "sTitle": "银行名称", "mData": "BankName", "className": "algin-l" ,"width": "15%"},
+                    { "sTitle": "银行代码", "mData": "BankID", "className": "algin-l" ,"width": "7%"},
+                    { "sTitle": "是否启用", "mData": "IsShowText", "className": "algin-c" ,"width": "7%"},
+                    { "sTitle": "建立时间", "mData": "CreateTimeText", "className": "algin-c" ,"width": "15%"},
+                    { "sTitle": "修改时间", "mData": "UpdateTimeText", "className": "algin-c" ,"width": "15%"},
+                    { "sTitle": "修改人", "mData": "UpdateBy", "className": "algin-c", "width": "15%" },
+                                        {
+                        "sTitle": "操作", "mData": "Title",
+                        "render": function (data, type, row) {
+                            var html = "";
+                            html = html + String.format('<a id="" class="btn btn-sm dark" style="" href="{0}?targetId={1}">编辑</a>', urlEdit , row.Id); 
+                            return html;
+                        }
+                    },
+                ]
+
+
+            var platformid = $('#platformid').val();
+            
+
+            //将表单上的筛选条件、下拉选单带入api
+            const data =
+            {
+                platformid: platformid,
+            }
+
+            createDataTable('myTable', thead, url, data);
+        }
+
+
+        $(function () {            
+
+            fillFormData('form_search');
+            createTable();
+        
+        })
+
+
+
+
+
+
+    </script>
+}

@@ -1,0 +1,232 @@
+﻿@using FW.Core.Helper.Enum
+@using game.Entity.Area
+
+@model List<AreaAdminUser>
+
+@{
+
+    var sourceArea = (AreaAdminUser)ViewBag.SourceArea;
+}
+
+<style>
+
+    .areaItem {
+        padding: 5px 15px;
+        margin-bottom: 25px;
+        min-height: 150px;
+    }
+
+    h5 {
+        font-weight: 700 !important;
+    }
+
+    .checkbox-row {
+        padding: 3px;
+    }
+
+        .checkbox-row label {
+            cursor: pointer;
+        }
+</style>
+
+
+<div>
+
+
+    <h4>
+        与当前所选渠道同步设置
+    </h4>
+
+    <hr class="newHR" />
+
+
+    <div style="padding-left:20px;margin-bottom:50px;">
+
+        <div style="margin-top:20px;">
+            <h5>
+                您当前所选渠道：
+            </h5>
+        </div>
+
+        <div style="padding-left:20px;color:#666;">
+            @sourceArea.AreaID @sourceArea.AreaName
+        </div>
+
+        <div style="margin-top:20px;">
+            <h5>
+                请勾选要同步至哪些渠道：
+            </h5>
+        </div>
+
+        <input id="sourceAreaID" type="hidden" value="@sourceArea.AreaID" />
+
+        <div class="areaItem">
+
+            <div class="checkbox-row">
+
+                <input type="checkbox" id="selectAll" />
+                <label for="selectAll">
+                    全选
+                </label>
+
+                <span>
+
+                </span>
+
+            </div>
+
+            @foreach (var item in Model)
+            {
+                string elementID = string.Format("eventID_{0}", item.AreaID);
+                bool isAvailable = true; //寫法調整 這邊一律改true了
+
+                string elementName = isAvailable ? "AreaID" : "DENY";
+                string extraText = isAvailable ? "" : "（代理设置不一致）";
+
+                <div class="checkbox-row">
+
+                    <input type="checkbox" id="@elementID" class="@elementName" name="@elementName" attr-areaID="@item.AreaID" @(isAvailable ? "" : "disabled='disabled'") />
+
+                    <label for="@(isAvailable ? elementID : "")" style="@(isAvailable ? "" : "color:#CCC;")">
+                        @item.AreaID @item.AreaName @extraText
+                    </label>
+
+                    <span>
+
+                    </span>
+
+                </div>
+            }
+
+        </div>
+
+
+        <div>
+
+            <div class="row-box">
+
+                <button id="submitResult" type="button" class="btn ">
+                    确定送出
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div style="color:#c79830;margin-top:10px;">
+
+            <div>
+                <div>
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    代理模式设定不进行同步（若任意修改渠道代理模式设置会影响多项代理数据运算）
+                </div>
+
+                <div>
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    下载连结不进行同步
+                </div>
+
+                <div>
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    大厅样式不进行同步
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+
+<script>
+
+    function GetSelectAreaValues() {
+        //清空全域變數儲存的值
+        global_selectAreaIds = "";
+
+        $(".AreaID").each(function (index) {
+            var isCheck = $(this).is(':checked');
+            if (isCheck) {
+                var id = $(this).attr('attr-areaID');
+                global_selectAreaIds = global_selectAreaIds + "," + + id;
+            }
+        });
+
+        console.log(global_selectAreaIds);
+        return global_selectAreaIds;
+    }
+
+
+
+    $(function () {
+
+
+        $("#selectAll").change(function () {
+
+            var afterValueIsCheck = $(this).prop("checked");
+
+            if (afterValueIsCheck) {
+                $("input[name='AreaID']").each(function () {
+                    $(this).prop("checked", true);
+                });
+            }
+            else {
+                $("input[name='AreaID']").each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+
+        });
+
+
+        $("#submitResult").click(function () {
+
+            var Ids = GetSelectAreaValues();
+
+            if (Ids == '') {
+                alert('请勾選至少一項');
+                return;
+            }
+
+            var targetAreas = GetSelectAreaValues();
+
+            $.ajax({
+                cache: false,
+                dataType: 'json',
+                data:
+                {
+                    AreaIds: targetAreas,
+                    SourceAreaID: $("#sourceAreaID").val()
+                },
+                url: '/AreaConfigSync/SyncConfigSubmit',
+                type: 'POST',
+                success: function (data) {
+
+                    if (data.IsSuccess) {
+                        alert(data.Message);
+                        $(".modal").modal("hide");
+                    }
+                    else {
+                        alert(data.Message);
+                    }
+
+                },
+                error: function (err) {
+                    swal({
+                        type: 'error',
+                        title: '操作失败',
+                        text: err
+                    })
+                }
+            });
+
+
+        });
+
+    })
+
+</script>

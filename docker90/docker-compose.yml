@@ -1,0 +1,291 @@
+version: '2'
+
+services:
+#  test:
+#    build: test/
+#    network_mode: "host"
+#    restart: always
+#    stdin_open: true
+#    tty: true
+  dbserver:
+    build: dbserver/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./dbserver/config:/approot/dbserver/config
+      - ./dbserver/log:/approot/dbserver/log
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+  notifyserver:
+    build: notifyserver/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./notifyserver/config:/approot/notifyserver/config
+      - ./notifyserver/log:/approot/notifyserver/log
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+  hallserver:
+    build: hallserver/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./hallserver/config:/approot/hallserver/config
+      - ./hallserver/log:/approot/hallserver/log
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - dbserver
+      - notifyserver
+  bjl1:
+    build: game/bjl/bjl_1/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/bjl/bjl_1/config:/approot/gameserver/bjl/file/config
+      - ./game/bjl/bjl_1/log:/approot/gameserver/bjl/file/log
+      - ./game/bjl/bjl_1/lastpool:/approot/gameserver/bjl/file/lastpool
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  brnn1:
+    build: game/brnn/brnn_1/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/brnn/brnn_1/config:/approot/gameserver/brnn/file/config
+      - ./game/brnn/brnn_1/log:/approot/gameserver/brnn/file/log
+      - ./game/brnn/brnn_1/lastpool:/approot/gameserver/brnn/file/lastpool
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  by1:
+    build: game/by/by_1/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/by/by_1/config:/approot/gameserver/by/file/config
+      - ./game/by/by_1/log:/approot/gameserver/by/file/log
+      - ./game/by/protoconfig:/approot/gameserver/by/file/protoconfig
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  by2:
+    build: game/by/by_2/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/by/by_2/config:/approot/gameserver/by/file/config
+      - ./game/by/by_2/log:/approot/gameserver/by/file/log
+      - ./game/by/protoconfig:/approot/gameserver/by/file/protoconfig
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  by3:
+    build: game/by/by_3/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/by/by_3/config:/approot/gameserver/by/file/config
+      - ./game/by/by_3/log:/approot/gameserver/by/file/log
+      - ./game/by/protoconfig:/approot/gameserver/by/file/protoconfig
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  ddz1:
+    build: game/ddz/ddz_1/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/ddz/ddz_1/config:/approot/gameserver/ddz/file/config
+      - ./game/ddz/ddz_1/log:/approot/gameserver/ddz/file/log
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  ddz2:
+    build: game/ddz/ddz_2/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/ddz/ddz_2/config:/approot/gameserver/ddz/file/config
+      - ./game/ddz/ddz_2/log:/approot/gameserver/ddz/file/log
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  ddz3:
+    build: game/ddz/ddz_3/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/ddz/ddz_3/config:/approot/gameserver/ddz/file/config
+      - ./game/ddz/ddz_3/log:/approot/gameserver/ddz/file/log
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  ddz7:
+    build: game/ddz/ddz_7/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/ddz/ddz_7/config:/approot/gameserver/ddz/file/config
+      - ./game/ddz/ddz_7/log:/approot/gameserver/ddz/file/log
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  ddz8:
+    build: game/ddz/ddz_8/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/ddz/ddz_8/config:/approot/gameserver/ddz/file/config
+      - ./game/ddz/ddz_8/log:/approot/gameserver/ddz/file/log
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  ddz9:
+    build: game/ddz/ddz_9/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/ddz/ddz_9/config:/approot/gameserver/ddz/file/config
+      - ./game/ddz/ddz_9/log:/approot/gameserver/ddz/file/log
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  hhdz1:
+    build: game/hhdz/hhdz_1/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/hhdz/hhdz_1/config:/approot/gameserver/hhdz/file/config
+      - ./game/hhdz/hhdz_1/log:/approot/gameserver/hhdz/file/log
+      - ./game/hhdz/hhdz_1/lastpool:/approot/gameserver/hhdz/file/lastpool
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  hhnn1:
+    build: game/hhnn/hhnn_1/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/hhnn/hhnn_1/config:/approot/gameserver/hhnn/file/config
+      - ./game/hhnn/hhnn_1/log:/approot/gameserver/hhnn/file/log
+      - ./game/hhnn/hhnn_1/lastpool:/approot/gameserver/hhnn/file/lastpool
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  lhd1:
+    build: game/lhd/lhd_1/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/lhd/lhd_1/config:/approot/gameserver/lhd/file/config
+      - ./game/lhd/lhd_1/log:/approot/gameserver/lhd/file/log
+      - ./game/lhd/lhd_1/lastpool:/approot/gameserver/lhd/file/lastpool
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  qzniuniu1:
+    build: game/qzniuniu/qzniuniu_1/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/qzniuniu/qzniuniu_1/config:/approot/gameserver/qzniuniu/file/config
+      - ./game/qzniuniu/qzniuniu_1/log:/approot/gameserver/qzniuniu/file/log
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  qzniuniu2:
+    build: game/qzniuniu/qzniuniu_2/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/qzniuniu/qzniuniu_2/config:/approot/gameserver/qzniuniu/file/config
+      - ./game/qzniuniu/qzniuniu_2/log:/approot/gameserver/qzniuniu/file/log
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  scmj1:
+    build: game/scmj/scmj_1/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/scmj/scmj_1/config:/approot/gameserver/scmj/file/config
+      - ./game/scmj/scmj_1/log:/approot/gameserver/scmj/file/log
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  sgj1:
+    build: game/sgj/sgj_1/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/sgj/sgj_1/config:/approot/gameserver/sgj/file/config
+      - ./game/sgj/sgj_1/log:/approot/gameserver/sgj/file/log
+      - ./game/sgj/sgj_1/lastpool:/approot/gameserver/sgj/file/lastpool
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  zjh1:
+    build: game/zjh/zjh_1/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/zjh/zjh_1/config:/approot/gameserver/zjh/file/config
+      - ./game/zjh/zjh_1/log:/approot/gameserver/zjh/file/log
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver
+  zjh2:
+    build: game/zjh/zjh_2/
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./game/zjh/zjh_2/config:/approot/gameserver/zjh/file/config
+      - ./game/zjh/zjh_2/log:/approot/gameserver/zjh/file/log
+    network_mode: "host"
+    restart: always
+    stdin_open: true
+    tty: true
+    depends_on:
+      - hallserver

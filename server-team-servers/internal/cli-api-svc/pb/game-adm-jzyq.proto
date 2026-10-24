@@ -1,0 +1,124 @@
+syntax = "proto3";
+
+option go_package = "/cliapisvc";
+
+package cliapisvc;
+
+import "common.proto";
+
+service GameAdminJZYQ {
+    rpc TableDashboard (JZYQQueryTableDashBoard) returns ( JZYQTableDashboard);
+    rpc TableDashboardStream (JZYQQueryTableDashBoard) returns ( stream JZYQTableDashboard);
+    rpc Cheat (JZYQCheatRequest) returns (Empty);
+    rpc SetSpecialRewardCount (SetSpecialRewardCountRequest) returns (Empty);
+    rpc IncreaseSysPool (IncreaseSysPoolRequest) returns (Empty);
+    rpc AssignNextAward (JZYQAssignNextAwardRequest) returns (Empty);
+    rpc SetTableDisabled (JZYQSetTableDisabledRequest) returns (Empty);
+}
+
+// 操作返回代碼
+enum JZYQ_ResultCode {
+    JZYQ_ResultCodeSuccess = 0;               // 成功
+
+    JZYQ_ResultCodeMoneyNotEnough = 100;      // 用戶金額不足
+    JZYQ_ResultCodeIllegalBetType = 101;      // 非法的下注區域
+    JZYQ_ResultCodeIllegalBetMoney = 102;     // 非法的下注金額
+    JZYQ_ResultCodeBetTypeOverLimit = 104;    // 此類下注已達上限
+    JZYQ_ResultCodeAlreadyBetOtherSide = 105; // 不能對壓
+    JZYQ_ResultCodeCarryMoneyNotEnough = 106; // 攜帶金額低於限制
+    JZYQ_ResultCodeNotBetStep = 107;          // 非下注狀態
+
+    JZYQ_ResultCodeInvalidArgument = 9400;    // 參數錯誤
+    JZYQ_ResultCodeInternalError = 9500;      // 內部錯誤
+}
+
+// 下注類型
+enum JZYQ_BetType {
+    JZYQ_BetTypeNone = 0;
+
+    JZYQ_BetTypeGoal = 16;                    // 得分
+    JZYQ_BetTypeGoalInside = 17;              // 得分-線內
+    JZYQ_BetTypeGoalOutside = 18;             // 得分-線外
+
+    JZYQ_BetTypeLost = 32;                    // 失分
+    JZYQ_BetTypeLostInside = 33;              // 失分-線內
+    JZYQ_BetTypeLostOutside = 34;             // 失分-線外
+}
+
+// 遊戲階段
+enum JZYQ_Step {
+    JZYQ_StepPrepare = 0;                     // 準備中
+    JZYQ_StepStart = 1;                       // 遊戲開始表演動畫
+    JZYQ_StepWaitBet = 2;                     // 等待下注
+    JZYQ_StepShowAward = 3;                   // 開獎動畫
+    JZYQ_StepFinish = 4;                      // 遊戲結束狀態
+}
+
+message JZYQPlayerInfo {
+    int32 PID = 1;
+    int64 BetAmount = 2;
+    bool IsRobot = 3;
+    int64 Goal = 11;
+    int64 GoalInside = 12;
+    int64 GoalOutside = 13;
+    int64 Lost = 21;
+    int64 LostInside = 22;
+    int64 LostOutside = 23;
+}
+
+message JZYQBetAreaInfo {
+    int64 Total = 1;                          // 所有下注金額
+    int64 PlayerCount = 2;                    // 玩家數量
+    int64 PlayerBetAmount = 3;                // 玩家下注金額
+    int64 RobotCount = 4;                     // 機器人數量
+    int64 RobotBetAmount = 5;                 // 機器人下注金額
+}
+
+message JZYQTableDashboard {
+    int32 TableID = 1;                        // 桌號
+    JZYQ_Step Step = 2;                       // 遊戲狀態
+    JZYQ_BetType NextAward = 3;               // 下一場指定開獎
+    int64 SysPool = 4;                        // 系統水池
+    int64 SysPoolWinLine = 5;                 // 系統水池贏錢線
+    repeated JZYQ_BetType History = 6;        // 歷史路單
+    repeated JZYQPlayerInfo Players = 7;      // 所有玩家
+    bool Cheatable = 8;                       // 現在可否作弊
+    bool Cheating = 9;                        // 是否開啟作弊
+
+    JZYQBetAreaInfo Goal = 11;                // 下注區域 得分
+    JZYQBetAreaInfo GoalInside = 12;          // 下注區域 得分-線內
+    JZYQBetAreaInfo GoalOutside = 13;         // 下注區域 得分-線外
+    JZYQBetAreaInfo Lost = 21;                // 下注區域 失分
+    JZYQBetAreaInfo LostInside = 22;          // 下注區域 失分-線內
+    JZYQBetAreaInfo LostOutside = 23;         // 下注區域 失分-線外
+
+    int64 TotalBetAmount = 51; // 今日總下注
+    int64 TotalWinLossAmount = 52; // 今日總輸贏
+    int64 TotalValidAmount = 53; // 今日總流水
+
+    int32 SpecialRewardCount = 101;     // 特殊獎勵次數
+    int32 SpecialRewardRate = 102;      // 特殊獎勵機率 百分比
+
+    repeated JZYQ_BetType NextAwardList = 201; // 下一場指定開獎列表
+
+    bool TableDisabled = 301; // 是否禁用
+}
+
+message JZYQQueryTableDashBoard {
+    int32 TableID = 1; // 桌號
+}
+
+message JZYQCheatRequest {
+    int32 TableID = 1; // 桌號
+    int32 KickCnt = 2; // 踢人數
+}
+
+message JZYQSetTableDisabledRequest {
+    int32 TableID = 1; // 桌號
+    bool Disabled = 2; // 是否禁用
+}
+
+message JZYQAssignNextAwardRequest {
+    int32 TableID = 1; // 桌號
+    JZYQ_BetType NextAward = 2; // 下一場指定開獎
+}

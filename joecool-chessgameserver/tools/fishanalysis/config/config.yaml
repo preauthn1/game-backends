@@ -1,0 +1,13 @@
+MongoConn:
+  Connstring: chiou.w:terpro123!$!@0.0.0.0:27017/admin
+  Database: FishLog_Dev
+  Collection: FishLogFlag1
+  Pool: 20
+  Perwritecount: 100
+  Sort: -1    # 1 为舅到新排列，而 -1 是用新到舊排列
+  Limit: 1000 #資料筆數上限
+UserQuery:
+  UserId: 58399802  # -1則不查詢
+  Limit:  5000  #資料筆數上限
+
+

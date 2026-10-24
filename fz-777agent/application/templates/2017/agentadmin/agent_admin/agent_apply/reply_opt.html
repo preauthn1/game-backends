@@ -1,0 +1,21 @@
+<div class="bjui-pageContent">
+    <form action="{{agentApiRoute}}" class="datagrid-edit-form" data-toggle="validate" data-data-type="jsonp">
+        <div class="bjui-row col-1">
+            <input type="hidden" name="id" value="{{params.id}}">
+            <label class="row-label">标题</label>
+            <div class="row-input required">
+                <input type="text" name="title" value="关于您提交的代理申请的回复" laceholder="关于您提交的代理申请的回复">
+            </div>
+            <label class="row-label">内容</label>
+            <div class="row-input">
+                <textarea cols="30" rows="4" name="reply" data-rule="required">{{params.name}}</textarea>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="bjui-pageFooter">
+    <ul>
+        <li><button type="button" class="btn-close" data-icon="close">取消</button></li>
+        <li><button type="submit" class="btn-default" data-icon="save">保存</button></li>
+    </ul>
+</div>

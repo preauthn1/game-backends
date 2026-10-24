@@ -1,0 +1,18 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+{% autoescape false %}{{formSearch}}{% endautoescape %}
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options={{gridCfg}}>
+        <thead>
+            <tr>
+                {% for v in columnsData %}
+                <th data-options="{{v.dataOptions}}">{{v.title}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+    </table>
+</div>
+<script type="text/javascript">
+// JS API 调用日期选择器
+dateTimeRangePicker();
+</script>

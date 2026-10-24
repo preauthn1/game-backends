@@ -1,0 +1,5 @@
+﻿CREATE TABLE [dbo].[TradeID] (
+    [id] INT IDENTITY (1, 1) NOT NULL,
+    CONSTRAINT [PK_TradeID] PRIMARY KEY CLUSTERED ([id] ASC)
+);
+

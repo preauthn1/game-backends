@@ -1,0 +1,127 @@
+﻿
+@{
+    Layout = null;
+}
+
+@model NetProfitAgent_GetUserInfo
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="alert alert-warning alert-dismissible">         
+            <h4><i class="icon fa fa-warning"></i> 请在结算日前确定分成比例</h4>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box bg-blue-gradient">
+            <span class="info-box-icon"><i class="fa fa-fw fa-star"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">层级</span>
+                <span class="info-box-number">Lv:@Model.StageLevel</span>
+
+                <div class="progress">
+                    <div class="progress-bar" style="width: @(Model.Rate * 0.1)%"></div>
+                </div>
+                <span class="progress-description">
+                    分成比例：@(Model.Rate * 0.1)%
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+    </div>
+    <!-- /.col -->
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-red"><i class="fa fa-fw fa-cny"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">净利润</span>
+                <span class="info-box-number">@Model.PoolAmount.ToCash()</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <!-- /.col -->   
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-green"><i class="fa fa-fw fa-money"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">可提领</span>
+                <span class="info-box-number">@((Model.PoolAmount - Model.WithdrawAmount).ToCash())</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-yellow-active"><i class="fa fa-fw fa-money"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">已提领</span>
+                <span class="info-box-number">@Model.WithdrawAmount.ToCash()</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <!-- fix for small devices only -->
+    @if (UserHelper.User.Role == RoleType.Agent)
+    {
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-blue-gradient"><i class="fa fa-user"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">未设定分成比例人数</span>
+                <span class="info-box-number">@(string.Format("{0:N0}", Model.ZeroRateUsers))</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    }
+    else
+    {
+    <div class="clearfix visible-sm-block"></div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-blue-gradient"><i class="fa fa-fw fa-user"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">推广人数</span>
+                <span class="info-box-number">@(string.Format("{0:N0}", Model.TotalUser))</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <!-- /.col -->
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-red"><i class="fa fa-fw fa-cny"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">冲兑差额(充值-兑换)</span>
+                <span class="info-box-number">@((Model.ChargeAmount - Model.ConvertAmount).ToCash())</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <!-- /.col -->
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-green"><i class="fa fa-fw fa-money"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">库存</span>
+                <span class="info-box-number">@(Model.StorageAmount.ToCash())</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    }    
+</div>

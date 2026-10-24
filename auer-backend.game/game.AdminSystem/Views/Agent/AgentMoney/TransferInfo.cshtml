@@ -1,0 +1,72 @@
+﻿@using FW.Core.Helper.Enum
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .content {
+        padding: .5%;
+        font-size: 1.2em;
+        font-family: serif;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                <div class="form-group">
+                    <label>总代理编号</label>
+                    <input type="text" class="form-control input-small" id="agentid" name="agentid" placeholder="总代理编号">
+                </div>
+                <div class="form-group">
+                    <label>转帐时间</label>
+                    <input type="text" class="form-control" style="width:180px" id="beginTime" name="beginTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="开始时间"  autocomplete="off">
+                    到
+                    <input type="text" class="form-control" style="width:180px" id="endTime" name="endTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                </div>
+            </form>
+            <div class="content">
+                <table id="transferInfo_table" class="display" style="width:100%"></table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+
+        function createTable() {
+            const url = '/AgentMoney/GetTransferInfo'
+            const thead = [{ "sTitle": "总代理编号", "mData": "Total_Agent_Id", "width": "10%" },
+                            { "sTitle": "总代理名称", "mData": "Total_Agent_Name" },
+                            { "sTitle": "厂商名称", "mData": "Name" },
+                            { "sTitle": "金额", "mData": "Money" },
+                            { "sTitle": "转帐前金额", "mData": "Old_Money" },
+                            { "sTitle": "转帐後金额", "mData": "New_Money" },
+                            { "sTitle": "转帐时间", "mData": "Created_at", "width": "20%" },
+                            { "sTitle": "备注", "mData": "Remark" }]
+
+            var beginTime = $('#beginTime').val();
+            var endTime = $('#endTime').val();
+            var agentid = $("#agentid").val();
+
+            const data = {
+                beginTime: beginTime,
+                endTime: endTime,
+                agentid: agentid
+            }
+            createDataTable('transferInfo', thead, url, data);
+        }
+
+
+        $(function () {
+            fillFormData('form_search');
+            createTable();
+        })
+    </script>
+}

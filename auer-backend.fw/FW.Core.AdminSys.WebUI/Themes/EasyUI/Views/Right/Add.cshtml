@@ -1,0 +1,71 @@
+﻿@using KCKJ.Core.AdminSys.WebUI
+@model KCKJ.Core.AdminSys.Provider.Entity.Right
+@{
+    string rightName = "根级权限";
+    int parentID = 0;
+    
+    if (Model != null)
+    {
+        parentID = Model.RightID;
+        rightName = Model.RightName; 
+    }
+    
+}
+<form method="post">
+    <table width="800" cellpadding="2" cellspacing="2">
+        <tr>
+            <td align="right">父级名称:</td>
+            <td>
+                <input type="hidden" name="parentID" value="@parentID" />
+                <input type="text" class="easyui-textbox" style="width:300px" readonly="readonly" value="@rightName" />
+            </td>
+        </tr>
+        <tr>
+            <td align="right">权限名称:</td>
+            <td>
+                <input type="text" name="RightName" class="easyui-textbox" value="" style="width:300px" data-options="required:true,missingMessage:'权限名称不能为空'" /></td>
+        </tr>
+        <tr>
+            <td align="right">权限标识:</td>
+            <td><input type="text" name="RightToken" class="easyui-textbox" value="" style="width:300px" data-options="required:true,missingMessage:'权限标识不能为空'" /></td>
+        </tr>
+        <tr>
+            <td align="right">页面地址:</td>
+            <td><input type="text" class="easyui-textbox" style="width:300px" value="" name="PageUrl" /></td>
+        </tr>
+        <tr>
+            <td align="right">权限类型:</td>
+            <td>
+                <span><input type="radio" name="RightType" value="0" />页面</span>
+                <span><input type="radio" name="RightType" value="1" />功能</span>
+            </td>
+        </tr>
+        <tr>
+            <td align="right">排序:</td>
+            <td><input type="text" name="Sort" class="easyui-textbox" style="width:100px" data-options="required:true" value="0" /></td>
+        </tr>
+        <tr>
+            <td align="right">菜单显示:</td>
+            <td><input type="checkbox" name="ShowInMenu" value="false" onclick="        if ($(this).attr('checked') || $(this).prop('checked')) { $(this).val('true'); } else { $(this).val('false'); }" /></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                @Html.OkWithRight()
+                @Html.Back(@Url.Action("List", new { parentID = @parentID }))
+            </td>
+        </tr>
+    </table>
+
+    <script>
+        $(function () {
+            $("#btnOk").click(function () {
+                if ($("form").form("validate")) {
+                    $("form").submit();
+                }
+            });
+
+        })
+
+    </script>
+</form>

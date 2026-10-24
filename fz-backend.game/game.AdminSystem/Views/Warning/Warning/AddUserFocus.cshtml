@@ -1,0 +1,73 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+@using FW.Core.Helper
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+@{
+    var warningTypeList = ViewBag.Type as List<game.Entity.Warning.WarningType>;
+}
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>新增用户关注报警
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="form1" method="post" class="form-horizontal form-bordered">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">管理员编号</label>
+                            <div class="col-md-8">
+                                <input type="text" name="adminUserID" class="form-control input-medium" placeholder="请输入管理员编号" value="" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">类型</label>
+                            <div class="col-md-8">
+                                <select class="form-control  input-medium" name="typeID" id="typeID">
+                                    @foreach (var item in warningTypeList)
+                                    {
+                                        <option value="@item.Id">@item.TypeName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @Html.OkWithRight()
+                            @Html.Back(Url.Action("UserFocus"))
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+@section initScripts{
+    <script type="text/javascript" src="/Plugins/Uploadify/Upload.js"></script>
+    <script>
+        var num = 0;
+        $(function () {
+            $("#form1").validate({
+                rules: {
+                    adminUserID: {
+                        required: true,
+                        digits: true
+                    },
+                    typeID: {
+                        required: true
+                    }
+                }
+            });
+        })
+    </script>
+}

@@ -1,0 +1,42 @@
+﻿
+<style>
+    .msg_contain {
+        padding-top: .5%;
+    }
+</style>
+
+<div class="msg_contain">
+    <div class="alert alert-dismissable alert_msg" style="display:none">
+        <span id="msg_content"></span>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var Message = function () {
+    }
+
+    Message.prototype.alert = function (msg, type) {
+        var typeClass = 'alert-success'
+        switch (type) {
+            case 'success':
+                typeClass = 'alert-success'
+                break
+            case 'danger':
+                typeClass = 'alert-danger'
+                break
+            case 'warning':
+                typeClass = 'alert-warning'
+                break
+            case 'info':
+                typeClass = 'alert-info'
+                break
+        }
+        $('.alert_msg').addClass(typeClass);
+        $("#msg_content").text(msg);
+        $('.alert_msg').fadeTo(2500, 500).slideUp(500, function () {
+            $('.alert_msg').slideUp(500);
+        });
+    }
+
+    var Msg = new Message()
+</script>

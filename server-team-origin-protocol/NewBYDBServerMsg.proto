@@ -1,0 +1,91 @@
+syntax = "proto2";
+
+package netproto;
+
+//捕魚大玩咖登入
+message UserLoginFishMsg {
+    required int32 ServerID = 1;
+    required int32 UserID = 2;
+    required string IPAddress = 3;
+    required string Cer = 4;
+    required int32 HDType = 5;
+    required string HDCode = 6;
+};
+//捕鱼登入成功回传
+message UserLoginFishRetMsg {
+    required int32 UserID = 1;
+    required int32 UserType = 2;
+    required string NickName = 3;
+    required int32 FaceID = 4;
+    required int32 Sex = 5;
+    required int64 CashAmount = 6;
+    required int64 CouponAmount = 7;
+    required int64 TotalScore = 8;
+    required int32 WinCount = 9;
+    required int32 LostCount = 10;
+    required int32 DrawCount = 11;
+    required int32 IsOffLine = 12;
+    required string ServerAddr = 13;
+    required string GameBuff = 14;
+    required int64 TotalCharge = 15;
+    required int64 TradeID = 16;
+};
+
+message NewByDBRegMsg {
+    required int32 Code = 1;
+    required string ChvMsg = 2;
+};
+
+//捕魚更新分數
+message UpdateUserMoney {
+    required int32 MsgID = 1;
+    required int32 UserID = 2;
+    required int32 UpdateAmount = 3;
+    required int32 TaxAmount = 4;
+    required int32 ServerID = 5;
+    optional int32 CouponAmount = 6;
+};
+
+//啟動捕魚程序
+message NewBYServerStartMsg {
+    required int32 GameID = 1;
+    required string ServerName = 2;
+    required string ShowName = 3;
+    required string ClientAddr = 4;
+    required string NotifyAddr = 5;
+    required string HttpAddr = 6;
+    required int32 LoginMoney = 7;
+    required int32 ServerID = 8;
+};
+
+//捕魚監控
+message SuperToolFishVIPUserMsg {
+    required int32 GameID = 1;
+    required int32 UserID = 2;
+    required int32 CompleteAmount = 3;
+};
+
+//捕魚登出
+message UserLogoutFishMsg {
+    required int32 MsgID = 1;
+    required int32 UserID = 2;
+    required int32 UpdateAmount = 3;
+    required int32 TaxAmount = 4;
+    required int32 FlowAmount = 5;
+    required int32 WinCount = 6;
+    required int32 LoseCount = 7;
+    required int32 DrawCount = 8;
+    required string LoginTime = 9;
+    required string LogoutTime = 10;
+    required string IPAddress = 11;
+    required int32 HDType = 12;
+    required string HDCode = 13;
+    required int32 GameTime = 14;
+    required int32 GameID = 15;
+    required int32 ServerID = 16;
+    required int64 LoginMoney = 17;
+    required int32 ScoreUpdateMode = 18;
+    required int64 TradeID = 19;
+    required int32 LastWinLose = 20;
+    optional int32 CouponAmount = 21;
+};

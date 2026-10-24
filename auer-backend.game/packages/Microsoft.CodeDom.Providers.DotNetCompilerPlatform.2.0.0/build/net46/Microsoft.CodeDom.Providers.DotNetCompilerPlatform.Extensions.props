@@ -1,0 +1,5 @@
+<Project DefaultTargets="Build" xmlns="http://example.invalid/developer/msbuild/2003">
+  <PropertyGroup>
+    <RoslynToolPath Condition=" '$(RoslynToolPath)' == '' ">$(MSBuildThisFileDirectory)..\..\tools\roslynlatest</RoslynToolPath>
+  </PropertyGroup>
+  </Project>

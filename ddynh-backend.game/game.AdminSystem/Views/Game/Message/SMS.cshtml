@@ -1,0 +1,75 @@
+﻿
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+}
+
+<style>
+    .jscode {
+        word-break: break-all;
+        white-space: unset;
+        max-width: 500px;
+    }
+</style>
+
+<div class="row" id="sms_list">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>名称</th>
+                            <th>代码</th>
+                            <th>URL</th>
+                            <th>Method</th>
+                            <th>状态</th>
+                            <th>功能</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in tableList">
+                            <td>{{item.ID}}</td>
+                            <td>{{item.Vender}}</td>
+                            <td>{{item.Name}}</td>
+                            <td>{{item.Url}}</td>
+                            <td>{{item.Method}}</td>
+                            <td>{{item.Status}}</td>
+                            <td>
+                                <a name="btnSetting" class="btn btn-sm dark" :href="'/Message/SMSSetting?id='+item.ID">設定</a>
+                                <a name="btnStatus" class="btn btn-sm dark" :href="'/Message/UpdateSmsStatus?id='+item.ID+'&status='+!item.Status">{{(item.Status == 1)? '停用' : '啟用'}}</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="form-group" style="text-align:center;">
+        <a name="btnModify" class="btn btn-sm btn-warning dark" style="" onclick="" href="/Message/addSMS"> 新 增 </a>
+    </div>
+</div>
+
+@section initScripts{
+    <script>
+        $(function () {
+            var vApp = new Vue({
+                el: '#sms_list',
+                data: {
+                    tableList: {},
+                    isShow: false
+                },
+                methods: {
+                    getTableList: function () {
+                        $.get('/message/GetSMSList', { '_r': Math.random() }, function (data) {
+                            console.log("data");
+                            console.log(data);
+                            vApp.tableList = (data instanceof Object) ? data.smsList : {};
+                        });
+                    }
+                }
+            });
+            vApp.getTableList();
+        })
+    </script>
+}

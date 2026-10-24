@@ -1,0 +1,203 @@
+﻿@{
+    ViewBag.Title = "提领列表";
+}
+
+@Html.Action("Index", "Profit")
+
+<div class="box box-primary">
+    <!-- form start -->
+    <div class="box-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">狀態</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    @Html.DropDownList("status", null, "全部", new { @class = "form-control select2" })
+                </div>
+
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">用戶ID</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="text" class="form-control" id="userID">
+                </div>
+
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">申請日期</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="date" class="form-control" id="dtStartTime">
+                </div>
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">到</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="date" class="form-control" id="dtEndTime">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                    <button type="button" id="btnQuery" class="btn btn-primary btn-block">搜索</button>
+                </div>
+            </div>
+        </div>
+        <hr class="hr-sm1">
+
+        <!-- 查詢結果 -->
+        <div class="box-header">
+            <h3 class="box-title">搜索结果</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>用户ID</th>
+                        <th>提現金額</th>
+                        <th>申请时分成比例</th>
+                        <th>状态</th>
+                        <th>申请时间</th>
+                        <th>处理时间</th>
+                        <th>真实姓名</th>
+                        <th>收款银行</th>
+                        <th>账号</th>
+                        <th>处理账号</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade fade" id="Applymodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @using (Html.BeginForm("WithdrawFinish", "Profit", new { Area = "Agent" }, FormMethod.Post, new { @class = "form-horizontal" }))
+            {
+                <div class="modal-header bg-light-blue-active text-white">
+                    <h5 class="modal-title" id="exampleModalLabel">确认视窗</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="OID" name="id">
+                    <input type="hidden" id="Status" name="status" value="1">
+                    確認審核通过?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary bg-light text-dark" data-dismiss="modal">取消</button>
+                    <button type="submit" id="Delete" class="btn btn-primary">确认</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="RefuseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @using (Html.BeginForm("WithdrawFinish", "Profit", new { Area = "Agent" }, FormMethod.Post, new { @class = "form-horizontal" }))
+            {
+                <div class="modal-header bg-light-blue-active text-white">
+                    <h5 class="modal-title" id="exampleModalLabel">确认视窗</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="OID" name="id">
+                    <input type="hidden" id="Status" name="Status" value="2">
+                    確認<b>拒绝</b>通过?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary bg-light text-dark" data-dismiss="modal">取消</button>
+                    <button type="submit" id="Delete" class="btn btn-primary">确认</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- /.box -->
+@section scripts{
+    <!-- Page script -->
+    <script type="text/javascript">
+        $(function () {
+
+            //DataTable
+            var table =
+                $('#example1').DataTable({
+                    "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                    "searching": false,
+                    "autoWidth": false,
+                    "serverSide": true,
+                    "deferLoading": 0,
+                    "order": [[ 4, 'desc' ]],
+                    "ajax": {
+                        method: 'post',
+                        url: '@Url.Action("WithdrawList", "Profit")',
+                        data: function (d) {
+                            d.status = $('#status').val();
+                            d.uerID = $('#userID').val();
+                            d.dtStartTime = $('#dtStartTime').val();
+                            d.dtEndTime = $('#dtEndTime').val();
+                        },
+                        "dataSrc": function (json) {
+                            if (json.success == false)
+                                swal("错误", json.message, "error");
+
+                            return json.data;
+                        }
+                    },
+                    columns: [
+                        { name: "UserID", data: "UserID" },
+                        { name: "WithDrawAmount", data: "WithDrawAmount" },
+                        { name: "WithDrawRate", data: "WithDrawRate" },
+                        { name: "Status", data: "Status" },
+                        {
+                            name: "CreateTime",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                return moment(data.CreateTime).format("YYYY-MM-DD HH:mm");
+                            }
+                        },
+                        {
+                            name: "Updatetime",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                if (data.Updatetime == undefined)
+                                    return null;
+                                else
+                                    return moment(data.Updatetime).format("YYYY-MM-DD HH:mm");
+                            }
+                        },
+                        { name: "UnionpayRealName", data: "UnionpayRealName" },
+                        { name: "BankName", data: "BankName" },
+                        { name: "UnionpayAccount", data: "UnionpayAccount" },
+                        { name: "Account", data: "Account" },
+                        {
+                            orderable: false,
+                            visible: @(UserHelper.User.Role == RoleType.CFO? "true":"false"),
+                            data: function (data, type, row) {
+                                if (data.StatusNo == 0)
+                                    return '<button class="btn btn-sm btn-success" data-toggle="modal" data-target="#Applymodal" data-whatever="' + data.ID + '">通过</button> ' +
+                                           '<button class="btn btn-sm" data-toggle="modal" data-target="#RefuseModal" data-whatever="' + data.ID + '">拒绝</button>';
+                                else
+                                    return '<button class="btn btn-sm btn-success" disabled data-toggle="modal" data-target="#Applymodal" data-whatever="' + data.ID + '">通过</button> ' +
+                                           '<button class="btn btn-sm" disabled data-toggle="modal" data-target="#RefuseModal" data-whatever="' + data.ID + '">拒绝</button>';
+                            }
+                        }
+                    ],
+                    responsive: true
+                });
+
+                $('#btnQuery').click(function () {
+                    table.draw();
+                });
+
+                $('#Applymodal, #RefuseModal').on('show.bs.modal', function (event) {
+                    var button = $(event.relatedTarget)
+                    var recipient = button.data('whatever')
+            
+                    var modal = $(this)
+                    modal.find('#OID').val(recipient);
+                });
+        })
+    </script>
+}
+

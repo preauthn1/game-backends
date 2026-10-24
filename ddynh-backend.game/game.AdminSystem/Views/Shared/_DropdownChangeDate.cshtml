@@ -1,0 +1,68 @@
+﻿
+
+@{ 
+    DateTime today = DateTime.Now.Date;
+}
+<div class="form-group">
+
+        <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                更换筛选日期
+                <span class="caret"></span>
+            </button>
+            <ul id="selectDate" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <li attr-value="@today.ToString("yyyy-MM-dd HH:mm")"><a href="#"   >今日</a></li>
+                <li attr-value="@today.AddDays(-3).ToString("yyyy-MM-dd HH:mm")"><a href="#" >3日內</a></li>
+                <li attr-value="@today.AddDays(-7).ToString("yyyy-MM-dd HH:mm")"><a href="#" >7日內</a></li>
+                <li attr-value="@today.AddDays(-14).ToString("yyyy-MM-dd HH:mm")"><a href="#" >14日內</a></li>
+                <li attr-value="@today.AddDays(-30).ToString("yyyy-MM-dd HH:mm")"><a href="#" >30日內</a></li>
+            </ul>
+        </div>
+
+    </div>
+<script>
+
+
+
+    $(function () {
+
+        $('#selectDate li').on('click', function () {
+
+            var dayValue = $(this).attr("attr-value");
+
+            //--begin系列
+            $("#CreateBeginTime").val(dayValue);
+            $("#createBeginTime").val(dayValue);
+            $("#CreateTimeBegin").val(dayValue);
+            $("#createTimeBegin").val(dayValue);
+            $("#startTime").val(dayValue);
+            $("#StartTime").val(dayValue);
+            $("#beginTime").val(dayValue);
+            $("#BeginTime").val(dayValue);
+
+                        
+            //--end系列
+            $("#CreateEndTime").val('');
+            $("#createEnTime").val('');
+            $("#CreateTimeEnd").val('');
+            $("#createTimeEnd").val('');
+            $("#endTime").val('');
+            $("#EndTime").val('');
+
+
+            $("#form_search button").each(function () {
+                
+                var text = $(this).text();
+                if(text.indexOf("搜 索") != -1)
+                {
+                    //自動觸發搜尋按鈕
+                    $(this).click();
+                }
+
+            });
+
+            
+        });
+    })
+
+</script>

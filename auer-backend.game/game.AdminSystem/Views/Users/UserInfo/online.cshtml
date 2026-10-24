@@ -1,0 +1,458 @@
+﻿@section pageLevelPlugins{
+	<script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+	<script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+	<link href="@Url.Content("~/Plugins/DataTable/css/jquery.dataTables.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+	.output_main {
+		display: flex;
+		flex-wrap: wrap;
+		color: #fff;
+		font-size: 1.2em;
+	}
+
+	.output_item {
+		margin: .5em;
+		padding: .5em;
+		border-radius: 9px !important;
+		opacity: .9;
+	}
+
+	.total {
+		background-color: #D23732;
+	}
+
+	.average {
+		background-color: #288CC8;
+	}
+
+	.game {
+		background-color: #85B65B;
+	}
+
+	.align_center {
+		text-align: center;
+	}
+
+	.content {
+		padding: .5%;
+		font-size: 1.2em;
+		font-family: serif;
+	}
+
+	.update_Red {
+		color: white;
+		padding: 0px 10px 0px 10px;
+		background-color: red;
+	}
+
+	.update_Green {
+		color: white;
+		padding: 0px 10px 0px 10px;
+		background-color: #58ae63;
+	}
+
+	.update_Gray {
+		color: white;
+		padding: 0px 10px 0px 10px;
+		background-color: gray;
+	}
+</style>
+
+<div id="online">
+	<div class="output_main">
+		<div v-for="item in filterDatas" v-bind:class="['output_item', item.className]">
+			<div class="align_center">{{item.value}}</div>
+			<div class="align_center">{{item.name}}</div>
+		</div>
+	</div>
+	<form class="form-inline" id="form_search" method="get">
+		<div class="form-group">
+			<label>游戏</label>
+			@Html.DropDownList("gameID", DataService.Game(), new { @class = "form-control input-small", id = "gameID", v_model = "selectedGameID" })
+		</div>
+		<div class="form-group">
+			@*<label>游戏</label>*@
+			<select class="form-control input-medium" v-model="selectedServerId">
+				<option value="">全部</option>
+				<option v-for="item in filterServerList" :value="item.Id">{{item.ServerName}}</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<button type="button" class="btn btn-default" v-on:click="createTable()"> 搜 索 </button>
+		</div>
+	</form>
+	<div class="content">
+		<table id="online_table" class="display" style="width:100%"></table>
+	</div>
+
+</div>
+
+
+@section initScripts{
+	<script>
+		$(function () {
+			var vApp = new Vue({
+				el: '#online',
+				data: {
+					outputData: [{
+						name: "总在线",
+						key: 'totalOnlineCount',
+						value: "0",
+						className: 'total'
+					},
+					{
+						name: "安卓在线",
+						key: 'totalOnlineAndroidCount',
+						value: "0",
+						className: 'total'
+					},
+					{
+						name: "IOS在线",
+						key: 'totalOnlineiOSCount',
+						value: "0",
+						className: 'total'
+					},
+					{
+						name: "大厅在线",
+						key: 'totalOnlineHallCount',
+						value: "0",
+						className: 'total'
+					},
+					{
+						name: "正在游戏房间",
+						key: 'totalOnlineGameRoomCount',
+						value: "0",
+						className: 'total'
+					},
+					{
+						name: "当天注册在线",
+						key: 'totalOnlineRegCount',
+						value: "0",
+						className: 'average'
+					},
+					{
+						name: "1-7天注冊在线",
+						key: 'totalOnlineRegWeeklyCount',
+						value: "0",
+						className: 'average'
+					},
+					{
+						name: "当天平均在线",
+						key: 'totalOnlineAvgCount',
+						value: "0",
+						className: 'average'
+					},
+					{
+						name: "当天iOS平均在线",
+						key: 'totalOnlineAvgiOSCount',
+						value: "0",
+						className: 'average'
+					},
+					{
+						name: "当天安卓平均在线",
+						key: 'totalOnlineAvgAndRoidCount',
+						value: "0",
+						className: 'average'
+					},
+
+					{
+						name: "当天最高在线",
+						key: 'totalOnlineMaxCount',
+						value: "0",
+						className: 'average'
+					},
+					{
+						name: "当天IOS最高在线",
+						key: 'totalOnlineMaxiOSCount',
+						value: "0",
+						className: 'average'
+					},
+					{
+						name: "当天安卓最高在线",
+						key: 'totalOnlineMaxAndRoidCount',
+						value: "0",
+						className: 'average'
+						},
+					/*
+					{
+						name: "斗地主",
+						key: 'totalOnlineGame1',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "抢庄牛牛",
+						key: 'totalOnlineGame2',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "炸金花",
+						key: 'totalOnlineGame3',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "德州扑克",
+						key: 'totalOnlineGame4',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "梭哈",
+						key: 'totalOnlineGame5',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "抢庄21点",
+						key: 'totalOnlineGame6',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "经典牛牛",
+						key: 'totalOnlineGame7',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "三公",
+						key: 'totalOnlineGame8',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "股市大亨",
+						key: 'totalOnlineGame9',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "十三水",
+						key: 'totalOnlineGame10',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "龙虎斗",
+						key: 'totalOnlineGame11',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "推筒子",
+						key: 'totalOnlineGame12',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "百家乐",
+						key: 'totalOnlineGame13',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "捕鱼",
+						key: 'totalOnlineGame14',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "四川麻将",
+						key: 'totalOnlineGame15',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "2人牛牛",
+						key: 'totalOnlineGame16',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "疯狂二八",
+						key: 'totalOnlineGame18',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "百人牛牛",
+						key: 'totalOnlineGame19',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "红黑大战",
+						key: 'totalOnlineGame20',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "红黑牛牛",
+						key: 'totalOnlineGame21',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "21點",
+						key: 'totalOnlineGame22',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "老虎机",
+						key: 'totalOnlineGame23',
+						value: "0",
+						className: 'game'
+					},
+					{
+						name: "新捕魚",
+						key: 'totalOnlineGame24',
+						value: "0",
+						className: 'game'
+					},
+					*/
+					{
+						name: "多福多財",
+						key: 'totalOnlineGame25',
+						value: "0",
+						className: 'game'
+						},
+						{
+							name: "糖果屋",
+							key: 'totalOnlineGame26',
+							value: "0",
+							className: 'game'
+						},
+						{
+							name: "阿拉丁",
+							key: 'totalOnlineGame27',
+							value: "0",
+							className: 'game'
+						},
+						{
+							name: "招财进宝",
+							key: 'totalOnlineGame29',
+							value: "0",
+							className: 'game'
+						},
+						{
+							name: "五龙争霸",
+							key: 'totalOnlineGame1001',
+							value: "0",
+							className: 'game'
+						}
+					],
+					filterDatas: [],
+					selectedGameID: '',
+					selectedServerId: '',
+					serverList: {},
+					filterServerList: {}
+				},
+				methods: {
+					createTable() {
+						const url = '/Userinfo/GetOnlineUser'
+						const thead = [
+										{
+											"sTitle": "游戏", "mData": "ServerName", "bSortable": true, "sName": 5,
+											"render": function (data, type, row) {
+												return `<a class="link" target="_blank" href="${row.TableURL}">${data}</a>`;
+											}
+										},
+										{
+											"sTitle": "用户ID", "mData": "UserID", "width": "8%",
+											"render": function (data, type, row) {
+												return `<a class="link" target="_blank" href="/UserInfo/Search?userId=${data}&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">${data}</a>`
+											}
+										},
+										{
+											"sTitle": '总充值', "mData": "SumCharge", "width": "80px", "className": "text_right", "bSortable": true, "sName": 0,
+											"render": function (data, type, row) {
+												if (data == '0.00') {
+													return '<span class="update_Gray">' + data + '<span>'
+												}
+												return data;
+											}
+										},
+										{ "sTitle": '总兑换', "mData": "SumConvert", "className": "text_right", "bSortable": true, "sName": 1 },
+										{ "sTitle": '金币', "mData": "Amount", "className": "text_right", "bSortable": true, "sName": 2 },
+										{ "sTitle": '保險箱', "mData": "BankAmount", "className": "text_right", "bSortable": true, "sName": 3 },
+										{
+											"sTitle": '累计输赢', "mData": "TotalGameWinLose", "className": "text_right", "bSortable": true, "sName": 4,
+											"render": function (data, type, row) {
+												if (data.indexOf('-') != -1) {
+													return '<span class="update_Red">' + data + '<span>'
+												}
+												return '<span class="update_Green">' + data + '<span>'
+											}
+										},
+										{ "sTitle": "渠道", "mData": "AreaName" },
+										{ "sTitle": "装置", "mData": "HDType" },
+										{ "sTitle": "IP", "mData": "IP" },
+										{ "sTitle": "归属地", "mData": "Location" },
+										{ "sTitle": "注册时间", "mData": "CreateTime" },
+										{ "sTitle": "房间", "mData": "ServerID" },
+										{ "sTitle": "游戏赢", "mData": "WinCount" },
+										{ "sTitle": "游戏输", "mData": "LoseCount" },
+										{ "sTitle": "时间", "mData": "LastLogonTime" }]
+
+						const data = {
+							gameID: vApp.selectedGameID,
+							serverID: vApp.selectedServerId
+						}
+
+						var sortColumn = 0;
+						var sortDes = 'asc';
+
+						if ('@ViewBag.column' != '') {
+							sortColumn = parseInt('@ViewBag.column')
+						}
+						if ('@ViewBag.sortDes' != '') {
+							sortDes = '@ViewBag.sortDes'
+						}
+
+						const opt = {
+							aaSorting: [[sortColumn, sortDes]],
+						}
+
+						createDataTable('online', thead, url, data, (json) => {
+							vApp.filterDatas = [];
+							vApp.outputData.map((item) => {
+								var value = json.output[item.key]
+								item.value = value
+
+								if (item.value != -1) {
+									vApp.filterDatas.push(item);
+								}
+							})
+						}, opt)
+					},
+					getServerList: function () {
+						$.get('/UserInfo/GameServerList', {}, function (data) {
+							if (data instanceof Array) {
+								vApp.serverList = data;
+							}
+							else {
+								vApp.serverList = {};
+							}
+						});
+					}
+				}
+			})
+
+			$("#gameID").change(function () {
+
+				vApp.filterServerList = vApp.serverList.filter(function (item, index, array) {
+					return item.GameID == parseInt(vApp.selectedGameID);
+				});
+				vApp.selectedServerId = ''
+			});
+
+			vApp.createTable()
+			vApp.getServerList();
+		})
+	</script>
+}

@@ -1,0 +1,72 @@
+DelayTime:
+  - 3000
+  - 3000
+MainServerList:
+  - ServerName: DBServer
+    Path:
+      - D:\Server\dbserver
+    Execute: dbserver.exe
+  - ServerName: NotifyServer
+    Path:
+      - D:\Server\notifyserver
+    Execute: notifyserver.exe
+  - ServerName: HallServer
+    Path:
+      - D:\Server\hallserver
+    Execute: hallserver.exe
+GameServerList:
+  - ServerName: BJL
+    Path:
+      - D:\Server\gameserver\bjl\bjl_初级场
+    Execute: bjl.exe
+  - ServerName: LHD
+    Path:
+      - D:\Server\gameserver\lhd\lhd_初级场
+    Execute: lhd.exe
+  - ServerName: SGJ
+    Path:
+      - D:\Server\gameserver\sgj\sgj_初级场
+    Execute: sgj.exe
+  - ServerName: BRNN
+    Path:
+      - D:\Server\gameserver\brnn\brnn_初级场
+    Execute: brnn.exe
+  - ServerName: DDZ
+    Path:
+      - D:\Server\gameserver\ddz\ddz_初级场
+      - D:\Server\gameserver\ddz\ddz_中级场
+    Execute: ddz.exe
+  - ServerName: QZ21
+    Path:
+      - D:\Server\gameserver\qz21\qz21_初级场
+      - D:\Server\gameserver\qz21\qz21_中级场
+    Execute: qz21.exe
+  - ServerName: QZNN
+    Path:
+      - D:\Server\gameserver\qzniuniu\qzniuniu_初级场
+      - D:\Server\gameserver\qzniuniu\qzniuniu_中级场
+    Execute: qzniuniu.exe
+  - ServerName: SRNN
+    Path:
+      - D:\Server\gameserver\srniuniu\srniuniu_初级场
+      - D:\Server\gameserver\srniuniu\srniuniu_中级场
+    Execute: srniuniu.exe
+  - ServerName: TBNN
+    Path:
+      - D:\Server\gameserver\tbniuniu\tbniuniu_初级场
+      - D:\Server\gameserver\tbniuniu\tbniuniu_中级场
+    Execute: tbniuniu.exe
+  - ServerName: TTZ
+    Path:
+      - D:\Server\gameserver\ttz\ttz_初级场
+      - D:\Server\gameserver\ttz\ttz_中级场
+    Execute: ttz.exe
+  - ServerName: ZJH
+    Path:
+      - D:\Server\gameserver\zjh\zjh_初级场
+      - D:\Server\gameserver\zjh\zjh_中级场
+    Execute: zjh.exe
+  - ServerName: SCMJ
+    Path:
+    - D:\Server\gameserver\scmj\scmj_初级场
+    Execute: scmj.exe

@@ -1,0 +1,105 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+}
+
+<div class="row" id="pay_infosetting">
+    <div class="col-md-6 col-md-offset-3">
+        <form id="form_search" method="post" class="form-horizontal form-bordered">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i>Setting
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    @Html.Partial("_PlatformSelect", true)
+                    <input type="hidden" id="gwid" name="gwid" value="@ViewBag.gwid" />
+                    <input type="hidden" id="id" name="id" value="@ViewBag.id" />
+                    @if (ViewBag.SettingInfo != null)
+                    {
+                        foreach (var item in ViewBag.SettingInfo)
+                        {
+                            <div class="form-group">
+                                @foreach (var obj in @item.Value)
+                                {
+                                    if (obj.Key == "Display")
+                                    {
+                                        <label class="control-label col-md-4 xing" id="user@example.invalid()">@obj.Value</label>
+                                    }
+
+                                    if (obj.Key == "Type")
+                                    {
+                                        <div class="col-md-8">
+                                            @if (obj.Value == "file")
+                                            {
+                                                <input type="@obj.Value" class="form-control input-large" value="" />
+                                                <input type="text" class="form-control input-large" disabled="disabled" id="@item.Key.ToLower()" name="@item.Key.ToLower()" value="@ViewData["txt_" + @item.Key.ToLower()]" />
+                                            } else
+                                            {
+                                                <input type="@obj.Value" class="form-control input-large" id="@item.Key.ToLower()" name="@item.Key.ToLower()" placeholder="@item.Key.ToLower()"
+                                                       value="@ViewData["txt_" + @item.Key.ToLower()]" />
+                                            }
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="form-group" style="text-align:center;">
+                <button type="submit" class="btn btn-default" name="submitType" id="submitType" value="Import"> 設 定 </button>
+                @Html.Back(@Url.Action("MerchantList", new { gwid = @ViewBag.gwid }))
+            </div>
+        </form>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+            fillFormData('form_search');
+        });
+
+        $("#form_search").submit(function (e) {
+            var result = true;
+            $(".form-control").each(function () {
+                var id = $(this).attr('id');
+                var txt = $('#txt_' + id).text();
+                console.log('txt:',txt);
+                if ($(this).val() == "") {
+                    alert("请输入 " + txt + " 内容");
+                    $("#" + id).focus();
+                    e.preventDefault(e);
+                    result = false;
+                    return result;
+                }
+            });
+            /*$("input[type='text']").each(function () {
+                var id = $(this).attr('id');
+                var txt = $('#txt_' + id).text();
+                if ($(this).val() == "") {
+                    alert("请输入 " + txt + " 内容");
+                    $("#" + id).focus();
+                    e.preventDefault(e);
+                    result = false;
+                    return result;
+                }
+            });
+
+            if (result) {
+                $("textarea").each(function () {
+                    var id = $(this).attr('id');
+                    var txt = $('#txt_' + id).text();
+                    if ($(this).val() == "") {
+                        alert("请输入 " + txt + " 内容");
+                        $("#" + id).focus();
+                        e.preventDefault(e);
+                        result = false;
+                        return result;
+                    }
+                });
+            }*/
+            return result;
+        });
+    </script>
+}

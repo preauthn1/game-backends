@@ -1,0 +1,21 @@
+﻿CREATE FUNCTION [dbo].[f_IP2Int] (@IP AS varchar(15))
+RETURNS BIGINT
+AS
+BEGIN
+ RETURN (CAST(PARSENAME(@IP,1) AS BIGINT) +
+         CAST(PARSENAME(@IP,2) AS BIGINT) * 256 +
+         CAST(PARSENAME(@IP,3) AS BIGINT) * 65536 +
+         CAST(PARSENAME(@IP,4) AS BIGINT) * 16777216)
+ 
+END
+GO
+GRANT EXECUTE
+    ON OBJECT::[dbo].[f_IP2Int] TO [GameUser]
+    AS [dbo];
+
+
+GO
+GRANT EXECUTE
+    ON OBJECT::[dbo].[f_IP2Int] TO [xbuser]
+    AS [dbo];
+

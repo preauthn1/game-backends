@@ -1,0 +1,4 @@
+tfserver:
+  port: 10080
+  ingress:
+    enabled: false

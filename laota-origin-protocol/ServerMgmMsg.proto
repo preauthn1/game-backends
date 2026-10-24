@@ -1,0 +1,31 @@
+syntax = "proto2";
+
+package netproto;
+
+//服务器定时向DBServer注册信息
+message ServerRegInfo {
+    required int32 ServerID = 1;    //服务器ID
+    required int32 ServerType = 2;  //服务器类型
+};
+
+//游戏服务器向大厅注册信息
+message GameServerRegInfo {
+    required int32 GameID = 1;            //游戏ID
+    required string GameName = 2;         //游戏名称
+    required int32 ServerID = 3;          //服务器ID
+    required string ServerName = 4;       //服务器名称
+    required string Flag = 5;             //服务器标记,用于客户端显示房间时进行分组
+    required int32 UserCount = 6;         //当前用户数
+    required string IPAddress = 7;        //服务器IP
+    required int32 Port = 8;              //服务器端口
+    required int32 LoginMoney = 9;        //入场金币数
+    required int32 BaseScore = 10;        //底分
+    required int32 RobotCount = 11;       //当前机器人数
+    optional int32 Single = 12;           //直接進入取第一個服務器進入, 0=>顯示房間列表, 1=>第一個服務器進入
+    optional int32 HostAndBackup = 13;    // AB服, 0 主要主機 1 備援主機
+    optional string AndroidVersion = 14;  // 客戶端版本號
+    optional string IOSVersion = 15;      // 客戶端版本號
+    optional int32 KickOutMoney = 16;     //入场金币上限
+    optional int32 MaxOdd = 17;           // 最高倍數
+    optional int32 GameType = 18;         //遊戲類型 0真金 1比賽 2休閒
+};

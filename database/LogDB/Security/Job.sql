@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [Job]
+    AUTHORIZATION [dbo];
+

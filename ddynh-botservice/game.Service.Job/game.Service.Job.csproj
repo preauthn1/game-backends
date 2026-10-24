@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://example.invalid/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E338F030-3C31-4373-84EE-0F8F77213C2F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>game.Service.Job</RootNamespace>
+    <AssemblyName>game.Service.Job</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FW.Core.Helper">
+      <HintPath>..\..\using\FW.Core.Helper.dll</HintPath>
+    </Reference>
+    <Reference Include="FW.Core.Repository">
+      <HintPath>..\..\using\FW.Core.Repository.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="example.invalid.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Helper\InstanceServiceHelper.cs" />
+    <Compile Include="Helper\FileLogHelper.cs" />
+    <Compile Include="Models\CommandParameterModel.cs" />
+    <Compile Include="ServiceImplement\Interface\IAPLFishJobTaskService.cs" />
+    <Compile Include="ServiceImplement\Interface\IBGJobTaskService.cs" />
+    <Compile Include="ServiceImplement\Services.ReferenceService\Interface\IThirdPartyGameDataProviderService.cs" />
+    <Compile Include="ServiceImplement\Services.ReferenceService\Services\APLFishCommonDatabaseProcessService.cs" />
+    <Compile Include="ServiceImplement\Services.ReferenceService\Services\BGCommonDatabaseProcessService.cs" />
+    <Compile Include="ServiceImplement\Services.ReferenceService\Services\EGamingCommonDatabaseProcessService.cs" />
+    <Compile Include="ServiceImplement\Services.ReferenceService\Services\APLCommonDatabaseProcessService.cs" />
+    <Compile Include="ServiceImplement\Services\APLFishJobTaskService.cs" />
+    <Compile Include="ServiceImplement\Services\BGJobTaskService.cs" />
+    <Compile Include="ServiceImplement\Services\BaseJobService\BaseThirdPartyGameJobService.cs" />
+    <Compile Include="ServiceImplement\Services\DataMigrateCalculateService.cs" />
+    <Compile Include="ServiceImplement\Interface\IDataMigrateService.cs" />
+    <Compile Include="ServiceImplement\Services\APLJobTaskService.cs" />
+    <Compile Include="ServiceImplement\Interface\IAPLJobTaskService.cs" />
+    <Compile Include="ServiceImplement\Services\EGamingJobTaskService.cs" />
+    <Compile Include="ServiceImplement\Interface\IEGamingJobTaskService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\backend.game\game.Entity\game.Entity.csproj">
+      <Project>{44448b04-8148-4324-ba1c-1efc54f0e1dd}</Project>
+      <Name>game.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\backend.game\game.Infrastructure\game.Infrastructure.csproj">
+      <Project>{c8931862-d42a-41f5-84c1-9e638ac564d3}</Project>
+      <Name>game.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\backend.game\game.Service\game.Service.csproj">
+      <Project>{ceab9a96-fb4d-4858-9e69-5d888ec50626}</Project>
+      <Name>game.Service</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

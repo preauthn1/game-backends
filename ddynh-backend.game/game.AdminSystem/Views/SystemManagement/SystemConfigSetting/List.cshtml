@@ -1,0 +1,121 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using game.Entity.Pay
+@using game.AdminSystem.Models.ViewModels
+@using game.Entity.Money
+@using game.AdminSystem
+@using game.Entity.SQL
+
+@{
+    var queryJobs = (List<QuerySystemJobResultModel>)ViewBag.QueryJobs;
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    thead {
+        font-weight: 700;
+    }
+</style>
+
+
+<div class="row tableListPage">
+    <div class="col-md-12">
+        <div class="protlet-body" style="padding:15px;">
+            <form class="form-inline" id="form_search" method="get">
+
+                <div style="font-size:14px;font-weight:700;">
+                    系统排程管理
+                </div>
+                <div class="hr-s"></div>
+            </form>
+
+            <div class="content">
+
+                <table class="table" style="width:400px;">
+
+                    <thead>
+                        <tr>
+                            <td>排程名稱</td>
+                            <td>啟用狀態</td>
+                        </tr>
+                    </thead>
+
+
+                    @foreach (var item in queryJobs)
+                    {
+
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>
+
+                                <div class="link-text" onclick="ModifyEnable('@item.Job_ID')" style="display:inline-block;">
+                                    @(item.IsEnable ? "已開啟" : "關閉中")
+                                </div>
+
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+
+
+
+
+                <div style="background:#ceece5;width:500px;padding:10px;color:#409081;margin-top:30px;">
+
+                    <div>
+                        <span id="myTip" class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" style="" title="" data-original-title=""></span>
+                        小贴士：若您建立的存款单、产生付款网址失败
+                    </div>
+                    <div>
+                        系统会将状态变更为「付款失败」、此情况下不会进行自动充值到账
+                    </div>
+                    <div>
+                        遇到此情形，建议使用其他付款方式进行测试
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section initScripts{
+    <script>
+
+
+
+        function ModifyEnable(jobID) {
+            
+            if (confirm("是否确定修改此项目启用状态？")){
+                $.ajax({
+                    type: "POST",
+                    data: { target_job_id: jobID },
+                    url: "/SystemConfigSetting/UpdateJobStatus",
+                    success: function (data) {
+                        alert(data.Message);
+                        window.location.reload();
+                    },
+                    error: function (err) {
+                        alert("操作失敗");
+                    }
+                });
+
+            }
+        }
+
+
+
+
+
+    </script>
+}

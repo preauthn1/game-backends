@@ -1,0 +1,135 @@
+﻿@{
+    ViewBag.Title = "提現紀錄";
+}
+
+
+@Html.Action("Index", "Unlimit")
+
+<div class="box box-primary">
+    <!-- form start -->
+    <div class="box-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">订单单号</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="text" class="form-control" id="orderID">
+                </div>
+                <label class="col-lg-1 col-md-3 col-sm-3 col-xs-12">申请日期</label>
+                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                    <input type="date" class="form-control" id="dtStartTime">
+                </div>
+                <label class="col-lg-1 col-md-1 col-sm-1 col-xs-12">到</label>
+                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                    <input type="date" class="form-control" id="dtEndTime">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                    <input type="hidden" id="SubUserID" name="SubUserID">
+                    <button type="button" id="btnQuery" class="btn btn-primary btn-block">搜索</button>
+                </div>
+            </div>
+        </div>
+        <hr class="hr-sm1">
+
+        <!-- 查詢結果 -->
+        <div class="box-header">
+            <h3 class="box-title">搜索结果</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>订单单号</th>                        
+                        <th>平台</th>
+                        <th>昵称</th>
+                        <th>预提金额</th>
+                        <th>申请时可提总将额</th>
+                        <th>状态</th>
+                        <th>申请时间</th>
+                        <th>处理时间</th>
+                        <th>处理账号</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- /.box -->
+@section scripts{
+    <!-- Page script -->
+    <script type="text/javascript">
+        $(function () {
+
+            //DataTable
+            var table =
+                $('#example1').DataTable({
+                    "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                    "searching": false,
+                    "autoWidth": false,
+                    "serverSide": true,
+                    "deferLoading": 0,
+                    "ajax": {
+                        method: 'post',
+                        url: '@Url.Action("UserConvertInfo", "Unlimit")',
+                        data: function (d) {
+                            d.targetID = $('#targetID').val();
+                            d.orderID = $('#orderID').val();
+                            d.dtStartTime = $('#dtStartTime').val();
+                            d.dtEndTime = $('#dtEndTime').val();
+                        },
+                        "dataSrc": function (json) {
+                            if (json.success == false)
+                                swal("错误", json.message, "error");
+
+                            return json.data;
+                        }
+                    },
+                    columns: [
+                        { name: "OrderID", data: "OrderID" },                     
+                        { name: "PlatformName", data: "PlatformName" },
+                        { name: "NickName", data: "NickName" },
+                        { name: "ConvertAmount", data: "ConvertAmount" },
+                        { name: "PoolAmount", data: "PoolAmount" },
+                        {
+                            name: "Status",
+                            data: "Status",
+                            render: function (data, type, row, meta) {
+                                if (data == 0)
+                                    return "审核中";
+                                if (data == 1)
+                                    return "通过";
+                                if (data == 2)
+                                    return "拒绝";
+                            }
+                        },                        
+                        {
+                            name: "CreateTime",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                return moment(data.CreateTime).format("YYYY-MM-DD HH:mm");
+                            }
+                        },
+                        {
+                            name: "Updatetime",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                if (data.Updatetime == undefined)
+                                    return null;
+                                else
+                                    return moment(data.Updatetime).format("YYYY-MM-DD HH:mm");
+                            }
+                        },
+                        { name: "Updater", data: "Updater" }
+                    ],
+                    responsive: true
+                });
+
+            $('#btnQuery').click(function () {
+                table.draw();
+            });
+        })
+    </script>
+}

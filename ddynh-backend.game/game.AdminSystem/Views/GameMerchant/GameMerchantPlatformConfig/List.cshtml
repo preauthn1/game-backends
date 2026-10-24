@@ -1,0 +1,238 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using game.Entity.Pay
+@using game.AdminSystem.Models.ViewModels
+@using game.Entity.Money
+@using game.AdminSystem
+
+@{
+
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+
+<div class="row tableListPage">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+
+                <div class="form-group">
+                    <label>平台</label>
+                    @Html.Partial("_DropdownPlatform", new DropdownPartialSettingViewModel(FirstOptionValueEnum.DefaultSelectAll))
+                </div>
+
+                <div class="form-group">
+                    <label>三方商户</label>
+                    @Html.Partial("_DropdownGameMerchant", new DropdownPartialSettingViewModel(FirstOptionValueEnum.DefaultSelectAll))
+                </div>
+
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                </div>
+
+
+                <div class="hr-s"></div>
+
+            </form>
+
+
+            <div class="content">
+                <table id="myTable_table" class="display border-r" style="width:100%"></table>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="modal fade" id="copyModal" tabindex="-1" role="dialog" aria-labelledby="modal_empty_template" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width:700px">
+        <div class="modal-content" style="padding:25px;">
+
+            <input type="hidden" id="templatePlatformID" name="templatePlatformID" />
+            <input type="hidden" id="gameMerchantID" name="gameMerchantID" />
+
+
+            <div class="form-group">
+                <label style="font-weight:700">将从此平台进行复制</label>           
+                
+                <div>
+                    <label id="templatePlatformName" style="color:#888;"></label>
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+                <label  style="font-weight:700">将相同设置复制到此平台</label>
+                @{
+                    var instanceModel = new DropdownPartialSettingViewModel(FirstOptionValueEnum.MustSelect);
+                    instanceModel.DOM_ElementName = "targetPlatformID";
+                }
+
+                @Html.Partial("_DropdownPlatform", instanceModel)
+            </div>
+
+            <div style="margin-top:25px;">
+                <button class="btn btn-warning" onclick="copySettingFromTemplate()">开始复制</button>
+            </div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    关闭
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section initScripts{
+    <script>
+
+        function createTable() {
+
+            const urlEdit = '/GameMerchantPlatformConfig/Update';
+            const url = '/GameMerchantPlatformConfig/GetList'
+            const thead =
+                [
+                    {
+                        "sTitle": "游戏商户", "mData": "GameMerchantID", "width": "10%",
+                        "render": function (data, type, row) {
+                            var html = "";
+                            html = html + String.format('<div class="" title="{1}" >{0}</div>', row.GameMerchantName, row.GameMerchantID);
+                            return html;
+                        }
+                    },
+                    {
+                        "sTitle": "平台", "mData": "PlatformID", "width": "10%",
+                        "render": function (data, type, row) {
+                            var html = "";
+                            html = html + String.format('<div class="" title="{1}" >{0}</div>', row.PlatformName, row.PlatformID);
+                            return html;
+                        }
+                    },
+                    { "sTitle": "三方分配商户代号", "mData": "MerchantIdentity", "width": "12%" },
+                    { "sTitle": "后台网址", "mData": "AdminWebSiteUrl", "width": "12%" },
+                    { "sTitle": "建立时间", "mData": "CreateTimeText" },
+                    { "sTitle": "修改时间", "mData": "UpdateTimeText" },
+                    { "sTitle": "修改人", "mData": "UpdateBy" },
+                    {
+                        "sTitle": "操作", "mData": "Title",
+                        "render": function (data, type, row) {
+                            var html = "";
+                            html = html + String.format('<a id="" class="btn btn-sm dark" style="" href="{0}?targetId={1}">编辑</a>', urlEdit, row.ID);
+                            html = html + String.format('<a id="" class="btn btn-sm dark" style="" onclick="showCopyModal( \'{0}\', \'{1}\' , \'{2}\' )" >复制设置</a>', row.GameMerchantID, row.PlatformID, row.PlatformName);
+                            return html;
+                        }
+                    }
+                ]
+
+            var platformid = $('#platformid').val();
+            var gameMerchantID = $('#gameMerchantID').val();
+
+
+            //将表单上的筛选条件、下拉选单带入api
+            const data =
+            {
+                platformid: platformid,
+                gameMerchantID: gameMerchantID,
+            }
+
+            createDataTable('myTable', thead, url, data);
+        }
+
+
+        $(function () {
+
+            fillFormData('form_search');
+            createTable();
+
+        })
+
+
+
+        function showCopyModal(gameMerchantID, templatePlatformID , templatePlatformName)
+        {
+
+            $("#gameMerchantID").val(gameMerchantID);
+            $("#templatePlatformID").val(templatePlatformID);
+            $("#templatePlatformName").text(templatePlatformName);
+            
+             $("#copyModal").modal('show');
+        }
+        
+        
+        function copySettingFromTemplate()
+        {            
+            var gameMerchantID = $("#gameMerchantID").val();
+            var templatePlatformID = $("#templatePlatformID").val();
+            var targetPlatformID = $("#targetPlatformID").val();
+
+            
+            if (templatePlatformID == '' || targetPlatformID == '')
+            {
+                alert('请选择平台');
+                return;
+            }            
+
+            $.ajax({
+                cache: false,
+                dataType: 'json',
+                data:
+                {
+                    gameMerchantID : gameMerchantID,
+                    templatePlatformID: templatePlatformID,
+                    targetPlatformID: targetPlatformID
+                },
+                url: '/GameMerchantPlatformConfig/CopyPlatformSettingFromTemplate',
+                type: 'POST',
+                success: function (data) {
+
+                    if (data.IsSuccess)
+                    {
+                        alert(data.Message);
+                        location.reload();
+                    }
+                    else
+                    {
+                        alert(data.Message);
+                    }
+
+                },
+                error: function (err) {
+                    swal({
+                        type: 'error',
+                        title: '操作失败',
+                        text: err
+                    })
+                }
+            });
+
+            
+        }
+
+
+
+
+
+
+
+    </script>
+}

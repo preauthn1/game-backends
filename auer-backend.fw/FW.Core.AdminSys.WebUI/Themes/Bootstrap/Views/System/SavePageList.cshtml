@@ -1,0 +1,59 @@
+﻿@model List<FW.Core.AdminSys.Provider.Entity.QuickAction>
+
+<div class="row">
+    <div class="col-md-12 ">
+
+        <div class="table-scrollable">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>功能名称</th>
+                        <th>页面地址</th>
+                        <th>排序</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var qa in Model)
+                    {
+                        <tr>
+                            <td>@qa.Id</td>
+                            <td>@qa.Name</td>
+                            <td>@qa.Url</td>
+                            <td>
+                              @qa.Sort
+                            </td>
+                            <td>
+                                @Html.LinkWithRight(action: "ModifyQuickAction", method: "Get", value: "修改", href: Url.Action("ModifyQuickAction", new { id = qa.Id }))
+                            <td>
+                                @Html.LinkWithRight(action: "DelQuickAction", method: "Get", value: "删除",onclick:"del("+qa.Id+")", href:"#")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        
+
+    </div>
+</div>
+
+
+@section initScripts
+    {
+    <script>
+            function del(id) {
+                if (confirm('您确认想要删除记录吗？')) {
+                    debugger
+                    var url = "@Url.Action("DelQuickAction")";
+                    url = url + "?id=";
+                    url = url + id;
+                    window.location.href = url;
+                };
+
+            }
+    </script>
+}

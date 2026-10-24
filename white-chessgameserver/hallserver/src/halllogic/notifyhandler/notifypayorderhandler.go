@@ -1,0 +1,53 @@
+package notifyhandler
+
+import (
+	"fmt"
+	"mlog"
+	"module"
+	"msg"
+	"netproto"
+	"player"
+	"roomutil"
+	"util"
+)
+
+import proto "example.invalid/golang/protobuf/proto"
+
+type NotifyPayOrderHandler struct {
+}
+
+func NewNotifyPayOrderHandler() *NotifyPayOrderHandler {
+	attr := new(NotifyPayOrderHandler)
+
+	return attr
+}
+
+func (h *NotifyPayOrderHandler) OnNotifyMessage(m *msg.Message, ctx *module.MouduleCtx, player *player.PlayerManager) {
+	defer util.PanicErrStack()
+
+	mmbyte := m.MsgData.([]byte)
+	mm := &netproto.PayOrderList{}
+	err := proto.Unmarshal(mmbyte, mm)
+
+	if err != nil {
+		mlog.Error("解析錯誤 HostAndBackUp")
+	}
+	if mm.GetServerID() == 0 {
+		for _, info := range mm.GetPayOrderList() {
+			if pr := player.GetPlayerByUserID(info.GetUserID());pr != nil {
+				m, _ := roomutil.GetTipMessage(fmt.Sprintf("亲爱的玩家:\n您充值的金币:%d已到帐\n( 如有任何疑问请联系客服)", info.GetAmount() / 100), roomutil.MsgTypeID_TIP_RECHARGE)
+				ctx.Server.SendMessageByConnID(pr.Conn.ConnID(), m)
+				example.invalid("用戶 %d 到帳金額 %d 完成", info.GetUserID(), info.GetAmount())
+			} else {
+				mlog.Warn("通知用戶到帳、但 %d 用戶不存在", info.GetUserID())
+			}
+
+		}
+	} else {
+		mlog.Error("NotifyServer 發錯服務器了, %d", mm.GetServerID())
+	}
+}
+
+func (h *NotifyPayOrderHandler) IsHook(bclsid int32, sclsid int32) bool {
+	return bclsid == int32(netproto.MessageBClassID_NotifyServer) && sclsid == int32(netproto.NotifyServerClassID_PayOrderID)
+}

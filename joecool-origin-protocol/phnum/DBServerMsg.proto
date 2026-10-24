@@ -1,0 +1,41 @@
+syntax = "proto2";
+
+package phnum;
+
+message PhnumGameServerStart {
+  required int32 ServerID = 1;
+  required string ServerName = 2;
+  required int32 GameID = 3;
+  required string ShowName = 4;
+  required string ClientAddr = 5;
+  required string NotifyAddr = 6;
+  required int32 LoginMoney = 7;
+  required string HttpAddr = 8;
+  optional int32 GroupID = 9; // 金邊新增
+};
+
+message PhnumDealLog {
+  required int32 ServerID = 1;
+  required string UserGameRet = 2;
+  required string GameBeginTime = 3;
+  required string GameEndTime = 4;
+  required string GameData = 5;
+  required int64 TaxAmount = 6;
+  required int32 GameID = 7;
+  optional int32 TableNo = 8;
+  optional NextJiangRecord NextJiangRecord = 9;
+  optional int32 GroupID = 10;
+};
+
+message NextJiangRecord {
+  required string AdminUser = 1;
+  required string JiangType = 2;
+}
+
+message PhnumLogonRobot {
+  required int32 ServerID = 1;
+  required int32 CurrentRobotCount = 2;
+  required int64 MinMoneyAmount = 3;
+  required int64 MaxMoneyAmount = 4;
+  optional int32 GroupID = 5;
+};

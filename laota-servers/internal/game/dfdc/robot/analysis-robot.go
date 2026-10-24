@@ -1,0 +1,328 @@
+package robot
+
+import (
+	"fmt"
+	"io"
+	"strconv"
+	"strings"
+	"time"
+
+	"example.invalid/golang/protobuf/proto"
+	"example.invalid/ServerTeam/Servers/pkg/config"
+	"example.invalid/ServerTeam/Servers/pkg/event"
+	"example.invalid/ServerTeam/Servers/pkg/gamelogic"
+	"example.invalid/ServerTeam/Servers/pkg/msg"
+	"example.invalid/ServerTeam/Servers/pkg/netproto"
+	"example.invalid/ServerTeam/Servers/pkg/prob"
+	"example.invalid/ServerTeam/Servers/pkg/robot/robotcomm"
+	"example.invalid/ServerTeam/Servers/pkg/robot/robotlogic"
+	"example.invalid/ServerTeam/Servers/pkg/slot"
+)
+
+// AnalyseRobot DFDC robot logic
+type AnalyseRobot struct {
+	*robotlogic.RobotLogicBase
+
+	Terminate chan bool
+
+	BeginTime time.Time
+	LastTime  time.Time
+
+	TotalTimes int
+	LeftTimes  int
+
+	BetMoneys []int64
+	BetRates  []int64
+
+	BetMoney int64
+	BetRate  int64
+
+	LeftFreeGame *netproto.DFDC_FreeOrPayMsg
+	JackpotGame  *netproto.DFDC_BonusGame
+
+	RandomBet bool
+
+	stop bool
+}
+
+// NewAnalysisRobot Create DFDC robot logic
+func NewAnalysisRobot(table *gamelogic.Table, tfManager *event.TimerFuncManager, robotCfg *robotcomm.RobotConfig, configs *config.ConfigGroup, glc gamelogic.GameLogic, evtChannel *event.EventDispatcher, times int, random bool) *AnalyseRobot {
+	rbt := new(AnalyseRobot)
+	rbt.RobotLogicBase = robotlogic.NewRobotLogicBase(table, tfManager, robotCfg, configs, glc, evtChannel)
+	rbt.TotalTimes = times
+	rbt.LeftTimes = times
+	rbt.RandomBet = random
+	rbt.Terminate = make(chan bool)
+
+	return rbt
+}
+
+// OnGameMessage 收到遊戲訊息
+func (rbt *AnalyseRobot) OnGameMessage(robot *robotcomm.Robot, m *msg.Message) {
+
+	if rbt.stop {
+		return
+	}
+
+	// 遊戲結束
+	if m.SClassID == int32(netproto.GameMessageClassID_GameEndID) {
+		return
+	}
+
+	// 黃金符號設定
+	if m.SClassID == int32(netproto.DFDC_GameMessageClassID_DFDCGoldenSymbolID) {
+		rbt.onGoldenSymbol(robot, m)
+	}
+
+	// 初始設定
+	if m.SClassID == int32(netproto.DFDC_GameMessageClassID_DFDCSettingID) {
+		rbt.BeginTime = time.Now()
+		rbt.LastTime = time.Now()
+		rbt.onSlotSetting(robot, m)
+		return
+	}
+
+	// 遊戲狀態
+	if m.SClassID == int32(netproto.DFDC_GameMessageClassID_DFDCStateID) {
+		rbt.onGameStatus(robot, m)
+		return
+	}
+
+	// 下注狀態
+	if m.SClassID == int32(netproto.DFDC_GameMessageClassID_DFDCBetRetID) {
+		rbt.onBetStatus(robot, m)
+		return
+	}
+
+	// Jackpot pool
+	if m.SClassID == int32(netproto.Slot_GameMessageClassID_Slot_JackpotPoolRetID) {
+		rbt.onJapotPool(robot, m)
+		return
+	}
+
+	// 遊戲結果
+	if m.SClassID == int32(netproto.DFDC_GameMessageClassID_DFDCGameResult) {
+		rbt.onGameResult(robot, m)
+		return
+	}
+
+	// 免費遊戲
+	if m.SClassID == int32(netproto.DFDC_GameMessageClassID_DFDCFreeOrPayID) {
+		rbt.onLeftFreeGame(robot, m)
+		return
+	}
+
+	// Jackpot遊戲
+	if m.SClassID == int32(netproto.DFDC_GameMessageClassID_DFDCBonusGameID) {
+		rbt.onJackpotGame(robot, m)
+		return
+	}
+}
+
+func (rbt *AnalyseRobot) onGoldenSymbol(robot *robotcomm.Robot, m *msg.Message) {
+	data := m.MsgData.(*netproto.DFDC_GoldenSymbolList)
+
+	rbt.BetRates = make([]int64, 0)
+
+	for _, row := range data.GetGoldenDetail() {
+		rbt.BetRates = append(rbt.BetRates, int64(row.GetCredits()))
+	}
+
+	rbt.BetRate = rbt.BetRates[0]
+}
+func (rbt *AnalyseRobot) onSlotSetting(robot *robotcomm.Robot, m *msg.Message) {
+	data := m.MsgData.(*netproto.DFDC_Setting)
+
+	rbt.BetMoneys = make([]int64, 0)
+	for _, row := range data.GetBetCount() {
+		rbt.BetMoneys = append(rbt.BetMoneys, int64(row))
+	}
+
+	rbt.BetMoney = rbt.BetMoneys[0]
+}
+
+func (rbt *AnalyseRobot) onGameStatus(robot *robotcomm.Robot, m *msg.Message) {
+	data := m.MsgData.(*netproto.DFDC_GameStatus)
+
+	if data.GetState() == 0 {
+
+		if rbt.JackpotGame != nil {
+			rbt.actionPickJackpot(robot)
+			return
+		}
+
+		if rbt.LeftFreeGame != nil {
+			rbt.LeftFreeGame = nil
+			rbt.actionSpin(robot)
+			return
+		}
+
+		if rbt.LeftTimes == 0 {
+			rbt.Terminate <- true
+			rbt.stop = true
+			rbt.GameLogic.UserLeave(robot.UserInfo)
+			return
+		}
+
+		if rbt.LeftTimes%10000 == 0 {
+			fmt.Printf("[%s] 剩餘 %d 次, %v\n", robot.UserInfo.NickName, rbt.LeftTimes, time.Since(rbt.LastTime))
+			rbt.LastTime = time.Now()
+		}
+
+		rbt.LeftTimes--
+		rbt.actionSpin(robot)
+
+		return
+	}
+
+}
+
+func (rbt *AnalyseRobot) onBetStatus(robot *robotcomm.Robot, m *msg.Message) {}
+
+func (rbt *AnalyseRobot) onJapotPool(robot *robotcomm.Robot, m *msg.Message) {}
+
+func (rbt *AnalyseRobot) onGameResult(robot *robotcomm.Robot, m *msg.Message) {}
+
+func (rbt *AnalyseRobot) onLeftFreeGame(robot *robotcomm.Robot, m *msg.Message) {
+	data := m.MsgData.(*netproto.DFDC_FreeOrPayMsg)
+	if data.GetFreeCount() != 0 {
+		rbt.LeftFreeGame = data
+	} else {
+		rbt.LeftFreeGame = nil
+	}
+}
+
+func (rbt *AnalyseRobot) onJackpotGame(robot *robotcomm.Robot, m *msg.Message) {
+	data := m.MsgData.(*netproto.DFDC_BonusGame)
+
+	rbt.JackpotGame = data
+}
+
+func (rbt *AnalyseRobot) actionSpin(robot *robotcomm.Robot) {
+
+	_m := new(msg.Message)
+	_m.BClassID = int32(netproto.MessageBClassID_Game)
+	_m.SClassID = int32(netproto.DFDC_GameMessageClassID_DFDCGameStartID)
+
+	m := new(netproto.DFDC_StartBet)
+
+	var money, rate int64
+	if rbt.RandomBet {
+		{
+			r := new(prob.Random)
+			for _, row := range rbt.BetMoneys {
+				r.Add(row, 1)
+			}
+			t := r.Choose()
+			money = t.(int64)
+		}
+		{
+			r := new(prob.Random)
+			for _, row := range rbt.BetRates {
+				r.Add(row, 1)
+			}
+			t := r.Choose()
+			rate = t.(int64)
+		}
+	} else {
+		money = rbt.BetMoney
+		rate = rbt.BetRate
+	}
+
+	m.Money = proto.Int64(money)
+	m.GoldenSymbol = proto.Int32(int32(rate))
+
+	b, _ := proto.Marshal(m)
+
+	_m.MsgData = b
+
+	rbt.SendGameMessageNow(robot.UserInfo, _m)
+}
+
+func (rbt *AnalyseRobot) actionPickJackpot(robot *robotcomm.Robot) {
+
+	records := rbt.JackpotGame.BonusDetail
+	rbt.JackpotGame = nil
+
+	for i, row := range records {
+		if row.GetPlace() == 0 {
+			_m := new(msg.Message)
+			_m.BClassID = int32(netproto.MessageBClassID_Game)
+			_m.SClassID = int32(netproto.DFDC_GameMessageClassID_DFDCBonusGameIconID)
+
+			m := new(netproto.DFDC_BonusGameDetail)
+			m.Id = proto.Int32(row.GetId())
+			m.Place = proto.Int32(int32(i + 1))
+			m.Icon = proto.Int32(row.GetIcon())
+
+			b, _ := proto.Marshal(m)
+
+			_m.MsgData = b
+
+			rbt.SendGameMessageNow(robot.UserInfo, _m)
+		}
+	}
+
+}
+
+// PrintReportByLogs 印出 SlotHistoryLog 結果
+func (rbt *AnalyseRobot) PrintReportByLogs(w io.Writer, logs []*netproto.Slot_MSG_GameLogAdd) {
+
+	var TotalWinMoney, TotalBetMoney, MainGameWinMoney, FreeGameWinMoney, JackpotWinMoney int64
+	var TotalTimes, MainGameTimes, FreeGameTimes int64
+
+	winJackpotLevels := make(map[slot.JackpotLevel]int)
+
+	for _, row := range logs {
+		TotalWinMoney += row.GetWinMoney()
+		TotalBetMoney += row.GetBetMoney()
+
+		switch int(row.GetGameType()) {
+		case slot.HistoryTypeMAIN:
+			TotalTimes++
+			MainGameWinMoney += row.GetWinMoney()
+			MainGameTimes++
+		case slot.HistoryTypeFREE:
+			FreeGameWinMoney += row.GetWinMoney()
+			FreeGameTimes++
+		case slot.HistoryTypeJPNOLINK:
+			JackpotWinMoney += row.GetWinMoney()
+		}
+
+		switch int(row.GetLogType()) {
+		case slot.LogTypeOPEN:
+			m := make(map[string]int)
+			for _, row := range strings.Split(row.GetGameData(), ",") {
+				m[row]++
+			}
+
+			for lv, cnt := range m {
+				if cnt == 3 {
+					level, _ := strconv.Atoi(lv)
+					winJackpotLevels[slot.NewJackpotLevel(int32(level))]++
+					break
+				}
+			}
+		}
+	}
+
+	fmt.Fprintln(w, "===================== DFDC =====================")
+	if rbt.RandomBet {
+		fmt.Fprintf(w, "Times: %d, RandomBet, RTP: %.4f%%\n", TotalTimes, float64(TotalWinMoney)/float64(TotalBetMoney)*100)
+	} else {
+		fmt.Fprintf(w, "Times: %d, EachBetMoney: %d, RTP: %.4f%% \n", rbt.TotalTimes, rbt.BetMoney*rbt.BetRate, float64(TotalWinMoney)/float64(TotalBetMoney)*100)
+	}
+	fmt.Fprintf(w, "BetMoneys: %v\n", rbt.BetMoneys)
+	fmt.Fprintf(w, "BetRates: %v\n", rbt.BetRates)
+	fmt.Fprintf(w, "BeginTime: %s\n", rbt.BeginTime.Format("2006-01-02 15:04:05"))
+	fmt.Fprintf(w, "Duration: %v\n", time.Since(rbt.BeginTime))
+	fmt.Fprintln(w, "=================================================")
+	fmt.Fprintf(w, "TotalBetMoney: %d, TotalWinMoney: %d\n", TotalBetMoney, TotalWinMoney)
+	fmt.Fprintf(w, "MainGameTimes: %d, MainGameWinMoney: %d (RTP: %.2f%%)\n", MainGameTimes, MainGameWinMoney, float64(MainGameWinMoney)/float64(TotalBetMoney)*100)
+	fmt.Fprintf(w, "FreeGameTimes: %d, FreeGameWinMoney: %d (RTP: %.2f%%)\n", FreeGameTimes, FreeGameWinMoney, float64(FreeGameWinMoney)/float64(TotalBetMoney)*100)
+	fmt.Fprintf(w, "JackpotWin: %d (RTP: %.2f%%)\n", JackpotWinMoney, float64(JackpotWinMoney)/float64(TotalBetMoney)*100)
+	for lv, cnt := range winJackpotLevels {
+		fmt.Fprintf(w, " - Jackpot[%s]: %d\n", lv.String(), cnt)
+	}
+	fmt.Fprintln(w, "=================================================")
+}

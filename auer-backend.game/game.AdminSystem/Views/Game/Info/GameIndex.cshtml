@@ -1,0 +1,110 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+@using FW.Core.Helper
+
+@model List<game.Entity.Game.Game>
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>版本管理
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="form1" method="post" class="form-horizontal form-bordered">
+                    <input hidden name="games" id="games" value="" />
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">白名单</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control " name="ip" placeholder="白名单分号分隔如:（0.0.0.0;0.0.0.0）" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4">游戏版本号</label>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="protlet-body">
+                                            <div class="table-scrollable">
+                                                <table class="table table-striped table-bordered table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>游戏编号</th>
+                                                            <th>游戏名称</th>
+                                                            <th>当前安卓版本</th>
+                                                            <th>更新安卓版本</th>
+                                                            <th>当前iOS版本</th>
+                                                            <th>更新iOS版本</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var item in Model)
+                                                        {
+                                                            <tr class="tr-ta">
+                                                                <td>@item.Id</td>
+                                                                <td>@item.GameName</td>
+                                                                <td>@item.AndroidVersion</td>
+                                                                <td>
+                                                                    <input hidden id-data="@item.Id" />
+                                                                    <input id="@(item.Id+"an")" old-data="@item.AndroidVersion" value="@item.AndroidVersion" class="form-control input-sm" />
+                                                                </td>
+                                                                <td>@item.IOSVersion</td>
+                                                                <td>
+                                                                    <input id="@(item.Id+"ios")" old-data="@item.IOSVersion" value="@item.IOSVersion" class="form-control input-sm" />
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-6 col-md-9">
+                            @Html.OkWithRight()
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+@section initScripts{
+    <script type="text/javascript" src="/Plugins/Uploadify/Upload.js"></script>
+    <script>
+        $(function () {
+            $("#form1").validate({
+                rules: {
+                    version: {
+                        required: true,
+                        digits: true
+                    }
+                }
+            });
+            $("#form1").submit(function () {
+                //var hall = '{"anov":"' + anversion + '","annv":"' + $("input[name=an]").val() + '","iosov":"' + iosversion + '","iosnv":"' + $("input[name=ios]").val() + '","pcov":"' + pcversion + '","pcnv":"' + $("input[name=pc]").val() + '","ip":"' + $("input[name=ipaddress]").val() + '"}';
+                var games = [];
+                $("table .tr-ta").each(function (a, b) {
+                    var id = $(b).find("input").attr("id-data");
+                    var andver = $("#" + id + "an").val();
+                    var iosver = $("#" + id + "ios").val();
+                    games.push('{"id":"' + id + '","andver":"' + andver + '","iosver":"' + iosver + '"}');
+                })
+                $("#games").val("[" + games + "]");
+            })
+        })
+    </script>
+}
+@*<script src="~/Content/Bootstrap/assets/plugins/jquery-1.10.2.min.js"></script>*@

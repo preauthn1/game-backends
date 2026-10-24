@@ -1,0 +1,380 @@
+﻿@using FW.Core.Web.Mvc;
+@using Newtonsoft.Json;
+@model List<game.Entity.Stat.AreaDataDaySummary>
+@section pageLevelPlugins{
+<script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+<script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+<link href="@Url.Content("~/plugins/datatable/css/jquery.datatables.min.css")" rel="stylesheet" type="text/css" />
+
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_PlatformSelect", false)
+                @Html.Partial("AdminAreaList", false)
+                <div class="form-group">
+                    <label>统计时间</label>
+                    <input type="text" class="form-control " style="width:180px" id="beginTime" name="beginTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                    到
+                    <input type="text" class="form-control" autocomplete="off" style="width:180px" id="endTime" name="endTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd'})" placeholder="结束时间">
+                </div>
+                <div class="form-group">
+
+                    <button type="submit" class="btn btn-default"> 搜 索 </button>
+                </div>
+            </form>
+        </div>
+        <br />
+        <div>
+
+
+            @if (Model != null)
+            {
+                int rowCount = 0;
+                foreach (var item in Model)
+                {
+                    <table id="detail_@(rowCount++)_1" Style="display:none;">
+                        <tbody>
+                            <tr>
+                                <td width=2%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td width=6%></td>
+                                <td width=5%></td>
+                                <td width=10%></td>
+                                <td width=10%>
+                                    玩家总金币： @item.TotalMoney.ToCash()<br />
+                                    玩家总存款： @item.TotalBankMoney.ToCash()<br />
+
+
+                                </td>
+                                <td width=14%>
+                                    充值用户人数：@item.Total_OrderUser<br/>
+                                    充值成功笔数：@item.TotalOrderCounts<br />
+                                    新用户充值人数：@item.NewOrderUser<br />
+                                    老用戶充值金额：@item.OldCharge.ToCash()<br />
+                                    新用戶充值金额：@item.NewCharge.ToCash()<br />
+                                    老用戶代理充值金额：@item.OldAgentCharge.ToCash()<br />
+                                    新用戶代理充值金额：@item.NewAgentCharge.ToCash()<br />
+                                    @{
+                                        string payRate = item.Total_OrderUser == 0 || (item.OldLogin + item.NewLogin) == 0 ? "0"
+                                            : ((@item.Total_OrderUser * 1.0) / (item.OldLogin + item.NewLogin) * 100).ToString("#0.00");
+                                        string payAvg = item.TotalCharge == 0 || item.Total_OrderUser == 0 ? "0"
+                                            : (( @item.TotalCharge/100 * 1.0) / item.Total_OrderUser).ToString("#0.00");
+                                    }
+                                    活跃用户付费率：@payRate%<br />
+                                    平均充值金额：@payAvg<br />
+                                </td>
+                                <td width=14%>
+                                    兑换用户数：@item.TotalConvertUser<br />
+                                    新用戶兑换人数：@item.NewConvertUser<br />
+                                    老用户兑换金额：@item.OldConvert.ToCash()<br />
+                                    新用戶兑换金额：@item.NewConvert.ToCash()<br />
+                                    老用戶兑换手续费金额：@item.OldConvertTax.ToCash()<br />
+                                    新用戶兑换手续费金额：@item.NewConvertTax.ToCash()<br />
+                                    @{
+                                        string converRate = item.TotalConvert == 0 || item.TotalCharge == 0 ? "0"
+                                            : ((Math.Abs(@item.TotalConvert) * 1.0) / item.TotalCharge * 100).ToString("#0.00"); }
+                                    兌換率：@converRate%
+                                </td>
+                                <td width=13%>
+                                    苹果注册用戶数：@item.IOSRegCount<br />
+                                    安卓注册用戶数：@item.AndroidRegCount<br />
+                                    苹果綁定用戶数：@item.BindIOSUser<br />
+                                    安卓绑定用戶数：@item.BindAndroidUser<br />
+
+                                </td>
+                                <td width=13%>
+                                    老用戶登录数：@item.OldLogin<br />
+                                    新用户登录数：@item.NewLogin<br />
+                                    苹果用户登录数：@item.IOSCount<br />
+                                    苹果新用户登录数：@item.NewiOSCount<br />
+                                    安卓用户登录数：@item.AndroidCount<br />
+                                    安卓新用户登录数：@item.NewAndroidCount<br />
+                                    
+                                    1日留存：@item.Keep1<br />
+                                    3日留存：@item.Keep3<br />
+                                    5日留存：@item.Keep5<br />
+                                    7日留存：@item.Keep7<br />
+
+                                </td>
+                                <td width=13%>
+                                    @{
+                                        dynamic j = JsonConvert.DeserializeObject(item.GameTaxDetail);
+                                        if (j != null)
+                                        {
+                                            for (int i = 0; i < j.Count; i++)
+                                            {
+                                                if (j[i].UserTaxAmount != null)
+                                                {
+                                                    <div>@j[i].GameName：@(((long)j[i].UserTaxAmount).ToCash() )</div>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    <br />
+                                    <div data-toggle="tooltip" title="机器人游戏输赢金额">系统输赢：@item.RobotGameAmount.ToCash()</div>
+                                    <div data-toggle="tooltip" title="用户游戏输赢金额">用戶输赢：@item.UserGameAmount.ToCash()</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+            }
+
+
+            <div>
+                <table id="exampleTable" class="display">
+                    <thead>
+                        <tr>
+                            <th width=2%></th>
+                            <th width=6%>统计时间</th>
+                            <th width=5%>渠道号</th>
+                            <th width=10%>渠道名称</th>
+                            <th width=10%>营收</th>
+                            <th width=14%>总充值金额</th>
+                            <th width=14%>总兑换金额</th>
+                            <th width=13%>注册用户数</th>
+                            <th width=13%>登录用户数</th>
+                            <th width=13% data-toggle="tooltip" title="系统税收（用户不含机器人游戏税收）">总税收金额</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            int rowCount = 0;
+                            foreach (var item in Model)
+                            {
+                                <tr id="detail_@(rowCount++)">
+                                    <td><img src="http://example.invalid/SD7Dz.png" class="img_expand"></td>
+                                    <td>@item.StatTime.ToString("yyyy-MM-dd")</td>
+                                    <td>@item.AreaID</td>
+                                    <td>@item.AreaName</td>
+                                    <td>@item.Income.ToCash()</td>
+                                    <td>@item.TotalCharge.ToCash()</td>
+                                    <td>@Math.Abs(item.TotalConvert).ToCash()</td>
+                                    <td>@item.TotalRegCount</td>
+                                    <td>@(item.OldLogin+item.NewLogin)</td>
+                                    <td>@item.GameTax.ToCash()</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th style="text-align:left"></th>
+                            <th style="text-align:left"></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </tfoot>	
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+
+        $(document).ready(function () {
+            fillFormData('form_search');
+            function fnFormatDetails(table_id, html) {
+                var sOut = "<table id=\"exampleTable_" + table_id + "\" width=100%>";
+                sOut += html;
+                sOut += "</table>";
+                return sOut;
+            }
+
+            var iTableCounter = 1;
+            var oTable;
+            var oInnerTable;
+            var TableHtml;
+
+            //Initialse DataTables, with no sorting on the 'details' column
+            var oTable = $('#exampleTable').dataTable({
+                //"bJQueryUI": true,
+                "sPaginationType": "full_numbers",
+                "aoColumnDefs": [
+                { "bSortable": false, "aTargets": [0] }],
+                "aaSorting": [[4, 'asc']],
+                "bFilter": true,
+                "lengthMenu": [30, 50, 100, 150, 200],
+                "language":
+                    {
+                        "zeroRecords": "没有吻合的资料",
+                        "search": "搜寻",
+                        "lengthMenu": "每页显示 _MENU_ 筆记录",
+                        "info": "当前頁數 _PAGE_ 总页数 _PAGES_",
+                        "paginate": {
+                            "first": "第一页",
+                            "last": "最末页",
+                            "next": "下一页",
+                            "previous": "上一页"
+                        }
+                },
+                "footerCallback": function (row, data, start, end, display) {
+                    var api = this.api(), data;
+                    // Remove the formatting to get integer data for summation
+                    var intVal = function (i) {
+                        return typeof i === 'string' ?
+                            i.replace(/[\$,]/g, '') * 1 :
+                            typeof i === 'number' ?
+                            i : 0;
+                    };
+
+                    // Total over all pages
+                    totalIncome = api
+                        .column(4)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    totalCharge = api
+                        .column(5)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    totalConvert = api
+                        .column(6)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    totalReg = api
+                        .column(7)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    totalLogin = api
+                        .column(8)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    totalTax = api
+                        .column(9)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                    // Total over this page
+                    pageTotalIncome = api
+                        .column(4, { page: 'current' })
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    pageTotalCharge = api
+                        .column(5, { page: 'current' })
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    pageTotalConvert = api
+                        .column(6, { page: 'current' })
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                    pageTotalReg = api
+                        .column(7, { page: 'current' })
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                    pageTotalLogin = api
+                        .column(8, { page: 'current' })
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    pageTotalTax = api
+                        .column(9, { page: 'current' })
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                    // Update footer
+                    $(api.column(4).footer()).html(
+                        '当页加总：$' + pageTotalIncome.toFixed(2)
+                        + '<BR/>' +
+                        '全部加总：$' + totalIncome.toFixed(2)
+                    );
+                    $(api.column(5).footer()).html(
+                        '$' + pageTotalCharge.toFixed(2)
+                        + '<BR/>' +
+                        '$' + totalCharge.toFixed(2)
+                    );
+                    $(api.column(6).footer()).html(
+                        '$' + pageTotalConvert.toFixed(2) //+ ',' + @@Html.Raw(value)
+                        + '<BR/>' +
+                        '$' + totalConvert.toFixed(2)
+                    );
+                    $(api.column(7).footer()).html(
+                        pageTotalReg
+                        + '<BR/>' +
+                        totalReg
+                    );
+                    $(api.column(8).footer()).html(
+                        pageTotalLogin
+                        + '<BR/>' +
+                        totalLogin
+                    );
+                    $(api.column(9).footer()).html(
+                        '$' + pageTotalTax.toFixed(2)
+                        + '<BR/>' +
+                        '$' + totalTax.toFixed(2)
+                    );
+                }
+            });
+
+            /* Add event listener for opening and closing details
+            * Note that the indicator for showing which row is open is not controlled by DataTables,
+            * rather it is done here
+            */
+            $('#exampleTable tbody').on('click', '.img_expand', function () {
+                console.log('click');
+                var nTr = $(this).parents('tr')[0];
+                var nTr_id = $(nTr).attr("id");
+
+
+                if (oTable.fnIsOpen(nTr)) {
+                    /* This row is already open - close it */
+                    this.src = "http://example.invalid/SD7Dz.png";
+                    oTable.fnClose(nTr);
+                }
+                else {
+                    //debugger;
+                    TableHtml = $("#" + nTr_id + "_1").html();
+                    //console.log(TableHtml);
+                    /* Open this row */
+                    this.src = "http://example.invalid/d4ICC.png";
+                    oTable.fnOpen(nTr, fnFormatDetails(iTableCounter, TableHtml), 'details');
+
+                    iTableCounter = iTableCounter + 1;
+                }
+            });
+
+
+        });
+
+
+
+    </script>
+}

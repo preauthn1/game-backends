@@ -1,0 +1,144 @@
+syntax = "proto2";
+
+package netproto;
+
+//---------- Server - Client ----------
+// FGSB_GameInfo = 10001;                   // S2C 牌局資訊，於玩家進入牌局或斷線重連時傳送
+message FGSB_Msg_GameInfo {
+    repeated string SideSheet = 1;                // Side 賠率表
+    repeated string SpecialSheet = 2;             // 特殊牌賠率表
+    repeated string Manual = 3;                   // 遊戲說明
+    repeated FGSB_Msg_UserInfo UserInfo = 4;      // 所有玩家資訊
+    repeated int64 ChipValue = 5;                 // 籌碼面額
+    required FGSB_Msg_UserCards BankerCards = 6;  // 莊家手牌
+    required int64 Bet_Limit = 7;                 // 底注上限
+    required int64 Bet_SideLimit = 8;             // 邊注上限
+    required int32 GameState = 9;  // 遊戲狀態 0:等待遊戲開始，1:開始下注，2:停止下注，3:發牌，4:邊注、特殊牌型結算，5:加注，6:底注、加注結算，7:遊戲結束
+    required int32 TimeRemain = 10;            // 剩餘時間
+    required int32 Round = 11;                 // 局數
+    required FGSB_Msg_UserInfo SelfInfo = 12;  // 自己資訊
+    required int32 TableNo = 13;               // 桌號
+};
+
+// FGSB_AllUserInfo = 10002;                // S2C 玩家資訊，當玩家人數或狀態有變動時傳送
+message FGSB_Msg_AllUserInfo {
+    repeated FGSB_Msg_UserInfo UserInfo = 1;  // 所有玩家資訊
+};
+
+message FGSB_Msg_UserInfo {
+    required int32 UserID = 1;                  // 玩家ID，若是空位時，玩家ID = -1
+    required int32 State = 2;                   // 玩家狀態，0:空位，1:正常，2:觀戰，3:棄牌
+    required int32 SeatNo = 3;                  // 玩家座位
+    optional int32 FaceID = 4;                  // 頭像ID
+    required int64 Money = 5;                   // 玩家金錢
+    required int64 Bet_Base = 6;                // 玩家底注
+    required int64 Bet_Side = 7;                // 玩家邊注
+    required int64 Bet_Double = 8;              // 玩家加注
+    required FGSB_Msg_UserCards UserCards = 9;  // 玩家手牌
+    required int32 Winner = 10;                 // 贏家，-1:發牌前狀態，0:和，1:贏，2:輸
+    required int64 Win_Side = 11;               // 贏得邊注
+    required int64 Win_Special = 12;            // 贏得特殊牌型
+    required int64 Win_Base = 13;               // 贏得底注
+    required int64 Win_Double = 14;             // 贏得加注
+    required int64 TotalWinLose = 15;           // 玩家總輸贏金錢
+};
+
+// 牌組
+message FGSB_Msg_PokerCard {
+    required int32 Color = 1;
+    required int32 CardNumber = 2;
+};
+
+// 玩家手牌
+message FGSB_Msg_UserCards {
+    repeated FGSB_Msg_PokerCard Cards = 1;  // 牌組
+                                            // Color，0:方塊，1:梅花，2:紅桃，3:黑桃，4:小王，5:大王，6:皮子，7:未知
+                                            // Number，1~13:1(A)~K，14:A，15:小王，16:大王，17:皮子
+    required int32 Pattern = 2;             // 牌型，0:不成局，1:高牌，2:對子，3:同花，4:順子，5:三條，6:同花順，7:皇家同花順
+};
+
+// FGSB_UserBettingStart = 10003;           // S2C 玩家開始下注
+message FGSB_Msg_UserBettingStart {
+    required int32 TimeRemain = 1;  // 剩餘時間
+    required int32 Round = 2;       // 局數
+};
+
+// FGSB_Bet = 10004;                        // C2S 玩家下注，底注或邊注
+message FGSB_Msg_Bet {
+    required int32 BetType = 1;  // 下注類別，1:底注，2:邊注
+    required int64 Bet = 2;      // 下注金額
+};
+
+// FGSB_BetResult = 10005;                  // S2C 玩家下注結果
+message FGSB_Msg_BetResult {
+    required int32 SeatNo = 1;       // 下注玩家座位
+    required int32 BetType = 2;      // 下注類別，1:底注，2:邊注
+    required int64 Bet = 3;          // 下注金額
+    required int64 MoneyRemain = 4;  // 下注後玩家剩餘金錢
+    required int32 Result = 5;  // 下注結果，0:下注成功，-1:玩家餘額不足，-2:已停止下注，-3:底注超過上限，-4:押注金額<=0，-5:尚未下過底注，-6:壓注失敗
+};
+
+// FGSB_StopBettingAnimation = 10006; // S2C 播放停止下注動畫
+message FGSB_Msg_StopBettingAnimation {
+    required string ActionName = 1;  // 動畫名稱
+};
+
+// FGSB_Deal = 10007;                       // S2C 發牌
+message FGSB_Msg_Deal {
+    required FGSB_Msg_UserCards BankerCards = 1;  // 莊家手牌
+    repeated FGSB_Msg_UserInfo UserInfo = 2;      // 所有玩家資訊
+    required string ActionName = 3;               // 動畫名稱
+};
+
+// FGSB_SideSettlement = 10008;                  // S2C 邊注、特殊牌型結算
+message FGSB_Msg_SideSettlement {
+    repeated FGSB_Msg_UserInfo UserInfo = 1;  // 所有玩家資訊
+    required string ActionName = 2;           // 動畫名稱
+};
+
+// FGSB_DoubleBetStart = 10009;             // S2C 玩家開始加注
+message FGSB_Msg_DoubleBetStart {
+    required int32 TimeRemain = 1;  // 剩餘時間
+};
+
+// FGSB_DoubleBetResult = 10012;            // S2C 玩家加注結果
+message FGSB_Msg_DoubleBetResult {
+    required int32 SeatNo = 1;       // 加注玩家座位
+    required int64 MoneyRemain = 2;  // 加注後玩家剩餘金錢
+    required int32 Result = 3;       // 加注結果，1:加注成功 0:棄牌，-1:餘額不足-棄牌
+    required int64 Bet = 4;          // 加注金額
+};
+
+// FGSB_Settlement = 10013;         // S2C 總結算
+message FGSB_Msg_Settlement {
+    required FGSB_Msg_UserCards BankerCards = 1;  // 莊家手牌
+    repeated FGSB_Msg_UserInfo UserInfo = 2;      // 所有玩家資訊
+    required string ActionName = 3;               // 動畫名稱
+};
+
+// FGSB_SelectSeat = 10014;           // C2S 玩家選座位
+message FGSB_Msg_SelectSeat {
+    required int32 SeatNo = 1;  // 選取座位號
+};
+
+// FGSB_SelectSeat_OK = 10015;        // S2C 玩家選座位結果
+message FGSB_Msg_SelectSeat_OK {
+    required int32 SeatNo = 1;  // 選取座位號
+    required int32 Result = 2;  // 選取結果，0:選取成功，-1:座位已有其他玩家，-2其它錯誤
+};
+
+// FGSB_KickTip = 10016;              // S2C 踢人倒數提示
+message FGSB_Msg_KickTip {
+    required int32 Time = 1;   // 倒數時間
+    required int32 Round = 2;  // 倒數回合
+};
+
+// FGSB_UserActionCommitID = 11;             // C2S 動畫播放完成
+message FGSB_Msg_UserActionCommited {
+    required string ActionName = 1;
+};
+
+// FGSB_WatchUserCountID = 10017;      // S2C 觀戰人數
+message FGSB_Msg_WatchUserCount {
+    required int32 Count = 1;   // 觀戰人數
+}

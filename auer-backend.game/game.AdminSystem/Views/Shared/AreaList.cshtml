@@ -1,0 +1,7 @@
+﻿@{
+    var listArea = DataService.GetAreaList();
+}
+<div class="form-group">
+    <label>渠道</label>
+    @Html.DropDownList("areaID", listArea, new { @class = "form-control input-small", id = "areaID" })
+</div>

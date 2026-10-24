@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}
+data:
+  .env.production: | 
+    VUE_APP_HOST = {{ .Values.env.VUE_APP_HOST }}
+    VUE_APP_API = {{ .Values.env.VUE_APP_API }}
+    VUE_APP_API_RAW = {{ .Values.env.VUE_APP_API_RAW }}
+    VUE_APP_LOCALE = {{ .Values.env.VUE_APP_LOCALE }}
+    VUE_APP_FILE_API = {{ .Values.env.VUE_APP_FILE_API }}

@@ -1,0 +1,416 @@
+﻿
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+<style>
+    .content {
+        padding: .5%;
+        font-size: 1.2em;
+        font-family: serif;
+    }
+
+    .menu {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 1%;
+    }
+
+    .instructions {
+        flex: .4;
+    }
+
+        .instructions span {
+            padding: 2%;
+        }
+
+    .control {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .flexbox {
+        display: flex;
+        justify-content: start;
+    }
+
+    .flex_2x {
+        flex: .2;
+    }
+
+    .gi-2x {
+        font-size: 2em;
+    }
+</style>
+
+
+<div class="content">
+    <div class="menu">
+        <div class="instructions form-inline">
+            @Html.Partial("GameServer")
+            <div class="form-group">
+                <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+            </div>
+        </div>
+        <div>
+            @if (UserService.CheckToken("AddRobotServer", "post"))
+            {
+                <button type="button" class="btn btn-light" data-toggle="modal" data-target="#robotModal">新增</button>
+            }
+        </div>
+    </div>
+    <div>
+        <table id="robot_table" class="display" style="width: 100%"></table>
+    </div>
+</div>
+
+
+<!-- add Modal-->
+
+<div class="modal fade" id="robotModal" tabindex="-1" role="dialog" aria-labelledby="robotModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="robotModalLabel">渠道新增游戏</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-body">
+
+                    <div class="form-group">
+                        <label>游戏</label>
+                        <div>
+                            @Html.DropDownList("gameID_add", DataService.Game("", false), new { @class = "form-control input-medium", id = "gameID_add" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>服务器</label>
+                        <div>
+                            <select id="serverID_add" name="serverID_add" class="form-control input-medium" data-server='@Html.Raw(DataService.GameServer())'></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>开始时间</label>
+                        <div>
+                            <input type="text" id="BeginTime_add" name="BeginTime_add" class="form-control input-medium" maxlength="5" placeholder="请输入开始时间，格式：00:00" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>结束时间</label>
+                        <div>
+                            <input type="text" id="EndTime_add" name="EndTime_add" class="form-control input-medium" maxlength="5" placeholder="请输入结束时间，格式：23:59" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>最小数量</label>
+                        <div>
+                            <input type="number" id="MinCount_add" name="MinCount_add" class="form-control input-medium" placeholder="请输入最小数量" min="0" value="0" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>最大数量</label>
+                        <div>
+                            <input type="number" id="MaxCount_add" name="MaxCount_add" class="form-control input-medium" placeholder="请输入最大数量" min="0" value="0" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>最小智商</label>
+                        <div>
+                            <select id="MinLevel_add" name="MinLevel_add" class="form-control input-medium">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>最大智商</label>
+                        <div>
+                            <select id="MaxLevel_add" name="MaxLevel_add" class="form-control input-medium">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="add()">新增</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section initScripts{
+    <script>
+
+        function createTable() {
+            const url = '/RobotServerConfig/GetRobotServer'
+            const thead = [{ "sTitle": "服务器编号", "mData": "ServerID" },
+                            { "sTitle": "服务器名称", "mData": "ServerName" },
+                            { "sTitle": "开始时间", "mData": "BeginTime" },
+                            { "sTitle": "结束时间", "mData": "EndTime" },
+                            { "sTitle": "最小数量", "mData": "MinCount", "className": "text_right" },
+                            { "sTitle": "最大数量", "mData": "MaxCount", "className": "text_right" },
+                            { "sTitle": "最小智商", "mData": "MinLevel", "className": "text_right" },
+                            { "sTitle": "最大智商", "mData": "MaxLevel", "className": "text_right" },
+                            {
+                                "data": null,
+                                "mRender": function (data, type, full) {
+
+                                    var update_token = [REDACTED]"UpdateRobotServer", "post")`
+                                    var delete_token = [REDACTED]"DeleteRobotServer", "post")`
+
+                                    var details_control = ''
+                                    var delete_control = ''
+
+                                    if (update_token === 'True') {
+                                        details_control = `
+                                            <div class ="pointer details-control">
+                                            <div class ="btn-edit"></div>
+                                            <span>修改<span>
+                                           </div>`
+                                    }
+
+                                    if (delete_token === 'True') {
+                                        delete_control = `
+                                           <div class ="pointer delete-control">
+                                            <div class ="btn-trash"></div>
+                                            <span>删除<span>
+                                           </div>`
+                                    }
+
+                                    return `<div class="control">
+                                            ${details_control}
+                                            ${delete_control}<div>`
+                                }
+                            }]
+
+            const gameID = $('#gameID').val()
+            const serverID = $('#serverID').val()
+
+            const data = {
+                gameID: gameID,
+                serverID: serverID
+            }
+            createDataTable('robot', thead, url, data)
+        }
+
+        function format(d) {
+
+            var minLevel_sel = `<select id="MinLevel_${d.Id}" name="MinLevel_${d.Id}" class="form-control input-medium">`
+            for (let i = 1; i < 11; i++) {
+                minLevel_sel += `<option value="${i}">${i}</option>`
+            }
+            minLevel_sel += ' </select>'
+
+            var MinLevel = document.createElement('div');
+            MinLevel.innerHTML = minLevel_sel.trim();
+            $(MinLevel.childNodes[0]).find(`option[value=${d.MinLevel}]`).attr('selected', 'selected').prop('outerHTML')
+
+            var maxLevel_sel = `<select id="MaxLevel_${d.Id}" name="MaxLevel_${d.Id}" class="form-control input-medium">`
+            for (let j = 1; j < 11; j++) {
+                maxLevel_sel += `<option value="${j}">${j}</option>`
+            }
+            maxLevel_sel += ' </select>'
+
+            var MaxLevel = document.createElement('div');
+            MaxLevel.innerHTML = maxLevel_sel.trim();
+            $(MaxLevel.childNodes[0]).find(`option[value=${d.MaxLevel}]`).attr('selected', 'selected').prop('outerHTML')
+
+            return `  <div class ="form-body">
+                        <div class ="form-group flexbox">
+                            <label class ="flex_2x">开始时间</label>
+                            <div class ="col-md-8">
+                                <input type="text" id="BeginTime_${d.Id}" name="BeginTime_${d.Id}" class ="form-control input-medium" maxlength="5" placeholder="请输入开始时间，格式：00:00" value="${d.BeginTime}" />
+                            </div>
+                        </div>
+                        <div class ="form-group flexbox">
+                            <label class ="flex_2x">结束时间</label>
+                            <div class ="col-md-8">
+                                <input type="text" id="EndTime_${d.Id}" name="EndTime_${d.Id}" class ="form-control input-medium" maxlength="5" placeholder="请输入结束时间，格式：23:59" value="${d.EndTime}"/>
+                            </div>
+                        </div>
+                        <div class ="form-group flexbox">
+                            <label class ="flex_2x">最小数量</label>
+                            <div class ="col-md-8">
+                                <input type="number" id="MinCount_${d.Id}" name="MinCount_${d.Id}" class ="form-control input-medium" placeholder="请输入最小数量" value="${d.MinCount}" />
+                            </div>
+                        </div>
+                        <div class ="form-group flexbox">
+                            <label class ="flex_2x">最大数量</label>
+                            <div class ="col-md-8">
+                                <input type="number" id="MaxCount_${d.Id}" name="MaxCount_${d.Id}" class ="form-control input-medium" placeholder="请输入最大数量" value="${d.MaxCount}" />
+                            </div>
+                        </div>
+                        <div class ="form-group flexbox">
+                            <label class ="flex_2x">最小智商</label>
+                            <div class ="col-md-8">
+                               ${MinLevel.innerHTML}
+                            </div>
+                        </div>
+                        <div class ="form-group flexbox">
+                            <label class ="flex_2x">最大智商</label>
+                            <div class ="col-md-8">
+                                ${MaxLevel.innerHTML}
+                            </div>
+                        </div>
+                        <div class ="form-group">
+                                <button type="button" class ="btn btn-primary" onclick="update(${d.Id}, ${d.ServerID}, ${d.GameID},  ${d.Status})">保存</button>
+                        </div>
+                    </div>`
+        }
+
+        function add() {
+            var serverID = $('#serverID_add').val()
+            var gameID = $('#gameID_add').val()
+            var beginTime = $('#BeginTime_add').val()
+            var endTime = $("#EndTime_add").val()
+            var minCount = $('#MinCount_add').val()
+            var maxCount = $('#MaxCount_add').val()
+            var minLevel = $('#MinLevel_add').val()
+            var maxLevel = $('#MaxLevel_add').val()
+
+            var option = {
+                isAjax: true,
+                method: 'post',
+                data: {
+                    gameID: gameID,
+                    serverID: serverID,
+                    beginTime: beginTime,
+                    endTime: endTime,
+                    minCount: minCount,
+                    maxCount: maxCount,
+                    minLevel: minLevel,
+                    maxLevel: maxLevel,
+                    status: 1
+                },
+                isReload: false,
+                callback: function () {
+                    dataTable.ajax.reload(null, false);
+                }
+            }
+
+            $('#robotModal').modal('hide')
+            swDelConfirmUrl('AddRobotServer', '确定要新增机器人配置么？', option)
+        }
+
+        function update(id, serverID, gameID, status) {
+
+            var beginTime = $(`#BeginTime_${id}`).val()
+            var endTime = $(`#EndTime_${id}`).val()
+            var minCount = $(`#MinCount_${id}`).val()
+            var maxCount = $(`#MaxCount_${id}`).val()
+            var minLevel = $(`#MinLevel_${id}`).val()
+            var maxLevel = $(`#MaxLevel_${id}`).val()
+
+            var option = {
+                isAjax: true,
+                method: 'post',
+                data: {
+                    gameID: gameID,
+                    serverID: serverID,
+                    beginTime: beginTime,
+                    endTime: endTime,
+                    minCount: minCount,
+                    maxCount: maxCount,
+                    minLevel: minLevel,
+                    maxLevel: maxLevel,
+                    status: status
+                },
+                isReload: false,
+                callback: function () {
+                    dataTable.ajax.reload(null, false);
+                }
+            }
+            swDelConfirmUrl('UpdateRobotServer', '确定要更新么？', option);
+        }
+
+
+        $(function () {
+            fillFormData('form_search');
+            createTable()
+
+            $("#gameID_add").change(function () {
+                var servers = JSON.parse($("#serverID_add").attr("data-server"));
+                var gameID = $("#gameID_add").val();
+                var html = '';
+                for (var i = 0; i < servers.length; i++) {
+                    if (servers[i].GameID == gameID) {
+                        html += '<option value="' + servers[i].ID + '">' + servers[i].Name + '</option>';
+                    }
+                }
+                $("#serverID_add").html(html);
+            });
+            $("#gameID_add").change();
+
+            $('#robot_table tbody').on('click', '.details-control', function () {
+                var tr = $(this).closest('tr');
+                var row = dataTable.row(tr);
+
+                if (row.child.isShown()) {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                }
+                else {
+                    var tr_old = dataTable.$('tr.shown')
+                    var row_old = dataTable.row(tr_old)
+
+                    tr_old.removeClass('shown')
+                    row_old.child.hide()
+
+                    row.child(format(row.data())).show()
+                    tr.addClass('shown')
+                }
+            })
+
+
+            $('#robot_table tbody').on('click', '.delete-control', function () {
+                var tr = $(this).closest('tr');
+                var row = dataTable.row(tr);
+                var data = row.data()
+
+                var option = {
+                    isAjax: true,
+                    method: 'post',
+                    data: {
+                        gameID: data.GameID,
+                        serverID: data.ServerID,
+                        beginTime: data.BeginTime,
+                        endTime: data.EndTime,
+                        minCount: data.MinCount,
+                        maxCount: data.MaxCount,
+                        minLevel: data.MinLevel,
+                        maxLevel: data.MaxLevel,
+                        status: 0
+                    },
+                    isReload: false,
+                    callback: function () {
+                        dataTable.ajax.reload(null, false);
+                    }
+                }
+                swDelConfirmUrl('DeleteRobotServer', '确定要刪除么？', option);
+            })
+        })
+    </script>
+}

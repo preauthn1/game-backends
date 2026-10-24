@@ -1,0 +1,277 @@
+syntax = "proto3";
+
+package netproto;
+
+import "Game_Poker.proto";
+
+// [印度拉米] 玩家狀態
+enum INRM_PState {
+    INRM_PState_UNSPECIFIED = 0;
+
+    // 等待中
+	INRM_PState_Wait = 1;
+	// 遊戲中(只可抽牌，棄權)
+	INRM_PState_GameV1 = 10;
+	// 遊戲中(只可棄牌，勝利)
+	INRM_PState_GameV2  = 11;
+	// 棄牌(第一輪)
+	INRM_PState_FirstGiveup = 20;
+	// 棄牌
+	INRM_PState_Giveup = 21;
+	// 詐胡
+	INRM_PState_Bluff = 30;
+	// 勝利
+	INRM_PState_Victory = 40;
+	// 失敗
+	INRM_PState_Loss = 50;
+}
+
+// [印度拉米] 遊戲狀態
+enum INRM_GState {
+    INRM_GState_UNSPECIFIED = 0;
+
+    // 等待玩家
+    INRM_GState_WaitPlayer = 1;
+
+    // 倒數開始中
+    INRM_GState_CountDown = 10;
+
+    // 遊戲中
+    INRM_GState_Gaming = 20;
+}
+
+// [印度拉米] 遊戲封包編號
+enum INRM_GameMessageClassID {
+    INRM_SClassID_UNSPECIFIED = 0;
+
+    // 遊戲設定 (內容為 INRM_GameSetting)
+    INRM_GameSettingID = 10000;
+    // 遊戲狀態 (狀態，第幾輪，當前玩家) (內容為 INRM_GameState) (廣播)
+    INRM_GameStateID = 10010;
+    // 遊戲結果 (內容為 INRM_GameResult) (廣播)
+    INRM_GameResultID = 10020;
+    // 玩家手牌 (內容為 INRM_PlayerCards) (開始時與斷線返回時發送一次)
+    INRM_PlayerCardID = 10030;
+    // 當蓋牌區牌被抽完，會將開牌區重新洗過去 (沒內容)
+    INRM_DeckResetID = 10040;
+
+    // 遊戲倒數開始 (廣播)
+    INRM_GameStartCountDownID = 20000;
+    // 遊戲倒數取消 (廣播)
+    INRM_GameStartCountDownCancelID = 20001;
+    // 玩家動作倒數開始 (廣播) (內容為 INRM_Player)(僅 ID, ActionCD)
+    INRM_PlayerActionCountDownID = 20010;
+    // 玩家動作倒數取消 (廣播) (沒內容)
+    INRM_PlayerActionCountDownCancelID = 20011;
+    // 玩家最終更新倒數開始 (廣播) (內容為 INRM_TimeCD)
+    INRM_WaitFinalRefreshCountDownID = 20020;
+
+    // 玩家更新手牌組合 (內容為 Poker_Hand)
+    INRM_RefreshHandID = 30000;
+    // 玩家抽取亮牌區 (完成後廣播其他玩家)
+    INRM_PopOpenDeckID = 30010;
+    // 玩家抽取蓋牌區 (完成後廣播其他玩家)
+    INRM_PopCloseDeckID = 30011;
+    // 玩家棄牌 (完成後廣播其他玩家)
+    INRM_GiveupID = 30020;
+    // 玩家丟牌 (內容為 INRM_ThrowCard) (完成後廣播其他玩家)
+    INRM_ThrowCardID = 30030;
+    // 玩家宣告勝利 (內容為 INRM_Declare) (完成後廣播其他玩家)
+    INRM_DeclareID = 30040;
+    // 玩家Miss (完成後廣播其他玩家)
+    INRM_MissID = 30050;
+
+    // 玩家更新手牌組合[回覆] (內容為 INRM_RefreshHandRet)
+    INRM_RefreshHandRetID = 40000;
+    // 玩家抽取亮牌區[回覆] (內容為 INRM_PopCardRet)
+    INRM_PopOpenDeckRetID = 40010;
+    // 玩家抽取蓋牌區[回覆] (內容為 INRM_PopCardRet)
+    INRM_PopCloseDeckRetID = 40011;
+    // 玩家棄牌[回覆] (內容為 INRM_ActionRet)
+    INRM_GiveupRetID = 40020;
+    // 玩家丟牌[回覆] (內容為 INRM_ActionRet)
+    INRM_ThrowCardRetID = 40030;
+    // 玩家宣告勝利[回覆] (內容為 INRM_ActionRet)
+    INRM_DeclareRetID = 40040;
+    // 玩家Miss[回覆] (內容為 INRM_ActionRet)
+    INRM_MissRetID = 40050;
+
+    // [事件發生] 玩家更新手牌組合 (內容為 INRM_Player)(僅 ID)
+    INRM_RefreshHandHappenedID = 50000;
+    // [事件發生] 玩家抽取亮牌區 (內容為 INRM_Player)(僅 ID)
+    INRM_PopOpenDeckHappenedID = 50010;
+    // [事件發生] 玩家抽取蓋牌區 (內容為 INRM_Player)(僅 ID)
+    INRM_PopCloseDeckHappenedID = 50011;
+    // [事件發生] 玩家棄牌 (內容為 INRM_Player)(僅 ID)
+    INRM_GiveupHappenedID = 50020;
+    // [事件發生] 玩家丟牌 (內容為 INRM_ThrowCard)(多 PlayerID)
+    INRM_ThrowCardHappenedID = 50030;
+    // [事件發生] 玩家宣告勝利 (內容為 INRM_Declare)(多 PlayerID)
+    INRM_DeclareHappenedID = 50040;
+    // [事件發生] 玩家詐糊 (廣播) (內容為 INRM_Player)(僅 ID)
+    INRM_BluffHappenedID = 50041;
+    // [事件發生] 玩家Miss (內容為 INRM_Player)(僅 ID)
+    INRM_MissHappenedID = 50050;
+}
+
+// [印度拉米] 遊戲設定
+message INRM_GameSetting {
+    // 機台編號
+    int32 TableNo = 1;
+    // 等待遊戲開始時間(ms)
+    int32 StartWaitTime = 11;
+    // 每次動作等待時間(ms)
+    int32 ActionWaitTime = 12;
+    // 每一點分數
+    int64 ScorePerPoint = 13;
+    // 手牌張數
+    int64 HandCardLength = 14;
+    // 最大失敗點數
+    int64 MaxPoint = 15;
+    // 棄牌點數
+    int64 GiveupPoint = 16;
+    // 最大失誤次數
+    int32 MissLimit = 17;
+}
+
+// [印度拉米] 遊戲狀態
+message INRM_GameState {
+    // 遊戲開始時間 UnixTime
+    int64 StartAt = 1;
+    // 遊戲開始倒數 (ms)
+    int64 StartCD = 2;
+
+    // 遊戲狀態
+    INRM_GState State = 10;
+    // 遊戲第幾輪
+    int32 Round = 11;
+    // 當前為?玩家出牌
+    int32 PlayerID = 12;
+
+    // 當作鬼牌的點數
+    Poker_Rank RandJoker = 20;
+    // 蓋牌堆數量
+    int32 CloseDeckCount = 21;
+    // 亮牌堆數量
+    int32 OpenDeckCount = 22;
+    // 亮牌堆第一張
+    Poker_Card FirstOpenDeck = 23;
+
+    // 所有玩家 這邊只傳 ID, State
+    repeated INRM_Player Players= 30;
+}
+
+// [印度拉米] 玩家
+message INRM_Player {
+    // 玩家ID
+    int32 ID = 1;
+    // 玩家狀態
+    INRM_PState State = 2;
+    // 玩家手牌
+    INRM_HandResult Hands = 3;
+    // Miss次數
+    int32 Miss = 4;
+    // 動作剩餘時間 (ms)
+    int64 ActionCD = 5;
+    // 輸贏遊戲點數
+    int32 LossPoint = 10;
+    // 更新分數 (含稅)
+    int64 UpdateScore = 11;
+    // 贏錢 (不含稅)
+    int64 Win = 12;
+    // 稅
+    int64 Tax = 13;
+}
+
+// [印度拉米] 丟一張手牌
+message INRM_ThrowCard {
+    // 丟出的卡牌
+    Poker_Card Throw = 1;
+    // 當被廣播時帶入丟出的玩家
+    int32 PlayerID = 2;
+}
+
+// [印度拉米] 宣告勝利
+message INRM_Declare {
+    // 丟出的卡牌
+    Poker_Card Throw = 1;
+    // 宣告勝利的牌型
+    Poker_Hand Hands = 2;
+    // 當被廣播時帶入丟出的玩家
+    int32 PlayerID = 3;
+}
+
+// [印度拉米] 遊戲結果
+message INRM_GameResult {
+    // 贏家
+    INRM_Player Winner = 1;
+    // 輸家
+    repeated INRM_Player Losser = 2;
+}
+
+// 玩家抽牌[回覆]
+message INRM_PopCardRet {
+    bool Success = 1;
+    string Message = 2;
+    Poker_Card Card = 3;
+}
+
+// 玩家動作 [回覆]
+message INRM_ActionRet {
+    bool Success = 1;
+    string Message = 2;
+}
+
+// 玩家更新手牌 [回覆]
+message INRM_RefreshHandRet {
+    bool Success = 1;
+    string Message = 2;
+    INRM_HandResult Result = 3;
+}
+
+// 手牌整理後資訊
+message INRM_HandResult {
+    // 當前牌組算出的分數
+    int32 Point = 1;
+    // 以整理後的牌型
+    repeated INRM_Deck Decks = 2;
+}
+
+// 手牌 包含主要牌內容與玩家更新後的牌型
+message INRM_PlayerCards {
+    // 基準牌
+    repeated Poker_Card Cards = 1;
+    // 自己排
+    repeated INRM_Deck Decks = 2;
+}
+
+// 時間剩餘
+message INRM_TimeCD {
+    // 剩餘 (ms)
+    int64 CD = 1;
+}
+
+// 牌型
+enum INRM_Category {
+    INRM_Category_UNSPECIFIED = 0;
+
+    INRM_Category_1stLife = 1;
+    INRM_Category_2stLife = 2;
+    INRM_Category_PureSequence = 3;
+    INRM_Category_ImpureSequence = 4;
+    INRM_Category_Set = 5;
+
+    INRM_Category_None = 10;
+    INRM_Category_Invalid = 11;
+
+    INRM_Category_1stLifeNeeded = 21;
+    INRM_Category_2stLifeNeeded = 22;
+}
+
+// 牌組結果
+message INRM_Deck {
+    // 牌型
+    INRM_Category Category = 1;
+    // 牌堆
+    Poker_Deck Deck = 2;
+}

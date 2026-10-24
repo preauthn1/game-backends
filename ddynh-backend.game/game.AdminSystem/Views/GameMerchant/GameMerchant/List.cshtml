@@ -1,0 +1,98 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using game.Entity.Pay
+@using game.AdminSystem.Models.ViewModels
+@using game.Entity.Money
+@using game.AdminSystem
+
+@{ 
+   
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+
+<div class="row tableListPage">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                </div>
+                
+                <div class="hr-s"></div>
+
+            </form>
+
+            <div class="content">
+                <table id="myTable_table" class="display border-r" style="width:100%"></table>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section initScripts{
+    <script>
+      
+        function createTable() {
+
+            const urlEdit = '/GameMerchant/Update';
+            const url = '/GameMerchant/GetList'
+            const thead =
+                [                    
+                    { "sTitle": "系统编号", "mData": "GameMerchantID", "className": "algin-c" , "width": "7%"  },
+                    { "sTitle": "代码", "mData": "GameMerchantCode", "className": "algin-l", "width": "7%"  },
+                    { "sTitle": "名称", "mData": "GameMerchantName", "className": "algin-l" },
+                    { "sTitle": "备注", "mData": "Memo", "className": "algin-l" },
+                    { "sTitle": "维护信息", "mData": "MaintainMsg", "className": "algin-l" },                                        
+                    { "sTitle": "状态", "mData": "StatusText", "className": "algin-c" , "width": "7%" },
+                    { "sTitle": "建立时间", "mData": "CreateTimeText", "width": "12%" },
+                    { "sTitle": "修改时间", "mData": "UpdateTimeText", "width": "12%" },
+                    { "sTitle": "修改人", "mData": "UpdateBy", "className": "algin-c" },
+
+                    {
+                        "sTitle": "操作", "mData": "GameMerchantID",
+                        "render": function (data, type, row) {
+                            var html = "";
+                            html = html + String.format('<a id="" class="btn btn-sm dark" style="" href="{0}?targetId={1}">编辑</a>', urlEdit ,row.GameMerchantID); 
+                            return html;
+                        }
+                    }
+                ]
+                        
+            var platformid = $('#platformid').val();
+            
+
+            //将表单上的筛选条件、下拉选单带入api
+            const data =
+            {
+                platformid: platformid,
+            }
+
+            createDataTable('myTable', thead, url, data);
+        }
+
+
+        $(function () {            
+
+            fillFormData('form_search');
+            createTable();
+        
+        })
+
+
+
+
+
+
+    </script>
+}

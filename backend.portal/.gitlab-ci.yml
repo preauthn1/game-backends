@@ -1,0 +1,105 @@
+variables:
+  SLACK_TOKEN: [REDACTED]"
+  SLACK_BOT_NAME: "gitlab_ci_機器人"  
+  SLACK_CHANNEL: "backend_jenkins"  
+  SLACK_API_URL: "https://example.invalid/api/chat.postMessage"  
+
+image: example.invalid/library/node:16.2.0
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - dist/
+    - node_modules/
+    - .yarn
+before_script:  
+  - apt-get update -qq && apt-get install
+
+stages:
+  - dependencies
+  - build-docker
+  - deploy-to-dev
+  - deploy-to-qa
+  - send-slack-notify
+
+step-download-modules:
+  stage: dependencies
+  only:
+    - master
+    - develop
+  tags:
+    - node
+  script: 
+    - yarn config set cache-folder .yarn
+    - yarn config set ignore-engines true
+    - yarn install 
+    - yarn build
+
+step-build-docker:
+  stage: build-docker
+  only: 
+    - master
+    - develop
+  tags:
+    - node
+  #image: docker:latest
+  image: docker@sha256:c8bb6fa5388b56304dd770c4bc0478de81ce18540173b1a589178c0d31bfce90
+  cache:
+    policy: pull
+  variables:
+    DOCKER_HOST: tcp://localhost:2375
+  services:
+    - docker:18.09.7-dind
+   # - docker:19.03.2-dind
+  before_script:
+    - docker info
+    - docker login -u "admin" -p "admin123" https://example.invalid
+  script:
+    - docker build -f DockerFiles/Dockerfile -t example.invalid/target/backend/portal .
+    - docker tag example.invalid/target/backend/portal example.invalid/target/backend/portal:${CI_PIPELINE_ID}
+    - docker push example.invalid/target/backend/portal
+    - docker push example.invalid/target/backend/portal:${CI_PIPELINE_ID}
+
+step-deploy-to-dev:
+  stage: deploy-to-dev
+  image: example.invalid/alpine/helm:3.16.1
+  cache: {}
+  only: 
+    - master
+    - develop
+  tags:
+    - node
+  script:
+    - echo "Deploy test start ..."
+    - helm upgrade backend-portal ./helm-charts/backend-portal -f ./helm-charts/backend-portal/values.yaml --install --namespace target-dev 
+      --set image.tag=${CI_PIPELINE_ID}
+    - echo "Deploy test completed!"
+
+step-deploy-to-qa:
+  stage: deploy-to-qa
+  image: example.invalid/alpine/helm
+  cache: {}
+  only: 
+    - master
+    - develop
+  tags:
+    - node
+  script:
+    - echo "Deploy qa start ..."
+    - helm upgrade backend-portal ./helm-charts/backend-portal -f ./helm-charts/backend-portal/values-qa.yaml --install --namespace target-qa 
+      --set image.tag=${CI_PIPELINE_ID}
+    - echo "Deploy qa completed!"
+  when: manual
+
+#若中途失敗，發送slack通知
+step-send-slack-notify:
+  stage: send-slack-notify
+  only: 
+    - master
+    - develop
+  tags:
+    - node
+  script:
+    - var_msg="F2E pipeline 建置失敗 $CI_PROJECT_URL/pipelines/$CI_PIPELINE_ID ($CI_COMMIT_REF_NAME) " 
+    - curl -H "Content-Type:application/x-www-form-urlencoded" -X POST --data "token=[REDACTED]" "$SLACK_API_URL"      
+  when: on_failure

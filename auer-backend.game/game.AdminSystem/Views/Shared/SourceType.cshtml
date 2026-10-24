@@ -1,0 +1,62 @@
+﻿@{
+    List<game.Entity.Money.MoneySourceType> moneySourceTypeList = DataService.getMoneySourceType();//现金流通类型
+    List<SelectListItem> moneySourceGroupList = DataService.MoneySourceGroup();//现金流通类型分组
+    
+}
+<div class="form-group">
+    <label>现金流通类型分组</label>
+    @Html.DropDownList("sourceTypeGroup", moneySourceGroupList, new { @class = "form-control input-small", id = "sourceTypeGroup" })
+</div>
+<div class="form-group">
+    <label>现金流通类型</label>
+    <select class="form-control input-small" id="sourceType" name="sourceType">
+        <option data="all">所有类型</option>
+        @foreach (var item in moneySourceTypeList)
+        {
+            <option value="@item.Id" data="@item.GroupID" >@item.SourceName</option>
+        }
+    </select>
+</div>
+<script>
+    $(function () {
+        var valType = $("#sourceTypeGroup").val();
+        if (valType.trim() == "") {
+            select(1)
+        } else {
+            select(2);
+        }
+        $("#sourceTypeGroup").change(function () {
+            $("#sourceType option[data='all']").attr("selected", "selected");
+            var num = $(this).val();
+            if (num=="") {
+                select(1);
+            } else {
+                select(2);
+            }
+
+        })
+    })
+    function select(type)
+    {
+        var valType = $("#sourceTypeGroup").val();
+        $("#sourceType option").each(function () {
+            switch (type) {
+                case 1:
+                    if ($(this).val() < 10000) {
+                        $(this).hide()
+                    } else {
+                        $(this).show();
+                    }
+                    break;
+                case 2:
+                    if ($(this).attr("data") == valType) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                    break;
+            }
+        })
+        $("#sourceType option[data='all']").show();
+    }
+</script>

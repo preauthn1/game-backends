@@ -1,0 +1,282 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using game.Entity.Pay
+@using game.AdminSystem.Models.ViewModels
+@using game.Entity.Money
+
+@{ 
+    bool isDeletePermission = Html.CheckFunctionPermissionExist("PromotionEvent", "Delete");
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+
+    table td {
+        padding: 7px 10px !important;
+    }
+
+    .row {
+        margin-left: 0px;
+    }
+
+    .form-group
+    {
+        margin-right:7px;
+    }
+
+    table.border-r  td {
+        border-right: solid 1px #EEE;
+    }
+
+    .checkItem{
+        margin-left: 7px !important;
+    }
+
+    tr input[type=checkbox]
+    {
+        width:16px;
+        height:16px;
+    }
+
+    .memoText
+    {
+        color:#999;
+        margin-top:2px;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        overflow:hidden;
+        max-width:170px;
+    }
+
+    .second-row
+    {
+        margin-top:2px;
+    }
+
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+
+                <div class="form-group">
+                    <label>关键字搜寻</label>
+                    <input type="text" class="form-control input-small" name="keyword" id="keyword" placeholder="标题或备注" />
+                </div>
+
+                <div class="form-group">
+                    <label>平台</label>
+                    @Html.Partial("_DropdownPlatform", new DropdownPartialSettingViewModel(FirstOptionValueEnum.DefaultSelectAll))
+                </div>
+                
+                <div class="form-group">
+                    <label>状态</label>
+                    @Html.Partial("_DropdownActiveStatus", new DropdownPartialSettingViewModel(FirstOptionValueEnum.DefaultSelectAll))
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                </div>
+
+
+
+                <div style="margin-top:10px;">
+                    其他功能操作：
+
+                    @if (isDeletePermission)
+                    {
+                        <div class="form-group">
+                            <button type="button" class="btn btn-danger btn-sm js_delete_all"> 批次删除 </button>
+                        </div>
+                    }
+
+
+                </div>
+
+
+                <div class="hr-s"></div>
+
+            </form>
+
+            <div class="content">
+                <table id="transferInfo_table" class="display border-r" style="width:100%"></table>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section initScripts{
+    <script>
+
+        var isDeletePermissionExist = '@isDeletePermission' == 'True';
+      
+        function createTable() {
+            const url = '/PromotionEvent/AjaxGetEventList'
+            const thead =
+                [
+                    {
+                        "sTitle": "活动名称", "mData": "Title", "width": "10%",
+                        "render": function (data, type, row) {
+                            var html = "";
+                            html = html + String.format('<div>{0}</div> <div class="memoText" title="{2}" >{1}</div>', row.Title , row.Memo , row.Memo);
+                            return html;
+                        }
+                    },
+                    { "sTitle": "开启状态", "mData": "StatusText", "className": "algin-c" },
+                    {
+                        "sTitle": "平台名称", "mData": "PlatformName",
+                        "render": function (data, type, row) {
+                            var html = String.format("<div title='{1}'>{0}</div>" , row.PlatformName , row.PlatformID);
+                            return html;
+                        }
+                    },
+                    { "sTitle": "分配渠道数", "mData": "TotalAreaCount", "className": "algin-c" ,"width": "7%"},
+                    { "sTitle": "弹窗显示", "mData": "IsHomePageVisible", "className": "algin-c" ,"width": "7%"},
+                    { "sTitle": "公告显示", "mData": "IsAnnounementPageVisible", "className": "algin-c" ,"width": "7%"},
+                    {
+                        "sTitle": "起始-结束时间", "mData": "EventStartTime",
+                        "render": function (data, type, row) {
+                            var html = "";
+                            html = html + String.format('<div>{0}</div> <div class="second-row">{1}</div>', row.EventStartTime , row.EventEndTime);
+                            return html;
+                        }
+                    },
+                    { "sTitle": "修改时间", "mData": "UpdateTime" },
+                    { "sTitle": "修改人员", "mData": "UpdateBy", "width": "7%" },
+                    {
+                        "sTitle": "操作", "mData": "Title",
+                        "render": function (data, type, row) {
+                            var html = "";
+                            html = html + String.format('<a id="" class="btn btn-sm dark" style="" href="/PromotionEvent/Update?eventId={0}">编辑</a>', row.EventId);
+                            html = html + String.format('<a id="" class="btn btn-sm dark" style="" href="/PromotionEvent/UpdateEventItem?eventId={0}&type={1}">首页弹窗设定</a>', row.EventId , '@((int)PromotionEventPositionTypeEnum.HomePage)');
+                            html = html + String.format('<a id="" class="btn btn-sm dark" style="" href="/PromotionEvent/UpdateEventItem?eventId={0}&type={1}">公告页设定</a>', row.EventId , '@((int)PromotionEventPositionTypeEnum.MailPage)');
+                            html = html + String.format('<a id="" class="btn btn-sm dark" style="" href="/PromotionEvent/UpdateAreaMapping?eventId={0}">渠道对应设定</a>', row.EventId);
+                            
+                            if(isDeletePermissionExist)
+                            {
+                                //既然有批次刪除 此按鈕就不需要了
+                                //html = html + String.format('<a id="" class="btn btn-sm dark" style="" href="/PromotionEvent/Delete?eventId={0}" onclick="return confirm(\'是否确定删除?\')" >删除</a>', row.EventId);
+                            }
+
+                            return html;
+                        }
+                    },
+                    {
+                        "sTitle": "<input type='checkbox' id='selectAll' class='selectAll' ></input>" , "mData": "Title", "className": "algin-l" ,
+                        "render": function (data, type, row) {
+
+                            var html = "";
+
+                            if(isDeletePermissionExist)
+                            {
+                                html = html + String.format('<input type="checkbox" name="checkItem" class="checkItem" attr-id="{0}" />', row.EventId);
+                            }
+
+                            return html;
+                        }
+                    }
+                ]
+                        
+            var platformid = $('#platformid').val();
+            var areaID = $("#areaID").val();
+            var status = $("#status").val();
+            var keyword = $("#keyword").val();
+            
+
+            //将表单上的筛选条件、下拉选单带入api
+            const data =
+            {
+                platformid: platformid,
+                areaID: areaID,
+                status: status,
+                keyword: keyword
+            }
+
+            createDataTable('transferInfo', thead, url, data);
+        }
+
+
+        $(function () {            
+            fillFormData('form_search');
+            createTable();
+
+
+            $("div.content").on("click" , ".selectAll" , function () {
+
+                $('input.checkItem').not(this).prop('checked', this.checked);
+            });
+
+
+            $(".js_delete_all").click(function () {
+                
+                var checkValues = '';
+                
+                $(".checkItem").each(function (index) {
+                    var isCheck = $(this).is(':checked');
+                    if (isCheck) {
+                        var id = $(this).attr('attr-id');
+                        checkValues = checkValues + "," + + id;
+                    }
+                });
+
+                if (checkValues == '') {
+                    alert('请勾选至少一笔');
+                    return;
+                }
+
+                if (confirm('是否确定删除所有选择项目?'))
+                {                    
+                    $.ajax({
+                        cache: false,
+                        url: '/PromotionEvent/AjaxDeleteMultiple',
+                        type: 'POST',
+                        data:
+                        {
+                            eventIds : checkValues
+                        },
+                        success: function (data) {
+                                                        
+                            if (data.IsSuccess)
+                            {
+                                alert(data.Message);
+                                createTable();
+                            }
+                            else
+                            {
+                                alert(data.Message);
+                            }
+
+                        },
+                        error: function (err) {
+                            swal({
+                                type: 'error',
+                                title: '操作失败',
+                                text: err
+                            })
+                        }
+                    });
+                }
+
+
+            });
+
+
+        })
+
+
+
+
+
+
+    </script>
+}

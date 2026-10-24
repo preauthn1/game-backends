@@ -1,0 +1,862 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Helper
+
+@model PagedList<game.Entity.Money.ConvertLog>
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/jquery.table2excel.js")"></script>
+}
+@{
+    var liConvertGateway = DataService.GetConvertGateway();
+}
+
+<style>
+    .pointer {
+        cursor: pointer;
+    }
+
+    .aButton {
+        margin: 1%;
+    }
+
+    .convertLog__toolbar {
+        margin: 10px 0 5px 0;
+    }
+
+    .convertLog__toolbar_contain {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .convert__total_contain {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+    }
+
+        .convert__total_contain .title {
+            margin-right: 4px;
+        }
+
+        .convert__total_contain .red {
+            color: red;
+        }
+
+    .update_Red {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: red;
+    }
+
+    .update_Green {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: #58ae63;
+    }
+
+    .fontSize {
+        font-size: 16px;
+        font-weight: bold;
+        color: red;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_userPartial")
+                @Html.Partial("_platformSelect", false)
+                <div class="form-group">
+                    <label>兑换状态</label>
+                    <select class="form-control input-small" id="Status" name="Status">
+                        <option value="">不限</option>
+                        @foreach (var item in Enum.GetValues(typeof(game.Entity.Money.ConvertLogStatus)))
+                        {
+                            if (item.ToString().ToLower() == "exchange")
+                            {
+                                <option value="@item.ToString().ToLower()" selected>@item.GetDisplayName()</option>
+                            }
+                            else
+                            {
+                                <option value="@item.ToString().ToLower()">@item.GetDisplayName()</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>支付方式</label>
+                    <select class="form-control input-small" id="convertType" name="convertType">
+                        <option value="">不限</option>
+                        <option value="1">支付宝</option>
+                        <option value="2">银联</option>
+                        <option value="3">微信</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>真实姓名</label>
+                    <input type="text" class="form-control input-small " id="realName" name="realName" placeholder="真实姓名">
+                </div>
+                <div class="form-group">
+                    <label>IP地址</label>
+                    <input type="text" class="form-control input-small " id="ipAddress" name="ipAddress" placeholder="IP地址">
+                </div>
+                <div class="form-group">
+                    <label>创建时间</label>
+                    <input type="text" class="form-control " style="width:180px" id="beginTime" name="beginTime" value="@DateTime.Today.ToString("yyyy-MM-dd HH:mm")" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="endTime" name="endTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>操作人</label>
+                    <input type="text" class="form-control input-small " id="operatorName" name="operatorName" placeholder="操作人">
+                </div>
+                <div class="form-group">
+                    <label>第三方</label>
+                    <select class="form-control input-small" id="Gwid" name="Gwid">
+                        <option value="">请选择</option>
+                        @foreach (var item in liConvertGateway)
+                        {
+                            <option value="@item.Id.ToString()">@item.GatewayName</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>兑换金额</label>
+                    <input type="text" class="form-control input-small " id="minAmount" name="minAmount" placeholder="最低金额">
+                    到
+                    <input type="text" class="form-control input-small " id="maxAmount" name="maxAmount" placeholder="最高金额">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" id="searchLog" onclick="createTable()"> 搜 索 </button>
+                    <button type="button" class="btn btn-default" onclick="exportexcel()"> 汇出本页 </button>
+                </div>
+            </form>
+            <form id="formSubmit" method="get" action="">
+                <input type="hidden" name="status" id="status" value="">
+                <input type="hidden" name="batch" id="batch" value="false">
+
+                <div class="convertLog__toolbar">
+
+
+                    <div>
+
+                        @if (@UserService.CheckToken("ModifyConvertLogStatusRefused", "get"))
+                        {
+                            <button type="button" id="btnRefused" class="btn btn-primary" data-toggle="modal" onclick="checkConvertLogStatusRefused()">
+                                批量审核／退还
+                            </button>
+                        }
+
+                        <div class="hr-s"></div>
+
+                    </div>
+
+                    <div class="convertLog__toolbar_contain">
+                        <div>
+                            @*@if (@UserService.CheckToken("ModifyConvertLogStatusPassed", "get"))
+                            {
+                                @Html.ButtonWithRight(id: "btnPassed", type: "button", value: "批量通过", action: "ModifyConvertLogStatusPassed", cssName: "dark")
+                            }*@
+
+                           
+                        </div>
+                        <div class="convert__total_contain">
+                            <div class="title">总兑换金额:</div>
+                            <div id="TotalConvertAmount" class="red">0</div>
+                        </div>
+                        <div class="convert__total_contain">
+                            <div class="title">IOS总兑换:</div>
+                            <div id="TotalConvertIOSAmount" class="red">0</div>
+                        </div>
+                        <div class="convert__total_contain">
+                            <div class="title">安卓总兑换:</div>
+                            <div id="TotalConvertAndroidAmount" class="red">0</div>
+                        </div>
+                        <div class="convert__total_contain">
+                            <div class="title">总手续费:</div>
+                            <div id="TotalTaxAmount" class="red">0</div>
+                        </div>
+
+                        <div class="convert__total_contain">
+                            <div class="title">支付寶兑换:</div>
+                            <div id="Alipay" class="red">0</div>
+                        </div>
+
+                        <div class="convert__total_contain">
+                            <div class="title">支付寶手续费:</div>
+                            <div id="AlipayTax" class="red">0</div>
+                        </div>
+
+
+                        <div class="convert__total_contain">
+                            <div class="title">銀行兑换:</div>
+                            <div id="Unionpay" class="red">0</div>
+                        </div>
+
+                        <div class="convert__total_contain">
+                            <div class="title">銀行手续费:</div>
+                            <div id="UnionpayTax" class="red">0</div>
+                        </div>
+
+                        <div class="convert__total_contain">
+                            <div class="title">提现用户数(去重):</div>
+                            <div id="TotalConvertUsers" class="red">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <table id="convert_table" class="display" style="width:100%"></table>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <!-- Modal -->
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">请选择变更理由</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="convertLogId" id="convertLogId" value="0">
+                    <input type="hidden" name="convertLogStatus" id="convertLogStatus" value="">
+                    @foreach (var item in Enum.GetValues(typeof(game.Entity.Money.ConvertLogStatus)))
+                    {
+                        if (item.GetDisplay())
+                        {
+                            int myNumberValue = item.GetHashCode();
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"
+                                           id="@item.ToString().ToLower()"
+                                           class="target"
+                                           name="SelectedFruits"
+                                           value="@item.ToString().ToLower()" />
+
+                                    @item.GetDisplayName()
+
+                                    @if((myNumberValue) == ((int)game.Entity.Money.ConvertLogStatus.ReturnMoney)){
+                                        
+                                        <span style="color:#bf1a1a;">
+                                            (*勾選此会同时退还兑换之预扣金币)
+                                        </span>
+                                    }
+
+                                </label>
+                            </div>
+                        }
+                    }
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="manual" class="target" name="SelectedFruits" value="" />手动支付
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            备注
+                            <input type="text"
+                                   id="memo"
+                                   name="memo"
+                                   value="" />
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="ModifyConvertLogStatus()">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="passedModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">请选择兑换厂商</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="convertLogId" id="convertLogId" value="0">
+
+                    @foreach (var item in liConvertGateway)
+                    {
+                        <div class="checkbox" data-type="@item.ConvertType">
+                            <label>
+                                <input type="checkbox"
+                                       id="user@example.invalid()"
+                                       class="convert"
+                                       name="SelectedFruits1"
+                                       value="@item.Id.ToString()" />
+                                @item.GatewayName
+                            </label>
+                        </div>
+                    }
+                    <div class="checkbox">
+                        <label>
+                            备注
+                            <input type="text"
+                                   id="memo"
+                                   name="memo"
+                                   value="" />
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="ModifyConvertLogStatusPassed()">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+
+    <div class="modal fade" id="memoModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">请输入备注</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="convertLogId" id="convertLogId" value="0">
+                    <div class="form-group">
+                        <label for="recipient-name" class="control-label">备注</label>
+                        <input type="text" class="form-control" id="memo" name="memo" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="ModifyConvertLogMemo()">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section initScripts{
+    <script>
+        function setConvertLogStatus(id, status, memo) {
+            $('#batch').val(false);
+            $('#exampleModal #convertLogId').val(id);
+            $('#exampleModal #convertLogStatus').val(status);
+            $('#exampleModal #memo').val(memo);
+
+
+            var checkbox = $('#exampleModal .target:checked');
+            $(checkbox).each((index, item) => {
+                $(item).attr('checked', false);
+            });
+            $.uniform.update(checkbox);
+        }
+
+        function setConvertLogStatusPassed(id, userid, convertType, memo, bankCodeID) {
+            var convertLogId = id;
+            var withdrawalType;
+            var withdrawalGateway;
+            var withdralalList = {};
+
+            funStep1 = (len) => {
+                var step1_list = { '1': '人工转帐' };
+                var isDisable = (len > 0) ? '' : 'disabled';
+
+                return {
+                    icon: 'info',
+                    title: '转账方式',
+                    text: '请选择转账方式',
+                    html: '<select class="swal2-select" style="display: flex;" id="payType">' +
+                            '<option value="1">人工转帐</option>' +
+                            '<option value="2"' + isDisable +'>代付下发</option>' +
+                            '</select>',
+                    preConfirm: () => {
+                        withdrawalType = $('#payType').val();
+                        if (2 == withdrawalType) {
+                            swal.insertQueueStep(funSelectWithdrawalType())
+                        }
+                    }
+                }
+            }
+
+            funSelectWithdrawalType = () => {
+                return {
+                    icon: 'info',
+                    title: '代付方式',
+                    text: '请选择代付方式',
+                    input: 'select',
+                    inputOptions: withdralalList,
+                    preConfirm: (value) => {
+                        withdrawalGateway = value;
+                    }
+                }
+            }
+
+            swal.queue([{
+                icon: 'info',
+                title: '检测代付方式',
+                confirmButtonText: '检测代付方式',
+                preConfirm: () => {
+                    return new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: '/Money/GetConvertGateway?convertType=' + convertType + '&userId=' + userid + '&bankCodeID=' + bankCodeID,
+                            method: 'GET',
+                            success: (data, status, xhr) => {
+                                $.each(data, (ind, val) => {
+                                    withdralalList[val.Id] = val.GatewayName;
+                                });
+
+                                swal.insertQueueStep(funStep1(data.length));
+                                resolve();
+                            },
+                            error: (xhr, status, error) => {
+                                reject(status + ': ' + error);
+                            }
+                        });
+                    });
+                }
+            }]).then((result) => {
+                if (result.value) {
+                    var memo = $('#passedModal #memo').val();
+                    var gwid = withdrawalGateway == undefined ? 0 : withdrawalGateway;
+                    
+                    var option = {
+                        isAjax: true,
+                        isReload: false,
+                        callback: function () {
+                            dataTable.ajax.reload(null, false);
+                        }
+                    }
+                    swDelConfirmUrl(`ModifyConvertLogStatusPassed?id=` + id + `&memo=` + memo + `&gwid=` + gwid, '确定要审核通过么？', option);
+                }
+            })
+        }
+
+        function setConvertLogMemo(id, memo) {
+            $('#memoModal #convertLogId').val(id);
+            $('#memoModal #memo').val(memo);
+        }
+
+        function getCheckboxIds_parameter() {
+            const checkboxes = Array.from($('.checkboxes:checked'));
+            const defaultStatus = checkboxes[0].dataset.status;
+
+            let ids = checkboxes.map((checkbox, i) => {
+                return checkbox.value
+            })
+
+            ids = [].concat.apply([], [ids || []]);
+            let id_parameter = 'id=' + ids.join('&id=');
+            return id_parameter
+        }
+
+        function ModifyConvertLogStatus() {
+            var convertLogId = $('#exampleModal #convertLogId').val();
+            var convertLogStatus = $('#exampleModal #convertLogStatus').val();
+            var target = $('#exampleModal .target:checked');
+            var memo = $('#exampleModal #memo').val();
+
+            if (target.size() < 1) {
+                swal("请选择理由！","warning")
+                return false;
+            }
+            var batch = $('#batch').val();
+            $('#exampleModal').modal('hide');
+
+            var option = {
+                isAjax: true,
+                isReload: false,
+                callback: function () {
+                    dataTable.ajax.reload(null, false);
+                }
+            }
+            if (batch === 'true') {
+                var id_parameter = getCheckboxIds_parameter();
+                swDelConfirmUrl('ModifyConvertLogStatusRefused?' + id_parameter + '&status=' + target.val() + '&memo=' + memo, '确定要变更此条兑换记录么？', option);
+            } else {
+                swDelConfirmUrl('ModifyConvertLogStatusRefused?id=' + convertLogId + '&status=' + target.val() + '&memo=' + memo, '确定要变更此条兑换记录么？', option);
+            }
+        }
+
+        function checkConvertLogStatusRefused() {
+            if ($('.checkboxes:checked').size() < 1) {
+                return false;
+            }
+
+            $('#batch').val(true);
+            $('#exampleModal').modal('show');
+        }
+
+        function ModifyConvertLogMemo() {   
+            const convertLogId = $('#memoModal #convertLogId').val();          
+            const memo = $('#memoModal #memo').val();
+
+            $('#memoModal').modal('hide');
+
+            var option = {
+                isAjax: true,
+                isReload: false,
+                callback: function () {
+                    dataTable.ajax.reload(null, false);
+                }
+            }      
+         
+            swDelConfirmUrl('ModifyConvertLogStatusMemo?id=' + convertLogId + '&memo=' + memo, '确定要修改备注么？', option);
+        }
+
+        function createTable() {
+            const url = '/Money/GetConvertLog'
+            const thead = [
+                            {
+                                "data": null,
+                                "sTitle": `<input type="checkbox" class="group-checkable" data-set=".checkboxes">`,
+                                'render': function (data, type, full, meta) {
+                                    return `<input type="checkbox" class="checkboxes" value="${data.ID}" name="id" data-status='WaitAuditing'>`;
+                                }
+                            },
+                            {
+                                "sTitle": "用户ID", "mData": "UserID",
+                                "render": function (data, type, row) {
+                                    return `<a class="link" target="_blank" href="/UserInfo/Search?userId=${data}&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">${data}</a>`
+                                }
+                            },
+                           { "sTitle": "兑换編號", "mData": "ID", "className": "text_right" },
+                           {
+                               "sTitle": "兑换金额", "mData": "Amount", "className": "text_right",
+                               "render": function (data, type, row) {
+                                   return '<span class="fontSize">' + Math.abs(data) + '<span>';
+                               }
+                           },
+                           { "sTitle": "剩余金额", "mData": "CashAmount", "className": "text_right" },
+                           { "sTitle": "手续费", "mData": "TaxAmount", "className": "text_right" },
+                           { "sTitle": "保險箱金币", "mData": "BankAmount", "className": "text_right" },
+                           { "sTitle": "提现姓名", "mData": "RealName" },
+                           {
+                               "sTitle": "提现账户", "mData": "Account",
+                               "render": function (data, type, row) {
+                                   if (row.Suspicious == 1) { //嫌疑帳號
+                                       return "<span class='update_Red'>" + data + "</span>";
+                                   }
+                                   return data;
+                               }
+                           },
+                           { "sTitle": "提现银行", "mData": "BankName" },
+                           { "sTitle": "累计兑换金额", "mData": "TotalConvert", "className": "text_right" },
+                           { "sTitle": "总充值金额", "mData": "TotalCharge", "className": "text_right" },
+                           {
+                               "sTitle": "充提差额", "mData": "ChargeConvertRate", "className": "text_right",
+                               "render": function (data, type, row) {
+                                   if (data < 0) {
+                                       return '<span class="update_Red">' + data + '<span>'
+                                   }
+                                   return '<span class="update_Green">' + data + '<span>'
+                               }
+                           },
+                           { "sTitle": "提交时间", "mData": "CreateTime" },
+                           {
+                               "title": "到账时间",
+                               "data": "LastUpdateTime",
+                               "mRender": function (data, type, full) {
+                                   {
+                                       return full.Status === 3 || full.Status === 11 ? data : ''
+                                   }
+                               }
+                           },
+                           {
+                               "sTitle": "代理", "mData": "ClubAgent",
+                               "render": function (data, type, row) {
+
+                                   let agent_control = `
+                                            <div>
+                                            <div class ="btn-check_n"></div>
+                                            </div>`
+
+                                   if (data === 0) {
+                                       agent_control = `
+                                            <div>
+                                            <div class ="btn-times"></div>
+                                            </div>`
+                                   }
+                                   return `<div class="control">${agent_control}<div>`
+                               }
+                           },
+                           { "sTitle": "备注", "mData": "Memo" },
+                           { "sTitle": "状态", "mData": "StatusName" },
+                           {
+                               "title": "操作",
+                               "data": null,
+                               "mRender": function (data, type, full) {
+                                   var id = data.ID
+                                   var status = data.Status;
+                                   var userId = data.UserID;
+                                   var memo = (data.Memo != undefined ? data.Memo : '');
+                                   var convertType = data.ConvertType;
+                                   var verify_token = [REDACTED]"ModifyConvertLogStatusPassed", "get")`;
+                                   var successed_token = [REDACTED]"FinishedConvertLogSuccessed", "get")`;
+                                   var refused_token = [REDACTED]"ModifyConvertLogStatusRefused", "get")`;
+
+                                   var verify_control = '';
+                                   var successed_control = '';
+                                   var refused_control = '';
+                                   var memo_control = '';
+                                   var bankCodeID = data.BankCodeID;
+
+                                   if (verify_token === 'True' && status === 0) {
+                                       //data-toggle="modal" data-target="#passedModal"
+                                       verify_control = `
+                                            <button type="button" class ="btn btn-sm dark" onclick="setConvertLogStatusPassed(${id}, ${userId}, ${convertType}, '${memo}', '${bankCodeID}')">
+                                                审核
+                                            </button>`
+                                   }
+
+                                   if (successed_token === 'True' && (status === 2 || status === 99 || status === 100)) {
+                                       successed_control = `
+                                           <button type="button" class ="btn btn-sm dark" onclick="FinishedConvertLogSuccessed(${id})">
+                                                打款
+                                            </button>`
+                                   }
+
+
+                                   if (refused_token === 'True' && status !== 3 && status !== 11) {
+                                       refused_control = `
+                                           <button type="button" class ="btn btn-sm dark aButton" data-toggle="modal" data-target="#exampleModal" onclick="setConvertLogStatus(${id}, ${status}, '${memo}')">
+                                                拒绝
+                                           </button>`
+                                   }
+
+
+                                   if (refused_token === 'True' && status === 98) {
+                                       refused_control = `
+                                           <button type="button" class ="btn btn-sm dark aButton" data-toggle="modal" data-target="#exampleModal" onclick="setConvertLogStatus(${id}, ${status}, '${memo}')">
+                                                变更
+                                           </button>`
+                                   }
+
+                                   memo_control = `
+                                       <button type="button" class ="btn btn-sm aButton" data-toggle="modal" data-target="#memoModal" onclick="setConvertLogMemo(${id}, '${memo}')">
+                                            备注
+                                       </button>`
+
+                                   return `<div class="control">
+                                       ${verify_control}
+                                       ${successed_control}
+                                       ${refused_control}
+                                       ${memo_control}
+                                       <div>`
+                               }
+                           },
+                           { "sTitle": "操作人 ", "mData": "Operator" }, 
+                           { "sTitle": "代付平台 ", "mData": "GatewayName" }, ]
+
+
+            const loginName = $('#loginName').val()
+            const userID = $('#userID').val()
+            const platformids = $('#platformids').val()
+            const Status = $('#Status').val()
+            const convertType = $('#convertType').val()
+            const realName = $('#realName').val()
+            const ipAddress = $('#ipAddress').val()
+            const beginTime = $('#beginTime').val()
+            const endTime = $('#endTime').val()
+            const operatorName = $('#operatorName').val()
+            const gwid = $('#Gwid').val()
+            const minAmount = $('#minAmount').val()
+            const maxAmount = $('#maxAmount').val()
+
+            const data = {
+                loginName,
+                userID,
+                platformids,
+                Status,
+                convertType,
+                realName,
+                ipAddress,
+                beginTime,
+                endTime,
+                operatorName,
+                gwid,
+                minAmount,
+                maxAmount
+                }
+
+            var callback = function (json) {
+                var data = JSON.parse(json.TransData)
+
+                if (data) {
+                    $("#TotalConvertAmount").text(data.TotalConvertAmount / 100)
+                    $("#TotalConvertIOSAmount").text(data.TotalConvertIOSAmount / 100)
+                    $("#TotalConvertAndroidAmount").text(data.TotalConvertAndroidAmount / 100)
+                    $("#TotalTaxAmount").text(data.TotalTaxAmount / 100)
+                    $("#Alipay").text(data.Alipay / 100)
+                    $("#AlipayTax").text(data.AlipayTax / 100)
+                    $("#Unionpay").text(data.Unionpay / 100)
+                    $("#UnionpayTax").text(data.UnionpayTax / 100)
+                    $("#TotalConvertUsers").text(data.TotalConvertUsers)
+                }
+            }
+
+            createDataTable('convert', thead, url, data, callback)
+        }
+
+        function ModifyConvertLogStatusPassed() {
+            const convertLogId = $('#passedModal #convertLogId').val();
+            const target = $('#passedModal .convert:checked');
+            const memo = $('#passedModal #memo').val();
+            const gwid = target.val() == undefined ? 0 : target.val();
+            const batch = $('#batch').val();
+
+            $('#passedModal').modal('hide');
+
+            var option = {
+                isAjax: true,
+                isReload: false,
+                callback: function () {
+                    dataTable.ajax.reload(null, false);
+                }
+            }
+
+            if (batch === 'true') {
+                const id_parameter = getCheckboxIds_parameter();
+                swDelConfirmUrl('ModifyConvertLogStatusPassed?' + id_parameter + `&memo=` + memo + `&gwid=` + gwid, '确定要审核通过么？', option);
+            } else {
+                swDelConfirmUrl(`ModifyConvertLogStatusPassed?id=` + convertLogId + `&memo=` + memo + `&gwid=` + gwid, '确定要审核通过么？', option);
+            }
+        }
+
+        function checkConvertLogStatusPassed() {
+            if ($('.checkboxes:checked').size() < 1) {
+                return false;
+            }
+
+            $('#batch').val(true);
+            $('#passedModal').modal('show');
+        }
+
+        function FinishedConvertLogSuccessed(id) {
+            $.ajax({
+                cache: false,
+                dataType: 'json',
+                url: 'FinishedConvertLogSuccessed',
+                data: { id: id },
+                contentType: "application/x-www-form-urlencoded",
+                type: 'post',
+                success: function (val) {
+                    dataTable.ajax.reload(function (json) {
+                        var totalConvertAmount = json.totalConvertAmount
+                        var totalTaxAmount = json.totalTaxAmount
+
+                        $("#TotalConvertAmount").text(totalConvertAmount)
+                        $("#TotalTaxAmount").text(totalTaxAmount)
+                    }, false);
+                },
+                error: function (err) {
+                    dataTable.ajax.reload(null, false);
+                }
+            });
+        }
+
+        $(function () {
+            var status = `@ViewBag.Status`
+            if (status) {
+                if (status == 'autopaymentfailed') {
+                    $("#beginTime").val(`@DateTime.Today.AddDays(-5).ToString("yyyy-MM-dd HH:mm")`);
+                }
+                $("#Status").val(status);
+            }
+
+            createTable()
+            fillFormData('form_search');
+
+            /*
+            $('#btnPassed').click(function () {
+                if ($('.checkboxes:checked').size() < 1) {
+                    return false;
+                }
+
+                const id_parameter = getCheckboxIds_parameter();
+
+                var option = {
+                    isAjax: true,
+                    method: 'get',
+                    isReload: false,
+                    callback: function () {
+                        dataTable.ajax.reload(null, false);
+                    }
+                }
+                swDelConfirmUrl(`ModifyConvertLogStatusPassed?${id_parameter}`, '确定要审核通过么？', option);
+            });
+            */
+
+            $('.group-checkable').change(function () {
+                var set = $(this).attr('data-set');
+                var checked = $(this).is(':checked');
+                $(set).each(function () {
+                    if (checked) {
+                        $(this).attr('checked', true);
+                    } else {
+                        $(this).attr('checked', false);
+                    }
+                });
+                $.uniform.update(set);
+            });
+
+            $('#exampleModal .checkbox').change(function (data) {
+                var checkbox = $('.target');
+                var checked = $(data.target).is(':checked');
+                var value = data.target.value;
+
+                $(checkbox).each((index, item) => {
+                    if (checked) {
+                        if (item.value !== value) {
+                            $(item).attr('checked', false);
+                        }
+                    }
+                });
+                $.uniform.update(checkbox);
+            });
+
+            $('#passedModal .checkbox').change(function (data) {
+                var checkbox = $('.convert');
+                var checked = $(data.target).is(':checked');
+                var value = data.target.value;
+
+                $(checkbox).each((index, item) => {
+                    if (checked) {
+                        if (item.value !== value) {
+                            $(item).attr('checked', false);
+                        }
+                    }
+                });
+                $.uniform.update(checkbox);
+            });
+        })
+
+		function exportexcel() {
+			$("#convert_table").table2excel({
+				exclude: ".noExl",
+				name: "ConvertLog",
+				filename: "ConvertLog" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+				fileext: ".xls",
+				exclude_img: true,
+				exclude_links: true,
+				exclude_inputs: true,
+			});
+        }
+    </script>
+}

@@ -1,0 +1,177 @@
+﻿@using FW.Core.Web.Mvc
+@using FW.Core.Helper;
+@using game.Entity.Customer;
+
+@model PagedList<game.Entity.Users.QuestionLog>
+@{
+    var status = ViewBag.Status;
+    List<QuestionType> typeList = ViewBag.TypeList as List<QuestionType>;
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_PlatformSelect", false)
+
+
+                <div class="form-group">
+                    <label>问题类型</label>
+                    <select class="form-control input-small" id="questionType" name="questionType">
+                        <option value="">--不限--</option>
+                        @foreach (var item in typeList)
+                        {
+                            <option value="@item.Id">@item.TypeName</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>消息状态</label>
+                    <select id="msgType" name="Status" class="form-control input-small">
+                        <option value="">--不限--</option>
+                        <option value="0" @(status == 0 ? "selected" : "")>未处理</option>
+                        <option value="1" @(status == 1 ? "selected" : "")>已处理</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>处理人</label>
+                    <input type="text" class="form-control input-small" id="handelPerson" name="handelPerson" placeholder="处理人">
+                </div>
+
+                <div class="form-group">
+                    <label>创建时间</label>
+                    <input type="text" class="form-control " style="width:180px" id="StartTime" name="StartTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@Convert.ToDateTime(DateTime.Now.AddDays(-2).ToShortDateString()).ToString("yyyy-MM-dd HH:mm")">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="EndTime" name="EndTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <button type="submit" id="searchLogon" class="btn btn-default"> 搜 索 </button>
+                </div>
+            </form>
+            <form id="formSubmit" method="get" action="">
+                <div class="table-toolbar" style="margin:10px 0 5px 0;">
+                    <div class="btn-group">
+                        @Html.ButtonWithRight(id: "btnPassed", type: "submit", value: "批量修改为已处理", action: "ModifyQuestionLog", cssName: "dark")
+                    </div>
+                </div>
+                <div style="float:right; font-size:12px;">自动更新倒数时间: <span style="color:red;" id="uCounter">00</span>s</div>
+                <div class="table-scrollable">
+                    <table class="table table-striped table-bordered table-hover ">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" class="group-checkable" data-set=".checkboxes">
+                                </th>
+                                <th>编号</th>
+                                <th>所属平台</th>
+                                <th>问题類型</th>
+                                <th>问题</th>
+                                <th>状态</th>
+                                <th>IP地址</th>
+                                <th>创建时间</th>
+                                <th>处理时间</th>
+                                <th>处理人ID</th>
+                                <th>处理人</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (game.Entity.Users.QuestionLog m in Model.PageData)
+                            {
+                                <tr>
+                                    <td><input type="checkbox" class="checkboxes" value="@m.Id" name="Id"></td>
+                                    <td>@m.Id</td>
+                                    <td>@m.User.Area.Platform.Name</td>
+                                    <td>@typeList.Find(x => x.Id == m.QuestionType).TypeName</td>
+                                    @if(m.Question.Length > 16)
+                                    {
+                                        <td>@(m.Question.Substring(0, 16))...</td> 
+                                    }
+                                    else
+                                    {
+                                        <td>@m.Question</td> 
+                                    }
+                                
+                                    <td>@FW.Core.Helper.Enum.EnumExtensions.GetDisplayName(m.Status)</td>
+                                    <td>@m.IPAddress</td>
+                                    <td>@m.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>@(m.Status == game.Entity.Users.QuestionStatus.Handled ? m.HandleTime.ToString("yyyy-MM-dd HH:mm:ss") : "")</td>
+                                    <td>@(m.Status == game.Entity.Users.QuestionStatus.Handled ? m.HandlePerson : "")</td>
+                                    <td>@(m.Status == game.Entity.Users.QuestionStatus.Handled ? m.DisplayName : "")</td>
+                                    <td>
+                                        @Html.LinkWithRight(action: "ReplyLogonQuestionMessage", href: "/UserQuestionLog/ReplyLogonQuestionMessage/" + m.Id)
+                                        @if (m.Status == game.Entity.Users.QuestionStatus.UnHandled)
+                                        {
+                                            @*@Html.LinkWithRight(action: "DeleteQuestionLogById", onclick: "return DelConfirmUrl('/UserQuestionLog/DeleteQuestionLogById/" + m.Id + "')")*@
+                                            @Html.LinkWithRight(action: "ModifyQuestionLog", onclick: "return ModifyQuestion(" + m.Id + ")")
+                                        }
+                                        else
+                                        {
+                                            @*@Html.LinkWithRight(action: "ReplayMessage", href: "/UserQuestionLog/ReplayMessage/" + m.Id+"?isview=1",value:"查看")*@
+                                            @Html.LinkWithRight(action: "DeleteQuestionLogById", onclick: "return DelConfirmUrl('/UserQuestionLog/DeleteQuestionLogById/" + m.Id + "')")
+                                        
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+               
+                </div>
+            </form>
+            <div class="row rpager">
+                <div class="pager">
+                    <div class="pagerc">
+                        @Html.Pager(Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+            fillFormData('form_search');
+            countdown(30);
+
+            $('#btnPassed').click(function () {
+                if ($('.checkboxes:checked').size() < 1) {
+                    return false;
+                }
+                if (confirm('确定要把选中的问题修改为已处理么？')) {
+                    $('#formSubmit').attr('action', '/UserQuestionLog/ModifyQuestionLog');
+                    return true;
+                }
+                return false;
+            });
+
+            $('.group-checkable').change(function () {
+                var set = $(this).attr('data-set');
+                var checked = $(this).is(':checked');
+                $(set).each(function () {
+                    if (checked) {
+                        $(this).attr('checked', true);
+                    } else {
+                        $(this).attr('checked', false);
+                    }
+                });
+                $.uniform.update(set);
+            });
+        })
+        function ModifyQuestion(Id)
+        {
+          return DelConfirmUrl('/UserQuestionLog/ModifyQuestionLog?Id=' +Id,'是否确定修改为已处理？')
+        }
+
+        function countdown(iCount) {
+            if (iCount === 0) { $("#searchLogon").click(); }
+            document.getElementById('uCounter').innerHTML = iCount;
+            setTimeout(function () { countdown(iCount - 1); }, 1000);
+        }
+    </script>
+}

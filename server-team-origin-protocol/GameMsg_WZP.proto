@@ -1,0 +1,78 @@
+syntax = "proto2";
+
+package netproto;
+
+import "GameMsg.proto";
+
+message WZP_GameConfig{
+	required int32 baseAmount = 1;
+	required int32 betTimeout = 2;
+	repeated int32 betAmount = 3;
+	required int32 ReadyTimeout = 4;
+};
+
+message WZP_NotifyUserGameTrun{
+	required int32 UserID = 1;
+	required int32 TrunNo = 2;
+	required int32 Timeout = 3;
+	required int32 IsFirst = 4;
+	required int32 IsLast = 5;
+	required int32 IsSuoha = 6;
+	required int64 TurnBetAmount = 7;
+};
+
+message WZP_UserGameAction{
+	required int32 ActionID = 1;
+	required int64 BetAmount = 2;
+};
+
+message WZP_NotifyUserGameAction{
+	required int32 UserID = 1;
+	required int32 ActionID = 2;
+	required int64 BetAmount = 3;
+	required int64 TotalBetAmount=4;
+	required int32 IsSuoha = 5;
+	required GameUser GameUser=6;
+	required int64 UserBetAmount=7;
+};
+
+message WZP_UserBetLog{
+	required int32 UserID = 1;
+	required int64 Amount = 2;
+	required int32 TrunNo = 3;
+};
+
+message WZP_GameBetLog{
+	repeated WZP_UserBetLog BetLogs = 1;
+	required int32 TotalBetAmount = 2;
+};
+
+message WZP_UserRet{
+	required int32 UserID = 1;
+	required int32 SeatNo = 2;
+	optional int32 CardType = 3;
+	required int64 WinLose = 4;
+	required int64 BetAmount = 5;
+	optional UserPoker UserPoker=6;
+};
+
+message WZP_GameRet{
+	required int64 GameBetAmount = 1;
+	repeated WZP_UserRet UserRets = 2;
+	required int32 GiveUp=3;	
+	required int32 WinUserID=4;
+};
+
+message WZP_GameScene{
+	required int32 TurnNo = 1;
+	repeated int32 GiveUpUsers=2;
+	optional WZP_GameRet GameRet=3;
+	repeated UserPoker UserPoker=4;
+	required int64 TotalBetAmount=5;
+	optional WZP_NotifyUserGameTrun GameTurnUser = 6;
+	repeated int64 BetLogs = 7;
+
+};
+message WZP_CardType{
+	required int32 TypeID=1;
+};

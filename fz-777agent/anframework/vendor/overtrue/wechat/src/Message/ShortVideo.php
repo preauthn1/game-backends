@@ -1,0 +1,39 @@
+<?php
+
+/*
+ * This file is part of the overtrue/wechat.
+ *
+ * (c) overtrue <user@example.invalid>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+/**
+ * ShortVideo.php.
+ *
+ * @author    overtrue <user@example.invalid>
+ * @copyright 2015 overtrue <user@example.invalid>
+ *
+ * @link      https://example.invalid/overtrue
+ * @link      http://example.invalid
+ */
+namespace EasyWeChat\Message;
+
+/**
+ * Class ShortVideo.
+ *
+ * @property string $title
+ * @property string $media_id
+ * @property string $description
+ * @property string $thumb_media_id
+ */
+class ShortVideo extends Video
+{
+    /**
+     * Message type.
+     *
+     * @var string
+     */
+    protected $type = 'shortvideo';
+}

@@ -1,0 +1,53 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+    <div class="row">
+        <div class="col-sm-12">
+           <div class="bjui-row col-4">
+                <label class="row-label">总计交易金额：</label>
+                <div class="row-input">{{initPageData.total_money}}</div>
+                <label class="row-label">本页总计交易金额：</label>
+                <div class="row-input" id="total_curpage_money"></div>
+            </div>
+        </div>
+        <div class="col-sm-12" style="margin-bottom: 10px;">
+            {% autoescape false %}{{formSearch}}{% endautoescape %}
+            <button id="export" type="button" class="btn btn-green" data-icon="sign-out"><i class="fa fa-sign-out"></i> 导出</button>
+        </div>
+    </div>
+</div>
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options={{gridCfg}}>
+        <thead>
+        <tr>
+            {% for v in columnsData %}
+            <th data-options="{{v.dataOptions}}">{{v.title}}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+    </table>
+</div>
+<script type="text/javascript">
+$(document).on('bjui.afterInitUI', function(e) {
+    var total_curpage_money = 0;
+    var allData = $.CurrentNavtab.find('#datagrid-test-filter').data('allData');
+    for (i in allData) {
+        if(parseInt(allData[i].money)>=0){
+            total_curpage_money += parseInt(allData[i].money);
+        }
+    }
+    $("#total_curpage_money").html(total_curpage_money);
+});
+
+    $("#export").click(function(){
+        var data = $(this).parents(".navtabPage").find(".ajaxSerachForm").serializeArray();
+        BJUI.ajax('ajaxdownload', {
+            url: '/api/exportdata/agentDetail',
+            data:data,type:'POST',
+            loadingmask: false,
+            callback:function(json, options){
+            },
+        })
+    });
+    // JS API 调用日期选择器
+    dateTimeRangePicker();
+</script>

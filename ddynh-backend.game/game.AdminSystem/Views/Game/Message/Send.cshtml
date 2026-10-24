@@ -1,0 +1,152 @@
+﻿@using FW.Core.Helper.Enum
+@model game.Entity.Message.Message
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+
+<style>
+    ._hide {
+        display: none;
+    }
+
+    ._clear {
+        border-bottom: 0 !important;
+    }
+</style>
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>发送邮件
+                </div>
+            </div>
+
+            <div class="portlet-body form">
+
+
+                <!-- BEGIN FORM-->
+                <form id="form1" method="post" class="form-horizontal form-bordered">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">消息标题(128字)</label>
+                            <div class="col-md-8">
+                                <input type="text" name="title" id="title" class="form-control input-xlarge" placeholder="请输入消息标题" value="" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">消息内容(1000字)</label>
+                            <div class="col-md-8">
+                                <textarea id="msgContent" rows="4" name="msgContent" class="form-control  input-xlarge" placeholder="请输入消息内容"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">消息类型</label>
+                            <div class="col-md-8">
+                                <select class="form-control input-small" name="type">
+                                    <option value="@game.Entity.Message.MessageType.System" selected>@game.Entity.Message.MessageType.System.GetDisplayName()</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">排序号</label>
+                            <div class="col-md-8">
+                                <input type="text" name="Sort" class="form-control input-small" placeholder="请输入排序号" value="0" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">发送方式</label>
+                            <div class="col-md-8">
+                                <select class="form-control input-small" name="SendMetnod" id="SendMetnod" onchange="swithDisplay(this)">
+                                    <option value="0" selected>指定用户</option>
+                                    <option value="1">平台/渠道</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" id="platform_area">
+                            <label class="control-label col-md-4 xing">平台</label>
+                            <div class="col-md-8 form-inline">
+                                @Html.Partial("_PlatformSelect", false)
+                                @Html.Partial("AdminAreaList", true)
+                            </div>
+                        </div>
+                        <div class="form-group" id="message">
+                            <label class="control-label col-md-4">接收用户</label>
+                            <div class="col-md-8">
+                                <textarea id="userIDs" rows="4" name="userIDs" class="form-control  input-xlarge" placeholder="请输入用户ID,最多100位,以逗号隔开,不输入为全部发送。例：1,2,3"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-4 col-md-8">
+                            @Html.OkWithRight(onclick: "return Popup();")
+                            @Html.Back(Url.Action("outbox"))
+
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+@section initScripts{
+    <script>
+
+		$(platform_area).hide();
+		$(message).show();
+
+        function Popup() {
+            $("#Config").val($("#beginDate").val() + "|" + $("#endDate").val() + "|" + $("#beginTime").val() + "|" + $("#endTime").val());
+            return true;
+		}
+
+		function swithDisplay(element) {
+			if (element.value == 1) {
+				$(platform_area).show();
+				$(message).hide();
+				document.getElementById('userIDs').value = '';
+
+			}
+			else {
+				$(platform_area).hide();
+				$(message).show();
+				$(platformid).prop('selectedIndex', 0);
+				$(areaID).prop('selectedIndex', 0);
+			}
+
+
+		}
+
+    $(function () {
+        $("#form1").validate({
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 128
+                },
+                msgContent: {
+                    required: true,
+                    maxlength: 1024
+                }, Sort: {
+                    required: true,
+                    digits: true
+                }
+            }
+        });
+
+        $("select[name='type']").live("change", function () {
+            var data = $(this).val();
+            if (data == "@game.Entity.Message.MessageType.System.ToString()") {
+                //系统消息
+                $("#message").show();
+            }
+        }).change();
+    })
+    </script>
+}

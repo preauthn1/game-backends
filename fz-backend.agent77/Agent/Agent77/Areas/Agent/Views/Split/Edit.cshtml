@@ -1,0 +1,103 @@
+﻿@{
+    ViewBag.Title = "奖励設定";
+}
+
+@model List<Split_GetSystemRate>
+
+@Html.Action("Index", "Split")
+
+<form action="@Url.Action("Edit", "Split", new { Area = "Agent" })" class="form-horizontal" method="post">    
+        @foreach (var item in Model)
+        {            
+            var index = Model.IndexOf(item);
+            
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">区间@(item.Level)</h3>
+                </div>
+                <div class="box-body"> 
+                    <input type="hidden" name="[@index].Level" value="@(item.Level)">
+                    <div class="form-group">
+                        <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">B层级人数</label>
+                        <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                            <input type="number" class="form-control" name="[@index].MinRecruit1" step="1" value="@(item.MinRecruit1)" data-val="true" data-val-required="请输入人数" data-val-regex-pattern="[0-9]*$" data-val-regex="请输入整数">
+                            <span class="field-validation-valid" data-valmsg-for="[@index].MinRecruit1" data-valmsg-replace="true"></span>
+                        </div>
+
+                        <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">至</label>
+                        <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                            <input type="number" class="form-control" name="[@index].MaxRecruit1" step="1" value="@(item.MaxRecruit1)" data-val="true" data-val-required="请输入人数" data-val-regex-pattern="[0-9]*$" data-val-regex="请输入整数">
+                            <span class="field-validation-valid" data-valmsg-for="[@index].MaxRecruit1" data-valmsg-replace="true"></span>
+                        </div>
+
+                        <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">奖金(分)</label>
+                        <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                            <input type="number" class="form-control" name="[@index].Stage1" step="1" value="@(item.Stage1)" data-val="true" data-val-required="请输入金额" data-val-regex-pattern="[0-9]*$" data-val-regex="请输入整数">
+                            <span class="field-validation-valid" data-valmsg-for="[@index].Stage1" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">C层级人数</label>
+                        <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                            <input type="number" class="form-control" name="[@index].MinRecruit2" step="1" value="@(item.MinRecruit2)" data-val="true" data-val-required="请输入人数" data-val-regex-pattern="[0-9]*$" data-val-regex="请输入整数">
+                            <span class="field-validation-valid" data-valmsg-for="[@index].MinRecruit2" data-valmsg-replace="true"></span>
+                        </div>
+
+                        <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">至</label>
+                        <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                            <input type="number" class="form-control" name="[@index].MaxRecruit2" step="1" value="@(item.MaxRecruit2)" data-val="true" data-val-required="请输入人数" data-val-regex-pattern="[0-9]*$" data-val-regex="请输入整数">
+                            <span class="field-validation-valid" data-valmsg-for="[@index].MaxRecruit2" data-valmsg-replace="true"></span>
+                        </div>
+
+                        <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">奖金(分)</label>
+                        <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                            <input type="number" class="form-control" name="[@index].Stage2" step="1" value="@(item.Stage2)" data-val="true" data-val-required="请输入金额" data-val-regex-pattern="[0-9]*$" data-val-regex="请输入整数">
+                            <span class="field-validation-valid" data-valmsg-for="[@index].Stage2" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">D层级人数</label>
+                        <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                            <input type="number" class="form-control" name="[@index].MinRecruit3" step="1" value="@(item.MinRecruit3)" data-val="true" data-val-required="请输入人数" data-val-regex-pattern="[0-9]*$" data-val-regex="请输入整数">
+                            <span class="field-validation-valid" data-valmsg-for="[@index].MinRecruit3" data-valmsg-replace="true"></span>
+                        </div>
+
+                        <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">至</label>
+                        <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                            <input type="number" class="form-control" name="[@index].MaxRecruit3" step="1" value="@(item.MaxRecruit3)" data-val="true" data-val-required="请输入人数" data-val-regex-pattern="[0-9]*$" data-val-regex="请输入整数">
+                            <span class="field-validation-valid" data-valmsg-for="[@index].MaxRecruit3" data-valmsg-replace="true"></span>
+                        </div>
+
+                        <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">奖金(分)</label>
+                        <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                            <input type="number" class="form-control" name="[@index].Stage3" step="1" value="@(item.Stage3)" data-val="true" data-val-required="请输入金额" data-val-regex-pattern="[0-9]*$" data-val-regex="请输入整数">
+                            <span class="field-validation-valid" data-valmsg-for="[@index].Stage3" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>                   
+                </div>
+            </div>           
+        }
+    <div class="box box-primary">
+        <div class="box-body">
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">最低兑换金额(分)</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">                 
+                    <input type="number" class="form-control" name="TaxAmount" step="1" value="@(ViewBag.TaxAmount)" data-val="true" data-val-required="请输入金额" data-val-number="请输入数字" data-val-regex-pattern="[0-9]*$" data-val-regex="请输入整数">
+                    <span class="field-validation-valid" data-valmsg-for="TaxAmount" data-valmsg-replace="true"></span>
+                </div>
+
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">倒数时间(时)</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="number" class="form-control" name="WithdrawLimit" step="1" value="@(ViewBag.WithdrawLimit)" data-val="true" data-val-required="请输入时间" data-val-regex-pattern="[0-9]*$" data-val-regex="请输入整数">
+                    <span class="field-validation-valid" data-valmsg-for="WithdrawLimit" data-valmsg-replace="true"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    @Html.Hidden("PlatformID")
+                    <button type="submit" class="btn btn-primary btn-block">确认修改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,137 @@
+syntax = "proto2";
+
+package netproto;
+
+import "GameMsg.proto";
+
+
+//下注设置
+message SGJ_Setting{
+	repeated int32 BetCount=1;//一次下注的数量
+	required int32 BetMoney=2;//一次下注的钱
+	required int64 ZhuangLimit=3;//上庄钱限制
+};
+
+//状态
+message SGJ_Sate{
+	required int32 State=1;
+	required int32 Time=2;
+};
+
+//庄家信息
+message SGJ_ZhuangInfo{
+	required int32 UserID=1;
+	required int32 LastTurn=2;
+	repeated GameUser UserInfo=3;
+};
+
+//上庄列表
+message SGJ_ZhuangList{
+	repeated GameUser UserInfo=1;
+};
+
+//用户ID
+message SGJ_UserID{
+	required int32 UserID=1;
+};
+
+//广播下注
+message SGJ_BroadCastBetType{
+	required int32 BetUserID=1;
+	repeated SGJ_BetTotalInfo BetInfo=2;
+};
+
+message SGJ_BetTotalInfo{
+	required int32 BetType=1;
+	required int64 Money=2;
+	required bool LuckyStar=3;
+};
+
+
+
+//用户的下注信息
+message SGJ_UserBetInfo{
+	required int64 UserMoney=1;
+	repeated SGJ_BetInfo BetInfoGroup=2;
+};
+
+message SGJ_BetInfo{
+	required int32 BetType=1;
+	required int64 BetMoney=2;
+};
+
+//下注信息
+message SGJ_BetTypeGroup{
+	repeated SGJ_BetType BetGroup=1;
+};
+
+message SGJ_BetType{
+	required int32 BetType=1;
+	required int32 BetCount=2;
+};
+
+//开奖类型
+message SGJ_JiangType{
+	required int32 JiangType=1;
+	repeated int32 JiangTypeList=2;
+};
+
+//开奖的结果
+message SGJ_GameResult{
+	required int64 ZhuangWin=1;
+	required int64 SelfWin=2;
+	repeated int32 JiangTypeList=3;//添加开奖结果
+	optional int32 Retaction=4;
+	repeated SGJ_StageUerInfo StageUerInfo=5;//標誌玩家赢钱信息
+};
+
+//標誌玩家赢钱信息
+message SGJ_StageUerInfo{
+	required int32 UserID=1;
+	required int64 Win=2;
+};
+
+//是否上庄
+message SGJ_ShangZhuang{
+	required bool IsShangZhuang=1;
+};
+
+//当前下注结果
+message SGJ_UserBetRet{
+	required int64 Money=1;//当前剩余的钱数
+	required int32 Ret=2;//下注的结果0下注成功，-1钱不够，-2此类型下注已达到上限,-3庄家不能下注-4此类下注已达到上限，-5庄閒不可同時下注，-6用户金额小於下注限制
+	optional int32 Type=3;//达到下注上限的类型
+	repeated SGJ_BetType BetGroup=4;//当前下注的数据
+};
+
+//当前的钱数
+message SGJ_UserMoney{
+	required int64 Money=1;
+	required int32 Ret=2;
+};
+
+//上庄结果
+message SGJ_ShangzhuangRet{
+	required int32 ret=1;//值为1时下庄成功，值为0表示上庄成功，值为-1时上庄失败资金不足，值为-2时已经在上庄列表中。
+};
+
+//大富豪列表消息
+message SGJ_RichestList{
+	repeated SGJ_Richest RichestList=1; //富豪的排行榜
+};
+
+//大富豪的玩家資訊
+message SGJ_Richest{
+	required int32	Ranking=1;//富豪排名
+	required int32	UserID=2;//富豪ID
+	required int32	UserFaceID=3;//富豪頭像ID
+	required int64	Money=4;//富豪当前身上的钱
+    optional int32  AvatarFrameID = 5;  // VIP頭框像ID
+};
+
+//幸運星玩家資訊
+message SGJ_LuckyStar{
+	required int32	UserID=1;//幸運星ID
+	required int32	UserFaceID=2;//幸運星頭像ID
+    optional int32  AvatarFrameID = 3;  // VIP頭框像ID
+};

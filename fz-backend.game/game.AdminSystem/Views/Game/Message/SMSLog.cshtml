@@ -1,0 +1,134 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+<style>
+    .content {
+        padding: .5%;
+        font-size: 1.2em;
+        font-family: serif;
+    }
+
+    .venderSetting {
+        display: flex;
+        align-items: center;
+        height: 4em;
+        font-size: 1.4em;
+    }
+
+    .vender {
+        display: flex;
+        align-items: center;
+        padding: 5.5px;
+        margin-left: 10px;
+        color: #fff;
+        background-color: #84B357;
+        border-radius: 5px !important;
+        cursor: pointer;
+    }
+
+    .none {
+        background-color: #555;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                <div class="form-group">
+                    <label>电话</label>
+                    <input type="text" class="form-control input-small" id="tel" name="tel" placeholder="电话">
+                </div>
+                @Html.Partial("~/Views/Shared/_userPartial.cshtml")
+                <div class="form-group">
+                    <label>发送时间</label>
+                    <input type="text" class="form-control " style="width:180px" id="beginTime" name="beginTime" value="@DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm")" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="endTime" name="endTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                </div>
+            </form>
+            <div id="setting" v-bind:class="{ venderSetting: venderText !== '' }">
+                {{venderText}}
+                <div v-for="item in venderList" class="vender" v-bind:class="{ none: item.status === 0 }" v-on:click="changeVender(item.ID)">
+                    <div v-if="item.status == 1" class="btn-check"></div>
+                    <div v-else class="btn-times"></div>
+                    {{item.Vender}}
+                </div>
+            </div>
+            <div class="content">
+                <table id="smslog_table" class="display" style="width:100%"></table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+
+        function createTable() {
+            const url = '/Message/GetSMSLog'
+            const thead = [{ "sTitle": "电话", "mData": "Tel" },
+                            { "sTitle": "验证码", "mData": "VCode" },
+                            {
+                                "sTitle": "用户ID", "mData": "UserID", "width": "8%",
+                                "render": function (data, type, row) {
+                                    return `<a class="link" target="_blank" href="/UserInfo/Search?userId=${data}&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">${data}</a>`
+                                }
+                            },
+                            { "sTitle": "状态", "mData": "Status" },
+                            { "sTitle": "发送时间", "mData": "CreateTime" },
+                            { "sTitle": "IP地址", "mData": "IPAddress" },
+                            { "sTitle": "验证码类型", "mData": "CodeType" },
+                            { "sTitle": "发送结果", "mData": "SendResult" },
+                            { "sTitle": "讯息商", "mData": "Vender" }
+            ]
+
+            var tel = $('#tel').val()
+            var loginName = $('#loginName').val()
+            var userID = $('#userID').val()
+            var beginTime = $('#beginTime').val()
+            var endTime = $('#endTime').val()
+
+            const data = {
+                tel: tel,
+                loginName: loginName,
+                userID: userID,
+                beginTime: beginTime,
+                endTime: endTime
+            }
+            createDataTable('smslog', thead, url, data)
+        }
+
+        $(function () {
+            var vApp = new Vue({
+                el: '#setting',
+                data: {
+                    venderText: '切換发送厂商',
+                    venderList: []
+                },
+                methods: {
+                    getSMSVender: function () {
+                        $.get('/Message/GetSMSVender', { '_r': Math.random() }, function (data) {
+                            vApp.venderList = data.result
+                            if (!data.result) vApp.venderText = ''
+                        })
+                    },
+                    changeVender: (id) => {
+                        console.log(id)
+                        $.post('/Message/EnableSMSVender', { 'id': id, '_r': Math.random() }, function (data) {
+                            vApp.getSMSVender()
+                        })
+                    }
+                }
+            })
+            fillFormData('form_search')
+            vApp.getSMSVender()
+            createTable()
+        })
+    </script>
+}

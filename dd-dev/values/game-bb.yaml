@@ -1,0 +1,47 @@
+game:
+  bb:
+    id: 1018
+    name: bb
+    group: slot
+    room:
+      - port: 15201
+        serverid: 515
+        proto: bb-test
+        configs: 
+          gameserver.dat: |
+            [gameserver]
+            gameid=1018
+            gamename=BuffaloBonus
+            flag=1
+            minplayer=1
+            maxplayer=1
+            tablecount=100
+            seatcount=1
+            loginmoney=100
+            scoremode=0
+            maxuser=480
+            taxscale=5
+            readywaittime=10
+            reghallserverinterval=5
+            basescore=100
+            deallog=2
+            mincarrymoney=50
+
+            [gamequeue]
+            gamematchwaitmintime=1		// 撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		// 撮合时间间隔范围大值,单位秒
+            againstsameip=0				// 同IP不分配一起
+            againstlastgame=0			// 最后一次游戏过的用户不分配一起
+            gameendaction=0				// 游戏结束后动作,0 无动作 1 准备
+            queuetype=1					// 撮合类型 0 时间随机 1 固定人数
+            queueusercount=1			// 排队人数
+            queuetimeout=2				// 排队人数超时
+          slotconfig.dat: |
+            [slotsetting]
+            endactiontime=1
+            betcount=1,2,5,10,20
+            betrate=40
+
+            slotpattern=10008
+            bigwinrule=30000,40000,50000,500000
+            bigwinnotify=400

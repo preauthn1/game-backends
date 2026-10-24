@@ -1,0 +1,28 @@
+package notifylogic
+
+import "example.invalid/ServerTeam/Servers/internal/notifyserver/notifylogic/task"
+
+type TaskProvider interface {
+	GetTask() task.Task
+}
+
+//外网工作任务
+type ExternalTaskPrvider struct {
+}
+
+func (etp *ExternalTaskPrvider) GetTask() task.Task {
+	return nil
+
+}
+
+//内网工作任务
+type InternalTaskProvider struct {
+}
+
+func (itp *InternalTaskProvider) GetTask() task.Task {
+	tg := new(task.TaskGroup)
+	tg.AddTask(task.NewAnnTask(5, 1))
+	tg.AddTask(task.NewAttrTask(5, 1))
+	//tg.AddTask(task.NewRefreshTask(300, 1))
+	return tg
+}

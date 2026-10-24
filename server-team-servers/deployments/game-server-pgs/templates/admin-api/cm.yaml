@@ -1,0 +1,34 @@
+{{- $root := . }}
+{{- $fullname := include "game-server.fullname" . }}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "game-server.fullname" . }}-admin-api
+  labels:
+    {{- include "game-server.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    server:
+      addr: :80
+
+    logger:
+      {{- toYaml .Values.adminapi.logger | nindent 8 }}
+
+    auth:
+      {{- toYaml .Values.adminapi.auth | nindent 8 }}
+
+    api:
+      {{- toYaml .Values.adminapi.api | nindent 8 }}
+
+    grpc:
+      rooms:
+      {{- range $name, $game := .Values.game }}
+        {{- if $game.admin }}
+        {{- range $i, $room := .room }}
+        - game: {{ $name }}
+          serverid: {{ int .serverid }}
+          addr: {{ $fullname }}-game-{{ $name }}-{{ int $room.serverid }}:3100
+        {{- end }}
+        {{- end }}
+      {{- end }}

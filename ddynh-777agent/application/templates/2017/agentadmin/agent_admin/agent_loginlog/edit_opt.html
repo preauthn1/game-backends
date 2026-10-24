@@ -1,0 +1,56 @@
+<div class="bjui-pageContent">
+        <form action="{{agentApiRoute}}" class="datagrid-edit-form" data-toggle="validate" data-data-type="jsonp">
+            <div class="bjui-row col-1">
+                <input type="hidden" name="id" value="{{params.id}}">
+                <label class="row-label">代理名称</label>
+                <div class="row-input required">
+                    <input type="text" name="name" value="{{params.name}}" data-rule="required">
+                </div>
+                <label class="row-label">最低代充金额</label>
+                <div class="row-input required">
+                    <input type="Number" name="min_money" value="{{params.min_money}}" data-rule="required">
+                </div>
+                <label class="row-label">QQ</label>
+                <div class="row-input">
+                    <input type="Number" name="qq" value="{{params.qq}}">
+                </div>
+                <label class="row-label">微信</label>
+                <div class="row-input">
+                    <input type="text" name="weixin"  value="{{params.weixin}}">
+                </div>
+                <label class="row-label">手机号</label>
+                <div class="row-input">
+                    <input type="Number" name="telphone"  value="{{params.telphone}}" data-rule="required">
+                </div>
+                <label class="row-label">自动回复</label>
+                <div class="row-input">
+                    <textarea name="auto_reply">{{params.auto_reply}}</textarea>
+                </div>
+                <label class="row-label">备注</label>
+                <div class="row-input">
+                    <textarea name="remark">{{params.remark}}</textarea>
+                </div>
+                <label class="row-label">快速转账</label>
+                <div class="row-input">
+                    <input type="radio" name="transfer" value="1" data-toggle="icheck" data-label="是" {% if params.transfer==1 %}checked=""{%endif%}>
+                    <input type="radio" name="transfer" value="0" data-toggle="icheck" data-label="否" {% if params.transfer==0 %}checked=""{%endif%}>
+                </div>
+                <label class="row-label">代理广告</label>
+                <div class="row-input required">
+                    <select name="level" data-rule="required" data-width="100%">
+                        <option value="1" {% if params.level==1 %}selected{% endif %}>1级</option>
+                        <option value="2" {% if params.level==2 %}selected{% endif %}>2级</option>
+                        <option value="3" {% if params.level==3 %}selected{% endif %}>3级</option>
+                        <option value="4" {% if params.level==4 %}selected{% endif %}>4级</option>
+                        <option value="5" {% if params.level==5 %}selected{% endif %}>5级无广告</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+</div>
+<div class="bjui-pageFooter">
+    <ul>
+        <li><button type="button" class="btn-close" data-icon="close">取消</button></li>
+        <li><button type="submit" class="btn-default" data-icon="save">保存</button></li>
+    </ul>
+</div>

@@ -1,0 +1,126 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .color-red {
+        color: red;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .record_search_contain {
+        display: flex;
+        align-items:center;
+        justify-content:start;
+        padding: 1%;
+        border: 1px solid #ddd;
+    }
+
+    .record_search_label {
+        padding: 0 2%;
+        font-size: 1.3em;
+        font-weight: 900;
+    }
+</style>
+
+<div class="row" id="RecordList">
+    <div class="col-md-12">
+        <div class="portlet box grey" style="margin-top:20px;">
+            <div class="portlet-title">
+                <div class="caption">捕鱼数据</div>
+            </div>
+            <div class="portlet-body">
+                <div class="record_search_contain">
+                    <div class="record_search_label">房间</div>
+                    <div>
+                        <select class="form-control input-medium color-red" v-model="spaceID">
+                            <option value="">全选</option>
+                            <option value="1">初级场</option>
+                            <option value="2">中级场</option>
+                            <option value="3">高级场</option>
+                            <option value="4">富豪场</option>
+                            <option value="5">皇家场</option>
+                        </select>
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered table-hover progressTable" id="FishReward_table"></table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        var vApp = new Vue({
+            el: '#RecordList',
+            data: {
+                spaceID: '',
+                dataTable: null
+            },
+
+            watch: {
+                spaceID (val, oldVal) {
+                   vApp.dataTable.DataTable().ajax.reload();
+                }
+            },
+
+            methods: {
+                ToCash: function (val) {
+                    return ToCash(val);
+                },
+                getReward: function () {
+                    const head = [
+                           {
+                               "sTitle": "房间", "mData": "FlagName"
+                           },
+                           {
+                               "sTitle": "鱼名称", "mData": "Name"
+                           },
+                           {
+                               "sTitle": "一般金额", "mData": "Amount",
+                               "render": function (data, type, row) {
+                                   return ToCash(data);
+                               }
+                           },
+                           {
+                               "sTitle": "放分金额", "mData": "RewardAmount",
+                               "render": function (data, type, row) {
+                                   return ToCash(data);
+                               }
+                           }
+                    ]
+
+                    const opt = {
+                        "ordering": false,
+                        "searching": false,
+                        "aoColumns": head,
+                        "processing": true,
+                        "serverSide": true,
+                        "bLengthChange": false,
+                        "bPaginate": false,
+                        "ajax": {
+                            "type": "POST",
+                            "url": "/GameBY/GetSystemRecord",
+                            data: function (d) {
+                                Object.assign(d, {
+                                    "flagID": vApp.spaceID
+                                });
+                                return d;
+                            }
+                        },
+                        "destroy": true
+                    }
+                    vApp.dataTable = $("#FishReward_table").dataTable(opt)
+                }
+            }
+        });
+
+        vApp.getReward();
+        setInterval(function () {
+            vApp.dataTable.DataTable().ajax.reload();
+        }, 10000);
+
+    </script>
+}

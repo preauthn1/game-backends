@@ -1,0 +1,54 @@
+package msghandler
+
+import (
+	"module"
+	"msg"
+	"netproto"
+	"network"
+	"rpcmsg"
+	"testing"
+
+	"example.invalid/golang/protobuf/proto"
+)
+
+func TestRoomLogoutHandler(t *testing.T) {
+	initDBConnection()
+	rpcInfo := netproto.CreateEmptyRPCInfo(1)
+	rpcMessage := new(rpcmsg.RPCMessage)
+	rpcMessage.RPCInfo = rpcInfo
+
+	msgdata := new(netproto.LogoutGameRoomInfo)
+	msgdata.UserID = proto.Int32(0)
+	msgdata.UpdateAmount = proto.Int64(0)
+	msgdata.TaxAmount = proto.Int64(0)
+	msgdata.WinCount = proto.Int32(0)
+	msgdata.LoseCount = proto.Int32(0)
+
+	msgdata.DrawCount = proto.Int32(0)
+	msgdata.LoginTime = proto.String("")
+	msgdata.LogoutTime = proto.String("")
+	msgdata.IPAddress = proto.String("")
+	msgdata.HDCode = proto.String("")
+
+	msgdata.HDType = proto.Int32(0)
+	msgdata.GameTime = proto.Int32(0)
+	msgdata.GameID = proto.Int32(0)
+	msgdata.ServerID = proto.Int32(0)
+	msgdata.LoginMoney = proto.Int64(0)
+
+	msgdata.ScoreUpdateMode = proto.Int32(0)
+	msgdata.TradeId = proto.Int64(0)
+	msgdata.LastWinLose = proto.Int32(0)
+	msgdata.FlowAmount = proto.Int64(0)
+	msgdata.CouponAmount = proto.Int64(0)
+	msgData, _ := proto.Marshal(msgdata)
+	rpcMessage.MsgData = msgData
+	m := msg.NewMessage(int32(netproto.MessageBClassID_DBServer), int32(netproto.DBServerClassID_LogoutRoomID), rpcMessage)
+	handler := new(RoomLogoutHandler)
+	if !handler.IsHook(m.BClassID, m.SClassID) {
+		t.Error("hook 錯誤")
+	}
+	ctx := new(module.MouduleCtx)
+	clt := new(network.ConnInfo)
+	handler.OnMessage(ctx, clt, m)
+}

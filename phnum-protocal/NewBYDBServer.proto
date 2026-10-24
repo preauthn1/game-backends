@@ -1,0 +1,16 @@
+syntax = "proto2";
+
+package netproto;
+
+enum NewBYDBServerClassID {
+    ServerStartID = 1;
+    ServerStartRetID = 2;
+    UserLoginFishID = 3;
+    UserLoginFishRetID = 4;
+    UpdateUserMoneyID = 5;
+    UpdateUserMoneyRetID = 6;
+    SuperToolFishVIPUserID = 7;
+    SuperToolFishVIPUserRetID = 8;
+    UserLogoutFishID = 9;
+    UserLogoutFishRetID = 10;
+};

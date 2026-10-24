@@ -1,0 +1,41 @@
+﻿@model game.Entity.Users.UserInfo
+
+@*<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-info" role="alert">
+            <dl class="dl-horizontal">
+                <dt>用户ID</dt>
+                <dd>@Model.Id</dd>
+                <dt>帐号</dt>
+                <dd>@Model.LoginName</dd>
+                <dt>昵称</dt>
+                <dd>@Model.NickName</dd>
+                <dt>注册时间</dt>
+                <dd>@Model.CreateTime.ToString("yyyy-MM-dd HH:mm")</dd>
+            </dl>
+        </div>       
+    </div>
+</div>*@
+<div class="form-group">
+    <label class="control-label col-md-5 ">用户ID</label>
+    <div class="col-md-7">
+        <span>@Model.Id</span>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-5 ">帐号</label>
+    <div class="col-md-7">
+        <span>@Model.LoginName</span>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-5 ">昵称</label>
+    <div class="col-md-7">
+        <span>@Model.NickName</span>
+    </div>
+</div><div class="form-group">
+    <label class="control-label col-md-5 ">注册时间</label>
+    <div class="col-md-7">
+        <span>@Model.CreateTime.ToString("yyyy-MM-dd HH:mm")</span>
+    </div>
+</div>

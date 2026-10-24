@@ -1,0 +1,63 @@
+ <form action="{{agentApiRoute}}" data-toggle="ajaxform" data-options='{closeCurrent:true,datagrids:"datagrid-test-filter"}'>
+    <div class="bjui-pageContent">
+        <div class="row">
+            <div class="col-sm-12">
+                <input type="hidden" name="agentId" value="{{params.id}}">
+               <div class="bjui-row col-2">
+                    <label class="row-label">代理ID：</label>
+                    <div class="row-input">{{params.id}}</div>
+                    <label class="row-label">代理账户：</label>
+                    <div class="row-input">{{params.id}}</div>
+                    <label class="row-label">状态：</label>
+                    <div class="row-input">{{params.status==1?'正常':'禁用'}}</div>
+                    <label class="row-label">代理名称：</label>
+                    <div class="row-input">{{params.name}}</div><br>
+                    <label class="row-label">转账金额：</label>
+                    <div class="row-input"><input type="Number" class="form-control" name="turnInMoney" data-rule="required;integer"></div>
+                    <div class="row-input"><font class="red"> (默认为加钱操作,扣钱带上-符号如:-10) </font></div>
+                    <br>
+                    <label class="row-label">验证码：</label>
+                    <div class="row-input"><input type="text" class="form-control" name="telphoneCode" style="width: 45%" data-rule="required">
+                        <!--<span><a class="btn btn-default" id="getSmsCode">获取验证码</a></span>--></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bjui-pageFooter">
+        <ul>
+            <li><button type="button" class="btn-close" data-icon="close">取消</button></li>
+            <li><button type="submit" class="btn-default" data-icon="save">提交</button></li>
+        </ul>
+    </div>
+</form>
+<script type="text/javascript">
+    $("#getSmsCode").click(function(){
+        BJUI.ajax('doajax', {
+            url: '/agentadmin/sms/api/smsCodeAddMoney',
+            data:{},
+            loadingmask: true,
+            callback:function(json, options){
+                if(json.statusCode == 200){
+                    BJUI.alertmsg('ok', '获取验证码成功');
+                }else{
+                    BJUI.alertmsg('error', '获取验证码失败');
+                }
+            },
+        })
+    })
+
+    $("input[name='turnInMoney']").blur(function(){
+        var turnInMoney = $(this).val();
+        var agentId = $("input[name='agentId']").val();
+        BJUI.ajax('doajax', {
+            url: '/agentadmin/api/agent_general/agent_manage/addMoneyVerify',
+            data:{agentId:agentId,turnInMoney:turnInMoney},
+            loadingmask: false,
+            callback:function(json, options){
+                if(json.statusCode == 300){
+                    BJUI.alertmsg('warn', json.message);
+                }
+            },
+        })
+    });
+</script>

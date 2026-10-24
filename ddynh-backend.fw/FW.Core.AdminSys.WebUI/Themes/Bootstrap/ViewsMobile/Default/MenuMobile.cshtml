@@ -1,0 +1,60 @@
+﻿@model List<FW.Core.AdminSys.Provider.Entity.Right>
+@{
+    Layout = null;
+    List<FW.Core.AdminSys.Provider.Entity.Right> modules = ViewBag.modules;
+}
+
+<ul class="page-sidebar-menu" data-auto-scroll="true" data-slide-speed="200">
+    <li class="sidebar-toggler-wrapper">
+        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+        <div class="sidebar-toggler hidden-phone">
+        </div>
+        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+    </li>
+
+    <!--BEGIN MENU-->
+    <li class="start active" style="display:none">
+        <a href="@Url.Action("Index","Default")">
+            <i class="fa fa-home"></i>
+            <span class="title">
+                系统主页
+            </span>
+            <span class="selected">
+            </span>
+        </a>
+    </li>
+
+    @if (modules != null && modules.Count > 0)
+    {
+        foreach (var pr in modules)
+        {
+            var subRights = Model.Where(p => p.ParentID == pr.RightID).ToList();
+    <li id="user@example.invalid">
+        <a href="@pr.PageUrl">
+            <i class="fa @pr.IconCls"></i>
+            <span class="title">
+                @pr.RightName
+            </span>
+            <span class="selected">
+            </span>
+        </a>
+        @if (subRights.Count > 0)
+        {
+        <ul class="sub-menu">
+        @foreach (var item in subRights)
+        {
+            <li id="user@example.invalid">
+                <a href="@item.PageUrl">
+                    <i class="fa @item.IconCls"></i>@item.RightName
+                </a>
+            </li>
+        }
+        </ul>
+        }
+    </li>
+        }
+
+    }
+    <!--END MENU-->
+
+</ul>

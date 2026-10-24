@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>代理商管理系统登录</title>
+<meta name="renderer" content="webkit">
+<link href="{{BJUI_PATH}}/themes/css/bootstrap.min.css" rel="stylesheet">
+<style type="text/css">
+html, body { height: 100%; overflow: hidden; }
+body {
+    font-family: "Verdana", "Tahoma", "Lucida Grande", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+    background: url({{BJUI_PATH}}/images/loginbg_01.jpg) no-repeat center center fixed;
+    background-size: cover;
+}
+.form-control{height:37px;}
+.main_box{position:absolute; top:45%; left:50%; margin:-200px 0 0 -180px; padding:15px 20px; width:360px; height:450px; min-width:320px; background:#FAFAFA; background:rgba(255,255,255,0.5); box-shadow: 1px 5px 8px #888888; border-radius:6px;}
+.login_msg{height:30px;}
+.input-group >.input-group-addon.code{padding:0;}
+#captcha_img{cursor:pointer;}
+.main_box .logo img{height:35px;}
+@media (min-width: 768px) {
+    .main_box {margin-left:-240px; padding:15px 55px; width:480px;}
+    .main_box .logo img{height:40px;}
+}
+</style>
+<script type="text/javascript">
+
+</script>
+</head>
+<body>
+<!--[if lte IE 7]>
+<style type="text/css">
+#errorie {position: fixed; top: 0; z-index: 100000; height: 30px; background: #FCF8E3;}
+#errorie div {width: 900px; margin: 0 auto; line-height: 30px; color: orange; font-size: 14px; text-align: center;}
+#errorie div a {color: #459f79;font-size: 14px;}
+#errorie div a:hover {text-decoration: underline;}
+</style>
+<div id="errorie"><div>您还在使用老掉牙的IE，请升级您的浏览器到 IE8以上版本 <a target="_blank" href="http://example.invalid/zh-cn/internet-explorer/ie-8-worldwide-languages">点击升级</a>&nbsp;&nbsp;强烈建议您更改换浏览器：<a href="http://example.invalid/content/40975.html" target="_blank">谷歌 Chrome</a></div></div>
+<![endif]-->
+<style>
+    .logo{
+        display: flex;
+        justify-content: center;
+    }
+    .logo_img{
+        height:80px !important;
+        width:80px;
+    }
+</style>
+<div class="container">
+    <div class="main_box">
+        <div class="logo">
+            <img class="logo_img" src="../../assets/img/FZ.png">
+        </div>
+        <p><a id="login-type-switch" data-login-type='2' href="javascript:void(0);">切换手机登录</a></p>
+        <!--<p class="text-center logo"><img src="{{BJUI_PATH}}/images/logo.png" height="45"></p>-->
+        <div id="login_msg" class="login_msg text-center"><font color="red"></font></div>
+
+        <div id="username-login">
+            <form action="/agentadmin/agenttotal/login" method="post">
+                <input type="hidden" value="" id="j_randomKey" />
+                <input type="hidden" name="jfinal_token" value="" />
+                {% if gotp_qrcode==1 %}
+				<input type="hidden" id="gotp_seckey" name="gotp_seckey" value="{{gotp_seckey}}" />
+				<input type="hidden" id="logininfo_id" name="logininfo_id" value="{{logininfo_id}}" />
+                <div class="text-center">
+                    <img src="{{gotp_qrcodeurl}}" />
+                </div>
+                <div class="text-center" style="padding:20px 0px;">
+                    <button type="submit" id="login_ok" class="btn btn-primary">扫码完成，返回登录</button>
+					&nbsp;
+					<button type="button" id="login_cancel" class="btn btn-default" onclick="location.href='login';">取消</button>
+                </div>
+                {% else %}
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="sizing-addon-user"><span class="glyphicon glyphicon-user"></span></span>
+                        <input type="text" class="form-control" id="username" name="username" value="" placeholder="登录账号" aria-describedby="sizing-addon-user">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="sizing-addon-password"><span class="glyphicon glyphicon-lock"></span></span>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="登录密码" aria-describedby="sizing-addon-password">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="sizing-addon-password"><span class="glyphicon glyphicon-lock"></span></span>
+                        <input type="text" class="form-control" id="j_gotp" name="gotp" placeholder="谷歌验证码" aria-describedby="sizing-addon-password">
+                    </div>
+                </div>
+    <!--             <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="sizing-addon-password"><span class="glyphicon glyphicon-exclamation-sign"></span></span>
+                        <input type="text" class="form-control" id="j_captcha" name="captcha" placeholder="验证码" aria-describedby="sizing-addon-password">
+                        <span class="input-group-addon code" id="basic-addon-code"><img id="captcha_img" src="{{BJUI_PATH}}/images/captcha.jpg" alt="点击更换" title="点击更换" class="m"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label for="j_remember" class="m"><input id="j_remember" type="checkbox" value="true">&nbsp;记住登陆账号!</label>
+                    </div>
+                </div> -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">&nbsp;登&nbsp;录&nbsp;</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button type="reset" class="btn btn-default">&nbsp;重&nbsp;置&nbsp;</button>
+                </div>
+                {% endif %}
+               <!-- <div class="text-center">
+                    <hr>
+                    2014 - 2018 <a href="login.html">代理商管理后台</a>
+                </div>-->
+            </form>
+        </div>
+
+        <div id="telphone-login" style="display: none;">
+            <form id="telphone-login-form" >
+                <input type="hidden" class="form-control" name="opt" value="telphoneLogin" />
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="sizing-addon-user"><span class="glyphicon glyphicon-user"></span></span>
+                        <input type="text" class="form-control col-sm-12" name="telphone" value="" placeholder="手机号" aria-describedby="sizing-addon-user">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="sizing-addon-password"><span class="glyphicon glyphicon-lock"></span></span>
+                        <input type="text" class="form-control" name="smsCode" placeholder="手机验证码" aria-describedby="sizing-addon-password">
+                    </div>
+                    <div style="text-align: right;"><button type="button" class="btn btn-default btn-sm" id="getSmsCode">获取验证码</button></div>
+                </div>
+
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary" id="telphoneLoginOpt">登录</button>
+                </div>
+                <div class="text-center">
+                    <hr>
+                    <a href="#" id="bandTelphone">进行手机绑定</a>
+                </div>
+            </form>
+        </div>
+
+        <div id="telphone-band" style="display: none;">
+            <form id="band-telphone-form">
+                <input type="hidden" class="form-control" name="opt" value="bandTelphone" />
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">账号:</span>
+                        <input type="text" class="form-control" name="username" placeholder="账号">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">手机:</span>
+                        <input type="text" class="form-control" name="telphone" placeholder="绑定手机">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">密码:</span>
+                        <input type="password" class="form-control" name="password" placeholder="登录密码">
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary" id="bandTelphoneOpt">绑定</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
+<script src="{{BJUI_PATH}}/js/jquery-1.11.3.min.js"></script>
+<script src="{{BJUI_PATH}}/js/jquery.cookie.js"></script>
+<script src="{{BJUI_PATH}}/js/bjui-all.min.js"></script>
+<script type="text/javascript">
+    $("#login-type-switch").click(function($e,$d){
+        $("#login_msg font").html('');
+        var loginType = $(this).attr('data-login-type');
+        if(loginType==2){
+            $("#username-login").hide();
+            $("#telphone-login").show();
+            $(this).attr('data-login-type',1);
+            $(this).html('切换账号登录');
+            $("#telphone-band").hide();
+        }else{
+            $("#username-login").show();
+            $("#telphone-login").hide();
+            $(this).attr('data-login-type',2);
+            $(this).html('切换手机登录');
+        }
+    })
+
+    $("#getSmsCode").click(function(){
+        var data = $("#telphone-login-form").serializeArray();
+        BJUI.ajax('doajax', {
+            url: '/agentadmin/sms/api/smsCodeLogin',
+            data:data,
+            loadingmask: true,
+            callback:function(json, options){
+                $("#login_msg font").html(json.message);
+            },
+        })
+    })
+
+    $("#bandTelphone").click(function(){
+        $("#login_msg font").html('');
+        $("#telphone-band").show();
+        $("#telphone-login").hide();
+        $("#login-type-switch").html('切换手机登录');
+        $("#login-type-switch").attr('data-login-type',2);
+    });
+
+    $("#telphoneLoginOpt").click(function(){
+        var data = $("#telphone-login-form").serializeArray();
+        BJUI.ajax('doajax', {
+            url: '/agentadmin/agenttotal/login',
+            type:'POST',
+            data:data,
+            loadingmask: true,
+            callback:function(json, options){
+                $("#login_msg font").html(json.message);
+                if(json.statusCode == 200){
+                    window.location.href = '/agentadmin/page/main';
+                }
+            },
+        })
+    });
+
+    $("#bandTelphoneOpt").click(function(){
+        var data = $("#band-telphone-form").serializeArray();
+        BJUI.ajax('doajax', {
+            url: '/agentadmin/agenttotal/login',
+            type:'POST',
+            data:data,
+            loadingmask: true,
+            callback:function(json, options){
+                $("#login_msg font").html(json.message);
+            },
+        })
+    });
+</script>

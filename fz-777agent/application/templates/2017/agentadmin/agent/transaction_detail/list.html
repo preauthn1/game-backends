@@ -1,0 +1,29 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+    {% autoescape false %}{{formSearch}}{% endautoescape %}
+    <button id="export" type="button" class="btn btn-green" data-icon="sign-out"><i class="fa fa-sign-out"></i> 导出</button>
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options={{gridCfg}}>
+        <thead>
+        <tr>
+            {% for v in columnsData %}
+            <th data-options="{{v.dataOptions}}">{{v.title}}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+    </table>
+</div>
+<script type="text/javascript">
+    $("#export").click(function(){
+        var data = $(this).parents(".navtabPage").find(".ajaxSerachForm").serializeArray();
+        BJUI.ajax('ajaxdownload', {
+            url: '/api/exportdata/agentDataDetail',
+            data:data,type:'POST',
+            loadingmask: false,
+            callback:function(json, options){
+            },
+        })
+    });
+    // JS API 调用日期选择器
+    dateTimeRangePicker();
+</script>

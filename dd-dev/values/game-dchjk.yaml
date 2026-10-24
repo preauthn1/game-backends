@@ -1,0 +1,178 @@
+game:
+  dchjk:
+    id: 2004
+    name: 海盗船
+    group: poker
+    room:
+      - port: 45101
+        serverid: 445
+        configs:
+          gameserver.dat: |
+            [gameserver]
+            gameid=2005				    //游戏ID
+            gamename=赌场黑杰克		    //游戏名称
+            flag=1			     	    //显示名称,客户端可根据此名称将房间分类显示
+            minplayer=7                 //游戏最小人数
+            maxplayer=5                 //游戏最大人数
+            tablecount=100			    //桌子数
+            seatcount=5				    //椅子数
+            loginmoney=1000			    //进入游戏最小积分
+            scoremode=0					//0 即时写分 1退房间写分
+            maxuser=500					//最大人数
+            taxscale=5					//抽水比例
+            readywaittime=6				//举手超时时间,单位秒
+            reghallserverinterval=60	//注册广场时间间隔,单位秒
+            basescore=10				//底分
+            opttime=8					//可操作时间，单位秒
+            bet=10,20,30,50,		    //下注分数
+            retaction=5					//结算动画超时
+            fapaiaction=2				//发牌动画超时
+            betaction=2					//下注飞金币动画
+            compareaction=3				//比牌动画
+            pokertype=1					//1随机发牌 2 发牌器发牌
+            maxturn=5					//最多好多轮以后不会弃牌了，自动比牌
+            deallog=2					//牌局记录器类型0 不记录 ,1 文本, 2 db
+            checkturn=1					//多少轮以后可以看牌
+            maxgamecountsametable=0		//同一桌最大游戏次数
+            matchmakingtime=6           //未滿遊戲最小人數的等待時間
+            matchmakingnumber=1         //開始倒數時間的最低人數
+            radomnickname=1             //特殊名稱的開關 0 關閉 1 開啟
+            gametimeout=10
+            kickoutmoney=0			//達到此积分，強制退出房間
+            reversepokerorder=1 //發牌順序是否要改成逆時針 0 順時針 1 逆時針
+
+            [gamequeue]
+            gamematchwaitmintime=1		//撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		//撮合时间间隔范围大值,单位秒
+            againstsameip=0				//同IP不分配一起
+            againstlastgame=0			//最后一次游戏过的用户不分配一起
+            gameendaction=0				//游戏结束后动作,0 无动作 1 准备
+            queuetype=0					//撮合类型 0 时间随机 1 固定人数 2输赢对战
+            queueusercount=3			//排队人数
+            queuetimeout=3				//排队人数超时
+            lessthanuser=10				//低於幾人不採用分桌機制
+
+            [robot]
+            enable=1    									//是否开启机器人
+            logoninterval=30								//加载机器人时间间隔
+            minmneyamount=1000							    //机器人最小金币数
+            maxmoneyamount=6000						        //机器人最大金币数
+            queuecheckwaitspan=3,5							//配桌检查时间间隔
+            queueagainwaitspan=3,5							//继续配桌时间间隔
+            tablemaxusercount=3								//配桌时桌子上最大人数
+            tableminusercount=1								//配桌时桌子上最小人数
+            gameendleaveodds=1							    //游戏结束时离开游戏几率
+            autositwaitspan=1,3							    //主动入座时间间隔
+            gameactionwaitspan=1,2							//游戏动作响应时间间隔
+            gamereadywaitspan=1,5							//游戏准备相应时间间隔
+            maxusergameendleaveodds=0						//人数达到上限时离开游戏几率
+            maxcardsrndlvl=1								//机器人换牌概率0-10
+            againstgameing=0                                //進入正在遊戲中的(觀戰) 0是 1否
+            matchtablemode=0                                //配桌方式, 0輪詢桌子每次放一個機器人 1輪詢桌子每次放N個機率機器人
+            tablematchrobotrate=1,0|2,40|3,33|4,27          //為機器人人數,20機率%.  桌子隨機配N個機器人.分母为固定值,所有数字总和需为100
+
+            Rate_Hit=100                    // 小於17點時要牌機率
+            Rate_Be17=0                    // 大於等於17點時要牌機率
+            Rate_Split=50                   // 可分牌時分牌機率
+            Rate_Double=20                  // 可加倍時加倍機率
+            Rate_Insurrence=50              // 可保險時保險機率
+            Rate_Surrender=20              // 莊家明牌有10或是A時投降的機率，當機器人點數大於等於17點或拿到黑傑克時則不投降
+            BetRange=1,7,2                  // 下注範圍,bet_range,1-7(籌碼編號),2(數量)
+
+            [GameSetting]
+            Timeout_WaitingStart=6					// 等待遊戲開始 timeout
+            Timeout_Betting=10						// 下注 timeout
+            Timeout_StopBettingAnimation=4 			// 停止下注動畫 timeout
+            Timeout_CutCards=8						// 切牌 timeout
+            Timeout_CutCardsAnimation=5			    // 切牌動畫 timeout
+            Timeout_DealAnimation=5                 // 發牌動畫 timeout
+            Timeout_Insurance=8						// 保險 timeout
+            Timeout_DealerPeeksCards=5              // 莊家瞇牌 timeout
+            Timeout_Settlement_Insurance=12         // 保險結算 timeout
+            Timeout_Playing=8						// 玩家操作 timeout
+            Timeout_Settlement_Dealer=15            // 莊家開牌/結算
+
+            ChipValue=100,1000,5000,10000,50000,100000,500000   // 籌碼面額
+            MaxTotalBetBase=500000      // 底注額上限
+
+            KickGuestTime=60				        //多久沒下注將旁觀者踢出遊戲，單位秒
+            KickGuestTipTime=10                     //距離踢出房剩餘10秒先提示訊息
+            KickUserRound=3				            //多少回合沒下注將玩家踢出遊戲，單位回合
+
+            [SystemPool]
+            EnablePoolControl=1         // 是否開啟水線控制功能，0:關閉，1:開啟
+            WinLine=1500000             // 贏錢線
+            RoundLimit=5               // 判定局數
+            AverageBet=60				// 平均押注
+            Factor=20                   // 係數定值
+
+            // 莊家補牌表，以下[]內數值為莊家牌點數，個數需與莊家目前點數相符
+            [DealerPoint]
+            Points=10,11,12,13,14,15,16	// 莊家目前點數
+            [10]
+            Odds=600,100,100,100,100    // 補牌機率，採千分比
+            Points=0,18,19,20,21        // 最後補到多少點，若值為 0 表示為自然發牌
+            [11]
+            Odds=600,100,100,100,100
+            Points=0,18,19,20,21
+            [12]
+            Odds=600,100,100,100,100
+            Points=0,18,19,20,21
+            [13]
+            Odds=600,100,100,100,100
+            Points=0,18,19,20,21
+            [14]
+            Odds=600,100,100,100,100
+            Points=0,18,19,20,21
+            [15]
+            Odds=600,100,100,100,100
+            Points=0,18,19,20,21
+            [16]
+            Odds=600,100,100,100,100
+            Points=0,18,19,20,21
+
+            // 動態水線區間表
+            [DynamicSetting]
+            XVariation=0,0,0,0,0,0,50,100,150,200,250   // 變數加減，採千分比
+            ConditionOdds=5,4,3,2,1,0,-1,-2,-3,-4,-5    // 輸贏區間
+          poker.dat: |
+            [Poker]
+            DealType=0              // 發牌方式，0:自然發牌（預設值），1:指定發牌
+
+            Dealer=s3c3h6s0cJ       // 莊家手牌
+            User1=h2h4h6h8cK        // User1~N 為玩家手牌
+            User2=c2s2d2h7c7
+            User3=h5c5s5d5h9
+
+            [CutCard]
+            EveryGame=0            // 是否設定為每一局發牌/切牌，0:系統預設值，1:每一局發牌/切牌
+
+            // 若未指定手牌或張數不足 2 張，則系統自然發牌
+            // 後面進行操作時，如要牌、加倍、莊家補牌等，會先從上面設定的牌組中取牌，取完後就會從系統牌盒中取牌
+
+            // 撲克牌代碼說明：
+            // 一張撲克牌以兩個字元組成：花色代碼 + 數字代碼
+            // 花色代碼：[c]梅花、[d]方塊、[h]紅桃、[s]黑桃、[j]其他，只能用在特殊牌，如大王、小王
+            // 數字代碼：[2]~[9]數字1~9、[1]數字1，當作1或A則由server自行判定、[0]數字10、[J]J、[Q]Q、[K]K、[a]小王、[b]大王
+            // 範例：[c1]梅花1或梅花A、[h0]紅桃10、[sQ]黑桃Q、[ja]小王
+          robot.dat: |
+            [csize]
+            cn=2
+
+            [c1]
+            Rate_Hit=100                    // 小於17點時要牌機率
+            Rate_Be17=0                    // 大於等於17點時要牌機率
+            Rate_Split=50                   // 可分牌時分牌機率
+            Rate_Double=20                  // 可加倍時加倍機率
+            Rate_Insurrence=50              // 可保險時保險機率
+            Rate_Surrender=20              // 莊家明牌有10或是A時投降的機率，當機器人點數大於等於17點或拿到黑傑克時則不投降
+            BetRange=1,7,2                  // 下注範圍,bet_range,1-7(籌碼編號),2(數量)
+
+            [c2]
+            Rate_Hit=100                    // 小於17點時要牌機率
+            Rate_Be17=0                    // 大於等於17點時要牌機率
+            Rate_Split=50                   // 可分牌時分牌機率
+            Rate_Double=20                  // 可加倍時加倍機率
+            Rate_Insurrence=50              // 可保險時保險機率
+            Rate_Surrender=20              // 莊家明牌有10或是A時投降的機率，當機器人點數大於等於17點或拿到黑傑克時則不投降
+            BetRange=1,7,4                  // 下注範圍,bet_range,1-7(籌碼編號),2(數量)

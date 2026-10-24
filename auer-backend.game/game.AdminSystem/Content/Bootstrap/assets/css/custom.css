@@ -1,0 +1,226 @@
+/* here you can put your own css to customize and override the theme */
+body.by_login{
+    height: 100%;
+    background: url("../img/logon_bg.jpg") no-repeat;
+    min-height: 680px;
+    background-size: 100% 100%;
+    position: relative;
+}
+body.by_login .by_top{
+    background-color: #373b43;
+    padding-top: 3px;
+}
+body.by_login .by_top .topc{
+    width: 75%;
+    margin: 0 auto;
+}
+body.by_login .by_top ul, .by_top li{
+    margin: 0;
+    padding: 0;
+}
+body.by_login .by_top .botomline{
+    font-size: 0;
+    line-height: 0;
+    height: 0;
+    border-top: 1px solid #303030;
+    border-bottom: 1px solid #4a4d56;
+}
+body.by_login .by_top ul{
+    float: right;
+}
+body.by_login .by_top li{
+    float: left;
+    padding: 8px 4px;
+}
+body.by_login .by_top li a{
+    color: #fff;
+}
+body.by_login .baccontent{
+    width: 75%;
+    margin: 0 auto;
+}
+body.by_login .baccontent .contiputc{
+    float: right;
+    width:300px;
+    margin-top: 50px;
+    padding-bottom: 20px;
+}
+body.by_login .baccontent .contiputc .contiputchead{
+    padding: 20px 0 10px 0;
+    margin: 0 20px;
+    border-bottom: 1px solid #a7b3c2;
+    color: #76869f;
+    font-size: 18px;
+}
+body.by_login .baccontent .contiputc .contiputmain{
+    margin: 0 20px;
+    padding: 5px;
+}
+body.by_login .baccontent .contiputc .contiputmain .contiputmainl{
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+body.by_login .baccontent .contiputc label.control-label{
+    color: #76869f;
+    padding-bottom: 8px;
+}
+body.by_login .baccontent .contiputc .verinimg{
+    width: 80px;
+    height:30px;
+    margin-left: 8px;
+}
+body.by_login .baccontent .contiputc .refverinimg{
+    width: 20px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+body.by_login .baccontent .contiputc .contiputmain .rembtn{
+    vertical-align: middle;
+    margin-bottom: 5px;
+}
+body.by_login .baccontent .contiputc .logbtn{
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    color: #fff;
+    background: #f28e17;
+}
+
+body.by_login .foot{
+    width: 100%;
+    margin-top: 30px;
+    border-top: 1px solid #cccccc;
+    height: auto;
+    padding-top: 10px;
+    background-color: #f0f0f0;
+    padding-bottom: 10px;
+    position: absolute;
+    bottom: 0;
+    display: none;
+}
+body.by_login .foot_c{
+    margin: 0 auto;
+    height: auto;
+    width: 1110px;
+}
+body.by_login .foot_c span{
+    float: left;
+    margin-left: 18px;
+    color: #8f8f8f ;
+    font-size: 12px;
+}
+body.by_login .foot_c .foot_state{
+    float: left;
+    margin-left: 350px;
+}
+body.by_login .foot_c .foot_state li{
+    float: left;
+    margin-left: 20px;
+}
+body.by_login .foot_c .foot_state li a{
+    text-decoration: none;
+    color: #8f8f8f;
+    font-size: 12px;
+}
+body.by_login .clear{
+    font-size: 0;
+    line-height: 0;
+    width: 0;
+    height: 0;
+    display: block;
+    clear: both;
+}
+
+
+.form-group-user .radio-inline {margin-left:0px;padding-left:0px;}
+
+/*ѡ*/
+
+.server-list {
+    margin:0 0 8px 0;
+}
+.server-list .server-option,.server-disabled {  
+     padding:0 15px 0 0 
+}
+.server-list .server-option .serverdetail {
+    padding: 5px;
+    text-align: center;
+    background: #f28e17;
+    color: #fff;
+        -webkit-animation-duration: 2s;
+    animation-duration: 2s;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-name: glowing;
+    animation-name: glowing;
+}
+.server-list .server-disabled .serverdetail {
+    background: #ddd;
+    padding: 5px;
+    text-align: center;
+    background: #ddd;
+    color: #666;
+}
+.server-option .out {
+    border: 3px solid #f28e17;
+    opacity: 0.6;
+    -webkit-opacity: 0.6;
+    position: relative;
+    cursor: pointer;
+}
+.server-option.checked .out{
+    opacity: 1;
+     -webkit-opacity: 1;
+     border: 3px solid #9bc100;
+    
+}
+.server-disabled {
+    position: relative;
+}
+.server-disabled .fa-lock {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 12px;
+    margin: 0 16px 5px 0;
+}
+.server-checked-div {
+      
+}
+.server-checked {
+    position: absolute;
+    right: 0;
+    border-left: 20px solid transparent;
+    border-bottom:20px solid #9bc100;
+    color: #9bc100;
+    font-size: 16px;
+    bottom: 0;
+}
+.server-checked-div .fa-check {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: #fff;
+    font-size: 12px !important;
+}
+.server-disabled .out {
+    border: 3px solid #ddd;
+}
+
+@keyframes glowing {
+    
+0% {
+    -webkit-box-shadow: 0 0 0 rgba(27, 154, 247, 0.3);
+    box-shadow: 0 0 0 #ad4b48;
+}
+50% {
+    -webkit-box-shadow: 0 0 20px rgba(27, 154, 247, 0.8);
+    box-shadow: 0 0 20px #ad4b48;
+}
+100% {
+    -webkit-box-shadow: 0 0 0 rgba(27, 154, 247, 0.3);
+    box-shadow: 0 0 0 #ad4b48;
+}
+
+}
+/***ѡend***/

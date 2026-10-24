@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+
+namespace target.Models.Table
+{
+    public class RiskControlRecordEntity
+    {
+        [Key]
+        public long Id { get; set; }
+        public int TargetRiskControlConfigID { get; set; }
+        public string Memo { get; set; }
+        public string DebugInfo { get; set; }
+        public int GameID { get; set; }
+        public int MerchantID { get; set; }
+        public int? PlayerID { get; set; }
+        public DateTime CreateTime { get; set; }
+
+
+    }
+}

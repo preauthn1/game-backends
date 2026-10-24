@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package netproto;
+
+message Http_Result {
+    required bool result = 1;     //结果
+    required string message = 2;  //返回结果信息
+};

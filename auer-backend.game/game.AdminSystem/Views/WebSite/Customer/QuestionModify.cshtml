@@ -1,0 +1,250 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+
+@model game.Entity.Customer.QuestionList
+@{
+    List<game.Entity.Customer.QuestionType> type = ViewBag.TypeList as List<game.Entity.Customer.QuestionType>;
+    List<game.Entity.Customer.QuestionSites> siteList = example.invalid as List<game.Entity.Customer.QuestionSites>;
+    int typeId = ViewBag.TypeID;
+    game.Entity.Customer.QuestionType typeModel = new game.Entity.Customer.QuestionType() { ChildTypeFileds = string.Empty };
+
+    if (Model.Id == 0)
+    {
+        if (typeId == 0)
+        {
+            var t = type.FirstOrDefault();
+            if (t != null)
+            {
+                typeId = t.Id;
+                typeModel = t;
+            }
+
+        }
+        else
+        {
+            typeModel = type.Where(m => m.Id == typeId).FirstOrDefault();
+        }
+    }
+    else
+    {
+        typeModel = type.Where(m => m.Id == Model.QsTypeId).FirstOrDefault();
+        typeId = typeModel.Id;
+    }
+}
+@section pageLevelStyles{
+    <link href="/Plugins/UMEditor/themes/default/css/umeditor.min.css" rel="stylesheet" />
+    <style type="text/css">
+        .form-bordered .form-group > div {border-left: 1px solid #fff !important;padding: 1px 10px !important;}
+        .form-bordered .control-label { width: 130px;}
+    </style>
+}
+@section initScripts{
+    <script src="/Plugins/UMEditor/umeditor.config.js"></script>
+    <script src="/Plugins/UMEditor/umeditor.min.js"></script>
+    <script src="/Plugins/UMEditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="~/Plugins/My97DatePicker/WdatePicker.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //实例化编辑器
+            var um = UM.getEditor('myEditor');
+
+            //提交事件
+            $("#form1").submit(function () {
+                $("input[name=Memo]").val(UM.getEditor('myEditor').getContent());
+                $("#fileds_div .form-group").each(function (a, b) {
+                    var filedsCode = $(b).find("input").attr("data-filedscode");
+                    var filedsVal = $(b).find("input").val();
+                    var name = $(b).find(".control-label").html();
+                    if (filedsVal.indexOf("/") > 0) {
+                        //alert("操作失败！" + name + "里包含特殊字符！请修改！");
+                        //return false;
+                    }
+                    var html = '<input hidden name="fileds" value="' + filedsCode + '/' + filedsVal + '" />';
+                    $("#form1").append(html);
+                });
+            });
+            $("select[name=QsTypeId]").change(function () {
+                window.location.href = "/customer/questionadd/" + $(this).val();
+            })
+            $("#form1").validate({
+                rules: {
+                    Title: {
+                        required: true,
+                        minlength: 2,
+                        maxlength: 1024
+                    },
+                    QsTypeId: {
+                        required: true
+                    }
+                    , SiteID: {
+                        required: true
+                    }, ClientType: {
+                        required: true
+                    }, Origin: {
+                        required: true
+                    }
+                }
+            });
+
+        });
+    </script>
+}
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>@(Model.Id == 0 ? "新增问题" : "编辑问题")
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="form1" method="post" class="form-horizontal form-bordered">
+                    <input type="hidden" name="Id" value="@Model.Id" />
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-2 xing">问题类型</label>
+                            @{
+
+                                if (Model.Id == 0)
+                                {
+                                }
+                                else
+                                {
+
+                                    @Html.Hidden("QsTypeId", Model.QsTypeId);
+                                }
+                            }
+                            <div class="col-md-10">
+                                <select class="form-control input-medium" name="@(Model.Id == 0 ? "QsTypeId" : "")" @(Model.Id == 0 ? "" : "disabled")>
+                                    @foreach (var c in type)
+                                    {
+                                        <option @Html.IsChoose(Model.Id == c.Id, "select") @Html.IsChoose(typeId == c.Id, "select") value="@c.Id">@c.TypeName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2 xing">站点</label>
+                            <div class="col-md-10">
+                                <select class="form-control input-medium" name="SiteID">
+                                    @foreach (var item in siteList)
+                                    {
+                                        <option value="@item.Id" @(Model.SiteID == item.Id ? "selected" : "")>@item.SiteName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2 xing">问题标题</label>
+                            <div class="col-md-10">
+                                <input type="text" name="Title" class="form-control input-medium" placeholder="请输入问题标题" value="@Model.Title">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2 xing">客户端类型</label>
+                            <div class="col-md-10">
+                                <select class="form-control input-medium" name="ClientType">
+                                    @foreach (game.Entity.Customer.ClientType item in Enum.GetValues(typeof(game.Entity.Customer.ClientType)))
+                                    {
+                                        <option value="@item" @(Model.ClientType == item ? "selected" : "")>@item.GetDisplayName()</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2 xing">来源</label>
+                            <div class="col-md-10">
+                                <select class="form-control input-medium" name="Origin">
+                                    @foreach (game.Entity.Customer.OriginType item in Enum.GetValues(typeof(game.Entity.Customer.OriginType)))
+                                    {
+                                        <option value="@item" @(Model.Origin == item ? "selected" : "")>@item.GetDisplayName()</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">记录时间</label>
+                            <div class="col-md-10">
+                                <input type="text" name="CreateTime" class="form-control input-medium" placeholder="请输入记录时间" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" 
+                                       value="@(Model.Id != 0 ? Model.CreateTime.ToString("yyyy-MM-dd HH:mm") : DateTime.Now.ToString("yyyy-MM-dd HH:mm"))">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">用户编号</label>
+                            <div class="col-md-10">
+                                <input type="text" name="UserID" class="form-control input-medium" placeholder="请输入用户编号" value="@Model.UserID">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">联系人名称</label>
+                            <div class="col-md-10">
+                                <input type="text" name="ContactName" class="form-control input-medium" placeholder="请输入联系人名称" value="@Model.ContactName">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2">联系人电话</label>
+                            <div class="col-md-10">
+                                <input type="text" name="ContactPhone" class="form-control input-medium" placeholder="请输入联系人电话" value="@Model.ContactPhone">
+                            </div>
+                        </div>
+                        <div id="fileds_div">
+                            @{
+                                List<game.AdminSystem.Controllers.WebSite.CustomerController.Fileds> fileds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<game.AdminSystem.Controllers.WebSite.CustomerController.Fileds>>(typeModel.ChildTypeFileds);
+
+                                List<game.AdminSystem.Controllers.WebSite.CustomerController.Fileds> valueFileds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<game.AdminSystem.Controllers.WebSite.CustomerController.Fileds>>(string.IsNullOrEmpty(Model.ChildTypeFiledsContent) ? string.Empty : Model.ChildTypeFiledsContent);
+                                if (valueFileds == null)
+                                {
+                                    valueFileds = new List<game.AdminSystem.Controllers.WebSite.CustomerController.Fileds>();
+                                }
+                                if (fileds != null)
+                                {
+                                    foreach (var item in fileds)
+                                    {
+                                        var val = valueFileds.Where(m => m.Name == item.Name).FirstOrDefault();
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2">@(item.Value)</label>
+                                            <div class="col-md-10">
+                                                <input type="text" data-filedscode="@(item.Name)" class="form-control input-medium" placeholder="请输入@(item.Value)" value="@(val==null?string.Empty:val.Value)">
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            }
+                        </div>
+                        @*<div class="form-group">
+                                <label class="control-label col-md-4">创建人</label>
+                                <div class="col-md-8">
+                                    <input type="text" name="CreatePeople" class="form-control input-medium" placeholder="请输入创建人" value="@Model.CreateUserName">
+                                </div>
+                            </div>*@
+                        <div id="div_content" class="form-group">
+                            <label class="control-label col-md-2">详细内容</label>
+                            <div class="col-md-10">
+                                <script type="text/plain" id="myEditor" style="width:100%;">
+                                    <p>@Html.Raw(Model.Memo ?? "")</p>
+                                </script>
+                                <input hidden name="Memo" id="Memo" />
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @Html.OkWithRight()
+                            @Html.Back(Url.Action("QuestionList"))
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>

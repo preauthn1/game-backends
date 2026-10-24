@@ -1,0 +1,185 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@using game.Infrastructure.Extensions
+@using game.AdminSystem
+
+@model game.AdminSystem.Models.ViewModels.UnionpayBankPlatformMappingAdminUpdateViewModel
+
+@{
+
+
+}
+
+@section pageLevelPlugins{
+
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+
+}
+
+
+<style>
+    #platformid
+    {
+        display:inline-block;
+    }
+
+    .checkboxItem
+    {
+        cursor:pointer;
+    }
+
+    .checkboxItem:hover
+    {
+        opacity:.65;
+    }
+
+</style>
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>设置个平台可支援银行
+                </div>
+            </div>
+            <div class="portlet-body form" style="padding:15px !important">
+
+                <!-- BEGIN FORM-->
+                <div id="myForm" method="post" class="form-horizontal form-bordered" novalidate="novalidate">
+                    
+                    @if (Model.IsMultiplePlatforms)
+                    {
+                        var dropdownModel = new DropdownPartialSettingViewModel();
+                        dropdownModel.DefaultSelectValue = Model.PlatformID.ToString();
+
+                        <div>
+                            <form method="GET">
+
+                                <div>
+                                    选择平台：
+                                    @Html.Partial("_DropdownPlatform",dropdownModel )
+
+                                    <button type="submit" class="btn dark" style=""><i class="fa fa-file-o"></i> 搜寻</button>
+                                </div>                               
+                            </form>
+
+                            <hr />
+
+                        </div>
+                    }
+
+
+                    @if(Model.PlatformID > 0)
+                    {
+
+                        <div class="form-body" >
+
+                            <input type="hidden" value="@Model.PlatformID" name="PlatformID" id="PlatformID" />
+
+                            <div style="">
+
+                                <div style="font-size:20px;font-weight:700;text-align:center;">
+                                    @Model.PlatformName
+                                </div>
+                                <div style="color:#AAA;text-align:center;">
+                                    平台编号 (@Model.PlatformID)
+                                </div>
+
+                                <div class="hr-s"></div>
+
+                            </div>
+
+                            <div v-for="(item, index) in SettingItems">
+                                <div style="line-height:30px;">
+                                    <input type="checkbox" v-model="item.IsSelected" v-bind:id="item.UnionpayBankCodeDOMElementID">
+                                    <label class="checkboxItem"  :title="item.UnionpayBankCodeID"  v-bind:for="item.UnionpayBankCodeDOMElementID">{{item.UnionpayBankName}}</label>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button id="btnOk" type="button" class="btn dark" style="" v-on:click="saveChange()"><i class="fa fa-file-o"></i> 确定</button>
+                                <button id="btnBack" type="button" class="btn " style="" onclick="javascript:window.history.back();return false;"><i class="fa  fa-mail-reply-all"></i> 返回</button>
+                            </div>
+                        </div>
+
+
+                    
+                    }
+                </div>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section initScripts
+{
+    <script>
+        
+        $(function () {
+
+            var vApp = new Vue({
+                el: '#myForm',
+                data: {
+                    SettingItems: @Html.Raw(Model.SettingItems.ConvertToJsonString()),
+                 },
+                 methods: {
+                    saveChange: function (ID) {
+
+                         var model =
+                         {
+                             PlatformID: $("#PlatformID").val(),
+                             SettingItems: this.SettingItems
+                         };
+
+                         $.ajax({
+                            cache: false,
+                            url: '/UnionpayBankPlatformMapping/Update',
+                            type: 'POST',
+                            contentType: "application/json",
+                            dataType: "json",
+                            data: JSON.stringify(model),
+                            success: function (data) {
+
+                                if (data.IsSuccess)
+                                {
+                                    alert(data.Message);
+                                    location.reload();
+                                }
+                                else
+                                {
+                                    alert(data.Message);
+                                }
+
+                            },
+                            error: function (err) {
+                                swal({
+                                    type: 'error',
+                                    title: '操作失败',
+                                    text: err
+                                })
+                            }
+                        });
+                    }
+                }
+            });
+
+
+
+        })
+
+
+       
+    </script>
+}

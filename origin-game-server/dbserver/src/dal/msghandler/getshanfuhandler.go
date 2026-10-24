@@ -1,0 +1,130 @@
+package msghandler
+
+import (
+	"bytes"
+	"crypto/md5"
+	"db"
+	"encoding/hex"
+	"fmt"
+	"example.invalid/golang/protobuf/proto"
+	"io/ioutil"
+	"mlog"
+	"module"
+	"msg"
+	"net/http"
+	"netproto"
+	"network"
+	"rpcmsg"
+	"strconv"
+	"strings"
+	"time"
+)
+
+//閃付
+type GetShanFuHandler struct {
+}
+
+func (rh *GetShanFuHandler) IsHook(bclsid int32, sclsid int32) bool {
+	return bclsid == int32(netproto.MessageBClassID_Hall) &&
+		sclsid == int32(netproto.HallMsgClassID_GetShanFuID)
+}
+
+func (rh *GetShanFuHandler) OnMessage(ctx *module.MouduleCtx, clt *network.ConnInfo, m *msg.Message) []*msg.Message {
+	rpcInfo, rmm := rpcmsg.ParseRPCMessage(m, func() proto.Message {
+		mm := &netproto.GetShanFuMsg{}
+		return mm
+	})
+
+	if rmm == nil || rpcInfo == nil {
+		return []*msg.Message{GetDBRetMsg(0)}
+	}
+
+	mm := rmm.(*netproto.GetShanFuMsg)
+	ps := db.NewSqlParameters()
+	ps.AddIntInput("intUserID", mm.GetUserID())
+	proc := db.NewProcedure("PrPs_GetShanFuKey", ps)
+	dbret, err := DbUtil.ExecProc(proc)
+	retcode := int32(dbret.GetReturnValue())
+
+	retmsg := msg.NewMessage(int32(netproto.MessageBClassID_Hall), int32(netproto.HallMsgClassID_GetShanFuRetID), nil)
+	retdata := new(netproto.GetShanFuRet)
+
+	if err != nil {
+		strMsg := fmt.Sprintf("执行存储过程PrPs_GetShanFuKey错误,%v", err)
+		ctx.Error(strMsg)
+	} else {
+		if retcode == 1 {
+			tb := dbret[0]
+			if len(tb.Rows) > 0 {
+				accountid := tb.GetValueByColNameString(0, "AccountID")
+				publickey := tb.GetValueByColNameString(0, "Sign")
+				sumamount := tb.GetValueByColNameInt64(0, "SumAmount")
+				url := tb.GetValueByColName(0, "PayAgentUrl").(string)
+				url = fmt.Sprintf("%v/agent/agents", url)
+
+				stramount := "000"
+				if sumamount > 0 {
+					stramount = strconv.Itoa(int(sumamount))
+				}
+				retdata.Data = proto.String(SendShanFu(accountid, stramount, publickey, url))
+				mlog.Debug("閃付回應:  %v", retdata.GetData())
+			}
+		}
+	}
+
+	retmsg.MsgData = retdata
+	return []*msg.Message{retmsg}
+}
+
+func SendShanFu(account string, sumamount string, publickey, url string) string {
+	sec := time.Now().Unix()
+
+	var buf bytes.Buffer
+	buf.WriteString("accountId=")
+	buf.WriteString(account)
+	buf.WriteString("&amount=")
+	buf.WriteString(sumamount)
+	buf.WriteString("&timestamp=")
+	buf.WriteString(strconv.Itoa(int(sec)))
+	buf.WriteString("&key=")
+	buf.WriteString(publickey)
+
+	signVal := buf.String()
+
+	md5Ctx := md5.New()
+	md5Ctx.Write([]byte(signVal))
+	cipherStr := md5Ctx.Sum(nil)
+	sign := hex.EncodeToString(cipherStr)
+	sign = strings.ToUpper(sign)
+	resBody := proxyRequest(url, account, sumamount, sec, sign)
+	return resBody
+}
+
+func proxyRequest(url string, accountid string, amount string, sec int64, sign string) string {
+	timeout := time.Duration(30 * time.Second)
+	client := http.Client{
+		Timeout: timeout,
+	}
+
+	sendBody := fmt.Sprintf("accountId=%v&amount=%v&timestamp=%v&sign=%v",
+		accountid, amount, sec, sign)
+	mlog.Debug("sendBody : %v", sendBody)
+	reqest, err := http.NewRequest("POST", url, strings.NewReader(sendBody))
+
+	if err != nil {
+		mlog.Error("調用 %s 錯誤, %v", url, err)
+		return ""
+	}
+
+	reqest.Header.Set("Content-Type", "application/x-www-form-urlencoded;param=value") //必须设定该参数,POST参数才能正常提交
+
+	resp, err := client.Do(reqest) //发送请求
+	defer resp.Body.Close()        //一定要关闭resp.Body
+
+	content, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		mlog.Error("調用 %s 錯誤, %v", url, err)
+	}
+	return string(content)
+}

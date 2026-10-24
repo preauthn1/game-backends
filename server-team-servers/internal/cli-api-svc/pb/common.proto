@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "/cliapisvc";
+
+package cliapisvc;
+
+message Empty {}
+
+message QueryCondition {
+    int32 PlayerID = 1;
+    int32 Table = 2;
+    int32 Seat = 3;
+    bool IsLogined = 4;
+    bool IsGuest = 5;
+    bool IsGaming = 6;
+    bool IsFree = 7;
+}
+
+message IncreaseSysPoolRequest {
+    QueryCondition Condition = 1;
+    int64 Amount = 2;
+}
+
+message SetSpecialRewardCountRequest {
+    int32 TableID = 1; // 桌號
+    int32 Count = 2;   // 設定次數
+    int32 Rate = 3;    // 設定機率 百分比
+}

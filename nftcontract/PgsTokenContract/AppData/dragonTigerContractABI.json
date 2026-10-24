@@ -1,0 +1,676 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "wagerID",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "playerAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "ownerAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "ts",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "wagerID2",
+        "type": "string"
+      }
+    ],
+    "name": "BetResult",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "roundID",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "beginTS",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "endTS",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "roundID2",
+        "type": "string"
+      }
+    ],
+    "name": "RoundStart",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "roundID",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "beginTS",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endTS",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isLock",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "betPlayers",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "suits_banker",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "suits_player",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "result_banker",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "result_player",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "winerResult",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct GameRoundInfo",
+        "name": "info",
+        "type": "tuple"
+      }
+    ],
+    "name": "SettleInfo",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "roundID",
+        "type": "bytes32"
+      },
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "wagerID",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "playerAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalPayoutAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "betAmount_banker",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "betAmount_player",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "betAmount_draw",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct PlayerBetInfo",
+        "name": "info",
+        "type": "tuple"
+      }
+    ],
+    "name": "SettleInfoPlayerBet",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "NFTContract",
+    "outputs": [
+      {
+        "internalType": "contract IPgsERC721",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "TokenContract",
+    "outputs": [
+      {
+        "internalType": "contract IPgsERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "authorizedAddressMap",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "lastRoundIDMapping",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "playerRoundBetIsLock",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "randomNonce",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "roundDetailInfo",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "roundID",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "beginTS",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "endTS",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isLock",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "betPlayers",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "suits_banker",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "suits_player",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "result_banker",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "result_player",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "winerResult",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "wagerPlayerBetInfo",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "wagerID",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "playerAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalPayoutAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "betAmount_banker",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "betAmount_player",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "betAmount_draw",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "superAdminSetNFTContractAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "superAdminSetTokenContractAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "superAdminSetTrustSenderAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getBankerAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getReferenceContractAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenID",
+        "type": "uint256"
+      }
+    ],
+    "name": "getLastRoundStatus",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "roundID",
+        "type": "string"
+      }
+    ],
+    "name": "getRoundStatus",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "roundID",
+        "type": "string"
+      }
+    ],
+    "name": "getBetPlayersInfo",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "roundID",
+        "type": "string"
+      }
+    ],
+    "name": "getWagerDetail",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "roundID",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "expiredSeconds",
+        "type": "uint256"
+      }
+    ],
+    "name": "createRound",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_playerAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "roundID",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "wagerID",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "betAmount_banker",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "betAmount_player",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "betAmount_draw",
+        "type": "uint256"
+      }
+    ],
+    "name": "playerBet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "roundID",
+        "type": "string"
+      }
+    ],
+    "name": "settleResult",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

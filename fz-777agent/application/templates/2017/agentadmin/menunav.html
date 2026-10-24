@@ -1,0 +1,36 @@
+
+<style>
+    .logo{
+        position: absolute;
+        z-index: 99;
+        top: -25px;
+    }
+
+    .logo_img{
+        height: 80px;
+    }
+</style>
+
+<header class="navbar bjui-header" id="bjui-navbar">
+        <div class="container_fluid">
+            <div class="logo">
+                <img class="logo_img" src="../../assets/img/FZ.png">
+            </div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" id="bjui-navbar-collapsebtn" data-toggle="collapsenavbar" data-target="#bjui-navbar-collapse" aria-expanded="false">
+                    <i class="fa fa-angle-double-right"></i>
+                </button>
+<!--                 <a class="navbar-brand" href="#"><img src="{{BJUI_PATH}}/images/logo.png" height="30"></a> -->
+            </div>
+
+            <nav class="collapse navbar-collapse" id="bjui-navbar-collapse">
+                <ul class="nav navbar-nav navbar-right" id="bjui-hnav-navbar">
+                    {% for topMenu in topMenus %}
+                    <li {% if topMenu.id == 1000 or topMenu.id == 2000  %} class="active" {% endif %}>
+                        <a href="/agentadmin/menu/sub?pid={{topMenu.id}}&pname={{topMenu.name}}" data-toggle="sidenav" data-id-key="targetid">{{topMenu.name}}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+    </header>

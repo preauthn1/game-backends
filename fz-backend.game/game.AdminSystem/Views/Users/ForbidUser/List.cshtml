@@ -1,0 +1,83 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+
+@model  FW.Core.Helper.PagedList<game.Entity.ForbidUser.ForbidUser>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_message")
+                @Html.Partial("~/Views/Shared/_userPartial.cshtml")
+                <div class="form-group">
+                    <label>说明</label>
+                    <input type="text" class="form-control input-small" id="memo" name="memo" placeholder="说明">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default"> 搜 索 </button>
+                </div>
+            </form>
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th class="hide">编号</th>
+                            <th>创建时间</th>
+                            @Html.Partial("~/Views/Shared/_userTHeadPartial.cshtml")
+                            <th>平台</th>
+                            <th>现金数</th> 
+                            <th>保險箱数</th> 
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (var item in Model.PageData)
+                            {
+                                <tr>
+                                    <td class="hide">@item.Id</td>
+                                    <td>@item.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                                    @Html.Partial("~/Views/Shared/_userTBodyPartial.cshtml", item.UserInfo)
+                                    <td>@item.UserInfo.Area.Platform.Name</td>
+                                    <td>@item.CashAmount.ToCash()</td> 
+                                    <td>@item.BankAmount.ToCash()</td> 
+                                    <td>@item.Memo</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+
+            var validateFunc = function () {
+                var validator = new Validator()
+                validator.add([form_search.loginName, form_search.nickName, form_search.userID], [{
+                    strategy: 'isSomeNonEmpty',
+                    errorMsg: '账户信息不能全为空,请输入昵称、账号或者ID！'
+                }])
+
+                var errorMsg = validator.start()
+                return errorMsg
+            }
+
+            var form = document.getElementById('form_search')
+            form.onsubmit = function () {
+                var errorMsg = validateFunc()
+                if (errorMsg) {
+                    Msg.alert(errorMsg, 'danger')
+                    return false
+                }
+            }
+            fillFormData('form_search');
+        })
+    </script>
+}

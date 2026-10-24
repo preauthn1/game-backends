@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [Apple]
+    AUTHORIZATION [dbo];
+

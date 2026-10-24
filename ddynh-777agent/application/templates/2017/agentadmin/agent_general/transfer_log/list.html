@@ -1,0 +1,22 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+{% autoescape false %}{{formSearch}}{% endautoescape %}
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                <th data-options="{name:'id',align:'center'}">订单ID</th>
+                <th data-options="{name:'total_agent_id',align:'center'}">代理（id）</th>
+                <th data-options="{name:'type',align:'center'}">转账类型</th>
+                <th data-options="{name:'user_agent_id',align:'center'}">目标代理</th>
+                <th data-options="{name:'money',align:'center'}">转账金额</th>
+                <th data-options="{name:'old_money',align:'center'}">转账前余额</th>
+                <th data-options="{name:'new_money',align:'center'}">转账后余额</th>
+                <th data-options="{name:'created_at',align:'center'}">转账时间（升序）</th>
+                <th data-options="{name:'ip',align:'center'}">操作IP</th>
+                <th data-options="{name:'device',align:'center'}">操作终端</th>
+                <th data-options="{name:'remark',align:'center'}">转账备注</th>
+            </tr>
+        </thead>
+    </table>
+</div>

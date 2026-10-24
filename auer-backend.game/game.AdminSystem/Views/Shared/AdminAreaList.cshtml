@@ -1,0 +1,67 @@
+﻿
+@model bool
+
+@if (Model)
+{
+    var listArea = DataService.GetAllArea();
+    <div class="form-group">
+        <label>渠道</label>
+        <select class="form-control input-small" id="areaID" name="areaID">
+            <option value="">--不限--</option>
+            @foreach (var a in listArea)
+            {
+                <option value="@a.AreaID" data-pid="@a.PlatformID" style="display:none;">@a.AreaName</option>
+            }
+        </select>
+    </div>
+}
+else
+{
+    var list = DataService.GetArea();
+    <div class="form-group">
+        <label>渠道</label>
+        <select class="form-control input-small" id="areaID" name="areaID">
+            <option value="">--不限--</option>
+            @foreach (var a in list)
+            {
+                <option value="@a.Id" data-pid="@a.PlatformID" style="display:none;">@a.AreaName</option>
+            }
+        </select>
+    </div>
+}
+
+
+<script>
+
+    function changeAreaOption(pid) {
+        var _first = true;
+
+        $('#areaID>[data-pid]').hide()
+        $('#areaID>[data-pid="' + pid + '"]').show()
+        if (!_first) {
+            $('#areaID').val('')
+        }
+        else {
+            _first = false
+        }
+    }
+
+
+    $(function () {
+        var pid = getQueryString("platformid")
+        if (!pid) {
+            pid = getQueryString("platformids")
+        }
+        changeAreaOption(pid)
+
+        $('#platformids').change(() => {
+            var pid = $('#platformids').val()
+            changeAreaOption(pid)
+        })
+
+        $('#platformid').change(() => {
+            var pid = $('#platformid').val()
+            changeAreaOption(pid)
+        })
+    })
+</script>

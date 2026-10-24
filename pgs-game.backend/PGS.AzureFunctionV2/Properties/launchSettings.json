@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "target.AzureFunctionV2": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7078",
+      "launchBrowser": false
+    }
+  }
+}

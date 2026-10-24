@@ -1,0 +1,42 @@
+﻿<div class="modal fade" id="editPool" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal.large modal-size">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">奖池金额</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-md-5 control-label">当前奖池金额：</label>
+                        <div class="col-md-6">
+                            <span class="help-block">{{ToCash(tableDetail.PoolCurrentAmount)}}</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-5 control-label">平衡金额：</label>
+                        <div class="col-md-6">
+                            <span class="help-block">{{ToCash(tableDetail.WinLine)}}</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-5 control-label">修改金额：</label>
+                        <div class="col-md-2">
+                            <input type="text" class="form-control input-small" placeholder="请输入修改金额" value="" v-model="editPoolInfo.Amount" />
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-primary" v-on:click="editPool()">确定</button>
+                        </div>
+                    </div>
+                </form>
+                <hr>
+                <table id="PoolLog_table" class="display" style="width:100%;"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>

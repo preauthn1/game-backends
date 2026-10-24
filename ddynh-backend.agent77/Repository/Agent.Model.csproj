@@ -1,0 +1,509 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://example.invalid/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{291C3CFB-C72F-480A-8701-1EFF2F459C65}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Repository</RootNamespace>
+    <AssemblyName>Repository</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\QA\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Stage|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Stage\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'yunanbao|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\yunanbao\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="example.invalid.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AgentClubFactory.cs" />
+    <Compile Include="DTOModels\Common\StoreProcedureResultModel.cs" />
+    <Compile Include="DTOModels\TableMappingModel\Club02\AgentAdminUserEFModel.cs" />
+    <Compile Include="DTOModels\TableMappingModel\Club02\NetProfitAgent_UserInfoEFModel.cs" />
+    <Compile Include="DTOModels\TableMappingModel\CenterDB\UserInfoEFModel.cs" />
+    <Compile Include="Enums\AgentApplyStatusEnum.cs" />
+    <Compile Include="Enums\HDType.cs" />
+    <Compile Include="Enums\UserType.cs" />
+    <Compile Include="Enums\Sex.cs" />
+    <Compile Include="Enums\ModeType.cs" />
+    <Compile Include="Enums\RoleType.cs" />
+    <Compile Include="IRepositoryFactory.cs" />
+    <Compile Include="Models\AdminLog.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AdminSys.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AdminSys.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AdminSys.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AdminSys.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AdminSys.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AgentAdminUser.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AgentApply.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AgentFlowsSummary.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AgentPlatformRelations.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CenterDB.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CenterDB.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CenterDB.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CenterDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CenterDB.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CenterDB.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Event_EventDetail.cs" />
+    <Compile Include="Models\NetProfitAgent_GetUserInfo.cs" />
+    <Compile Include="Models\NetProfitAgent_GetUserInfoDetail.cs" />
+    <Compile Include="Models\ProfitAgent_AgentApplyList.cs" />
+    <Compile Include="Models\ProfitAgent_GetSystemRateDaylimit.cs" />
+    <Compile Include="Models\ProfitAgent_WithdrawList.cs" />
+    <Compile Include="Models\PrWeb_NetProfitAgent_AgentApplyList_Result.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Split_GetUserConvert.cs" />
+    <Compile Include="Models\Split_GetUserInfo.cs" />
+    <Compile Include="Models\Split_GetUserInfo_LevelUsers.cs" />
+    <Compile Include="Models\Split_GetUserSumData.cs" />
+    <Compile Include="Models\Split_GetSystemRate.cs" />
+    <Compile Include="Models\Unlimit_GetSubUserConvertInfo.cs" />
+    <Compile Include="Models\Unlimit_GetSubUserPreConvertInfo.cs" />
+    <Compile Include="Models\Unlimit_GetUserConvertInfo.cs" />
+    <Compile Include="Models\Unlimit_GetUserInfo.cs" />
+    <Compile Include="Models\Unlimit_GetUserInfoDetail.cs" />
+    <Compile Include="Models\Unlimit_GetUserPreConvertInfo.cs" />
+    <Compile Include="Models\Unlimit_GetUserSumData.cs" />
+    <Compile Include="ViewModel\AgentUser.cs" />
+    <Compile Include="ViewModel\AdminListModel.cs" />
+    <Compile Include="Models\AgentModeConfig.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AgentProfitLog.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AgentRateRange.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AgentUsers.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_ad.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_apply.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_back.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_chat.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_exchange_back.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_exchange_player.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_login_total.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_login_user.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_menu.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_money_total.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_money_user.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_plan.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_player.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_player_recharge.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_recharge.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_recharge_total.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_red.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_report_day.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_tip.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_total.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\agent_user.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AutoAgentApply.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ChangeLog.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Club.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Club.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Club.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Club.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Club.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DomainConfig.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DomainSetting.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FissionAgentPool.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FissionAgentSystemLevelRate.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FissionAgentUserRate.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GrandConfig.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Interface\IRepository.cs" />
+    <Compile Include="Models\LogonLog.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Log_UpdateUserAgentLog.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NetProfitAgentApply.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NetProfitAgentInfo.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NetProfitAgentPool.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NetProfitAgentSystemRate.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NetProfitAgentUserBonusLog.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NetProfitAgentUserTaxLog.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NetProfitAgentWithDrawLog.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProfitAgent_GetAgentWithdrawLog.cs" />
+    <Compile Include="Models\ProfitAgent_GetSubUserList.cs" />
+    <Compile Include="Models\ProfitAgent_GetWithdrawDetail.cs" />
+    <Compile Include="Models\OfficialUserConfig.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ProfitAgent_GetWithdrawLog.cs" />
+    <Compile Include="Models\PrPs_UserAgent_GetAgentExecInfo_Result.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PrPs_UserAgent_GetAgentTaxBonusLog_Result.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PrWeb_UserAgent_GetAgentTaxLog_Result.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PrWeb_UserAgent_GetWithdrawList_Result.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserAgent_SubUserInfo.cs" />
+    <Compile Include="Models\PrWeb_UserAgent_SubUserInfo_Get_Result.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserAgent_UserRate.cs" />
+    <Compile Include="Models\PrWeb_UserAgent_UserRate_Get_Result.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\QuickAction.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\GenericRepository.cs" />
+    <Compile Include="Models\Right.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Right_Log.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Role.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\RoleRight.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\RoleRight_Log.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Schedule_UpdateUserStageRate.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SMS.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Stat_AgentProfitDaily.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Stat_AgentProfitMonthly.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SystemConfig.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserAgentBonus.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserAgentInfo.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserAgentQRCode.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserAgentSystemLevelRate.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserAgentTaxBonusOrder.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserAgentTaxLog.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserAgentUserRate.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserAgentWithDraw.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserAgent_GetAgentExecInfo.cs" />
+    <Compile Include="Models\UserAgent_GetAgentTaxBonusLog.cs" />
+    <Compile Include="Models\UserAgent_GetAgentTaxLog.cs" />
+    <Compile Include="Models\UserAgent_GetWithdrawList.cs" />
+    <Compile Include="Models\UserAgent_GetWithdrawListTotal.cs" />
+    <Compile Include="Models\UserFlowsLog.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserFlowsSummary.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserRight.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserRight_Log.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserRole.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Users.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserType.cs">
+      <DependentUpon>AdminSys.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\WithdrawApply.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\WithdrawLog.cs">
+      <DependentUpon>Club.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\UserAgent_GetAgentTaxLogTotal.cs" />
+    <Compile Include="ViewModel\DomainSetting.cs" />
+    <Compile Include="ViewModel\ResultJson.cs" />
+    <Compile Include="ViewModel\LoginViewModel.cs" />
+    <Compile Include="ViewModel\ModifyPWD.cs" />
+    <Compile Include="ViewModel\PlatformArea.cs" />
+    <Compile Include="ViewModel\PlatformInfo.cs" />
+    <Compile Include="ViewModel\Split_SystemSetting.cs" />
+    <Compile Include="ViewModel\UnionpayBankCode.cs" />
+    <Compile Include="ViewModel\UnionpayModel.cs" />
+    <Compile Include="ViewModel\Unlimt_UserInfoDetail.cs" />
+    <Compile Include="ViewModel\Unlimt_UserInfoModel.cs" />
+    <Compile Include="ViewModel\UserAgentGrandConfig.cs" />
+    <Compile Include="ViewModel\UserGameInfo.cs" />
+    <Compile Include="ViewModel\UserInfoDetail.cs" />
+    <Compile Include="ViewModel\UserInfoModel.cs" />
+    <Compile Include="ViewModel\UserLoginInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <EntityDeploy Include="Models\AdminSys.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>AdminSys.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Models\AdminSys.edmx.diagram">
+      <DependentUpon>AdminSys.edmx</DependentUpon>
+    </None>
+    <EntityDeploy Include="Models\Club.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Club.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <EntityDeploy Include="Models\CenterDB.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>CenterDB.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Models\CenterDB.edmx.diagram">
+      <DependentUpon>CenterDB.edmx</DependentUpon>
+    </None>
+    <None Include="Models\Club.edmx.diagram">
+      <DependentUpon>Club.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Models\AdminSys.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>AdminSys.edmx</DependentUpon>
+      <LastGenOutput>AdminSys.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\AdminSys.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>AdminSys.edmx</DependentUpon>
+      <LastGenOutput>AdminSys.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\CenterDB.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>CenterDB.edmx</DependentUpon>
+      <LastGenOutput>CenterDB.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\CenterDB.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>CenterDB.edmx</DependentUpon>
+      <LastGenOutput>CenterDB.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Club.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Club.edmx</DependentUpon>
+      <LastGenOutput>Club.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\Club.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Club.edmx</DependentUpon>
+      <LastGenOutput>Club.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

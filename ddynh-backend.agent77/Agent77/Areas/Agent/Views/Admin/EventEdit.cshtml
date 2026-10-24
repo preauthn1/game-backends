@@ -1,0 +1,150 @@
+﻿@{
+    ViewBag.Title = "新增活动管理";
+}
+
+@model Event_EventDetail
+
+<div class="box box-primary">
+    <!-- /.box-header -->
+    <form action="@Url.Action("EventEdit", "Admin", new { Area = "Agent" })" class="form-horizontal" method="post">
+        <div class="box-body">
+            <div class="form-group">
+                <label class="col-sm-12">平台</label>
+                <div class="col-sm-6">
+                    @Html.DropDownList("PlatformID", (SelectList)ViewBag.PlatformID, "请选择", new { @class = "form-control", style = "width: 100%;", disabled = "disabled" })
+                    @Html.HiddenFor(x => x.PlatformID)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-12">渠道编号 <small class="text-red">0为全部</small></label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(x => x.AreaID, new { @class = "form-control" })
+                    @Html.HiddenFor(x => x.PlatformID)
+                    @Html.HiddenFor(x => x.EventID)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-12">活动名称</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(x => x.EventName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-12">开始日期</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(x => x.EventStartDate, new { @class = "form-control", type = "date", @Value = Model.EventStartDate.ToString("yyyy-MM-dd") })
+                    @Html.ValidationMessageFor(x => x.EventStartDate)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-12">结束日期</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(x => x.EventEndDate, new { @class = "form-control", type = "date", @Value = Model.EventEndDate.ToString("yyyy-MM-dd") })
+                    @Html.ValidationMessageFor(x => x.EventEndDate)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-12">状态</label>
+                <div class="col-sm-6">
+                    @Html.DropDownList("Status", null, null, new { @class = "form-control", style = "width: 100%;" })
+                    @Html.ValidationMessageFor(x => x.Status)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-12">活动条件1</label>
+                        <div class="col-sm-12">
+                            @Html.TextBoxFor(x => x.LngValue1, new { @class = "form-control", type = "number", min = "0" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-12">活动条件2</label>
+                        <div class="col-sm-12">
+                            @Html.TextBoxFor(x => x.LngValue2, new { @class = "form-control", type = "number", min = "0" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-12">活动条件3</label>
+                        <div class="col-sm-12">
+                            @Html.TextBoxFor(x => x.LngValue3, new { @class = "form-control", type = "number", min = "0" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-12">活动条件4</label>
+                        <div class="col-sm-12">
+                            @Html.TextBoxFor(x => x.LngValue4, new { @class = "form-control", type = "number", min = "0" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-12">活动条件5</label>
+                        <div class="col-sm-12">
+                            @Html.TextBoxFor(x => x.LngValue5, new { @class = "form-control", type = "number", min = "0" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-12">活动条件6</label>
+                        <div class="col-sm-12">
+                            @Html.TextBoxFor(x => x.LngValue6, new { @class = "form-control", type = "number", min = "0" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-12">活动条件7</label>
+                        <div class="col-sm-12">
+                            @Html.TextBoxFor(x => x.LngValue7, new { @class = "form-control", type = "number", min = "0" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-12">活动条件8</label>
+                        <div class="col-sm-12">
+                            @Html.TextBoxFor(x => x.LngValue8, new { @class = "form-control", type = "number", min = "0" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-12">活动条件9</label>
+                        <div class="col-sm-12">
+                            @Html.TextBoxFor(x => x.LngValue9, new { @class = "form-control", type = "number", min = "0" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-12">活动条件10</label>
+                        <div class="col-sm-12">
+                            @Html.TextBoxFor(x => x.LngValue10, new { @class = "form-control", type = "number", min = "0" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-primary btn-block">确认</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section head{
+    <!-- iCheck -->
+    <link rel="stylesheet" href="~/Areas/Agent/Content/plugins/iCheck/square/blue.css">
+    <!-- Select2 -->
+    <link href="~/Areas/Agent/Content/plugins/select2/select2.css" rel="stylesheet" />
+}
+@section scripts{
+    <!-- iCheck -->
+    <script src="/Areas/Agent/Content/plugins/iCheck/icheck.min.js"></script>
+    <!-- Select2 -->
+    <script src="~/Areas/Agent/Content/plugins/select2/select2.full.js"></script>
+}
+

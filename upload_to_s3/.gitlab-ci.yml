@@ -1,0 +1,43 @@
+upload_to_s3:
+  stage: deploy
+  image: amazon/aws-cli
+  tags:
+    - php
+  variables:
+    AWS_DEFAULT_REGION: "ap-southeast-1"
+    AWS_CLI_FILE_ENCODING: UTF8
+    AWS_EC2_METADATA_DISABLED: "true"
+  before_script:
+    - yum update -y
+    - yum install -y openssh-clients procps
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval $(ssh-agent -s)
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H $BASTION_HOST >> ~/.ssh/known_hosts
+    
+    # 建立 SSH tunnel
+    - ssh -f -N -L 0.0.0.0:443:example.invalid:443 $BASTION_USER@$BASTION_HOST
+    - SSH_PID=$(ps aux | grep "ssh.*$BASTION_HOST" | grep -v grep | awk '{print $2}')
+    - echo $SSH_PID > /tmp/ssh_pid
+    # AWS CLI 配置
+    - mkdir -p ~/.aws
+    - |
+      cat > ~/.aws/config << EOF
+      [default]
+      region = ap-southeast-1
+      s3 =
+          endpoint_url = https://example.invalid/
+          addressing_style = virtual
+      EOF
+    
+  script:
+    - sleep 5
+    # 添加 hosts 映射
+    - echo "0.0.0.0 example.invalid" >> /etc/hosts
+    - aws s3 ls s3://mybit-bucket/
+    - aws s3 sync ./app s3://mybit-bucket/app/ --size-only
+  after_script:
+    # 关闭 SSH tunnel
+    - if [ -f /tmp/ssh_pid ]; then kill $(cat /tmp/ssh_pid); fi

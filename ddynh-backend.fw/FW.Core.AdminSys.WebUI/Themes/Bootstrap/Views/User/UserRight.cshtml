@@ -1,0 +1,36 @@
+﻿@using FW.Core.AdminSys.WebUI
+@{
+   FW.Core.AdminSys.Provider.Entity.AdminUser user = ViewBag.user;
+
+    List<int> rrs = ViewBag.userRights;
+}
+
+<form method="post">
+    <div class="row">
+        <div class="col-md-12 ">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i> 修改账号 [ @user.LoginName ] 权限
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="dataTables-wrapper">
+                        <div class="row" style="margin-left:10px;margin-right:10px">
+                            @Html.OkWithRight()
+                            @Html.Back(@Url.Action("List"))
+                            @Html.PartialViewOrEmptyDefault("_CacheHintText")
+                            <input type="hidden" name="id" value="@user.UserID" />
+                        </div>
+
+                        <div class="table-scrollable">
+                            @{Html.RenderAction("RightTree", "Right", new { checkedRights = rrs });}
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        </div>
+</form>

@@ -1,0 +1,42 @@
+package msghandler
+
+import (
+	"example.invalid/ServerTeam/Servers/pkg/db/dbutil"
+	"example.invalid/ServerTeam/Servers/pkg/util"
+)
+
+import (
+	"fmt"
+	"strings"	
+)
+
+//是否需要兩次登入請求
+type FastLogonStatCommand struct {
+}
+
+func (c *FastLogonStatCommand) Name() string {
+	return "fastlogonstat"
+}
+
+func (c *FastLogonStatCommand) Help() string {
+	return "是否需要兩次登入請求, on:需要, off:不需要"
+}
+
+func (c *FastLogonStatCommand) Exec(args []string) string {
+	lenarg := len(args)
+	switch lenarg {
+	case 1:
+		stype := args[0]
+		if strings.ToLower(stype) == "on" {
+			dbutil.FastLogonStat = true
+			return fmt.Sprintf("FastLogonStat:%v", dbutil.FastLogonStat)
+		} else if stype == "off" {
+			dbutil.HDCodeMap = util.NewSafeMap()
+			dbutil.FastLogonStat = false
+			return fmt.Sprintf("FastLogonStat:%v", dbutil.FastLogonStat)
+		} else {
+			return "error args"
+		}
+	}
+	return "nothing happen"
+}

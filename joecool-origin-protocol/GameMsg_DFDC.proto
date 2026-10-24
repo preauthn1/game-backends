@@ -1,0 +1,198 @@
+syntax = "proto2";
+
+package netproto;
+
+import "GameMsg_Slot.proto";
+
+//设置
+message DFDC_Setting {
+    repeated int32 BetCount = 1;                      //一次下注的数量
+    repeated DFDC_ReelSetting ReelSetting = 2;        //動態輪軸
+    optional int32 RowCounts = 3;                     //顯示結算的行數
+    required int32 TotalPayLine = 4;                  //總共多少賠付線(非全線讀SlotPayLine表，全線賠付為定值)
+    repeated int32 BigWinStep = 5;                    // BigWin各階段演出條件
+    required int32 PayLineMode = 6;                   //賠付線類型 (0.非全線, 1.全線)
+    repeated DFDC_SymbolPayTable SymbolPayTable = 7;  //符號倍率設定
+    repeated Slot_UnitPrefix UnitPrefix = 8;          // 單位縮寫對照
+};
+
+//遊戲要付費或免費
+message DFDC_FreeOrPayMsg {
+    required int32 FreeCount = 1;               //免費次數(0.付費)
+    repeated DFDC_ReelSetting ReelSetting = 2;  //動態輪軸
+};
+
+//輪軸的圖片順序設置
+message DFDC_ReelSetting {
+    required int32 RealID = 1;                  //輪軸編號
+    optional int32 RowIndex = 2;                //行數
+    repeated DFDC_SymbolGroup SymbolGroup = 3;  //該輪軸群組的符號
+};
+
+//該輪軸群組的符號
+message DFDC_SymbolGroup {
+    required int32 SymbolID = 1;  //符號
+    required string SymbolName = 2;  //符號Name(client圖片使用) 符號類型(符號可組合，e.g. w1,w2,w3代表w1+w2+w3的組合，並以w1為主要辨識符號),s = scatter,w1~wN = wild (wj = 普通=> e.g. 女王 ; w2 =
+                                     //特殊=> e.g. 法老),p1~pN 一般的符號,b1~bN bonus的符號
+};
+
+//游戏輪軸结果
+message DFDC_GameResultReel {
+    repeated int32 SymbolID = 1;                  //結果起始符號
+    repeated DFDC_ReelSetting ReelSetting = 2;    //各輪軸資訊
+    repeated DFDC_PayLineGroup PayLineGroup = 3;  //	賠付線
+    repeated DFDC_PayAllGroup PayAllGroup = 4;    //	全線賠付內容
+    optional int64 WinMoney = 5;                  //結算金額
+    optional int64 FreeGameWinMoney = 6;          //免費遊戲總結算金額
+};
+
+//全線賠付內容
+message DFDC_PayAllGroup {
+    repeated DFDC_PayLineDetail PayLineDetail = 1;  //連線與得獎符號
+    repeated DFDC_PayAllDetail PayAllDetail = 2;    //全線賠付細節
+};
+
+//全線賠付細節
+message DFDC_PayAllDetail {
+    required string SymbolName = 1;   //符號名稱
+    required int32 PayRate = 2;       //該符號賠率
+    required int32 PayCount = 3;      //符號連線個數
+    required int32 WayCount = 4;      //符號連線總和
+    repeated int32 SymbolIDList = 5;  //該連線符號ID列表
+    required bool FeaturePays = 6;    //是否觸發特殊事件(Jackpot、freeSpin)
+};
+
+//賠付線結果(派彩線)
+message DFDC_PayLineGroup {
+    required int32 PayLineID = 1;                   //賠付線號碼
+    repeated DFDC_PayLineDetail PayLineDetail = 2;  //連線與得獎符號
+    optional int32 WinMoney = 3;                    //賠付線金額
+};
+
+//連線與得獎符號
+message DFDC_PayLineDetail {
+    required int32 ReelID = 1;  //第幾個輪軸
+    required int32 SymbolID = 2;
+    required bool Blink = 3;       //是否亮符號	//開獎符號需亮
+    required bool Line = 4;        //是否畫線		//*
+    optional int32 BetNumber = 5;  //是否乘倍數目		//*
+    optional int64 BetMoney = 6;   //是否乘倍金額		//*
+}
+
+//遊戲狀態
+message DFDC_GameStatus {
+    required int32 State = 1;  //状态
+}
+
+//下注金額
+message DFDC_StartBet {
+    required int64 Money = 1;
+    required int32 GoldenSymbol = 2;
+}
+
+//下注回覆
+message DFDC_BetRet {
+    required int32 Ret = 1;  // 0下注成功，-1用户金额不足，-2下注的类型未找到，-3庄家不能下注，-4此类下注已达到上限，-5非下注階段，-6用户金额小於下注限制
+    required int64 Money = 2;  //用户的下注金額
+}
+
+//查詢slot jackpot
+message DFDC_GetJackpotMsg {
+    required int32 ServerID = 1;
+    required int32 FlagID = 2;
+    required int32 TableNo = 3;
+    required int32 JackpotID = 4;
+}
+//回傳slot jackpot
+message DFDC_GetJackpotRet {
+    required int32 ServerID = 1;
+    required int32 FlagID = 2;
+    required int32 TableNo = 3;
+    required int32 JackpotID = 4;
+    required int64 SpinStack = 5;
+    required int64 PoolAmount = 6;
+    required int64 JPAmountOut = 7;
+}
+
+// S2C更新Jackpot值
+message DFDC_JackpotPoolS2CMsg {
+    repeated DFDC_JackpotPoolDetail JackpotPoolID = 1;
+}
+// Jackpot水池內容
+message DFDC_JackpotPoolDetail {
+    required int32 JackpotID = 1;  // 1:巨獎 2:大獎 3:中獎 4:小獎
+    required int64 Syspool = 2;    // 水池值
+    optional string Level = 3;     // 獎項名稱:Grand/Major/Minor/Mini
+}
+
+//多財多福黃金符號
+message DFDC_GoldenSymbolList {
+    repeated DFDC_GoldenSymbolDetail GoldenDetail = 1;
+}
+
+//多財多福黃金符號內容
+message DFDC_GoldenSymbolDetail {
+    required int32 Symbols = 1;
+    required int32 Credits = 2;
+}
+
+//多財多福 Bonus Game
+message DFDC_BonusGame {
+    repeated DFDC_BonusGameDetail BonusDetail = 1;  //此組數為最終總共開幾組
+    required int64 Money = 2;                       // Bonus Game結果總金額
+}
+
+//多財多福 Bonus Game內容
+message DFDC_BonusGameDetail {
+    required int32 Id = 1;     //流水號
+    required int32 Place = 2;  //在哪個位置(起始值1 未開啟0)
+    required int32 Icon = 3;   //圖片名稱
+}
+
+//多財多福 符號倍率設定
+message DFDC_SymbolPayTable {
+    required string SymbolName = 1;  // Symbol圖片名稱
+    required int32 Count = 2;        //連續幾個Symbol
+    required int32 Rate = 3;         //該項Symbol倍率
+}
+
+//多財多福 讀取額外遊戲Detail
+message DFDC_JackpotBonusGameDetail {
+    required int32 UserID = 1;  //玩家ID
+    required int32 TurnID = 2;  //順序ID
+    required int32 Place = 3;   //哪個位置
+    required int32 Icon = 4;    //圖片名稱
+}
+
+//多財多福 額外遊戲寫入
+message DFDC_JackpotBonusGameRecord {
+    required int32 UserID = 1;         //玩家ID
+    required string chvRecordStr = 2;  // 9筆小遊戲內容 ("1,0,1|2,0,1|3,0,2|4,0,3|5,0,3|6,0,1|7,0,0|8,0,0|9,0,0")
+    required int64 winmoney = 3;       // jackpot贏錢
+}
+
+//多財多福 JackpotBonusGame
+message DFDC_JackpotBonusGame {
+    repeated DFDC_JackpotBonusGameDetail BonusDetail = 1;  //此組數為最終總共開幾組
+    required int64 Money = 2;                              // Bonus Game結果總金額
+}
+
+//多財多福 額外遊戲寫入
+message DFDC_JackpotBonusGameRet {
+    required int32 UserID = 1;  //玩家ID
+}
+
+//多財多福 玩家殘餘資料
+message DFDC_UserRecover {
+    required int64 WinMoey = 1;       //贏多少錢
+    required int64 BetMoney = 2;      //玩家下注金額
+    required int32 GoldenSymbol = 3;  //下注黃金符號
+}
+
+//多財多福 索取遊戲歷程
+message DFDC_GetGameLog {
+    required string StartTime = 1;  //開始時間
+    required string EndTime = 2;    //結束時間
+    required int32 PageIndex = 3;   //第幾頁
+    required int32 PageSize = 4;    //一頁幾筆
+}

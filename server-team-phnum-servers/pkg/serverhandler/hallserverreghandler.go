@@ -1,0 +1,203 @@
+package serverhandler
+
+import (
+	"strings"
+
+	"example.invalid/golang/protobuf/proto"
+
+	"example.invalid/ServerTeam/Servers/pkg/conf"
+	"example.invalid/ServerTeam/Servers/pkg/event"
+	"example.invalid/ServerTeam/Servers/pkg/gamelogic"
+	"example.invalid/ServerTeam/Servers/pkg/gameserver/serverhandler"
+	"example.invalid/ServerTeam/Servers/pkg/mlog"
+	"example.invalid/ServerTeam/Servers/pkg/msg"
+	"example.invalid/ServerTeam/Servers/pkg/netproto"
+	"example.invalid/ServerTeam/Servers/pkg/network"
+	"example.invalid/ServerTeam/Servers/pkg/robot/robotcomm"
+	"example.invalid/ServerTeam/Servers/pkg/util"
+)
+
+const (
+	TimerName_HallServerReg = "roomserver_serverhandler_hallserverreg"
+)
+
+//大厅注册处理器
+type HallServerRegHandler struct {
+	stopSig        chan bool
+	hallserverAddr []string
+	tcpclients     []network.ConnClient
+	room           *gamelogic.Room
+	robotManager   *robotcomm.RobotManager
+	regInterval    int32
+	regHallTicker  *event.TimerFunc
+	ver            *netproto.GameVerInfo
+}
+
+//创建大厅注册处理器
+func NewHallServerRegHandler(addr string, room *gamelogic.Room, regInterval int32, robotManager *robotcomm.RobotManager) *HallServerRegHandler {
+	h := new(HallServerRegHandler)
+	h.stopSig = make(chan bool, 1)
+	h.room = room
+	h.regInterval = regInterval
+	h.robotManager = robotManager
+
+	//解析大厅地址
+	addrArr := strings.Split(addr, ",")
+
+	for _, saddr := range addrArr {
+		if util.IsNullOrEmpty(saddr) {
+			continue
+		}
+
+		h.hallserverAddr = append(h.hallserverAddr, saddr)
+	}
+
+	return h
+}
+
+func (hreg *HallServerRegHandler) Name() string {
+	return "hallserverreg"
+}
+
+func (hreg *HallServerRegHandler) Start(ctx *serverhandler.GameServerCtx) {
+	evtchan := network.NewClientEventChan(conf.EVTCHANSIZE)
+
+	//开始连接hallserver
+	for _, addr := range hreg.hallserverAddr {
+		msgpacker := network.NewHeadMsgPacker(conf.MSGPACKERBUF, true)
+		tcpclt := network.NewTcpClient(msgpacker, evtchan)
+		rtcpclt := network.NewReConnectTcpClient(tcpclt, 3)
+
+		err := rtcpclt.Connect(addr)
+
+		if err != nil {
+			mlog.Error("向大厅%s注册失败%v", addr, err)
+		}
+
+		hreg.tcpclients = append(hreg.tcpclients, rtcpclt)
+
+	}
+
+	go hreg.tcpEventChanFunc(evtchan)
+
+	//启动时先注册一次
+	hreg.RegHallServer()
+	//定时注册
+	hreg.regHallTicker = ctx.TimerFuncManager.NewNamedTicker(hreg.regInterval, hreg.RegHallServer, TimerName_HallServerReg)
+
+}
+
+func (hreg *HallServerRegHandler) Stop() {
+	hreg.stopSig <- true
+	if hreg.regHallTicker != nil {
+		hreg.regHallTicker.Stop()
+	}
+}
+
+func (hreg *HallServerRegHandler) tcpEventChanFunc(tcpevt *network.ClientEventChan) {
+	defer util.PanicErrStack()
+
+	for {
+		select {
+		case <-hreg.stopSig:
+			break
+		default:
+		}
+
+		select {
+		case clt := <-tcpevt.ConnectedSig:
+			example.invalid("connect hallserver,%s", clt.GetConn().RemoteAddr().String())
+		case clt := <-tcpevt.DisconnectedSig:
+			example.invalid("disconnect hallserver,%v", clt.GetConn().RemoteAddr().String())
+		case <-tcpevt.DataSig:
+
+		case msgdata := <-tcpevt.MsgSig:
+			msg := new(msg.Message)
+			msg.BClassID = util.BytesToInt(msgdata[:4], true)
+			msg.SClassID = util.BytesToInt(msgdata[4:8], true)
+
+			msg.MsgData = msgdata[8:]
+
+			if hreg.IsHook(msg.BClassID, msg.SClassID) {
+				hreg.OnMessage(msg)
+			}
+		}
+	}
+
+	mlog.Error("hallserver 注册消息处理线程退出")
+}
+
+//更新版號後向大廳更新資料
+func (hreg *HallServerRegHandler) RefreshGameVer(ver *netproto.GameVerInfo) {
+	hreg.ver = ver
+	hreg.RegHallServer()
+}
+
+//遊戲註冊大廳
+func (hreg *HallServerRegHandler) RegHallServer() {
+	defer util.PanicErrStack()
+
+	sinfo := new(netproto.GameServerRegInfo)
+	sinfo.ServerID = proto.Int32(hreg.room.ServerID)
+	sinfo.GameID = proto.Int32(hreg.room.GameInfo.GameID)
+	sinfo.ServerName = proto.String(hreg.room.ServerName)
+	sinfo.GameName = proto.String(hreg.room.GameInfo.GameName)
+	sinfo.Flag = proto.String(hreg.room.Flag)
+	// sinfo.GameType = proto.Int32(hreg.room.GameType)
+	sinfo.IPAddress = proto.String(hreg.room.ReaIPAddress)
+	sinfo.Port = proto.Int32(hreg.room.RealPort)
+	sinfo.UserCount = proto.Int32(int32(hreg.room.RoomUserManager.UserCount()))
+	sinfo.LoginMoney = proto.Int32(hreg.room.LoginMoney)
+	sinfo.BaseScore = proto.Int32(hreg.room.BaseScore)
+	sinfo.RobotCount = proto.Int32(int32(hreg.robotManager.RobotCount()))
+	// sinfo.Single = proto.Int32(int32(hreg.room.Single))
+	// sinfo.HostAndBackup = proto.Int32(int32(hreg.room.HostAndBackup))
+	sinfo.AndroidVersion = proto.String(hreg.ver.GetAndroidVersion())
+	sinfo.IOSVersion = proto.String(hreg.ver.GetIOSVersion())
+	// sinfo.KickOutMoney = proto.Int32(hreg.room.KickOutMoney)
+	// sinfo.MaxOdd = proto.Int32(hreg.room.MaxOdd)
+	sinfo.ServerStatus = proto.Int32(1)
+	sinfo.NoSelRoom = proto.Int32(1)
+	sinfo.LianyunID = proto.Int32(hreg.room.LianyunID)
+
+	data, _ := proto.Marshal(sinfo)
+
+	// fmt.Println(sinfo)
+
+	m := msg.NewMessage(int32(netproto.MessageBClassID_ServerMgm), int32(netproto.ServerMgmClassID_HallServerRegister), data)
+
+	bdata, _ := new(msg.ByteMsgParser).Marshal(m)
+
+	for _, clt := range hreg.tcpclients {
+		if clt.IsConnected() {
+			mlog.Debug("向大厅%s注册. %+v", clt.RemoteAddr().String(), sinfo)
+			clt.WriteMsg(bdata)
+		}
+	}
+
+}
+
+func (hreg *HallServerRegHandler) IsHook(bclsid int32, sclsid int32) bool {
+	return bclsid == int32(netproto.MessageBClassID_ServerMgm) && sclsid == int32(netproto.NotifyServerClassID_ServerHostAndBackUp)
+}
+
+func (hreg *HallServerRegHandler) OnMessage(m *msg.Message) {
+	defer util.PanicErrStack()
+
+	mmbyte := m.MsgData.([]byte)
+	mm := &netproto.HostAndBackUp{}
+	err := proto.Unmarshal(mmbyte, mm)
+
+	if err != nil {
+		mlog.Error("Hall HostAndBackUp Error : %v", err.Error())
+		return
+	}
+
+	mlog.Debug("[masterslave] hreg.ServerID[%d], mm.GetServerID()[%d]", hreg.room.ServerID, mm.Slave.GetServerID())
+	if hreg.room.ServerID == mm.Slave.GetServerID() {
+		hreg.room.HostAndBackup = 2
+	}
+	mlog.Debug("[masterslave] hreg.room.HostAndBackup[%d]", hreg.room.HostAndBackup)
+
+	hreg.RegHallServer()
+}

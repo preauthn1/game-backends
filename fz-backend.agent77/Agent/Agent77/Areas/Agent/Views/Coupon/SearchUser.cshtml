@@ -1,0 +1,100 @@
+﻿@{
+    ViewBag.Title = "我的代理";
+}
+@model Coupon_DailyReportModel
+
+<div class="box box-primary">
+    <!-- form start -->
+
+    <div class="box-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">用戶ID</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="number" class="form-control" id="user_id">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                    <button type="button" id="btnQuery" class="btn btn-primary btn-block">搜索</button>
+                </div>
+            </div>
+        </div>
+        <hr class="hr-sm1">
+
+        <!-- 查詢結果 -->
+        <div class="box-header">
+            <h3 class="box-title">搜索结果</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>玩家ID</th>
+                        <th>输入组数</th>
+                        <th>剩余礼码额</th>
+                        <th>消耗礼码额</th>
+                        <th>最后上线时间</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <!-- /.box-body -->
+    </div>
+</div>
+
+<!-- /.box -->
+@section scripts{
+    <!-- Page script -->
+    <script type="text/javascript">
+        $(function () {
+
+            //DataTable
+            var table =
+                $('#example1').DataTable({
+                    "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                    "searching": false,
+                    "autoWidth": false,
+                    "serverSide": true,
+                    "deferLoading": 0,
+                    "ajax": {
+                        method: 'post',
+                        url: '@Url.Action("SearchUser", "Coupon")',
+                        data: function (d) {
+                            d.user_id = $('#user_id').val();
+                        },
+                        "dataSrc": function (json) {
+                            //$('#TotalTaxAmount').text(json.data.TotalTaxAmount);
+                            //$('#ConvertAmount').text(json.data.ConvertAmount);
+                            //$('#PerformedAmount').text(json.data.PerformedAmount);
+
+                            if (json.success == false) {
+                                return [];
+                                swal("错误", json.message, "error");
+                            }
+                            return json.data.data;
+                        }
+                    },
+                    columns: [
+                        { name: "UserID", data: "UserID" },
+                        { name: "CouponCount", data: "CouponCount" },
+                        { name: "CouponAmount", data: "CouponAmount" },
+                        { name: "UsedCouponAmount", data: "UsedCouponAmount" },
+                        {
+                            name: "LastLogon",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                return moment(data.LastLogon).format("YYYY-MM-DD");
+                            }
+                        }
+                    ],
+                    responsive: true
+                });
+
+            $('#btnQuery').click(function () {
+                table.draw();
+            });
+        })
+    </script>
+}

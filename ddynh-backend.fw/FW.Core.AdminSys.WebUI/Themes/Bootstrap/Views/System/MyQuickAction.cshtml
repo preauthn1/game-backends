@@ -1,0 +1,12 @@
+﻿@model List<FW.Core.AdminSys.Provider.Entity.QuickAction>
+@{
+    Layout = null;
+}
+
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var qa in Model)
+    {
+        @:<li><a href="@qa.Url">@qa.Name</a></li> 
+    }
+}

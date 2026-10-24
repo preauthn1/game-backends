@@ -1,0 +1,39 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+@using FW.Core.Helper
+
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>编辑节点防护配置
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="form1" method="post" class="form-horizontal form-bordered">
+                    <div class="form-body">
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 xing">节点防护備用IP</label>
+                            <div class="col-md-8">
+                                <input type="text" name="ProtectNodeBackupIP" class="form-control" placeholder="请输入节点防护备用IP" value="@ViewBag.iplist" width="200px"/>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-5 col-md-7">
+                            @Html.OkWithRight()
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>

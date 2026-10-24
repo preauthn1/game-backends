@@ -1,0 +1,151 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@using game.Infrastructure.Extensions
+@using game.AdminSystem
+
+@model game.AdminSystem.Models.ViewModels.ConvertGatewayUpdateBankSettingsViewModel
+
+@{
+
+
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>代付可支援银行管理
+                </div>
+            </div>
+            <div class="portlet-body form">
+
+                <!-- BEGIN FORM-->
+                <form id="myForm" method="post" class="form-horizontal form-bordered" novalidate="novalidate">
+                    <div class="form-body" style="padding:15px;">
+
+
+                        <input type="hidden" value="@Model.GWID" name="Id" id="GWID" />
+
+
+                        <div style="font-size:20px;font-weight:700;text-align:center;">
+                            @Model.GWName
+                        </div>
+
+                        <div style="color:#AAA;text-align:center;">
+                            代付三方名称 
+                        </div>
+
+                        <div class="hr-s"></div>
+
+
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>银行名称</th>
+                                    <th>是否支援此银行</th>
+                                    <th>代户三方定义的银行代码</th>
+                                </tr>
+                            </thead>
+
+
+                            <tbody v-for="(item, index) in SettingItems">
+                                <tr>
+                                    <td>
+                                        {{item.BankName}}
+                                    </td>
+                                    <td>
+                                        <input type="checkbox"  v-model="item.IsChecked" />
+                                    </td>
+                                    <td>
+                                        <input type="text" v-model="item.ThirdPartyBankCode" placeholder="填写三方自定义银行代码" maxlength="20" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button id="btnOk" type="button" class="btn dark" style="" v-on:click="saveChange()"><i class="fa fa-file-o"></i> 确定</button>
+                            <button id="btnBack" type="button" class="btn " style="" onclick="javascript:window.history.back();return false;"><i class="fa  fa-mail-reply-all"></i> 返回</button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section initScripts
+{
+    <script>
+
+
+        $(function () {
+
+                var vApp = new Vue({
+                el: '#myForm',
+                data: {
+                    SettingItems: @Html.Raw(Model.SettingItems.ConvertToJsonString()),
+                 },
+                 methods: {
+                    saveChange: function (ID) {
+
+                         var model =
+                         {
+                             GWID: $("#GWID").val(),
+                             SettingItems: this.SettingItems
+                         };
+
+                         $.ajax({
+                            cache: false,
+                            url: '/PayGateway/UpdateBanks',
+                            type: 'POST',
+                            contentType: "application/json",
+                            dataType: "json",
+                            data: JSON.stringify(model),
+                            success: function (data) {
+
+                                if (data.IsSuccess)
+                                {
+                                    alert(data.Message);
+                                    //location.reload();
+                                }
+                                else
+                                {
+                                    alert(data.Message);
+                                }
+
+                            },
+                            error: function (err) {
+                                swal({
+                                    type: 'error',
+                                    title: '操作失败',
+                                    text: err
+                                })
+                            }
+                        });
+                    }
+                }
+            });
+
+
+        })
+
+    </script>
+}

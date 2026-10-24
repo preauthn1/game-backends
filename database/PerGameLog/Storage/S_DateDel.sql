@@ -1,0 +1,4 @@
+﻿CREATE PARTITION SCHEME [S_DateDel]
+    AS PARTITION [Fn_DateDel]
+    TO ([PRIMARY], [PRIMARY]);
+

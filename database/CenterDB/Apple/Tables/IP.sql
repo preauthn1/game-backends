@@ -1,0 +1,6 @@
+﻿CREATE TABLE [Apple].[IP] (
+    [IP]     VARCHAR (30) NOT NULL,
+    [AreaID] INT          NOT NULL,
+    CONSTRAINT [PK_IP_1] PRIMARY KEY CLUSTERED ([IP] ASC, [AreaID] ASC)
+);
+

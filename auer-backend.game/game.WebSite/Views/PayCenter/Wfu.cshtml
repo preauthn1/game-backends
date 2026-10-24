@@ -1,0 +1,70 @@
+﻿@{
+    Layout = null;
+    Dictionary<string, string> paras = ViewBag.Paras;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://example.invalid/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://example.invalid/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+
+<body>
+    <div>
+        <form action="https://example.invalid/gateway?input_charset=UTF-8" id="payForm" name="payForm" method="POST">
+
+            <input name="sign" type="hidden" id="sign" value="@paras["sign"]">
+
+            <input name="merchant_code" type="hidden" id="merchant_code" value="@paras["merchant_code"]">
+
+            <input name="bank_code" type="hidden" id="bank_code">
+
+            <input name="order_no" type="hidden" id="order_no" value="@paras["order_no"]">
+
+            <input name="order_amount" type="hidden" id="order_amount" value="@paras["order_amount"]">
+
+            <input name="service_type" type="hidden" id="service_type" value="@paras["service_type"]">
+
+            <input name="input_charset" type="hidden" id="input_charset" value="UTF-8">
+
+            <input name="notify_url" type="hidden" id="notify_url" value="@paras["notify_url"]">
+
+            <input name="interface_version" type="hidden" id="interface_version" value="@paras["interface_version"]">
+
+
+            <input name="product_name" type="hidden" id="product_name" value="@paras["product_name"]">
+
+            <input name="order_time" type="hidden" id="order_time" value="@paras["order_time"]">
+
+            <input name="sign_type" type="hidden" id="sign_type" value="@paras["sign_type"]">
+
+            <input name="client_ip_check" type="hidden" id="client_ip_check">
+
+            <input name="client_ip" type="hidden" id="client_ip" value="@paras["client_ip"]">
+
+            <input name="extend_param" type="hidden" id="extend_param">
+
+            <input name="extra_return_param" type="hidden" id="extra_return_param" value="@paras["extra_return_param"]">
+
+            <input name="product_code" type="hidden" id="product_code">
+
+            <input name="product_desc" type="hidden" id="product_desc">
+
+            <input name="product_num" type="hidden" id="product_num">
+
+            <input name="return_url" type="hidden" id="return_url">
+
+            <input name="show_url" type="hidden" id="show_url">
+
+            <input name="redo_flag" type="hidden" id="redo_flag">
+
+            <input name="pay_type" type="hidden" id="pay_type" value="@paras["pay_type"]">
+
+            <script type="text/javascript">
+                document.getElementById("payForm").submit();
+            </script>
+        </form>
+    </div>
+</body>
+</html>

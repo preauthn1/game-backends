@@ -1,0 +1,28 @@
+# AdminSys-specific overrides for the backend-api chart.
+
+image:
+  repository: example.invalid/target/backend/target.api.adminsys
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 3102
+
+ingress:
+  enabled: true
+  annotations:
+    example.invalid/ingress.class: nginx
+    example.invalid/proxy-body-size: "0"
+    example.invalid/ssl-redirect: "false"
+  hosts:
+    - host: example.invalid
+      paths:
+        - /
+  tls:
+    - secretName: docker-registry-tls-certificate
+      hosts:
+        - example.invalid
+
+app:
+  name: adminsys

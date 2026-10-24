@@ -1,0 +1,32 @@
+package by
+
+import (
+	"clientframework"
+	"example.invalid/golang/protobuf/proto"
+	"msg"
+	"netproto"
+)
+
+//場景接收
+type UserRecoverRetHandler struct {}
+
+func NewUserRecoverRetHandler() *UserRecoverRetHandler {
+	return new(UserRecoverRetHandler)
+}
+
+func (by *UserRecoverRetHandler) IsHook(bclsid int32, sclsid int32) bool {
+	return bclsid == int32(netproto.MessageBClassID_Game) && sclsid == int32(netproto.BY_GameMessageClassID_UserRecoverRetID)
+}
+
+func (by *UserRecoverRetHandler) OnMessage(client *clientframework.CtxBase, m *msg.Message) {
+	urRecoverRet := &netproto.BY_UserRecoverRet{}
+	byteMsgData := m.MsgData.([]byte)
+	proto.Unmarshal(byteMsgData, urRecoverRet)
+
+	user := urRecoverRet.GetUserStatus()
+	_ = user
+}
+
+func (by *UserRecoverRetHandler) SetCallback(cb func(m *msg.Message)) {
+
+}

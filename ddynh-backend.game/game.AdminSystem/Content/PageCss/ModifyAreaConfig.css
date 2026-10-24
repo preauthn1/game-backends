@@ -1,0 +1,302 @@
+﻿.areaConfig_contain {
+    display: flex;
+    position: relative;
+    height: 77vh;
+}
+
+.areaConfig_contain__leftItem {
+    display: flex;
+    flex-direction: column;
+}
+
+.areaConfig_contain__arealist {
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.areaConfig_contain__areasetting {
+    flex: 1;
+    padding: 0 1%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.areaConfig_arealist__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15%;
+    height: 65px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.js--active {
+    background-color: #ebecf3;
+}
+
+.areaConfig_arealist__item:hover {
+    background-color: #f7f6fa;
+}
+
+.areaConfig_contain__gamelist {
+    overflow: auto;
+}
+
+.areaConfig_arealist__add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 65px;
+}
+
+.gameitem_contain__iconItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin: .5% 0px;
+}
+
+.gameitem_contain__sortable {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 412px;
+}
+
+    .gameitem_contain__sortable li {
+        margin: 3px 3px 3px 0;
+        padding: 1px;
+        float: left;
+        width: 80px;
+        height: 80px;
+        border: 1px solid #c5c5c5;
+        background: #f6f6f6;
+        font-size: 1.5em;
+        text-align: center;
+        color: #000;
+        border-radius: 10px !important;
+    }
+
+        .gameitem_contain__sortable li:nth-child(8n+1):before {
+            content: "\f091";
+            font-family: FontAwesome;
+            text-decoration: inherit;
+            border: 1px solid #555;
+            background-color: #555;
+            display: block;
+            opacity: .8;
+            border-radius: 8px 8px 0 0 !important;
+        }
+
+
+.areaConfig_tool__contain {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-evenly;
+}
+
+.gameitem_contain__newGame {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: .5% 0px;
+}
+
+.areaConfig_gameItem__contain {
+    margin: 5% 0;
+}
+
+.areaConfig_arealist__icon:after {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    font-family: 'FontAwesome';
+    content: '\f091';
+    color: #5E35B1;
+    font-size: 2em;
+}
+
+.areaConfig_flex {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.areaConfig_arealist__addIcon:before {
+    font-family: 'FontAwesome';
+    content: '\f0fe';
+    color: #26292e;
+    font-size: 3em;
+    cursor: pointer;
+}
+
+.areaConfig_arealist__spinner:before {
+    font-family: 'FontAwesome';
+    content: '\f110';
+    color: #26292e;
+    font-size: 3em;
+    cursor: pointer;
+    animation: myRotate 1s linear infinite;
+}
+
+.areaConfig_arealist__saveIcon:before {
+    font-family: 'FontAwesome';
+    content: '\f0c7';
+    color: #26292e;
+    font-size: 3em;
+    cursor: pointer;
+}
+
+
+.areaConfig_arealist__undoIcon:before {
+    font-family: 'FontAwesome';
+    content: '\f0e2';
+    color: #26292e;
+    font-size: 3em;
+    cursor: pointer;
+}
+
+.areaConfig_arealist__gamepadIcon:before {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'FontAwesome';
+    content: '\f11b';
+    color: #26292e;
+    font-size: 3em;
+    cursor: pointer;
+}
+
+.areaConfig_arealist__areaIcon:before {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'FontAwesome';
+    content: '\f0f9';
+    color: #26292e;
+    font-size: 3em;
+    cursor: pointer;
+}
+
+
+.areaConfig_arealist__syncIcon:before {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'FontAwesome';
+    content: '\f021';
+    color: #26292e;
+    font-size: 3em;
+    cursor: pointer;
+}
+
+.areaConfig_arealist__syncIconSync:before {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'FontAwesome';
+    content: '\f021';
+    color: #26292e;
+    font-size: 3em;
+    cursor: pointer;
+    animation: myRotate 1s linear infinite;
+}
+
+
+@@keyframes myRotate {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    50% {
+        -webkit-transform: rotate(180deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+
+.areaConfig_ad__image_contain {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.areaConfig_ad__image {
+    height: 20em;
+    width: 15em;
+    background-repeat: round;
+}
+
+.areaConfig_searchBar__contain {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    width: 244px;
+    margin: 0 auto 6px;
+}
+
+    .areaConfig_searchBar__contain .frmSearch {
+        width: 100%;
+        height: 32px;
+        line-height: 32px;
+        border: 0;
+        border-radius: 2px;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        background-color: #26292e;
+        color: #fff;
+        padding-left: 30px;
+        font-size: 12px;
+    }
+
+.previewImage_contain {
+    display: flex;
+    justify-content: center;
+    border: 2px dashed rgb(214, 214, 214);
+}
+
+.previewImage_contain__image {
+    width: 50%;
+    height: 50%;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.areaConfig_n_flex {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.areaConfig_osk__square {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex: 1 0 32%;
+    margin: 3px 3px;
+    height: 48px;
+    border: 1px solid #c5c5c5;
+    font-size: 17px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.areaConfig_label {
+    display: flex;
+    justify-content: center;
+    font-size: 20px;
+}

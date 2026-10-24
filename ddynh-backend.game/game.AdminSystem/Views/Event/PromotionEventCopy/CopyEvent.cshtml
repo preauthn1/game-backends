@@ -1,0 +1,363 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@using game.Entity.Event
+@using game.Entity.Money
+
+
+<style>
+
+    .row-box {
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+
+    h4 {
+        margin-left: -15px;
+        font-weight: 700 !important;
+        color: #444 !important;
+    }
+
+
+    .btn {
+        margin-top: 15px;
+        width: 100px;
+    }
+
+    .main-content {
+        min-height: 150px;
+        border-bottom: solid 1px #EEE;
+    }
+
+    #step_2 label, #step_3 label {
+        vertical-align: text-top;
+        cursor: pointer;
+        font-size: 14px;
+        width: 350px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+
+    .checkbox-row {
+        margin-top: 5px;
+    }
+
+
+    a.return_back {
+        line-height: 30px;
+        vertical-align: bottom;
+        margin-left: 10px;
+        text-decoration: underline;
+        color: #CCC;
+        cursor: pointer;
+    }
+
+    .page-content
+    {
+        padding-bottom:60px !important;
+    }
+
+</style>
+
+
+<hr />
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+
+
+
+        <div>
+
+            <div id="step_1">
+
+                <div class="row-box">
+                    <h4>
+                        请选择要从哪个平台复制活动
+                    </h4>
+                </div>
+
+                <div class="main-content">
+                    @Html.Partial("_DropdownPlatform", new DropdownPartialSettingViewModel(FirstOptionValueEnum.MustSelect))
+                </div>
+
+                <div class="row-box">
+                    <button id="step_1_confirm" type="button" class="btn">确定</button>
+                </div>
+
+            </div>
+
+
+
+            <div id="step_2" style="display:none;">
+
+
+                <div class="row-box">
+                    <h4>
+                        请勾选要复制哪些活动（状态已设为开启）
+                    </h4>
+                </div>
+
+                <div>
+
+                    <div id="step_2_content" class="main-content">
+
+
+
+                    </div>
+
+                    <div class="row-box">
+                        <button id="step_2_confirm" type="button" class="btn">确定</button>
+                        <a id="return_step1" class="return_back">
+                            回上一步
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div id="step_3" style="display:none;">
+
+
+                <div class="row-box">
+                    <h4>
+                        请选择要复制到某些平台
+                    </h4>
+                </div>
+
+                <div id="step_3_content" class="main-content">
+
+
+                </div>
+
+                <div class="row-box">
+                    <button id="step_3_confirm" type="button" class="btn btn-danger ">确定送出</button>
+                    <a id="return_step2" class="return_back">
+                        回上一步
+                    </a>
+                </div>
+
+                <div style="color:#c79830">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    即使已有相同标题的活动被建立，活动资料仍会再次复制一份
+                </div>
+                
+            </div>
+
+
+
+
+        </div>
+
+    </div>
+</div>
+
+
+
+
+@section initScripts
+{
+
+    <script>
+
+
+        var global_selectIds = "";
+        var global_selectTargetIds = "";
+
+
+        function GetCurrentEventOwnerValue() {
+            return $("#platformid").val();
+        }
+
+
+        function GetSelectEventValue() {
+            //清空全域變數儲存的值
+            global_selectIds = "";
+
+            $(".eventID").each(function (index) {
+                var isCheck = $(this).is(':checked');
+                if (isCheck) {
+                    var id = $(this).attr('attr-eventId');
+                    global_selectIds = global_selectIds + "," + + id;
+                }
+            });
+
+
+            console.log(global_selectIds);
+            return global_selectIds;
+        }
+
+
+        function GetSelectValues_Step3() {
+
+            //清空全域變數儲存的值
+            global_selectTargetIds = "";
+
+            $(".copy_target_ID").each(function (index) {
+                var isCheck = $(this).is(':checked');
+                if (isCheck) {
+                    var id = $(this).attr('attr-platformID');
+                    global_selectTargetIds = global_selectTargetIds + "," + + id;
+                }
+            });
+
+            console.log(global_selectTargetIds);
+            return global_selectTargetIds;
+        }
+
+
+        $(function () {
+
+
+            $("#step_1_confirm").click(function () {
+
+                var platformID = GetCurrentEventOwnerValue();
+
+                if (platformID == '') {
+                    alert('请选择平台');
+                    return;
+                }
+
+
+                $.ajax({
+                    cache: false,
+                    dataType: 'html',
+                    url: '/PromotionEventCopy/ShowAvailableEventsByTargetCondition?platformID=' + platformID,
+                    type: 'GET',
+                    success: function (html) {
+
+                        $("#step_2_content").html(html);
+
+                    },
+                    error: function (err) {
+                        swal({
+                            type: 'error',
+                            title: '操作失败',
+                            text: err
+                        })
+                    }
+                });
+
+
+                $("#step_1").hide();
+                $("#step_2").show();
+            });
+
+
+
+
+
+            $("#step_2_confirm").click(function () {
+
+
+                var eventIds = GetSelectEventValue();
+
+                if (eventIds == '') {
+                    alert('请勾選至少一項');
+                    return;
+                }
+
+                var platformID = GetCurrentEventOwnerValue();
+
+                $.ajax({
+                    cache: false,
+                    dataType: 'html',
+                    url: '/PromotionEventCopy/ShowAvailableTargetDropdowns?platformID=' + platformID,
+                    type: 'GET',
+                    success: function (html) {
+
+                        $("#step_3_content").html(html);
+
+                    },
+                    error: function (err) {
+                        swal({
+                            type: 'error',
+                            title: '操作失败',
+                            text: err
+                        })
+                    }
+                });
+
+
+                $("#step_2").hide();
+                $("#step_3").show();
+            });
+
+
+
+            $("#step_3_confirm").click(function () {
+
+                var Ids = GetSelectValues_Step3();
+
+                if (Ids == '') {
+                    alert('请勾選至少一項');
+                    return;
+                }
+
+                var eventIds = GetSelectEventValue();
+                var targetValues = GetSelectValues_Step3();
+
+
+                $.ajax({
+                    cache: false,
+                    dataType: 'json',
+                    data:
+                    {
+                        PlatformIds: targetValues,
+                        EventIds: eventIds
+                    },
+                    url: '/PromotionEventCopy/CopyEvents',
+                    type: 'POST',
+                    success: function (data) {
+
+                        if (data.IsSuccess) {
+                            alert(data.Message);
+                            location.reload();
+                        }
+                        else {
+                            alert(data.Message);
+                        }
+
+                    },
+                    error: function (err) {
+                        swal({
+                            type: 'error',
+                            title: '操作失败',
+                            text: err
+                        })
+                    }
+                });
+
+
+            });
+
+
+
+            $("#return_step1").click(function () {
+
+                $("#step_1").show();
+                $("#step_2").hide();
+
+            });
+
+
+            $("#return_step2").click(function () {
+
+                $("#step_2").show();
+                $("#step_3").hide();
+            });
+
+        });
+
+
+
+    </script>
+}
+
+
+

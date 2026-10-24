@@ -1,0 +1,170 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+@using FW.Core.Helper
+
+@model  game.Entity.ForbidUser.ForbidUser
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_message")
+                @Html.Partial("~/Views/Shared/_userPartial.cshtml")
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default"> 搜 索 </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@if (Model != null)
+{
+    <br />
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i>解封账号
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <form id="form1" class="form-horizontal form-bordered" method="post">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label class="control-label col-md-5 ">用户名</label>
+                                <div class="col-md-7">
+                                    <span>@Model.UserInfo.LoginName</span>
+                                    <input hidden value="@Model.UserInfo.Id" name="userID" id="userID" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 ">现金数</label>
+                                <div class="col-md-7">
+                                    <span>@Model.CashAmount.ToCash()</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 ">现金数</label>
+                                <div class="col-md-7">
+                                    <span>@Model.BankAmount.ToCash()</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 ">备注</label>
+                                <div class="col-md-7">
+                                    <span>@Model.Memo</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 ">创建时间</label>
+                                <div class="col-md-7">
+                                    <span>@Model.CreateTime.ToString("yyyy-MM-dd HH:mm")</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 ">备注</label>
+                                <div class="col-md-7">
+                                    <textarea rows="3" name="memo" id="memo" class="form-control  input-large" placeholder="修改原因"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <div class="col-md-offset-5 col-md-7">
+                                    @Html.OkWithRight(value: "解封账号", onclick: "return Check()")
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+else
+{
+    game.Entity.Users.UserInfo data = ViewBag.UserInfo as game.Entity.Users.UserInfo;
+    if (data != null)
+    {
+        <br />
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="portlet box grey">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-globe"></i>解封账号
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <form id="form1" class="form-horizontal form-bordered" method="post">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <label class="control-label col-md-5 ">账号</label>
+                                    <div class="col-md-7">
+                                        <span>@data.LoginName</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-7" style="font-weight:900;font-size:medium; margin-bottom:10px">该用户已经解封</label>
+                                </div>
+                            </div>
+
+                        </form>
+                        <!-- END FORM-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    }
+}
+@section initScripts{
+    <script>
+        $(function () {
+
+            var validateFunc = function () {
+                var validator = new Validator()
+                validator.add([form_search.loginName, form_search.nickName, form_search.userID], [{
+                    strategy: 'isSomeNonEmpty',
+                    errorMsg: '账户信息不能全为空,请输入昵称、账号或者ID！'
+                }])
+
+                var errorMsg = validator.start()
+                return errorMsg
+            }
+
+            var form = document.getElementById('form_search')
+            form.onsubmit = function () {
+                var errorMsg = validateFunc()
+                if (errorMsg) {
+                    Msg.alert(errorMsg, 'danger')
+                    return false
+                }
+            }
+
+            fillFormData('form_search');
+        })
+        $("#form1").validate({
+            rules: {
+                userID: {
+                    required: true
+                },
+                memo: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 512
+                }
+            }
+        });
+        function Check()
+        {
+            if (confirm("是否解封此账户？")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
+}

@@ -1,0 +1,108 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+@using FW.Core.Helper
+
+@model game.Entity.Game.GameServer
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>编辑房间
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="form1" method="post" class="form-horizontal form-bordered">
+                    <input hidden value="@Model.LastUpdateTime" name="LastUpdateTime" />
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">游戏ID</label>
+                            <div class="col-md-8">
+                                @Html.DropDownList("GameID", DataService.Game(Model.GameID.ToString(), false), new { @class = "form-control input-medium", id = "GameID" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">服务器名</label>
+                            <div class="col-md-8">
+                                <input type="text" name="ServerName" class="form-control input-medium" placeholder="请输入服务器名" value="@Model.ServerName" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4">显示名称</label>
+                            <div class="col-md-8">
+                                <input type="text" name="ShowName" class="form-control input-medium" placeholder="显示名称" value="@Model.ShowName" />
+                            </div>
+                        </div>                        
+                        <div class="form-group">
+                            <label class="control-label col-md-4">客户端连接地址</label>
+                            <div class="col-md-8">
+                                <input type="text" name="ClientAddr" class="form-control input-medium" placeholder="请输入客户端连接地址" value="@Model.ClientAddr" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4">通知地址</label>
+                            <div class="col-md-8">
+                                <input type="text" name="NotifyAddr" class="form-control input-medium" placeholder="请输入通知地址" value="@Model.NotifyAddr" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4">http请求地址</label>
+                            <div class="col-md-8">
+                                <input type="text" name="HttpAddr" class="form-control input-medium" placeholder="请输入http请求地址" value="@Model.HttpAddr" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4">入场金币数</label>
+                            <div class="col-md-8">
+                                <input type="text" name="Money" class="form-control input-medium" placeholder="请输入入场金币数" value="@Model.Money.ToCash()" />
+                            </div>
+                        </div>                        
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @Html.OkWithRight()
+                            @Html.Back(Url.Action("GameServerList"))
+
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script type="text/javascript" src="/Plugins/Uploadify/Upload.js"></script>
+    <script>
+        var num = 0;
+        $(function () {
+            $("#form1").validate({
+                rules: {
+                    GameID: {
+                        required: true,
+                        digits: true
+                    },
+                    ServerName: {
+                        required: true,
+                        maxlength: 64
+                    }
+                }
+            });
+            $("#form1").submit(function () {
+                if ($("#OnLineRewardYes").attr("checked") == "checked") {
+                    $("#form1").append("<input hidden value='true' name='OnLineReward' >");
+                }
+                if ($("#OnLineRewardNo").attr("checked") == "checked") {
+                    $("#form1").append("<input hidden value='false' name='OnLineReward' >");
+                }
+            });
+        })
+    </script>
+}

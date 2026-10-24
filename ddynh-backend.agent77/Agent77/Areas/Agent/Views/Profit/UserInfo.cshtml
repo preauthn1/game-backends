@@ -1,0 +1,379 @@
+﻿
+@{
+    ViewBag.Title = "用户资讯";
+}
+
+@model UserInfoModel
+
+@Html.Action("Index", "Profit")
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">用户详情</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="row show-grid">
+            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                <strong><img style="height:64px;" src="/Content/HeadIcon/sprite_@(Model.UserInfo.FaceID).png"></strong>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong>ID：<span class="text-red">@Model.UserInfo.UserID</span></strong>
+                @if (Model.UserInfo.AgentApplyStatus == 1)
+                {
+                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#modal-agent">申请代理</button>
+                }
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong>账号：<span class="text-red">@Model.UserInfo.LoginName</span></strong>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong>性别：<span class="text-red">@Model.UserInfo.Sex.ToDescription()</span></strong>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong>等级：<span class="text-red">@Model.UserInfo.GradeID</span></strong>
+            </div>
+        </div>
+
+        <div class="row show-grid">
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong>帐号身分：<span class="text-red">@Model.UserInfo.UserType.ToDescription()</span></strong>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong>平台：<span class="text-red">@Model.UserInfo.PlatformName</span></strong>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong>渠道ID：<span class="text-red">@Model.UserInfo.AreaID</span></strong>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong>渠道名称：<span class="text-red">@Model.UserInfo.AreaName</span></strong>
+            </div>
+        </div>
+
+        <div class="row show-grid">
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong>注册设备：<span class="text-red">@Model.UserInfo.HDType.ToDescription()</span></strong>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong>注册时间：<span class="text-red">@Model.UserInfo.CreateTime.ToString("yyyy-MM-dd HH:mm")</span></strong>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong>累计登录次数：<span class="text-red">@Model.UserInfo.SumLoginTimes</span></strong>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong>净利润比例：<span class="text-red">@Model.UserInfo.UserRate</span></strong>
+                @if (Model.UserInfo.ModifyStatus == 1)
+                {
+                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#modal-default">设定</button>
+                }
+            </div>
+        </div>
+
+        <div class="row show-grid">
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong>账号狀態：<span class="text-red">@Html.Raw(Model.UserInfo.UserStatus == 0 ? "冻结" : "正常")</span></strong>
+                @if (UserHelper.IsAdmin)
+                {
+                    if (Model.UserInfo.UserStatus == 0)
+                    {
+                        <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#modal-status">解冻</button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#modal-status">冻结</button>
+                    }
+                }
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong><span class="text-red"></span></strong>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong><span class="text-red"></span></strong>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <strong><span class="text-red"></span></strong>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.UserInfo.ModifyStatus == 1)
+    {
+        <div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    @using (Html.BeginForm("UpdateUserRate", "Profit", new { Area = "Agent" }, FormMethod.Post, new { @class = "form-horizontal" }))
+                    {
+                        <div class="modal-header bg-light-blue-active text-white">
+                            <h5 class="modal-title" id="exampleModalLabel">设定视窗</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="col-sm-12">净利润比例<code>上限@(Model.UserInfo.TopUseRrate * 0.1)%</code></label>
+                                <div class="col-sm-12">                                   
+                                    @Html.TextBoxFor(x => x.UserInfo.UserRate, new
+                                    {
+                                        @class = "form-control",
+                                        type = "number",
+                                        data_val_range_max = (Model.UserInfo.TopUseRrate * 0.1).ToString()
+                                    })
+                                    @Html.ValidationMessageFor(x => x.UserInfo.UserRate)
+                                    @Html.HiddenFor(x => x.UserInfo.UserID)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary bg-light text-dark" data-dismiss="modal">取消</button>
+                            <button type="submit" id="Delete" class="btn btn-primary">确认</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (UserHelper.IsAdmin)
+    {
+        var message = Model.UserInfo.UserStatus == 0 ? "確認解冻账号?" : "確認冻结账号?";
+        var bgColor = Model.UserInfo.UserStatus == 0 ? "btn-primary" : "btn-danger";
+
+        <div class="modal fade" id="modal-status" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    @using (Html.BeginForm("ChangeUserStatus", "Profit", new { Area = "Agent" }, FormMethod.Post, new { @class = "form-horizontal" }))
+                    {
+                        <div class="modal-header @bgColor text-white">
+                            <h5 class="modal-title" id="exampleModalLabel">设定视窗</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            @Html.HiddenFor(x => x.UserInfo.UserStatus)
+                            @Html.HiddenFor(x => x.UserInfo.UserID)
+                            @message
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary bg-light text-dark" data-dismiss="modal">取消</button>
+                            <button type="submit" id="Delete" class="btn @bgColor">确认</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.UserInfo.AgentApplyStatus == 1)
+    {
+        <div class="modal fade" id="modal-agent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    @using (Html.BeginForm("AddAgentApply", "Profit", new { Area = "Agent" }, FormMethod.Post, new { @class = "form-horizontal" }))
+                    {
+                        <div class="modal-header btn-primary text-white">
+                            <h5 class="modal-title" id="exampleModalLabel">申请代理</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="targetID" value="@Model.UserInfo.UserID">
+                            確認申请代理
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary bg-light text-dark" data-dismiss="modal">取消</button>
+                            <button type="submit" id="Delete" class="btn btn-primary">确认</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">用户相關</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="box-body">
+
+        <div class="row show-grid">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>支付宝真实姓名：@Html.Raw(string.IsNullOrWhiteSpace(Model.UserInfo.RealName) ? "<span class='label label-danger'>未绑定</span>" : "<span class='label label-success'>已绑定</span>")</strong>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>支付宝账号：@Html.Raw(string.IsNullOrWhiteSpace(Model.UserInfo.AlipayAccount) ? "<span class='label label-danger'>未绑定</span>" : "<span class='label label-success'>已绑定</span>")</strong>
+            </div>
+        </div>
+        <div class="row show-grid">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>銀聯真实姓名ID：@Html.Raw(string.IsNullOrWhiteSpace(Model.UserInfo.UnionpayRealName) ? "<span class='label label-danger'>未绑定</span>" : "<span class='label label-success'>已绑定</span>")</strong>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>銀聯账号：@Html.Raw(string.IsNullOrWhiteSpace(Model.UserInfo.UnionpayAccount) ? "<span class='label label-danger'>未绑定</span>" : "<span class='label label-success'>已绑定</span>")</strong>
+            </div>
+        </div>
+        <div class="row show-grid">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>注册手机号：@Html.Raw(Model.UserInfo.LoginName.StartsWith("Fast") ? "<span class='label label-danger'>未绑定</span>" : "<span class='label label-success'>已绑定</span>")</strong>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>注册IP：<span class="text-red">@Model.UserInfo.CreateIPAddress </span></strong>
+            </div>
+        </div>
+
+        <div class="row show-grid">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>最后登录IP： <span class="text-red">@Model.UserInfo.LastLogonIPAddress</span></strong>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>最后登录时间：<span class="text-red">@Model.UserInfo.LastLogonTime.ToString("yyyy-MM-dd HH:mm")</span></strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">用户金币 &nbsp;<small>计算方式 : 累计充值 - 游戏输赢汇总 - 累计兑换 - 保险箱 = 现金数</small></h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="box-body">
+
+        <div class="row show-grid">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>总金额数： <span class="text-red">@Model.UserInfo.AllCoinAmount.ToCash()</span></strong>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>现金数：<span class="text-red">@Model.UserInfo.CashAmount.ToCash()</span></strong>
+            </div>
+        </div>
+
+        <div class="row show-grid">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>累计税收数： <span class="text-red">@Model.UserInfo.SumTax.ToCash()</span></strong>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>
+                    累计充值数(第三方 + 官方 + 免费金币)：
+                    <span class="text-red">@Model.UserInfo.SumCharge.ToCash()</span> +
+                    <span class="text-red">@Model.UserInfo.SumAgentCharge.ToCash()</span> +
+                    <span class="text-red">@(Model.UserInfo.SumFreeMoney == null ? "0" : Model.UserInfo.SumFreeMoney.Value.ToCash())</span> =
+                    <span class="text-red">@Model.UserInfo.SumChargeTotal.ToCash()</span>
+                </strong>
+            </div>            
+        </div>
+        <div class="row show-grid">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>
+                    累计兑换数(总数 + 手续费)：
+                    <span class="text-red">@Model.UserInfo.SumConvert.ToCash()</span> +
+                    <span class="text-red">@Model.UserInfo.SumConvertTax.ToCash()</span> =
+                    <span class="text-red">@Model.UserInfo.SumConvertTotal.ToCash()</span>
+                </strong>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>保險箱数： <span class="text-red">@Model.UserInfo.BankAmount.ToCash()</span></strong>
+            </div>
+        </div>
+        <div class="row show-grid">            
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <strong>管理員修改金幣：<span class="text-red">@(Model.UserInfo.SumAdminMoney == null ? "0" : Model.UserInfo.SumAdminMoney.Value.ToCash())</span></strong>
+            </div>
+        </div>     
+    </div>
+</div>
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">用户游戏信息 &nbsp;<small>已扣除税收</small></h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="box-body">
+        <table id="example1" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>游戏名称</th>
+                    <th>赢的局数</th>
+                    <th>输的局数</th>
+                    <th>平的局数</th>
+                    <th>输赢金币数</th>
+                    <th>游戏时长(秒)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.UserGameInfo != null)
+                {
+
+                    foreach (var item in Model.UserGameInfo)
+                    {
+                        <tr>
+                            <td>@item.GameName</td>
+                            <td>@item.WinCount</td>
+                            <td>@item.LoseCount</td>
+                            <td>@item.DrawCount</td>
+                            <td>@item.Score.ToCash()</td>
+                            <td>@SiteHelper.GetTimeStr(item.GameTime)</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- /.box -->
+@section head{   
+    <style type="text/css">
+        .show-grid {
+            margin: 6px 0px;
+            border-bottom: 1px solid #f4f4f4;
+        }
+
+            .show-grid [class^="col-"] {
+                padding: 5px 15px;
+            }
+    </style>
+}
+@section scripts{
+    <!-- Page script -->
+    <script type="text/javascript">
+        $(function () {
+
+            //DataTable
+            $('#example1').DataTable({
+                "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                "searching": false,
+                responsive: true
+            });
+
+            $('#Applymodal, #RefuseModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)
+                var recipient = button.data('whatever')
+                console.log(recipient);
+                var modal = $(this)
+                modal.find('#ApplyUser').val(recipient);
+            });
+        })
+    </script>
+}

@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://example.invalid/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D5B89507-46BA-4DDA-B67A-CF73CFD9F121}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FW.Core.Repository</RootNamespace>
+    <AssemblyName>FW.Core.Repository</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\using\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DatabaseConfigHandler.cs" />
+    <Compile Include="DatabaseSetting.cs" />
+    <Compile Include="DatabaseAttribute.cs" />
+    <Compile Include="EF\EFDatabaseContext.cs" />
+    <Compile Include="MSDatabaseFactory.cs" />
+    <Compile Include="DepencyRegister.cs" />
+    <Compile Include="EF\DbContextFactory.cs" />
+    <Compile Include="EF\EFDatabase.cs" />
+    <Compile Include="SimpleDatabaseFactory.cs" />
+    <Compile Include="EF\EFDatabaseProvider.cs" />
+    <Compile Include="EF\EFDbContext.cs" />
+    <Compile Include="EF\EFRepository.cs" />
+    <Compile Include="EF\EFRepositoryFactory.cs" />
+    <Compile Include="EF\EFRepositoryProvider.cs" />
+    <Compile Include="EF\EFUnitOfWork.cs" />
+    <Compile Include="IDatabase.cs" />
+    <Compile Include="IDatabaseFactory.cs" />
+    <Compile Include="IDatabaseProvider.cs" />
+    <Compile Include="IDatabaseSelector.cs" />
+    <Compile Include="IRepository.cs" />
+    <Compile Include="IRepositoryFactory.cs" />
+    <Compile Include="IRepositoryProvider.cs" />
+    <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="MSDatabase.cs" />
+    <Compile Include="MSRepositoryFactory.cs" />
+    <Compile Include="MSRepository.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectionDatabaseSelector.cs" />
+    <Compile Include="RepositoryException.cs" />
+    <Compile Include="UnitOfWorkGroup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FW.Core.Engine\FW.Core.Engine.csproj">
+      <Project>{5110f534-a73a-4a18-9d83-5d9a8ed1a5b9}</Project>
+      <Name>FW.Core.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FW.Core.EventBus\FW.Core.EventBus.csproj">
+      <Project>{6c6decf4-0b9f-4102-a8a1-c85ca36b6b66}</Project>
+      <Name>FW.Core.EventBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FW.Core.Helper\FW.Core.Helper.csproj">
+      <Project>{4f70d664-a9b0-4f2b-b461-d2c12548eddc}</Project>
+      <Name>FW.Core.Helper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

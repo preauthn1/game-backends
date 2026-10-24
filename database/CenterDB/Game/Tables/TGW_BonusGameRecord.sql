@@ -1,0 +1,33 @@
+CREATE TABLE [Game].[TGW_BonusGameRecord](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[UserID] [int] NOT NULL,
+	[TurnID] [int] NOT NULL,
+	[Location] [int] NOT NULL,
+	[Money] [bigint] NOT NULL,
+	[BonusID] [int] NOT NULL,
+ CONSTRAINT [PK_TGW_BonusGameRecord] PRIMARY KEY NONCLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
+ CONSTRAINT [IX_TGW_BonusGameRecord] UNIQUE NONCLUSTERED 
+(
+	[UserID] ASC,
+	[TurnID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [Game].[TGW_BonusGameRecord] ADD  CONSTRAINT [DF_TGW_BonusGameRecord_UserID]  DEFAULT ((0)) FOR [UserID]
+GO
+
+ALTER TABLE [Game].[TGW_BonusGameRecord] ADD  CONSTRAINT [DF_TGW_BonusGameRecord_TurnID]  DEFAULT ((0)) FOR [TurnID]
+GO
+
+ALTER TABLE [Game].[TGW_BonusGameRecord] ADD  CONSTRAINT [DF_TGW_BonusGameRecord_Location]  DEFAULT ((0)) FOR [Location]
+GO
+
+ALTER TABLE [Game].[TGW_BonusGameRecord] ADD  CONSTRAINT [DF_TGW_BonusGameRecord_Money]  DEFAULT ((0)) FOR [Money]
+GO
+
+ALTER TABLE [Game].[TGW_BonusGameRecord] ADD  CONSTRAINT [DF_TGW_BonusGameRecord_BonusID]  DEFAULT ((0)) FOR [BonusID]
+GO

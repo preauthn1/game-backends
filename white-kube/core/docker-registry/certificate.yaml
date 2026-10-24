@@ -1,0 +1,14 @@
+apiVersion: example.invalid/v1alpha2
+kind: Certificate
+metadata:
+  name: docker-registry
+spec:
+  secretName: docker-registry-tls-certificate
+  duration: 2m
+  renewBefore: 1m
+  issuerRef:
+    name: acme-issuer
+    kind: Issuer
+    group: example.invalid
+  dnsNames:
+  - example.invalid

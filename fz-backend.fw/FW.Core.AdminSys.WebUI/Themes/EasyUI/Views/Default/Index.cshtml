@@ -1,0 +1,17 @@
+﻿@model KCKJ.Core.AdminSys.Provider.AdminSysInfo
+@{
+    this.Layout = null;
+}
+<html>
+<head>
+    <title>@Model.SystemName</title>
+</head>
+<frameset rows="60,*" border="0">
+    <frame name="top" src="~/Admin/Default/Top">
+        <frameset cols="180,*">
+            <frame name="menu" src="/Admin/Default/Menu">
+            <frame name="main" src="@Model.DefaultPageUrl">
+        </frameset>
+</frameset>
+
+</html>

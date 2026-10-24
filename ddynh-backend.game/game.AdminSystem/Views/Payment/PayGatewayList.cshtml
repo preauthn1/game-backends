@@ -1,0 +1,92 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+}
+
+<style>
+    .payGateway {
+        display: flex;
+    }
+
+    .gateway_btn {
+        display: flex;
+        align-items: center;
+        padding-left: 2%;
+    }
+</style>
+
+<div class="row" id="pay_gateway">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>第三方金流名称／代码</th>
+                            <th class="algin-c" style="width:8%;">是否支援代收</th>
+                            <th class="algin-c" style="width:8%;">是否支援代付</th>
+                            <th class="algin-c" style="width:8%;">是否启用</th>
+                            <th class="algin-c" style="width:8%;">代付支援银行数</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in tableList">
+                            <td>{{item.ID}}</td>
+                            <td>
+                                <div>
+                                    {{item.GWName}}
+                                </div>
+                                <div style="color:#AAA;">
+                                    {{item.GWCode}}
+                                </div>
+                            </td>
+                            <td class="algin-c">{{item.Payin ? "v" : ""}}</td>
+                            <td class="algin-c">{{item.Payout? "v" : ""}}</td>
+                            <td class="algin-c">{{item.IsActive ? "v" : ""}}</td>
+                            <td :class="'algin-c count_' + item.BankCount ">{{item.BankCount}}</td>
+
+                            <td style="text-align:center;">
+                                <a id="btnPayType" class="btn btn-sm dark" :href="'/PayGateway/Update?targetID='+item.ID">编辑</a>
+                                <a id="btnModify" class="btn btn-sm dark" :href="'/Payment/MerchantList?gwID='+item.ID">商户密钥设置</a>
+                                <a id="btnPayType" class="btn btn-sm dark" :href="'/Payment/PayTypeList?targetID='+item.ID+'&systems='+item.Systems">支持支付方式</a>
+                                <a id="btnPayType" class="btn btn-sm dark" :href="'/PayGateway/UpdateBanks?GWID='+item.ID">代付支援银行管理</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+            var vApp = new Vue({
+                el: '#pay_gateway',
+                data: {
+                    tableList: [],
+                    payGatewayList: [],
+                    isShow: false
+                },
+                methods: {
+                    getTableList: function () {
+                        vApp.tableList = [];
+                        $.get('/payment/GetPayGateway', { '_r': Math.random() }, function (data) {
+                            if (data instanceof Object) {
+                                for (let obj of data.payment)
+                                {            
+                                    vApp.tableList.push(obj);
+                                }
+                            }
+                            else {
+                                vApp.tableList = {};
+                            }
+                        });
+                    }
+                }
+            });
+            vApp.getTableList();
+        })
+    </script>
+}

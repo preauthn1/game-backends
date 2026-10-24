@@ -1,0 +1,37 @@
+<style type="text/css">
+    .bjui-row.col-1 .row-label{
+        width: 30%;
+    }
+</style>
+<div class="bjui-pageContent">
+    <form class="form-inline" action="{{agentApiRoute}}" data-toggle="ajaxform" data-options='{"closeCurrent":true,"confirmMsg":"确定要更改？"}'>
+        <div class="col-sm-12">
+            <div class="bjui-row col-1">
+                <label class="row-label">修改密码</label>
+                <div class="row-input"></div>
+                <label class="row-label">用户账号：</label>
+                <div class="row-input">
+                    <input type="text" class="form-control input-nm" name="account" value="" data-rule="required">
+                </div>
+                <label class="row-label">原密码：</label>
+                <div class="row-input">
+                    <input type="text" class="form-control input-nm" name="oldPassword" value="" data-rule="required">
+                </div>
+                <label class="row-label">新密码：</label>
+                <div class="row-input">
+                    <input type="text" class="form-control input-nm" name="newPassword" value="" data-rule="required">
+                </div>
+                <label class="row-label">再次输入新密码：</label>
+                <div class="row-input">
+                    <input type="text" class="form-control input-nm" name="repeatPassword" value="" data-rule="required">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="bjui-pageFooter">
+    <ul>
+        <li><button type="button" class="btn-close" data-icon="close">取消</button></li>
+        <li><button type="submit" class="btn-default" data-icon="save">保存</button></li>
+    </ul>
+</div>

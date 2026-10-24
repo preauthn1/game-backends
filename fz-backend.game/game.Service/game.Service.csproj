@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://example.invalid/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CEAB9A96-FB4D-4858-9E69-5D888EC50626}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>game.Service</RootNamespace>
+    <AssemblyName>game.Service</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\using\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\..\using\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="FW.Core.Cache">
+      <HintPath>..\..\using\FW.Core.Cache.dll</HintPath>
+    </Reference>
+    <Reference Include="FW.Core.Engine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\using\FW.Core.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="FW.Core.Helper">
+      <HintPath>..\..\using\FW.Core.Helper.dll</HintPath>
+    </Reference>
+    <Reference Include="FW.Core.Repository, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\using\FW.Core.Repository.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="IActivityService.cs" />
+    <Compile Include="IAdminSysService.cs" />
+    <Compile Include="IAreaService.cs" />
+    <Compile Include="IAreaStatService.cs" />
+    <Compile Include="ICustomerService.cs" />
+    <Compile Include="IForbidChatService.cs" />
+    <Compile Include="IForbidUserService.cs" />
+    <Compile Include="IGameMessageService.cs" />
+    <Compile Include="IGameService.cs" />
+    <Compile Include="IMessageService.cs" />
+    <Compile Include="IMoneyService.cs" />
+    <Compile Include="IMoneyStatService.cs" />
+    <Compile Include="INotifyService.cs" />
+    <Compile Include="IRobotOnLineStatService.cs" />
+    <Compile Include="IOnLineStatService.cs" />
+    <Compile Include="IPayService.cs" />
+    <Compile Include="IPerGameLogService.cs" />
+    <Compile Include="IUserService.cs" />
+    <Compile Include="IUserStatService.cs" />
+    <Compile Include="IWarningService.cs" />
+    <Compile Include="IAgentService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\ActivityService.cs" />
+    <Compile Include="Service\AdminSysService.cs" />
+    <Compile Include="Service\AreaService.cs" />
+    <Compile Include="Service\AreaStatService.cs" />
+    <Compile Include="Service\CustomerService.cs" />
+    <Compile Include="Service\ForbidChatService.cs" />
+    <Compile Include="Service\ForbidUserService.cs" />
+    <Compile Include="Service\GameMessageService.cs" />
+    <Compile Include="Service\GameService.cs" />
+    <Compile Include="Service\MessageService.cs" />
+    <Compile Include="Service\MoneyService.cs" />
+    <Compile Include="Service\MoneyStatService.cs" />
+    <Compile Include="Service\NotifyService.cs" />
+    <Compile Include="Service\RobotOnLineStatService.cs" />
+    <Compile Include="Service\OnLineStatService.cs" />
+    <Compile Include="Service\AgentService.cs" />
+    <Compile Include="Service\PayService.cs" />
+    <Compile Include="Service\PerGameLogService.cs" />
+    <Compile Include="Service\UserService.cs" />
+    <Compile Include="Service\UserStatService.cs" />
+    <Compile Include="Service\WarningService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\game.Entity\game.Entity.csproj">
+      <Project>{44448b04-8148-4324-ba1c-1efc54f0e1dd}</Project>
+      <Name>game.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\game.Infrastructure\game.Infrastructure.csproj">
+      <Project>{c8931862-d42a-41f5-84c1-9e638ac564d3}</Project>
+      <Name>game.Infrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

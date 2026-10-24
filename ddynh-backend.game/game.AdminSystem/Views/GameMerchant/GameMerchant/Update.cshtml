@@ -1,0 +1,162 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@using game.Infrastructure.Extensions
+@using game.AdminSystem
+
+@model game.AdminSystem.Models.ViewModels.GameMerchantAdminUpdateViewModel
+
+@{
+
+    bool IsUpdatePage = Model.IsUpdatePage;
+
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>三方游戏商管理
+                </div>
+            </div>
+            <div class="portlet-body form">
+
+                <!-- BEGIN FORM-->
+                <form id="myForm" method="post" class="form-horizontal form-bordered" novalidate="novalidate">
+                    <div class="form-body">
+
+
+                        @if (IsUpdatePage)
+                        {
+                            <input type="hidden" value="@Model.GameMerchantID" name="GameMerchantID" id="GameMerchantID" />
+                        }
+
+                        <input type="hidden" id="IsUpdatePage" name="IsUpdatePage" value="@Model.IsUpdatePage.ToString()" />
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">系统编号</label>
+                            <div class="col-md-3">
+                                <input type="text" id="GameMerchantID" name="GameMerchantID" class="form-control input-medium" maxlength="7" value="@Model.GameMerchantID" placeholder="请确保编号规范一致" @(IsUpdatePage ? "disabled='disabled'" : "") />
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">商户名</label>
+                            <div class="col-md-3">
+                                <input type="text" id="GameMerchantName" name="GameMerchantName" class="form-control input-medium" value="@Model.GameMerchantName" placeholder="">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">代码</label>
+                            <div class="col-md-3">
+                                <input type="text" id="GameMerchantCode" name="GameMerchantCode" class="form-control input-medium" value="@Model.GameMerchantCode" placeholder="">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">备注</label>
+                            <div class="col-md-3">
+                                <input type="text" id="Memo" name="Memo" class="form-control input-medium" value="@Model.Memo" placeholder="">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">维护信息</label>
+                            <div class="col-md-3">
+                                <input type="text" id="MaintainMsg" name="MaintainMsg" class="form-control input-medium" value="@Model.MaintainMsg" placeholder="">
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">启用状态</label>
+                            <div class="col-md-3">
+
+                                @(Html.RenderDropdownByEnum<game.Entity.Game.GameMerchantStatusEnum>("Status", Model.Status))
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button id="btnOk" type="submit" class="btn dark" style="" onclick=""><i class="fa fa-file-o"></i> 确定</button>
+
+                            @Html.Back(Url.Action("List", "GameMerchant"))
+
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section initScripts
+{
+    <script>
+
+         $.validator.addMethod("checkMaxLength", function (val, el) {
+                var len = 0;
+                for (var i = 0; i < val.length; i++) {
+                    len += (val[i].match(/[^\x00-\xff]/ig) != null) ? 2 : 1;
+                }
+                if (len <= 12) 
+                    return true;
+                else
+                    return false;
+         }, "请输入一个 字元长度最多是 12 的字符串");
+
+
+        $("#myForm").validate({
+            rules: {
+                
+                GameMerchantID: {
+                    required: true
+                },
+
+                GameMerchantName: {
+                    required: true,
+                    maxlength: 50
+                },
+
+                GameMerchantCode: {
+                    maxlength: 10
+                },
+
+                Memo: {
+                    maxlength: 50
+                },
+                
+                MaintainMsg: {
+                    maxlength: 100
+                },
+
+            },
+            messages: {
+               
+            }
+        });
+
+    </script>
+}

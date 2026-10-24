@@ -1,0 +1,37 @@
+﻿@using FW.Core.AdminSys.WebUI
+@model Tuple<List<FW.Core.AdminSys.Provider.Entity.Right>, int, string, List<int>>
+@{
+    this.Layout = null;
+    int parentID = Model.Item2;
+    var rights = Model.Item1.Where(r => r.ParentID == parentID)
+        .OrderByDescending(r => r.Sort)
+        .ToList();
+    string padding = Model.Item3;
+    var checkedRights = Model.Item4;
+    if (checkedRights == null)
+    {
+        checkedRights = new List<int>(); 
+    }
+
+    foreach (var rt in rights)
+    {
+        string checkedSign = "";
+
+        if (checkedRights.Contains(rt.RightID)) {
+            checkedSign = "checked=checked";
+        }
+        @:<ul>
+        @:<li><p class="tree-control">
+    <span>@padding</span>
+    @:<input type="checkbox" name="ck" value="@rt.RightID" @checkedSign />
+    @:<span class="tree_open glyphicon glyphicon-minus tree-control"></span>
+    @:<span class="tree-control" title="@rt.RightID" >
+        @String.Format("{0}", rt.RightName);
+    @:</span></p>
+                                       var childModel = new Tuple<List<FW.Core.AdminSys.Provider.Entity.Right>, int, string, List<int>>(Model.Item1, rt.RightID, Model.Item3 + "　　 　　", Model.Item4);
+                                       Html.RenderPartial("FW.Core.AdminSys.WebUI.Themes.Bootstrap.Views.Right.RightTreeView", childModel);
+         @: </li>
+        @:</ul>
+    }
+    
+}

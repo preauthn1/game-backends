@@ -1,0 +1,10 @@
+﻿@model KCKJ.Core.AdminSys.Provider.AdminSysInfo
+@{
+    KCKJ.Core.Auth.AuthUser user = ViewBag.User;
+    
+}
+
+<span style="float:left;padding-left:20px;padding-top:5px;font-size:15pt">
+    @Html.Raw(Model.Logo)
+    @Model.SystemName</span>
+<span style="float: right; padding-right: 20px; padding-top: 5px;">欢迎您，[ @user.LoginName ], <a href="@Url.Action("Logout", "Default")" target="_parent">注销登陆</a> </span>

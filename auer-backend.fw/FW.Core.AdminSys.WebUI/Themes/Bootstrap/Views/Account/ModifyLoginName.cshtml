@@ -1,0 +1,95 @@
+﻿@using FW.Core.AdminSys.WebUI
+@model FW.Core.AdminSys.Provider.Entity.AdminUser
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>修改用户名
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="mdLoginNameFrm" method="post" class="form-horizontal form-bordered">
+                    @if (ViewBag.Success != null)
+                    {
+                        <script type="text/javascript">
+                            alert(@Html.Raw(Json.Encode(ViewBag.Success)));
+                        </script>
+                    }
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">当前用户帐号</label>
+                            <div class="col-md-3">
+                                <span class="info">@Model.LoginName</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">当前显示名称</label>
+                            <div class="col-md-3">
+                                <span class="info">@Model.DisplayName</span>
+                            </div>
+                        </div>
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">新用户帐号</label>
+                            <div class="col-md-5">
+                                <input type="text" name="loginName" id="loginName" class="form-control input-medium" placeholder="请输入新用户帐号">
+                            </div>
+                        </div>
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">新显示名称</label>
+                            <div class="col-md-5">
+                                <input type="text" name="displayName" id="displayName" class="form-control input-medium" placeholder="请输入新显示名称">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @Html.OkWithRight()
+                            @Html.Cancel()
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section initScripts
+{
+    <script>
+        $(function () {
+            $.validator.addMethod("isRequired", function (value, element) {
+
+                if ($("#displayName").val() == "" && value == "") {
+                    return false;
+                }
+                return true;
+
+            });
+
+
+            $("#mdLoginNameFrm").validate({
+                rules: {
+                    loginName: {
+                        isRequired: true,
+                        minlength: 1,
+                        maxlength: 16
+                    }
+                },
+                messages: {
+                    loginName: {
+                        isRequired: "用户名不能为空",
+                        minlength: "用户名长度至少为1位字符",
+                        maxlength: "用户名长度不能超出16位字符"
+                    }
+                }
+            });
+        });
+    </script>
+}

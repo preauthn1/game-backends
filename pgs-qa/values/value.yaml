@@ -1,0 +1,26 @@
+defaultVersion: beta
+
+api:
+  schema: http
+  endpoint: example.invalid
+  cer: 851b-222e5f24024b
+  semaphore: 1
+
+tfserver:
+  port: 10080
+  replicas: 2
+  ingress:
+    enabled: true
+    annotations:
+      example.invalid/ingress.class: nginx
+      example.invalid/proxy-body-size: "0"
+      example.invalid/ssl-redirect: "false"
+      # example.invalid/ingress.class: nginx
+      # example.invalid/tls-acme: "true"
+    hosts:
+      - host: example.invalid
+        paths: [/]
+    tls:
+      - secretName: docker-registry-tls-certificate
+        hosts:
+          - example.invalid

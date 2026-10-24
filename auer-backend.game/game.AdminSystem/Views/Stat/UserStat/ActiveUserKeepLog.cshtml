@@ -1,0 +1,96 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+
+@model  List<game.Entity.Stat.ActiveUserKeepLog>
+
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="formGet" name="formGet" method="get">
+                <div class="table-scrollable">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>统计时间</th>
+                                <th>有效会员人数</th>
+                                <th>1日后留存率</th>
+                                <th>3日后留存率</th>
+                                <th>5日后留存率</th>
+                                <th>7日后留存率</th>
+                                <th>14日后留存率</th>
+                                <th>30日后留存率</th>
+                                <th>3日付费率</th>
+                                <th>5日付费率</th>
+                                <th>7日付费率</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.StatTime.ToString("yyyy-MM-dd")</td>
+                                        <td>@item.ActiveUsers</td>
+                                        <td>
+                                            <span>@Math.Round(item.Day1Keep, 3) %</span>
+                                        </td>
+                                        <td>
+                                            <span>@Math.Round(item.Day3Keep, 3) %</span>
+                                        </td>
+                                        <td>
+                                            <span>@Math.Round(item.Day5Keep, 3) %</span>
+                                        </td>
+                                        <td>
+                                            <span>@Math.Round(item.Day7Keep, 3) %</span>
+                                        </td>
+                                        <td>
+                                            <span>@Math.Round(item.Day14Keep, 3) %</span>
+                                        </td>
+                                        <td>
+                                            <span>@Math.Round(item.Day30Keep, 3) %</span>
+                                        </td>
+                                        <td>
+                                            <span>@Math.Round(item.Day3Payrate, 3) %</span>
+                                        </td>
+                                        <td>
+                                            <span>@Math.Round(item.Day5Payrate, 3) %</span>
+                                        </td>
+                                        <td>
+                                            <span>@Math.Round(item.Day7Payrate, 3) %</span>
+                                        </td>
+
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </form>
+</div>
+    </div>
+</div>
+
+@section initScripts{
+    <script>
+        $(function () {
+            fillFormData('formGet');
+
+            //$('#hdType').change(function () {
+            //    //console.log($(this).val());
+            //    Submit();
+            //})
+        })
+
+        //function Submit() {
+        //    $('#formGet').submit();
+        //}
+    </script>
+}

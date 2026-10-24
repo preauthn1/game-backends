@@ -1,0 +1,37 @@
+<?php
+return [
+    'agents'=> [
+    	'agent_general'=>[
+    		'transfer_log'=>'AgentGeneral\TransferLogController',
+    		'agent_manage'=>'AgentGeneral\AgentManageController',
+    		'add_money'=>'AgentGeneral\AddMoneyController',
+    		'safe_log'=>'AgentGeneral\SafeLogController',
+    		'player_disable'=>'AgentGeneral\PlayerDisableController',
+    		'agent_recharge'=>'AgentGeneral\AgentRechargeController',
+    		'agent_retreat'=>'AgentGeneral\AgentRetreatController',
+            'change_password'=>'AgentGeneral\ChangePasswordController',
+    	],
+    	'agent'=>[
+    		'data_sum'=>'Agent\DataSumController',
+    		'transaction_detail'=>'Agent\TransactionDetailController',
+    		'change_password'=>'Agent\ChangePasswordController',
+    		'chat_record'=>'Agent\ChatRecordController',
+    		'recover_detail'=>'Agent\RecoveryDetailController',
+    	],
+    	'agent_data'=>[
+    		'data_table'=>'AgentData\DataTableController',
+    		'player_recharge_detail'=>'AgentData\PlayerRechargeDetailController',
+    		'recovery_sum'=>'AgentData\RecoverySumController',
+    		'player_unusual'=>'AgentData\PlayerUnusualController',
+    		'agent_detail'=>'AgentData\AgentDetailController',
+    		'chat_record'=>'AgentData\ChatRecordController',
+    	],
+    	'agent_admin'=>[
+    		'agent_apply'=>'AgentAdmin\AgentApplyController',
+    		'agent_search'=>'AgentAdmin\AgentSearchController',
+    		'agent_add'=>'AgentAdmin\AgentAddController',
+    		'agent_ad'=>'AgentAdmin\AgentAdController',
+            'agent_loginlog'=>'AgentAdmin\AgentLoginlogController',
+    	]
+    ]
+];

@@ -1,0 +1,277 @@
+﻿@{
+    Layout = null;
+}
+<style>
+    @@-webkit-keyframes twinkling { /*透明度由0到1*/
+        0% {
+            opacity: 0.1; /*透明度为0*/
+        }
+
+        100% {
+            opacity: 1; /*透明度为1*/
+        }
+    }
+
+    #playerLogonQuestion, #playerQuestion, #playerWaitAuditingConvert, #playerManualProcessConvert, #vipUserCount, #downloadIncorrectCount, #AutoPaymentFailed {
+        -webkit-animation: twinkling 1s infinite ease-in-out;
+    }
+</style>
+
+
+<script type="text/javascript">
+    var webconfig = {};
+    webconfig.coinShowRate = parseFloat('@ConfigData.CoinShowRate');
+
+    var global_converCount = 0;
+    var global_user_questionCount = 0;
+    var global_logout_questionCount = 0;
+
+    $(function () {
+        const updatePlatformDownload_token = [REDACTED]"_Info_UpdatePlatformDownload_Post")` === 'True' ? true : false
+
+        var userQuestion = () => {
+            $.ajax({
+                cache: false,
+                dataType: 'json',
+                url: '@Url.Action("GetUnReplyQuestionCount", "UserQuestionLog")',
+                success: function (msg) {
+                    if (msg && msg.success && msg.data) {
+                        var jsonCount = msg.data;
+
+                        if (jsonCount.UnReplyCount > 0)
+                        {
+                             //如果數字有變化 撥放語音、且有指定權限
+                            if (jsonCount.IsSoundNotify && jsonCount.UnReplyCount > global_user_questionCount)
+                            {            
+                                var myVideo = new Audio('@Url.Content("~/Content/Audio/sound_new_msg.mp3")');
+                                var promise = myVideo.play();
+
+                                //chrome瀏覽器最新政策是 需要使用有在瀏覽器 進行任何點擊行為 才允許撥放
+                                if (promise !== undefined) {
+                                    promise.then(_ => {
+                                    
+
+                                    }).catch(error => {
+
+                                        //還原成初始值 保證下一次會撥放
+                                        global_user_questionCount = 0;
+
+                                    });
+                                }
+                            }
+
+                            global_user_questionCount = jsonCount.UnReplyCount;
+
+                            $('#playerQuestion span').text('玩家问题(' + jsonCount.UnReplyCount + ')');
+                            $('#playerQuestion').show();
+                        }
+                        else {
+                            $('#playerQuestion span').text('玩家问题(0)');
+                            $('#playerQuestion').hide();
+                        }
+                    }
+                },
+                error: function (msg) {
+                    clearInterval(i1);
+                }
+            });
+        }
+
+        var convertLog = () => {
+            $.ajax({
+                cache: false,
+                dataType: 'json',
+                url: '@Url.Action("GetConvertLogCount", "Money", new { status = 0 })',
+                success: function (msg) {
+                    if (msg && msg.success && msg.data) {
+                        var jsonCount = msg.data;
+
+                        if (jsonCount.WaitAuditingCount > 0)
+                        {
+                            //如果數字有變化 撥放語音、且有指定權限
+                            if (jsonCount.IsSoundNotify && jsonCount.WaitAuditingCount > global_converCount)
+                            {            
+                                var myVideo = new Audio('@Url.Content("~/Content/Audio/sound_withdrawal.m4a")');
+                                var promise = myVideo.play();
+
+                                //chrome瀏覽器最新政策是 需要使用有在瀏覽器 進行任何點擊行為 才允許撥放
+                                if (promise !== undefined) {
+                                    promise.then(_ => {
+                                    
+
+                                    }).catch(error => {
+
+                                        //還原成初始值 保證下一次會撥放
+                                        global_converCount = 0;
+
+                                    });
+                                }
+
+                            }
+
+                            global_converCount = jsonCount.WaitAuditingCount;
+
+                            $('#playerWaitAuditingConvert span').text('待审核兑换(' + jsonCount.WaitAuditingCount + ')');
+                            $('#playerWaitAuditingConvert').show();
+                        }
+                        else {
+                            $('#playerWaitAuditingConvert span').text('待审核兑换(0)');
+                            $('#playerWaitAuditingConvert').hide();
+                        }
+                    }
+                },
+                error: function (msg) {
+                    clearInterval(i2);
+                }
+            });
+        }
+
+        var convertLog_AutoPaymentFailed = () => {
+            $.ajax({
+                cache: false,
+                dataType: 'json',
+                url: '@Url.Action("GetConvertLogCount", "Money", new { status = 100 })',
+                success: function (msg) {
+                    if (msg && msg.success && msg.data) {
+                        var jsonCount = msg.data;
+                        if (jsonCount.WaitAuditingCount > 0) {
+                            $('#AutoPaymentFailed span').text('自动打款失败(' + jsonCount.WaitAuditingCount + ')');
+                            $('#AutoPaymentFailed').show();
+                        }
+                        else {
+                            $('#AutoPaymentFailed span').text('自动打款失败(0)');
+                            $('#AutoPaymentFailed').hide();
+                        }
+                    }
+                },
+                error: function (msg) {
+                    clearInterval(i5);
+                }
+            });
+        }
+
+        var userLogonQuestion = () => {
+            $.ajax({
+                cache: false,
+                dataType: 'json',
+                url: '@Url.Action("GetLogonQuestionCount", "UserQuestionLog")',
+                success: function (msg) {
+                    if (msg && msg.success && msg.data) {
+                        var jsonCount = msg.data;
+                        if (jsonCount.QuestionCount > 0)
+                        {
+
+                            if (jsonCount.IsSoundNotify && jsonCount.QuestionCount > global_logout_questionCount)
+                            {            
+                                var myVideo = new Audio('@Url.Content("~/Content/Audio/sound_new_msg.mp3")');
+                                var promise = myVideo.play();
+
+                                //chrome瀏覽器最新政策是 需要使用有在瀏覽器 進行任何點擊行為 才允許撥放
+                                if (promise !== undefined) {
+                                    promise.then(_ => {
+                                    
+
+                                    }).catch(error => {
+
+                                        //還原成初始值 保證下一次會撥放
+                                        global_logout_questionCount = 0;
+
+                                    });
+                                }
+                            }
+
+                            global_logout_questionCount = jsonCount.QuestionCount;
+
+                            $('#playerLogonQuestion span').text('登入问题(' + jsonCount.QuestionCount + ')');
+                            $('#playerLogonQuestion').show();
+                        }
+                        else {
+                            $('#playerLogonQuestion span').text('登入问题(0)');
+                            $('#playerLogonQuestion').hide();
+                        }
+                    }
+                },
+                error: function (msg) {
+                    clearInterval(i3);
+                }
+            });
+        }
+
+        var onlineVipUserCount = () => {
+            $.ajax({
+                cache: false,
+                dataType: 'json',
+                url: '/UserInfo/OnlineVipUserCount',
+                success: function (result) {
+                    if (result > 0) {
+                        $('#vipUserCount span').text('大额玩家上线人数(' + result + ')');
+                        $('#vipUserCount').show();
+                    }
+                    else {
+                        $('#vipUserCount span').text('大额玩家上线人数(0)');
+                        $('#vipUserCount').hide();
+                    }
+                },
+                error: function (msg) {
+                    clearInterval(i4);
+                }
+            });
+        }
+
+        var GetPlatformDownloadIncorrectCount = () => {
+
+            //2019-11-06 已移除此判斷、不是很重要了 (渠道包资讯不正确)
+
+        }
+
+        userQuestion();
+        convertLog();
+        convertLog_AutoPaymentFailed();
+        userLogonQuestion();
+        onlineVipUserCount();
+        if (updatePlatformDownload_token) GetPlatformDownloadIncorrectCount();
+
+        var i1 = setInterval(userQuestion, 10000);
+        var i2 = setInterval(convertLog, 10000);
+        var i3 = setInterval(userLogonQuestion, 10000);
+        var i4 = setInterval(onlineVipUserCount, 10000);
+        var i5 = setInterval(convertLog_AutoPaymentFailed, 10000);
+        var i6 = null
+
+        if (updatePlatformDownload_token) i6 = setInterval(GetPlatformDownloadIncorrectCount, 10000);
+    });
+</script>
+
+<li id="playerLogonQuestion" style="display:none;">
+    <a href="/UserQuestionLog/GetLogonQuestionPageList?status=0" class="btn red" style="padding: 10px; margin-top: 7px; margin-right: 10px;">
+        <span></span>
+    </a>
+</li>
+<li id="playerQuestion" style="display:none;">
+    <a href="/UserQuestionLog/Chat" class="btn red" style="padding: 10px; margin-top: 7px; margin-right: 10px;">
+        <span></span>
+    </a>
+</li>
+<li id="playerWaitAuditingConvert" style="display:none;">
+    <a href="/Money/ConvertLog?status=@(game.Entity.Money.ConvertLogStatus.Exchange)" class="btn red" style="padding: 10px; margin-top: 7px; margin-right: 10px;">
+        <span></span>
+    </a>
+</li>
+
+<li id="AutoPaymentFailed" style="display:none;">
+    <a href="/Money/ConvertLog?status=@(game.Entity.Money.ConvertLogStatus.AutoPaymentFailed)" class="btn red" style="padding: 10px; margin-top: 7px; margin-right: 10px;">
+        <span></span>
+    </a>
+</li>
+
+<li id="vipUserCount" style="display:none;">
+    <a href="/userinfo/online?column=2&sortDes=desc" class="btn red" style="padding: 10px; margin-top: 7px; margin-right: 10px;">
+        <span></span>
+    </a>
+</li>
+
+<li id="downloadIncorrectCount" style="display:none;">
+    <a href="/Info/DownloadList" class="btn red" style="padding: 10px; margin-top: 7px; margin-right: 10px;">
+        <span></span>
+    </a>
+</li>

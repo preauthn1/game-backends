@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "/cliapisvc";
+
+package cliapisvc;
+
+import "common.proto";
+
+service TFService {
+    rpc QueryConfig (Empty) returns (TFConfig);
+    rpc RefreshConfig (Empty) returns (Empty);
+}
+
+message TFConfig {
+    repeated PortMap PortMaps = 1;
+}
+
+message PortMap {
+    int32 SrcPort = 1;
+    string DistIP = 2;
+    int32 DistPort = 3;
+}

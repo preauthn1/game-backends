@@ -1,0 +1,78 @@
+syntax = "proto2";
+
+package netproto;
+
+import "GameMsg.proto";
+
+//设置消息
+message SG_Setting{
+	required int32 BetBase=1;
+	required int32 ReadyTime=2;
+	repeated int32 BetOdd=3;
+};
+
+//状态消息
+message SG_Sate{
+	required int32 State=1;
+	required int32 Time=2;
+};
+
+//用户座位号消息，用于只发一个座位号的情况。发送庄家使用
+message SG_SeatNO{
+	required int32 SeatNO=1;
+};
+
+message SG_Scene{
+	required int32 State=1;
+	required int32 Time=2;
+	required bool CanOpt=3;
+	required int32 ZhuangSeatNo=4;
+	repeated SG_UserSceneInfo UserArr=5;
+	required int32 TotalBet=6;
+	optional SG_GameResult GameRet=7;
+};
+
+message SG_UserSceneInfo{
+	required int32 SeatNO = 1;
+	required int32 QiangZhuang=2;
+	required int32 BetOdd=3;
+};
+
+//广播用户下注
+message SG_BroadCastBet{
+	required int32 SeatNO=1;
+	required int32 Bet=2;
+	required int32 TotalBet=3;//总下注额
+};
+
+//用户抢庄
+message SG_QiangZhuang{
+	required bool QiangZhuang=1;
+};
+
+//抢庄广播
+message SG_BroadCastQiangZhuang{
+	required int32 SeatNO=1;
+	required bool QiangZhuang=2;
+};
+
+//用户下注
+message SG_Bet{
+	required int32 Bet=1;
+};
+
+//游戏结果
+message SG_GameResult{
+	required int32 BankerSeatNO=1;
+	repeated SG_UserInfo UserArr=2;
+	required int32 TongChi=3; //0，庄家有赢有输，1，庄家通吃，2庄家通赔
+};
+
+//用户信息
+message SG_UserInfo{
+	required int32 SeatNO=1;
+	required int32 PokerType=2;
+	required int64 Money=3;
+	required int32 Odd=4;
+	repeated PokerCard userpokergroup=5;
+};

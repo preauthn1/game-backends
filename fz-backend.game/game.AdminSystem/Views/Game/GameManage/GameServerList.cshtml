@@ -1,0 +1,122 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+
+@model List<game.Entity.Game.GameServer>
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+}
+<div class="row" id="serverList">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                <div class="form-group">
+                    <label>游戏</label>
+                    @Html.DropDownList("gameID", DataService.Game(), new { @class = "form-control input-small", id = "gameID", v_model= "selectedGameID" })
+                </div>
+                <div class="form-group">
+                    <label>服务器名</label>
+                    <select class="form-control input-medium" v-model="selectedServerId" name="serverID">
+                        <option value="">全部</option>
+                        <option v-for="item in filterServerList" :value="item.Id">{{item.ServerName}}</option>
+                    </select>
+                    @*<input type="text" class="form-control input-small" id="serverID" name="serverID" placeholder="服务器名" />*@
+                </div>
+                <div class="form-group">
+                    <label>客户端连接地址</label>
+                    <input type="text" class="form-control input-small" id="ClientAddr" name="ClientAddr" placeholder="IP地址" />
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default"> 搜 索 </button>
+                </div>
+            </form>
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover progressTable">
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>游戏名称</th>
+                            <th>服务器名</th>
+                            <th>显示名称</th>
+                            <th>客户端连接地址</th>
+                            <th>通知地址</th>
+                            <th>http地址</th>
+                            <th>入场金币</th>
+                            <th>最后更新时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.Game.GameName</td>
+                                    <td>@item.ServerName</td>
+                                    <td>@item.ShowName</td>
+                                    <td>@item.ClientAddr</td>
+                                    <td>@item.NotifyAddr</td>
+                                    <td>@item.HttpAddr</td>
+                                    <td>@item.Money.ToCash()</td>
+                                    <td>@item.LastUpdateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                                    <td>
+                                        @Html.LinkWithRight(action: "EditGameServer", value: "编辑", href: "EditGameServer?id=" + item.Id)
+                                        @Html.LinkWithRight(action: "Del", value: "删除", onclick: "swDelConfirmUrl('Del?id=" + item.Id + "')", href: "#")
+                                        @Html.LinkWithRightHref(href: "/RobotServerConfig/List?gameID=" + item.GameID + "&serverID=" + item.Id, value: "机器人配置")
+                                        @if (ConfigData.OperateServerGameIDs.Contains(item.GameID))
+                                        {
+                                            @Html.Link(href: string.Format(ConfigData.DicOperateServerGameIDs[item.GameID], item.Id), value: "管理桌子", cssName: "btn btn-sm dark")
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+            fillFormData('form_search');
+
+            var vApp = new Vue({
+                el: '#serverList',
+                data: {
+                    selectedGameID: '',
+                    selectedServerId: '',
+                    serverList: {},
+                    filterServerList: {}
+                },
+                methods: {
+                    getServerList: function () {
+                        $.get('/GameManage/GameSelectServerList', {}, function (data) {
+                            if (data instanceof Array) {
+                                vApp.serverList = data;
+                            }
+                            else {
+                                vApp.serverList = {};
+                            }
+                        });
+                    }
+                }
+            });
+
+            $("#gameID").change(function () {
+
+                vApp.filterServerList = vApp.serverList.filter(function (item, index, array) {
+                    return item.GameID == parseInt(vApp.selectedGameID);
+                });
+                vApp.selectedServerId = ''
+            });
+
+            vApp.getServerList();
+        })
+    </script>
+}

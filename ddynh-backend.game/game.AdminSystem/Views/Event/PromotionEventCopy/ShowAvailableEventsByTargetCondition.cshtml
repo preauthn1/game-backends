@@ -1,0 +1,64 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@using game.Entity.Event
+@using game.Entity.Money
+@using game.Entity;
+
+@{ 
+    var events = (List<PromotionEventFullInfoViewModel>)ViewBag.Events;
+}
+
+<div>
+
+    @if (events == null || events.Count() == 0)
+    {
+        <div style="color:#999">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            此渠道无任何启用的活动
+        </div>
+    }
+    else
+    {
+        <div class="checkbox-row">
+            <input type="checkbox" id="select_all_step2" />
+            <label for="select_all_step2"> 全选 </label>
+        </div>
+    }
+
+
+
+    @foreach (var item in events)
+    {
+        string elementID = string.Format("eventID_{0}", item.EventId);
+
+        <div class="checkbox-row">
+            <input type="checkbox" id="@elementID" class="eventID" name="eventID" attr-eventId="@item.EventId" />
+
+            <label for="@elementID" title="@(item.EventStartTime.ToString("yyyy-MM-dd") + " 至 " + item.EventEndTime.ToString("yyyy-MM-dd"))">
+                @item.Title
+            </label>
+
+            <span>
+
+            </span>
+
+        </div>
+    }
+
+</div>
+
+
+<script>
+
+    $(function () {
+        
+        $("#select_all_step2").click(function () {
+
+            $('input.eventID').not(this).prop('checked', this.checked);
+
+        })
+        
+    })
+
+</script>

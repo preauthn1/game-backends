@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package netproto;
+
+// 花色 (16進位)
+enum Poker_Suit {
+    Poker_Suit_UNSPECIFIED = 0;
+
+    // 黑桃
+    Poker_Suit_Spades = 16;
+    // 紅心
+    Poker_Suit_Hearts = 32;
+    // 方塊
+    Poker_Suit_Diamonds = 48;
+    // 梅花
+    Poker_Suit_Clubs = 64;
+    // 鬼牌
+    Poker_Suit_Jokers = 80;
+}
+
+// 點數
+enum Poker_Rank {
+    Poker_Rank_UNSPECIFIED = 0;
+    
+    Poker_Rank_Ace = 1;
+	Poker_Rank_Two = 2;
+	Poker_Rank_Three = 3;
+	Poker_Rank_Four = 4;
+	Poker_Rank_Five = 5;
+	Poker_Rank_Six = 6;
+	Poker_Rank_Seven = 7;
+	Poker_Rank_Eight = 8;
+	Poker_Rank_Nine = 9;
+	Poker_Rank_Ten = 10;
+	Poker_Rank_Jack = 11;
+	Poker_Rank_Queen = 12;
+	Poker_Rank_King = 13;
+}
+
+// 手牌
+message Poker_Hand {
+    // 好多卡牌組合
+    repeated Poker_Deck Decks = 1;
+}
+
+// 牌堆
+message Poker_Deck {
+    repeated Poker_Card Cards = 1;
+}
+
+// 卡牌
+message Poker_Card {
+    Poker_Suit Suit = 1;
+    Poker_Rank Rank = 2;
+}

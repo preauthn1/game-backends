@@ -1,0 +1,141 @@
+syntax = "proto2";
+
+package netproto;
+
+// 操作返回代碼
+enum SML_ResultCode {
+    SML_ResultCodeSuccess = 0;               // 成功
+
+    SML_ResultCodeMoneyNotEnough = 100;      // 用戶金額不足
+    SML_ResultCodeIllegalBetType = 101;      // 非法的下注區域
+    SML_ResultCodeIllegalBetMoney = 102;     // 非法的下注金額
+    SML_ResultCodeBetTypeOverLimit = 104;    // 此類下注已達上限
+    SML_ResultCodeAlreadyBetOtherSide = 105; // 不能對壓
+    SML_ResultCodeCarryMoneyNotEnough = 106; // 攜帶金額低於限制
+    SML_ResultCodeNotBetStep = 107;          // 非下注狀態
+
+    SML_ResultCodeInvalidArgument = 9400;    // 參數錯誤
+    SML_ResultCodeInternalError = 9500;      // 內部錯誤
+}
+
+// 下注類型
+enum SML_BetType {
+    SML_BetTypeNone = 0;
+
+    SML_BetTypeGoal = 16;                    // 進球
+    SML_BetTypeGoalLeft = 17;                // 進球-左
+    SML_BetTypeGoalMiddle = 18;              // 進球-中
+    SML_BetTypeGoalRight = 19;               // 進球-右
+
+    SML_BetTypeSave = 32;                    // 守住
+    SML_BetTypeSaveLeft = 33;                // 守住-左
+    SML_BetTypeSaveMiddle = 34;              // 守住-中
+    SML_BetTypeSaveRight = 35;               // 守住-右
+}
+
+// 遊戲階段
+enum SML_Step {
+    SML_StepPrepare = 0;                     // 準備中
+    SML_StepStart = 1;                       // 遊戲開始表演動畫
+    SML_StepWaitBet = 2;                     // 等待下注
+    SML_StepShowAward = 3;                   // 開獎動畫
+    SML_StepFinish = 4;                      // 遊戲結束狀態
+}
+
+// 下注區域
+message SML_BetArea {
+    optional SML_BetType Type = 1;           // 下注類型
+    optional int64 MinBet = 2;               // 最小下注金額
+    optional int64 MaxBet = 3;               // 最大下注金額
+    optional double Odd = 4;                 // 賠率
+}
+
+// 下注資訊
+message SML_Bet {
+    optional SML_BetType Type = 1;           // 下注類型
+    optional int64 Money = 2;                // 下注金額
+}
+
+// 玩家資訊
+message SML_UserInfo {
+    optional int32 UserID = 1;               // 玩家ID
+    optional string UserName = 2;            // 玩家名稱
+    optional int32 FaceID = 3;               // 頭像ID
+    optional int32 AvatarFrameID = 4;        // VIP頭框像ID
+    optional int64 Money = 5;                // 身上的錢
+    optional int32 Ranking = 10;             // 排名
+    optional int64 Win = 20;                 // 贏的錢
+}
+
+// 設置 10001:10001
+message SML_Setting {
+    optional int64 BetMinCarry = 1;          // 下注攜帶金額限制
+    repeated int64 BetCount = 2;             // 下注籌碼面額
+    repeated SML_BetArea BetAreas = 3;       // 下注區域
+    optional int64 UserMaxBet = 4;           // 單一玩家最大下注金額
+}
+
+// 狀態消息 10001:10002
+message SML_StepInfo {
+    optional SML_Step Step = 1;              // 狀態
+    optional int32 Time = 2;                 // 此狀態的剩餘時間
+}
+
+// 局數資訊 10001:10003
+message SML_RoundInfo {
+    optional int32 RoundID = 4;              // 局數
+    optional int32 Goal = 1;                 // 進球 局數
+    optional int32 Save = 2;                 // 守住 局數
+}
+
+// 下注消息 10001:10004
+message SML_BoardCastBet {
+    optional int32 UserID = 1;               // 玩家ID
+    repeated SML_Bet Bets = 2;               // 該玩家累積下注
+}
+
+// 開獎結果 10001:10005
+message SML_GameResult {
+    optional int32 RoundID = 1;              // 第幾回合
+    optional SML_BetType Result = 2;         // 開出的獎項
+}
+
+// 遊戲結果輸贏 10001:10006
+message SML_GameResultWin {
+    optional int64 Win = 1;                  // 自己贏錢
+    repeated SML_UserInfo WinUserInfo = 2;   // 贏錢玩家
+    repeated SML_UserInfo StageUserInfo = 3; // 標記玩家
+}
+
+// 歷史開獎結果 10001:10007
+message SML_GameRecords {
+    repeated SML_GameResult Results = 1;     // 歷史獎項，保留筆數在設定檔
+}
+
+// 富豪榜列表 10001:10008
+message SML_RichestList {
+    repeated SML_UserInfo Users = 1;         // 富豪榜玩家
+}
+
+// 幸運星列表 10001:10009
+message SML_LuckyStarList {
+    repeated SML_UserInfo Users = 1;         // 幸運星玩家
+}
+
+// 下注請求 10001:10010 or 10001:10011
+message SML_BetRequest {
+    optional SML_Bet Bet = 1;                // 下注資訊
+}
+
+// 下注請求 10001:10020 or 10001:10021
+message SML_BetResponse {
+    optional SML_ResultCode Code = 1;        // 回覆代碼
+    optional int64 Money = 2;                // 用戶的錢，下注以後的金額。
+    repeated SML_Bet Bets = 3;               // 用戶下注數據
+}
+
+// 當前下注區域金額 10001:10100
+message SML_BetAreaInfo {
+    repeated SML_Bet Bets = 1;               // 下注資訊
+    repeated SML_BoardCastBet UserBets = 2;  // 玩家下注資訊
+}

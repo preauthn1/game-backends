@@ -1,0 +1,125 @@
+syntax = "proto2";
+
+package netproto;
+
+import "GameMsg.proto";
+
+message ZJH_WaitOpt{
+	required bool check=1;
+	required bool drop=2;
+	required bool compare=3;
+	required bool fill=4;
+	required bool betadd=5;
+	required bool first=6;
+	required int32 optTime=7;
+	repeated int32 betaddvalue=8; 
+	required bool allin=9;
+};
+
+message ZJH_WaitOptSeat{
+	required int32 seatno=1;
+	required int32 optTime=2;
+};
+
+message ZJH_BetBase{
+	required int32 betbase=1;
+	required int32 betcount=2;
+};
+
+message ZJH_FaiPai{
+	required int32 seatno=1;
+	required bool bfirst=2;
+	repeated int32 BetArr=3;
+};
+
+message ZJH_SeatNO{
+	required int32 seatno=1;
+};
+
+message ZJH_CompareCardsRet{
+	required int32 winseatno=1;
+	required int32 faildseatno=2;
+	required int32 compareMoney=3;
+	required int32 odd=4;
+};
+
+message ZJH_BetAdd{
+	required int32 betadd=1;
+};
+
+message ZJH_BetAddBrodCast{
+	required int32 seatno=1;
+	required int32 betadd=2;
+	required int32 odd=3;
+	required bool isfirst=4;
+};
+
+//服务端消息：广播Allin消息
+message ZJH_AllinBrodCast{
+	required int32 seatno=1;
+	required int32 betadd=2;
+	required int32 odd=3;
+};
+
+message ZJH_Follow{
+	required int32 seatno=1;
+	required int32 follow=2;
+	required int32 odd=3;
+};
+
+message ZJH_GameRet{
+	required int32 winSeatNO=1;
+	required int64 money=2;
+};
+
+message ZJH_ComparePoker{
+	repeated ZJH_Poker OtherPoker=3;
+};
+
+message ZJH_Poker{
+	required int32 PokerType=1;
+	required UserPoker userpokergroup=2;
+};
+
+//用户断线重连数据结构
+message ZJH_UserInfoArr{
+	required int32 CurrOptSeatno=1;
+	required int32 OptTime=2;
+	required int32 OptTimeTotal=3;
+	required int32 ZhuangSeatNO=4;
+	required int64 BetTotal=5;
+	required bool FollowEnd=6;
+	repeated int32 BetArr=7;
+	repeated ZJH_UserInfo UserInfo=8;
+	required bool Allin=9;
+	required int32 Currturn=10;	//第幾輪
+};
+
+message ZJH_UserInfo{
+	required int32 seatno=1;
+	required bool check=2;
+	required bool drop=3;
+	required bool comparefailed=4;
+	required int64 BetMoney=5;
+	
+};
+//准备时间
+message ZJH_ReadyTime{
+	required int32 ReadyTime=1;
+};
+
+message ZJH_FollowEnd{
+	required bool FollowEnd=1;
+};
+
+message ZJH_Allin{
+	required bool Allin=1;
+};
+
+message ZJH_Currturn{
+	required int32 Currturn=10;	//第幾輪
+};
+
+message ZJH_UserDrop{
+	required int32 UserId=1;	//哪個玩家
+};

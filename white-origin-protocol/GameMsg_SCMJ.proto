@@ -1,0 +1,207 @@
+//==================================================================
+//文件名： GameMsg_SCMJ.proto
+//作者：   
+//日期：   
+//说明：   麻将游戏客户服务器通信协议
+//修改记录：
+//==================================================================
+syntax = "proto2";
+
+package netproto;
+
+//import "GameMsg.proto";
+
+//-----------------战斗----------------------
+//骰子
+message SCMJ_BroadcastDice{
+    repeated int32 Dice=1;              //两个骰子
+}
+
+//摸牌,发牌
+message SCMJ_BroadcastDeal{
+    required int32 SeatNo=1;                //座位号
+    required int32 Number=2;                //数量
+    repeated int32 Cards=3;                 //牌,
+    required int32 SurplusNum=4;            //牌池剩余牌张数
+}
+
+//操作类型,1定缺、2出牌、3碰、4杠(40明杠，41引杠，42暗杠)、7胡（70点炮胡，71抢杠胡，72自模胡，73杠上花，74杠上炮），8吃,9Pass,10选倍率
+//操作，定缺（OpValue）、出牌（OpCards）、碰(OpCards)、杠（OpCards）、胡（OpCards）、
+message SCMJ_Action{
+    required int32 OpType=1;                //操作类型,1定缺、2出牌、3碰、4杠等
+    repeated int32 OpValue=3;               //值,
+}
+
+
+//定缺操作返回
+message SCMJ_BroadcastAction{
+    required int32 SeatNo=1;                //座位号
+    required int32 OpType=2;                //操作类型
+    repeated int32 OpValue=4;               //值
+}
+message SCMJ_BroadcastChooseResult{
+    repeated SCMJ_ChooseInfo Info=1;          //定缺信息
+
+}
+message SCMJ_ChooseInfo{
+    required int32 SeatNo=1;                //座位号
+    required int32 Type=2;                  //类型 //万:0x03 条:0x02 筒:0x01
+}
+
+
+//等待[当前操作玩家]
+message SCMJ_Wait{
+    required int32 SeatNo=1;                    //当前操作座位号
+    required int32 OutTime=2;                   //超时时间
+    required int32 SurplusNum=4;                //牌池剩余牌张数
+    required int32 GameState=5;                 //游戏阶段
+}
+
+//玩家可操作信息，摸牌或一个玩家操作时候发
+message SCMJ_OpEventInfo{
+    repeated int32 GangValue=1;     //可操作值，杠牌
+    required int32 OtherValue=2;    //可操作值，除杠牌以外其他操作
+    required bool  Chi=4;           //是否吃            
+    required bool  Peng=5;          //是否碰
+    required bool  Gang=6;          //是否杠
+    required bool  Hu=7;            //是否胡
+    required int32  Time=8;          //可操作時間
+}
+
+/*
+//玩家可操作信息
+message S2C_SCMJ_OpEventInfos{
+    repeated SCMJ_OpInfo Info=1;
+}
+message SCMJ_OpInfo{
+    required int32 Type=1;//吃、碰、杠、胡......等
+    repeated int32 Value=2;
+}
+*/
+
+//用户操作
+message SCMJ_BroadCastUserOper
+{
+    required int32 SeatNo=1;                //吃碰杠玩家位置
+    required int32 BeSeatNo=2;              //被吃碰杠玩家位置
+    required int32 BeCard=6;              //被吃碰杠玩家牌
+    required int32 OperType=3;              //操作的类型
+    repeated int32 Cards=4;                 //牌,
+    required int32 HuType=5;                //胡牌类型
+}
+
+//亮牌
+message S2C_SCMJ_Light{
+    repeated SCMJ_HandCards Data=1;                      //所有玩家手牌
+}
+message SCMJ_HandCards{
+    required int32 SeatNo=1;                    //座位号
+    repeated int32 Cards=2;                     //牌,
+}
+
+//客户端请求提示信息
+message C2S_SCMJ_Remind{
+    required int32 OutCard=1;                   //出牌牌值
+}
+message S2C_SCMJ_RemindMsg{
+    repeated SCMJ_RemindData Data=1;            //提示信息
+}
+message SCMJ_RemindData{
+    required int32 OutCard=1;                   //出牌牌值
+    repeated SCMJ_RemindInfo Info=2;
+}
+message SCMJ_RemindInfo{
+    required int32 TingCard=1;                  //玩家可听牌牌值
+    required int32 Number=2;                    //当前场上剩余张数
+    required int32 Rate=3;                      //听牌倍率
+}
+
+// 托管
+message C2S_SCMJ_TuoGuan{
+    required bool State=1;                      //状态
+}
+message S2C_SCMJ_TuoGuan{
+    required int32 SeatNo=1;                    //座位号
+    required bool State=2;                      //状态
+}
+//---------------------结算------------------------
+
+//刮风
+//下雨
+//查花猪
+//查大叫
+message SCMJ_InTimeSettle{
+    repeated SCMJ_SettleInfo Info=1;            //及时结算信息
+}
+//结算类型Type: 1刮风;2下雨;3查花猪;4查大叫;5胡,6自摸胡,点炮胡7,抢杠胡8;9退杠,呼叫转移10
+message SCMJ_SettleInfo{
+    required int32 SeatNo=1;                    //座位号
+    required int32 Type=2;                       //结算类型 1刮风，2下雨，3查花猪，4查大叫,5胡
+    required int32 Rate=3;                      //倍率
+    required int64 Score=4;                     //得分
+}
+
+//大结算
+message SCMJ_TotalSettleMent{
+    required int32 RateMax=1;                       //最大倍率
+    repeated SCMJ_SettleTotal Total=2;              //总计
+}
+message SCMJ_SettleTotal{
+    required int32 SeatNo=1;                             //座位号
+    required int64 TotalScore=2;                         //得分
+    repeated SCMJ_SettleMyInfo Info=3;                   //个人详单
+}
+
+//胡牌牌型HuType: 1屁胡;2大对子;3金勾吊;4七对子;5龙七对;6清一色;7带幺九;8天胡;9地胡
+//结算类型Type: 1刮风;2下雨;3查花猪;4查大叫;5胡,6自摸胡,点炮胡7,抢杠胡8;9退杠
+message SCMJ_SettleMyInfo{
+    required int32 Type=1;                          //结算类型 
+    required int32 Rate=2;                          //倍率
+    repeated int32 HuType=3;                        //得分牌型或胡牌牌型
+    required int64 MyScore=4;                       //得分
+    repeated int32 FromSeatNo=5;                    //来源座位号
+    required int32 AddRate=6;                       //加倍
+}
+
+//---------------断连、游戏设置----------------------------------
+message SCMJ_GameScence{
+    required int32 ButtonSeatNo=1;                      //庄家座位号
+    required int32 GameState=2;                         //游戏阶段
+    required int32 SurplusNum=3;                        //牌池剩余牌张数
+    required int32 SurplusTime=4;                       //剩余时间
+    required int32 CurSeatNo=5;                         //当前操作玩家座位号
+    required SCMJ_OpEventInfo CanOp=6;                  //玩家可操作信息
+    repeated SCMJ_UserInfo UserInfo=7;                  //玩家数据
+    repeated SCMJ_SettleMyInfo InTimeSettle=8;          //即时结算
+    required S2C_SCMJ_RemindMsg Remind=9;               //提示
+}
+message SCMJ_UserInfo{
+    required int32 SeatNo=1;             //座位号
+    repeated int32 HandCard=2;           //手牌
+    repeated int32 RiverCard=3;          //河牌
+    required int32 HandCount=4;          //手牌数量
+    required int32 DingQue=5;            //定缺类型:万:0x03 条:0x02 筒:0x01
+    required bool UserState=6;           //玩家状态，true已胡牌，false未胡牌
+    required bool TuoGuan=7;             //是否托管
+    required bool HuaZhu=8;              //是否花猪
+    required bool Dajiao=9;              //是否大叫
+    repeated SCMJ_OpGroup OpCard=10;     //吃碰杠胡牌
+    required int32 Rate=11;              //倍率
+}
+message SCMJ_OpGroup{
+    repeated int32 Card=1;                      //牌
+    required int32 Type=2;                      //类型 3碰;4杠,40明杠(补杠),41引杠(明杠),42暗杠(暗杠),7胡,8吃,
+    required int32 SeatNo=3;                    //座位号
+}
+//服务端消息：游戏设置
+message Mj_GameSetting{
+    required int32 ReadyTime=1;             //准备时间
+    required int64 BaseScore=2;             //底分
+}
+//--------------------------------------------------------
+
+//异常
+message SCMJ_Error{
+    required int32 errorId=1;                 //错误id
+    required string errorInfo=2;              //错误信息
+}

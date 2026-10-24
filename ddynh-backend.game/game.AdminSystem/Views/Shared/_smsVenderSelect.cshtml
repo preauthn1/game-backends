@@ -1,0 +1,30 @@
+﻿@model bool
+<div class="form-group">
+    <label class="control-label col-md-4">发送厂商</label>
+    @if (Model)
+    {
+        <div class="col-md-8">
+            <select class="form-control input-small" id="smsVenderId" name="smsVenderId">
+                <option value="1">SubMail</option>
+                <option value="2">UCPass</option>
+                <option value="3">HaoService</option>
+                <option value="4">Nuage</option>
+                <option value="5">OneCode</option>
+                <option value="6">SMSGo</option>
+                <option value="7">EzLink</option>
+            </select>
+        </div>
+    }
+    else
+    {
+<select class="form-control input-small" id="smsVenderId" name="smsVenderId">
+    <option value="1">SubMail</option>
+    <option value="2">UCPass</option>
+    <option value="3">HaoService</option>
+    <option value="4">Nuage</option>
+    <option value="5">OneCode</option>
+    <option value="6">SMSGo</option>
+    <option value="7">EzLink</option>
+</select>
+    }
+</div>

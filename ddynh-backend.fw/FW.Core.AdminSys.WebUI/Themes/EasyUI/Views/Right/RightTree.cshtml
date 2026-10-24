@@ -1,0 +1,36 @@
+﻿@using KCKJ.Core.AdminSys.WebUI
+@model Tuple<List<KCKJ.Core.AdminSys.Provider.Entity.Right>, List<int>>
+@{
+    List<int> checkedRights = Model.Item2;
+    this.Layout = null;
+}
+<table style="width:900px">
+    <thead>
+        <tr>
+            <th data-options="field:'ck'"></th>
+            <th data-options="field:'RightName',width:200">名称</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var right in Model.Item1.Where(r => r.ParentID == 0 || r.ParentID == r.RightID).OrderByDescending(r => r.Sort).ToList())
+        {
+            string checkedSign = "";
+
+            if (checkedRights.Contains(right.RightID))
+            {
+                checkedSign = "checked=checked";
+            }
+            
+            <tr>
+                <td><input type="checkbox" name="ck" value="@right.RightID" @checkedSign /></td>
+                <td>@right.RightName</td>
+            </tr>
+            
+            var childModel = new Tuple<List<KCKJ.Core.AdminSys.Provider.Entity.Right>, int, string, List<int>>(Model.Item1, right.RightID, "---- ----", Model.Item2);
+            
+            Html.RenderPartial("KCKJ.Core.AdminSys.WebUI.Themes.EasyUI.Views.Right.RightTreeView", childModel);
+        }
+    </tbody>
+
+</table> 

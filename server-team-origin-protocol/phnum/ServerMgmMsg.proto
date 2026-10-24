@@ -1,0 +1,32 @@
+syntax = "proto2";
+
+package phnum;
+
+//服务器定时向DBServer注册信息
+message PhnumServerRegInfo {
+  required int32 ServerID = 1;   // 服务器ID
+  required int32 ServerType = 2; // 服务器类型
+  optional int32 LianyunID = 3;
+};
+
+//游戏服务器向大厅注册信息
+message PhnumGameServerRegInfo {
+  required int32 GameID = 1;
+  required string GameName = 2;
+  required int32 ServerID = 3;
+  required string ServerName = 4;
+  required string Flag = 5;
+  required int32 UserCount = 6;
+  required string IPAddress = 7;
+  required int32 Port = 8;
+  required int32 LoginMoney = 9;
+  required int32 BaseScore = 10;
+  required int32 RobotCount = 11;
+  optional string AndroidVersion = 12;
+  optional string IOSVersion = 13;
+  optional int32 NoSelRoom = 14;
+  optional int32 ServerStatus = 15;
+  optional int32 LianyunFlag = 16;
+  optional string RoomDesc = 17;
+  optional int32 LianyunID = 18;
+};

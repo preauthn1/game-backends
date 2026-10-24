@@ -1,0 +1,196 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+@using FW.Core.Helper;
+@{
+    //var nearbyQuestionList = ViewBag.NearbyQuestionList as List<game.Entity.Users.QuestionLog>;
+    var replyTypeList = DataService.GetReplyType();
+    var replyContentList = DataService.GetReplyContent();
+}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>用户问题回复
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="addRoleFrm" method="post" class="form-horizontal form-bordered">
+                    <div class="form-body">
+                        <input type="hidden" name="qid" value="@ViewBag.qid" />
+                        <div class="form-group">
+                            <label class="control-label col-md-3">用户ID</label>
+                            <div class="col-md-5">
+                                <span>
+                                    @if (ViewBag.Id != 0)
+                                    {
+                                        <a target="_blank" href="/UserInfo/Search?userId=@(ViewBag.Id)&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">@ViewBag.Id</a>
+                                    }
+                                    else
+                                    {
+                                        @ViewBag.Id
+                                    }
+                                </span>
+                                <input type="hidden" name="userid" value="@ViewBag.Id" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">用户账号</label>
+                            <div class="col-md-5">
+                                <span>@ViewBag.Name</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">最近记录</label>
+                            <div class="col-md-5">
+
+                                @string.Format("“{0}”在{1}回复：{2}", ViewBag.HandlePerson, ViewBag.HandleTime.ToString("yyyy-MM-dd HH:mm:ss"), ViewBag.ReplyContent)
+                                @*@foreach (var item in nearbyQuestionList.OrderBy(m => m.Id))
+                                    {
+                                        <p>@item.Question<br />@(item.Status == game.Entity.Users.QuestionStatus.Handled ? string.Format("“{0}”在{1}回复：{2}", item.HandlePerson, item.HandleTime.ToString("yyyy-MM-dd HH:mm:ss"), item.ReplyContent) : "（未处理）")</p>
+                                    }*@
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 xing">标题</label>
+                            <div class="col-md-5">
+                                @if (ViewBag.Title.Length > 16)
+                                {
+                                    <input type="text" class="input-xlarge" name="title" value="关于您提交的问题'@(ViewBag.Title.Substring(0,16))' 的回复" />
+                                }
+                                else
+                                {
+                                    <input type="text" class="input-xlarge" name="title" value="关于您提交的问题'@(ViewBag.Title)'的回复" />
+                                }
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 xing">玩家提交内容</label>
+                            <div class="col-md-5">
+                                <span>@ViewBag.Title</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 xing">回复内容</label>
+                            <div class="col-md-5">
+                                <textarea style="height:200px;width:500px" name="msg" id="txtReplyContent"></textarea>
+                                <button type="button" id="btnFastReply" class="btn blue" data-toggle="modal" data-target="#myModal">快速回复</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @Html.OkWithRight()
+                            @Html.Back("/UserQuestionLog/GetLogonQuestionPageList" + (Session["GetLogonQuestionPageList_params"] == null ? "" : Session["GetLogonQuestionPageList_params"].ToString()))
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">选择回复内容</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-inline" id="form_search" method="get">
+                    <div class="form-group">
+                        <label>快速回复类型</label>
+                        <select id="replyType" class="form-control input-small">
+                            <option value="">请选择</option>
+                            @foreach (var item in replyTypeList)
+                            {
+                                <option value="@item.Id">@item.TypeName</option>
+                            }
+                        </select>
+                    </div>
+                </form>
+                <!--列表-->
+                <div class="table-scrollable">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>标题</th>
+                                <th>内容</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in replyContentList)
+                            {
+                                <tr data-typeid="@item.ReplyTypeID" data-contentid="@item.Id" style="display:none;">
+                                    <td><label><input type="radio" value="@item.Id" name="id" /></label></td>
+                                    <td>@item.Title</td>
+                                    <td>@item.Content</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="btnConfirm">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts
+{
+    <script>
+        $(function () {
+            $("#addRoleFrm").validate({
+                rules: {
+                    title: {
+                        required: true,
+                        maxlength: 60
+                    },
+                    msg: {
+                        required: true,
+                        maxlength: 500
+                    }
+                },
+                messages: {
+                    title: {
+                        required: "回复标题不能为空",
+                        maxlength: "回复标题不能超过60个字符"
+                    },
+                    msg: {
+                        required: "回复内容不能为空",
+                        maxlength: "回复内容不能超过500个字符"
+                    }
+                }
+            });
+
+            $('#replyType').change(function () {
+                $('[data-typeid]').hide();
+                $('[data-typeid="' + $(this).val() + '"]').show();
+            });
+
+            $('#btnConfirm').click(function () {
+                var selectId = $('[data-contentid] :radio:checked').val();
+                if (selectId) {
+                    $('#txtReplyContent').html($('[data-contentid="' + selectId + '"] td:eq(2)').html());
+                }
+                $('#myModal').modal('hide');
+            });
+        })
+    </script>
+}

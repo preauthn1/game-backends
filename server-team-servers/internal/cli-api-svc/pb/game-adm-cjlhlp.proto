@@ -1,0 +1,121 @@
+syntax = "proto3";
+
+option go_package = "/cliapisvc";
+
+package cliapisvc;
+
+import "common.proto";
+
+service GameAdminCJLHLP {
+    rpc TableDashboard (CJLHLPQueryTableDashBoard) returns ( CJLHLPTableDashboard);
+    rpc TableDashboardStream (CJLHLPQueryTableDashBoard) returns ( stream CJLHLPTableDashboard);
+    rpc IncreaseSysPool (IncreaseSysPoolRequest) returns (Empty);
+    rpc AssignNextAward (CJLHLPAssignNextAwardRequest) returns (Empty);
+    rpc SetTableDisabled (CJLHLPSetTableDisabledRequest) returns (Empty);
+}
+
+// 操作返回代碼
+enum CJLHLP_ResultCode {
+    CJLHLP_ResultCodeSuccess = 0;               // 成功
+
+    CJLHLP_ResultCodeMoneyNotEnough = 100;      // 用戶金額不足
+    CJLHLP_ResultCodeIllegalBetType = 101;      // 非法的下注區域
+    CJLHLP_ResultCodeIllegalBetMoney = 102;     // 非法的下注金額
+    CJLHLP_ResultCodeBetTypeOverLimit = 104;    // 此類下注已達上限
+    CJLHLP_ResultCodeAlreadyBetOtherSide = 105; // 不能對壓
+    CJLHLP_ResultCodeCarryMoneyNotEnough = 106; // 攜帶金額低於限制
+    CJLHLP_ResultCodeNotBetStep = 107;          // 非下注狀態
+
+    CJLHLP_ResultCodeInvalidArgument = 9400;    // 參數錯誤
+    CJLHLP_ResultCodeInternalError = 9500;      // 內部錯誤
+}
+
+// 下注類型
+enum CJLHLP_BetType {
+    CJLHLP_BetTypeNone = 0;
+    CJLHLP_BetTypeOdd              = 1;             // 單 1:1
+	CJLHLP_BetTypeEven             = 2;             // 雙 1:1
+	CJLHLP_BetTypeRed              = 3;             // 紅  1:1
+	CJLHLP_BetTypeBlack            = 4;             // 黑 1:1
+	CJLHLP_BetTypeSmall            = 5;             // 小 1-18 1:1
+	CJLHLP_BetTypeBig              = 6;             // 大 19-36 1:1
+	CJLHLP_BetTypeFirst12          = 7;             // 1-12 1:2
+	CJLHLP_BetTypeSecond12         = 8;             // 13-24 1:2
+	CJLHLP_BetTypeThird12          = 9;             // 25-36 1:2
+	CJLHLP_BetTypeFirstRow         = 10;            // 1-34 1-4-7-10-13-16-19-22-25-28-31-34 1:2
+	CJLHLP_BetTypeSecondRow        = 11;            // 2-35 2-5-8-11-14-17-20-23-26-29-32-35 1:2
+	CJLHLP_BetTypeThirdRow         = 12;            // 3-36 3-6-9-12-15-18-21-24-27-30-33-36 1:2
+	CJLHLP_BetTypeOneNumber        = 13;            // 單一號碼 1:35
+	CJLHLP_BetTypeTwoNumber        = 14;            // 兩個號碼 1:17
+	CJLHLP_BetTypeThreeNumber      = 15;            // 三個號碼 1:11
+	CJLHLP_BetTypeFourNumber       = 16;            // 四個號碼 1:8
+	CJLHLP_BetTypeSixNumber        = 17;            // 六個號碼 1:5
+	CJLHLP_BetTypeSuperZero        = 18;            // 超級0 1:47
+}
+
+// 遊戲階段
+enum CJLHLP_Step {
+    CJLHLP_StepPrepare = 0;         // 準備中
+    CJLHLP_StepStart = 1;           // 遊戲開始表演動畫
+    CJLHLP_StepWaitBet = 2;         // 等待下注
+    CJLHLP_StepShowAward = 3;       // 開獎動畫
+    CJLHLP_StepFinish = 4;          // 遊戲結束狀態
+}
+
+message CJLHLPPlayerInfo {
+    int32 PID = 1;
+    int64 BetAmount = 2;
+    bool IsRobot = 3;
+}
+
+message CJLHLPBetAreaInfo {
+    int64 Total = 1;                    // 所有下注金額
+    int64 PlayerCount = 2;              // 玩家數量
+    int64 PlayerBetAmount = 3;          // 玩家下注金額
+    int64 RobotCount = 4;               // 機器人數量
+    int64 RobotBetAmount = 5;           // 機器人下注金額
+}
+
+message CJLHLPTableDashboard {
+    int32 TableID = 1;                  // 桌號
+    CJLHLP_Step Step = 2;                  // 遊戲狀態
+    CJLHLP_BetType NextAward = 3;          // 下一場指定開獎
+    int64 SysPool = 4;                  // 系統水池
+    int64 SysPoolWinLine = 5;           // 系統水池贏錢線
+    repeated uint32 History = 6;   // 歷史路單
+    repeated CJLHLPPlayerInfo Players = 7; // 所有玩家
+    bool Cheatable = 8;                 // 現在可否作弊
+    bool Cheating = 9;                  // 是否開啟作弊
+
+    CJLHLPBetAreaInfo BetSummary = 11;           // 下注區域總覽
+
+    int64 TotalBetAmount = 51; // 今日總下注
+    int64 TotalWinLossAmount = 52; // 今日總輸贏
+    int64 TotalValidAmount = 53; // 今日總流水
+
+    int32 SpecialRewardCount = 101;     // 特殊獎勵次數
+    int32 SpecialRewardRate = 102;      // 特殊獎勵機率 百分比
+
+    repeated uint32 NextAwardList = 201; // 下一場指定開獎列表
+    
+    bool TableDisabled = 301; // 是否禁用
+}
+
+message CJLHLPQueryTableDashBoard {
+    int32 TableID = 1; // 桌號
+}
+
+message CJLHLPCheatRequest {
+    int32 TableID = 1; // 桌號
+    int32 KickCnt = 2; // 踢人數
+}
+
+message CJLHLPSetTableDisabledRequest {
+    int32 TableID = 1; // 桌號
+    bool Disabled = 2; // 是否禁用
+}
+
+message CJLHLPAssignNextAwardRequest {
+    int32 TableID = 1; // 桌號
+    uint32 NextAward = 2; // 下一場指定開獎
+}

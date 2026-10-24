@@ -1,0 +1,41 @@
+syntax = "proto2";
+
+package netproto;
+
+// Slot 共用遊戲訊息 2xxxx
+enum Slot_GameMessageClassID {
+    // Server to Client 20xxx
+    Slot_SettingID = 20001;  // 設置相關
+    Slot_StatusID = 20002;   // 遊戲狀態 0: 玩家可下注, 1: 開獎, 2: 開獎動畫, 3: 結算動畫, 4: 等待遊戲開始
+    Slot_BetStatusID = 20003;  // 下注狀態 0: 下注成功, -1: 用戶金額不足, -2: 下注的類型未找到, -3: 莊家不能下注, -4: 此類下注已達到上限, -5: 非下注階段, -6: 用戶金額小於下注限制
+    Slot_GameResultID = 20004;    // 遊戲結果 (轉出內容，中獎項目，中獎金額)
+    Slot_LeftFreeGameID = 20005;  // 剩餘免費遊戲資訊
+
+    // Client to Server 21xxx
+    Slot_ActionSpinID = 21001;  // 玩家Spin
+
+    // 會一來一回的資訊 22xxx
+    Slot_LoadHistoryID = 22001;     // 玩家查詢記錄
+    Slot_LoadHistoryRetID = 22002;  // 回傳玩家查詢記錄
+    Slot_JackpotPoolID = 22003;     // 查詢獎池資訊
+    Slot_JackpotPoolRetID = 22004;  // 回傳獎池資訊
+    Slot_BonusGameID = 22005;       // 查詢BonusGame資訊
+    Slot_BonusGameRetID = 22006;    // 回傳查詢BonusGame資訊
+
+    // DB Handler {ID}xxxx
+    Slot_SelectGameReadID = 10000001;     // 查詢選擇遊戲機會
+    Slot_SelectGameReadRetID = 10000002;  // 回傳選擇遊戲機會
+    Slot_SelectGameRecordID = 10000003;   // 更新選擇遊戲機會
+
+    Slot_FreeGameReadID = 10000011;     // 查詢免費遊戲
+    Slot_FreeGameReadRetID = 10000012;  // 回傳免費遊戲
+    Slot_FreeGameRecordID = 10000013;   // 更新免費遊戲
+
+    Slot_JackpotNoLinkReadID = 10000021;     // 查詢非連線獎池資訊
+    Slot_JackpotNoLinkReadRetID = 10000022;  // 回傳非連線獎池資訊
+    Slot_JackpotNoLinkRecordID = 10000023;   // 更新非連線獎池資訊
+
+    Slot_GameLogReadID = 10000031;     // 查詢玩家記錄
+    Slot_GameLogReadRetID = 10000032;  // 回傳玩家記錄
+    Slot_GameLogAddID = 10000033;      // 更新玩家記錄
+};

@@ -1,0 +1,27 @@
+﻿@using KCKJ.Core.AdminSys.WebUI
+@model KCKJ.Core.Auth.AuthUser
+
+<form method="post">
+    <table width="800" cellpadding="2" cellspacing="2">
+       
+        <tr>
+            <td align="right">当前用户名:</td>
+            <td>
+                @Model.LoginName
+            </td>
+        </tr>
+
+        <tr>
+            <td align="right">权限名称:</td>
+            <td>
+                <input type="text" name="loginName" class="easyui-textbox" value="" style="width:300px" data-options="required:true,missingMessage:'用户名称不能为空',validType:['length[6,16]']" />
+            </td>
+        </tr>
+ 
+        <tr>
+            <td></td>
+            <td align="left">
+                @Html.OkWithRight()
+            </td>
+        </tr>
+    </table>

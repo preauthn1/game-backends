@@ -1,0 +1,3 @@
+﻿CREATE LOGIN [GameUser]
+    WITH PASSWORD = N'nkXHl?ybl}bnurm&{nmegwzjmsFT7_&#$!~<dpnfeti8pau{', SID = 0x9FF40DEFF7948943B79D47C6ECF84792, DEFAULT_DATABASE = [CenterDB], DEFAULT_LANGUAGE = [简体中文], CHECK_POLICY = OFF;
+

@@ -1,0 +1,104 @@
+syntax = "proto2";
+
+package netproto;
+
+// 登錄房間
+message LoginGameRoomInfo {
+    required int32 UserID = 1;   // 用戶ID
+    required string Cer = 2;     // 用戶證書
+    required string HDCode = 3;  // 設備碼
+    required int32 HDType = 4;   // 設備類型
+};
+
+// 登錄房間結果
+message LoginGameRoomRet {
+    required int32 Code = 1;                          // 登錄結果代碼
+    required string Message = 2;                      // 提示消息
+    optional LoginGameRoomInfo LoginRequestData = 3;  // 登錄數據
+    optional UserRoomLogonData UserData = 4;          // 用戶數據
+    optional RoomInfo RoomInfo = 5;
+    optional UserRTPData UserRTPData = 6;
+};
+
+// 用戶登錄房間數據
+message UserRoomLogonData {
+    required int32 UserID = 1;        // 用戶ID
+    required int32 UserType = 2;      // 用戶類型
+    required string NickName = 3;     // 暱稱
+    required int32 FaceID = 4;        // 頭像
+    required int32 Sex = 5;           // 性別
+    required int64 CashAmount = 6;    // 現金數
+    required int32 WinCount = 7;      // 赢
+    required int32 LoseCount = 8;     // 輸
+    required int32 DrawCount = 9;     // 平手
+    optional string ServerAddr = 10;  // 需要重連的房間地址信息
+    optional string GameBuff = 11;
+    required int64 TradeId = 12;         // 每次進入遊戲房間會獲取一個唯一的值
+    optional int32 LastWinLose = 13;     // 上一次輸贏結果 0輸 1贏
+    required int64 SumCharge = 14;       // 充值金額
+    required bool HasBindPay = 15;       // 是否綁定支付寶或銀行卡之一
+    required int64 SumConvert = 16;      // 總兌換
+    optional int64 ExperienceCash = 17;  // 體驗金幣
+    optional string LoginName = 18;      // 手機號隱碼
+    optional string AlipayAccount = 19;  // 支付寶帳號隱碼
+    optional int64 TimeSeq = 20;         // 登入時間, 用於到帳金額判斷
+};
+
+// 用户坐下
+message UserSit {
+    required int32 TableNo = 1;
+    required int32 SeatNo = 2;
+};
+
+// 遊戲版本號信息
+message GameVerInfo {
+    required string AndroidVersion = 1;
+    required string IOSVersion = 2;
+};
+
+// 房間信息
+message RoomInfo {
+    required int32 GameID = 1;
+    required string GameName = 2;
+    required string Flag = 3;
+    required int32 BaseScore = 4;
+};
+
+// 報名參加活動
+message GameStartMsg {
+    required int32 GameID = 1;
+    required int32 UserID = 2;
+    optional LoginGameRoomInfo LoginRequestData = 3;  // 登錄數據
+}
+
+// 回傳參加活動結果
+message GameStartRetMsg {
+    required string ErrMsg = 1;
+    required int32 RtnCode = 2;
+    optional LoginGameRoomInfo LoginRequestData = 3;  // 登錄數據
+}
+
+// RTP數據
+message UserRTPData {
+    required RTPDataPackage AllGame = 1;    // 全部遊戲
+    required RTPDataPackage Game = 2;       // 單個遊戲
+}
+
+message RTPDataPackage {
+    required RTPDataPackageDetail Total = 1;        // 總RTP
+    required RTPDataPackageDetail LastThirty = 2;   // 30日內RTP
+    required RTPDataPackageDetail LastSeven = 3;    // 7日內RTP
+    required RTPDataPackageDetail Today = 4;        // 當日RTP
+}
+
+message RTPDataPackageDetail {
+    required int64 BetAmount = 1;   // 有效投注額
+    required int64 PayAmount = 2;   // 返還金額
+}
+
+// 玩家選桌
+message UserChooseTable {
+    required int32 TableNo = 1;
+    required int32 SeatNo = 2;
+}
+

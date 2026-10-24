@@ -1,0 +1,74 @@
+﻿
+@{
+    Layout = null;
+}
+
+@model Split_GetUserSumData
+
+<div class="row">
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-blue-gradient"><i class="fa fa-fw fa-user"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">所有成功人数</span>
+                <span class="info-box-number">@(string.Format("{0:N0}", Model.intSuccessCount))</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <!-- /.col -->
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-red"><i class="fa fa-fw fa-user"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">今日成功人数</span>
+                <span class="info-box-number">@(string.Format("{0:N0}", Model.@intSuccessToday))</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <!-- /.col -->
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-green"><i class="fa fa-fw fa-money"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">昨日成功人数</span>
+                <span class="info-box-number">@(string.Format("{0:N0}", Model.@intSuccessLastday))</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-yellow-active"><i class="fa fa-fw fa-money"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">可提金额</span>
+                <span class="info-box-number">@Model.lngRewardAmount.ToCash()</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <!-- fix for small devices only -->
+    <div class="clearfix visible-sm-block"></div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-blue-gradient"><i class="fa fa-fw fa-cny"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">用户金额</span>
+                <span class="info-box-number">@Model.lngSplitAmount.ToCash()</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <!-- /.col -->
+</div>

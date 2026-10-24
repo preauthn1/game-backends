@@ -1,0 +1,177 @@
+﻿@using FW.Core.AdminSys.WebUI
+@model FW.Core.AdminSys.Provider.Entity.Right
+
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>修改权限
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="addRightFrm" method="post" class="form-horizontal form-bordered">
+                    <div class="form-body">
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3">父级ID</label>
+                            <div class="col-md-3">
+                                <input type="text" readonly="readonly" class="form-control input-small" value="@Model.ParentID">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3">权限ID</label>
+                            <div class="col-md-3">
+                                <input type="text" name="RightID" readonly="readonly" class="form-control input-small" value="@Model.RightID">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3">权限名称</label>
+                            <div class="col-md-3">
+                                <input type="text" name="RightName" class="form-control input-medium" value="@Model.RightName" placeholder="请输入权限名称">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3">权限标识</label>
+                            <div class="col-md-3">
+                                <input type="text" name="RightToken" class="form-control input-medium" value="@Model.RightToken" placeholder="请输入权限标识">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3">页面地址</label>
+                            <div class="col-md-3">
+                                <input type="text" name="PageUrl" class="form-control input-medium" value="@Model.PageUrl" placeholder="请输入页面地址">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3">权限类型</label>
+                            <div class="col-md-3">
+                                @{
+                                    string checkedPage = "";
+                                    if (Model.RightType == FW.Core.AdminSys.Provider.Entity.RightType.PageRight)
+                                    {
+                                        checkedPage = "checked";
+                                    }
+                                    string checkedFunc = "";
+                                    if (Model.RightType == FW.Core.AdminSys.Provider.Entity.RightType.CommandRight)
+                                    {
+                                        checkedFunc = "checked";
+                                    }
+                                }
+                                <span><input type="radio" name="RightType" value="0" @checkedPage />页面</span>
+                                <span><input type="radio" name="RightType" value="1" @checkedFunc />功能</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3">排序</label>
+                            <div class="col-md-3">
+                                <input type="text" name="Sort" class="form-control input-small" placeholder="请输入排序" value="@Model.Sort">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">菜单显示</label>
+                            <div class="col-md-3">
+                                @{
+                                    string checkedSign = "";
+                                    if (Model.ShowInMenu)
+                                    {
+                                        checkedSign = "checked=checked";
+                                    }
+                                }
+                                <input type="checkbox" name="ShowInMenu" value="@Model.ShowInMenu.ToString()" @checkedSign onclick="        if ($(this).attr('checked') || $(this).prop('checked')) { $(this).val('true'); } else { $(this).val('false'); }" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">图标</label>
+                            <div class="col-md-5">
+                                <input type="text" name="IconCls" id="IconCls" value="@Model.IconCls" class="form-control input-medium" placeholder="请输入图标">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @Html.OkWithRight()
+                            @Html.Back(@Url.Action("List", new { parentID = @Model.ParentID }))
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section initScripts
+{
+    <script>
+        $("#addRightFrm").validate({
+            rules: {
+                RightName: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 16
+                },
+                RightToken: {
+                    required: true,
+                    minlength: 4,
+                    maxlength: 128
+                },
+                RightType: {
+                    required: true
+                },
+                Sort: {
+                    required: true,
+                    number: true
+                },
+                IconCls: {
+                    maxlength: 32
+                }
+            },
+            messages: {
+                RightName: {
+                    required: "权限名称不能为空",
+                    minlength: "权限名长度不能低于2个字符",
+                    maxlength: "权限名称长度不能超过16个字符"
+                },
+                RightToken: {
+                    required: "权限标识不能为空",
+                    minlength: "权限标识长度不能低于4个字符",
+                    maxlength: "权限标识长度不能超出16个字符"
+                },
+                RightType: {
+                    required: "请选择权限类型"
+                },
+                Sort: {
+                    required: "排序不能为空",
+                    number: "排序必须为数字"
+                },
+                IconCls: {
+                    maxlength: "图标长度不能超出32个字符"
+                }
+            },
+            errorPlacement: function (error, element) {
+                if (element.is(":radio")) {
+                    $("<div></div>").append(error).appendTo(element.parent().parent().parent());
+                }
+                else {
+                    error.appendTo(element.parent());
+                }
+            }
+        });
+
+        $(function () {
+            $(".radio").removeClass("radio").css("display", "inline");
+        })
+    </script>
+}

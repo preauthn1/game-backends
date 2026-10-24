@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://example.invalid/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C529A411-2FEF-423C-A2DA-589FD2230E52}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>example.invalid</RootNamespace>
+    <AssemblyName>example.invalid</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\using\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\packages\mongocsharpdriver.1.8.3\lib\net35\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\packages\mongocsharpdriver.1.8.3\lib\net35\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FastDFS\Common\Connection.cs" />
+    <Compile Include="FastDFS\Common\ConnectionManager.cs" />
+    <Compile Include="FastDFS\Common\Consts.cs" />
+    <Compile Include="FastDFS\Common\FDFSConfig.cs" />
+    <Compile Include="FastDFS\Common\FDFSException.cs" />
+    <Compile Include="FastDFS\Common\FDFSHeader.cs" />
+    <Compile Include="FastDFS\Common\FDFSRequest.cs" />
+    <Compile Include="FastDFS\Common\StorageNode.cs" />
+    <Compile Include="FastDFS\Common\Util.cs" />
+    <Compile Include="FastDFS\FastDFSClient.cs" />
+    <Compile Include="FastDFS\FdfsStorageFile.cs" />
+    <Compile Include="FastDFS\Storage\APPEND_FILE.cs" />
+    <Compile Include="FastDFS\Storage\DELETE_FILE.cs" />
+    <Compile Include="FastDFS\Storage\DOWNLOAD_FILE.cs" />
+    <Compile Include="FastDFS\Storage\GET_METADATA.cs" />
+    <Compile Include="FastDFS\Storage\QUERY_FILE_INFO.cs" />
+    <Compile Include="FastDFS\Storage\SET_METADATA.cs" />
+    <Compile Include="FastDFS\Storage\UPLOAD_APPEND_FILE.cs" />
+    <Compile Include="FastDFS\Storage\UPLOAD_FILE.cs" />
+    <Compile Include="FastDFS\Storage\UPLOAD_SLAVE_FILE.cs" />
+    <Compile Include="FastDFS\Tracker\LIST_ALL_GROUPS.cs" />
+    <Compile Include="FastDFS\Tracker\LIST_ONE_GROUP.cs" />
+    <Compile Include="FastDFS\Tracker\LIST_STORAGE.cs" />
+    <Compile Include="FastDFS\Tracker\QUERY_FETCH_ALL.cs" />
+    <Compile Include="FastDFS\Tracker\QUERY_FETCH_ONE.cs" />
+    <Compile Include="FastDFS\Tracker\QUERY_STORE_WITHOUT_GROUP_ALL.cs" />
+    <Compile Include="FastDFS\Tracker\QUERY_STORE_WITHOUT_GROUP_ONE.cs" />
+    <Compile Include="FastDFS\Tracker\QUERY_STORE_WITH_GROUP_ALL.cs" />
+    <Compile Include="FastDFS\Tracker\QUERY_STORE_WITH_GROUP_ONE.cs" />
+    <Compile Include="FastDFS\Tracker\QUERY_UPDATE.cs" />
+    <Compile Include="IFileNameGenerator.cs" />
+    <Compile Include="GridFSStorageFile.cs" />
+    <Compile Include="IStorageFile.cs" />
+    <Compile Include="LocalStorageFile.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceHttpHandler.cs" />
+    <Compile Include="StorageException.cs" />
+    <Compile Include="StorageExtensions.cs" />
+    <Compile Include="StorageFileInfo.cs" />
+    <Compile Include="StorageInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FW.Core.Engine\FW.Core.Engine.csproj">
+      <Project>{5110f534-a73a-4a18-9d83-5d9a8ed1a5b9}</Project>
+      <Name>FW.Core.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FW.Core.Helper\FW.Core.Helper.csproj">
+      <Project>{4f70d664-a9b0-4f2b-b461-d2c12548eddc}</Project>
+      <Name>FW.Core.Helper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

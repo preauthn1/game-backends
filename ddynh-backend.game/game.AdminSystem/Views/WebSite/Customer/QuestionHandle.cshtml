@@ -1,0 +1,218 @@
+﻿@using System.Web.UI.WebControls
+@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+@using game.Entity.Customer
+
+@model game.Entity.Customer.QuestionList
+@{
+    var type = ViewBag.TypeList as List<game.Entity.Customer.QuestionType>;
+    var siteList = example.invalid as List<game.Entity.Customer.QuestionSites>;
+    int typeId = ViewBag.TypeID;
+    var typeModel = new game.Entity.Customer.QuestionType() { ChildTypeFileds = string.Empty };
+
+    if (Model.Id == 0)
+    {
+        if (typeId == 0)
+        {
+            var t = type.FirstOrDefault();
+            if (t != null)
+            {
+                typeId = t.Id;
+                typeModel = t;
+            }
+
+        }
+        else
+        {
+            if (type != null)
+            {
+                typeModel = type.FirstOrDefault(m => m.Id == typeId);
+            }
+        }
+    }
+    else
+    {
+        if (type != null)
+        {
+            typeModel = type.FirstOrDefault(m => m.Id == Model.QsTypeId);
+            typeId = typeModel.Id;
+        }
+
+    }
+}
+@section pageLevelStyles{
+    <link href="/Plugins/UMEditor/themes/default/css/umeditor.min.css" rel="stylesheet" />
+    <style type="text/css">
+        fieldset {
+            border: 1px solid #e5e5e5;
+            margin: 0;
+            padding: 10px 15px 10px;
+        }
+
+            fieldset legend {
+                width: auto;
+                color: #141414;
+                margin: 0 0 0 -5px;
+                padding: 0 5px;
+                border-bottom: 0;
+            }
+
+        .div-detail {
+            margin: 2px 8px;
+            padding: 5px 10px;
+            background: #f1f1f1;
+            text-align: left;
+            border: 1px solid #e4e4e4;
+            color: #141414;
+        }
+
+        .a-recordDetail {
+            background: #e4e4e4;
+            padding: 6px;
+            border-radius: 5px;
+            color: #141414;
+        }
+
+        .tb-memo td {
+            border: none;
+            border-top: 1px solid #fff !important;
+        }
+
+        td {
+            border: 1px solid #f1f1f1 !important;
+        }
+    </style>
+}
+@section initScripts{
+    <script src="/Plugins/UMEditor/umeditor.config.js"></script>
+    <script src="/Plugins/UMEditor/umeditor.min.js"></script>
+    <script src="/Plugins/UMEditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="~/Plugins/My97DatePicker/WdatePicker.js"></script>
+
+    <script type="text/javascript">
+    
+        $(document).ready(function () {
+            //实例化编辑器
+            var um = UM.getEditor('myEditor');
+
+            //提交事件
+            $("#form1").submit(function () {
+                if ($("input[name=Type]:checked").val() == "article" && UM.getEditor('myEditor').getContentTxt().length < 40) {
+                    alert("新闻内容最少40个字符");
+                    return false;
+                }
+                $("input[name=Memo]").val(UM.getEditor('myEditor').getContent());
+            });
+            $(".a-recordDetail").click(function () {
+                var tobj = $(this).find('.fa');
+                if (tobj.hasClass('fa-arrow-down')) {
+                    tobj.addClass('fa-arrow-up');
+                    tobj.removeClass('fa-arrow-down');
+                } else {
+                    tobj.addClass('fa-arrow-down');
+                    tobj.removeClass('fa-arrow-up');
+                }
+                $(this).next().toggle(100);
+            });
+        });
+
+    </script>
+}
+<div class="container box">
+    <div class="row">
+        <fieldset>
+            <legend>问题描述</legend>
+            <table class="table table-condensed  table-bordered">
+                <tr><td width="120px">问题类型：</td><td>@Model.QuestionType.TypeName</td></tr>
+                <tr><td>所属站点：</td><td>@example.invalid.SiteName</td></tr>
+                <tr><td>标题：</td><td>@Model.Title</td></tr>
+                <tr><td>客户端类型：</td><td>@Model.ClientType.GetDisplayName()</td></tr>
+                <tr><td>来源：</td><td>@Model.Origin.GetDisplayName()</td></tr>
+                <tr><td>用户编号：</td><td>@Model.UserID</td></tr>
+                <tr><td>联系人名称：</td><td>@Model.ContactName</td></tr>
+                <tr><td>联系人电话：</td><td>@Model.ContactPhone</td></tr>
+                @{
+                    var fileds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<game.AdminSystem.Controllers.WebSite.CustomerController.Fileds>>(typeModel.ChildTypeFileds);
+
+                    var valueFileds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<game.AdminSystem.Controllers.WebSite.CustomerController.Fileds>>(string.IsNullOrEmpty(Model.ChildTypeFiledsContent) ? string.Empty : Model.ChildTypeFiledsContent);
+                    if (valueFileds == null)
+                    {
+                        valueFileds = new List<game.AdminSystem.Controllers.WebSite.CustomerController.Fileds>();
+                    }
+                    if (fileds != null)
+                    {
+                        foreach (var item in fileds)
+                        {
+                            var val = valueFileds.FirstOrDefault(m => m.Name == item.Name);
+                            <tr class="form-group">
+                                <td>@(item.Value)：</td>
+                                <td>@(val == null ? string.Empty : val.Value)</td>
+                            </tr>
+                        }
+                    }
+                }
+                <tr><td>详细内容</td><td>@Html.Raw(Model.Memo ?? "")</td></tr>
+
+            </table>
+        </fieldset>
+
+        <fieldset>
+            <legend>处理记录</legend>
+            <table class="table table-bordered">
+                @{
+                    List<QuestionHandleRecords> handlelist = ViewBag.QuestionHandleList;
+                    var index = 1;
+                    foreach (var item in handlelist.OrderBy(x => x.CreateTime))
+                    {
+                        <tr>
+                            <td>
+                                @index . @item.CreateTime 由 @item.CreateUserName  @item.QsHandleStatus.GetDisplayName()
+                                @if (!item.Memo.Contains("创建该问题"))
+                                {
+                                    @:&nbsp; &nbsp; &nbsp;<a class="a-recordDetail" style="cursor: pointer;"><i class="fa fa-arrow-up"></i>详细</a><div class="div-detail" style="display: block;">@Html.Raw(item.Memo)</div>
+                                }
+                                
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                }
+            </table>
+        </fieldset>
+        @if (Model.HandleStatus != HandleStatus.Finsh)
+        {
+            <form id="form1" method="post" class="form-horizontal form-bordered">
+                <fieldset>
+                    <legend>处理</legend>
+
+                    <table class="table table-condensed tb-memo">
+                        <tr>
+                            <td width="80px">所属阶段:</td>
+                            <td>
+                                <select class="form-control input-medium" name="C-HandleStatus">
+                                    @foreach (HandleStatus item in Enum.GetValues(typeof(HandleStatus)).Cast<HandleStatus>().Where(item => item != HandleStatus.New))
+                                    {
+                                        <option value="@item" @(Model.HandleStatus == item ? "selected" : "")>@item.GetDisplayName()</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    备注:
+                    <script type="text/plain" id="myEditor" style="width: 100%; height: 100px;">
+                        <p></p>
+                    </script>
+                    <input hidden name="Memo" id="Memo" />
+                </fieldset>
+
+                <div class="form-actions" style="margin-top: 10px;">
+                    <div class="col-md-offset-3 col-md-9">
+                        @Html.OkWithRight()
+                        @Html.Back(Url.Action("QuestionList"))
+                    </div>
+                </div>
+            </form>
+        }
+    </div>
+</div>

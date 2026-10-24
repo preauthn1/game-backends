@@ -1,0 +1,97 @@
+﻿@using FW.Core.Helper
+@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using game.Entity.Pay
+@using game.Infrastructure
+
+@model PagedList<game.Entity.Game.UserGameInfoViewModel>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_message")
+                @Html.Partial("_userPartial")
+
+                <input type="hidden" value="false" id="isExport" name="isExport" />
+
+                <div class="form-group">
+                    <label>游戏</label>
+                    @Html.DropDownList("gameID", DataService.Game(), new { @class = "form-control input-small", id = "gameID" })
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default" onclick="global_changeExportType('false')"> 搜 索 </button>
+
+                    <button type="submit" class="btn btn-default" onclick="global_changeExportType('true')"> 匯 出 (上限 @SystemConst.ExcelMaxExportSize 笔) </button>
+                </div>
+
+                <div style="margin-top:25px;">
+                    <div class="" id="transferInfo_table_length">
+                        显示
+                        <select id="pageSize" name="pageSize" aria-controls="transferInfo_table" class="">
+                            <option value="20">20</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                            <option value="1000">1,000</option>
+                        </select> 记录
+                    </div>
+                </div>
+
+            </form>
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>所属平台</th>
+                            @Html.Partial("~/Views/Shared/_userTHeadPartial.cshtml")
+                            <th>游戏名称</th>
+                            <th>赢</th>
+                            <th>输</th>
+                            <th>平</th>
+                            <th class="algin-r">输赢金额</th>
+                            <th>游戏时间(单位秒)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (var item in Model.PageData)
+                            {
+                                <tr>
+                                    <td>@item.UserInfo.Area.Platform.Name</td>
+                                    @Html.Partial("~/Views/Shared/_userTBodyPartial.cshtml", item.UserInfo)
+                                    <td>@item.GameName</td>
+                                    <td>@item.WinCount</td>
+                                    <td>@item.LoseCount</td>
+                                    <td>@item.DrawCount</td>
+                                    <td class="algin-r">@item.Score.ToCash()</td>
+                                    <td>@item.GameTime</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row rpager">
+                <div class="pager">
+                    <div class="pagerc">
+                        @Html.Pager(Model)
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+
+            fillFormData('form_search');
+        })
+    </script>
+}

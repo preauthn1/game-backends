@@ -1,0 +1,209 @@
+﻿
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .btn_contain {
+        margin-bottom: 5px;
+    }
+
+    .form_contain {
+        margin-bottom: .5%;
+    }
+</style>
+<div class="row" id="PlatformDownload">
+    <div class="col-md-12">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">落地页设定</div>
+            </div>
+            <div class="portlet-body">
+                <form class="form-inline form_contain" id="form_search">
+                    @Html.Partial("_PlatformSelect", false)
+                </form>
+                <table class="table table-striped table-bordered table-hover progressTable" id="FishReward_table"></table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        var vApp = new Vue({
+            el: '#PlatformDownload',
+            data: {
+                spaceID: '',
+                dataTable: null,
+                edit_token: [REDACTED]"UpdatePlatformDownload", "post")` === 'True' ? true : false
+            },
+
+            watch: {
+                spaceID (val, oldVal) {
+                    vApp.dataTable.DataTable().ajax.reload();
+                }
+            },
+
+            methods: {
+                ToCash: function (val) {
+                    return ToCash(val);
+                },
+                getDownloadList: function () {
+                    const head = [
+                        {
+                            "sTitle": "平台", "mData": "Name",
+                            "class": "width15"
+                        },
+                        {
+                            "sTitle": "苹果地址", "mData": "IOS",
+
+                            "render": function (data, type, row) {
+                                const isEdit = vApp.edit_token
+                                return isEdit ? `<input type="text" id="IOS_${row.PlatformID}" name="IOS_${row.PlatformID}" class ="form-control input-medium" placeholder="请填写苹果地址" value="${data}" />` : data
+                            }
+                        },
+                        {
+                            "sTitle": "苹果地址说明", "mData": "IOSMemo",
+                            "render": function (data, type, row) {
+                                const isEdit = vApp.edit_token
+                                return isEdit ? `<textarea rows="5" cols="50" id="IOSMemo_${row.PlatformID}" name="IOSMemo_${row.PlatformID}" class ="form-control input-medium" placeholder="请填写苹果地址说明" >${data}</textarea>` : data
+                            }
+                        },
+
+                        {
+                            "sTitle": "安卓地址", "mData": "Android",
+                            "render": function (data, type, row) {
+                                const isEdit = vApp.edit_token
+                                return isEdit ? `<input type="text" id="Android_${row.PlatformID}" name="Android_${row.PlatformID}" class ="form-control input-medium" placeholder="请填写安卓地址" value="${data}" />` : data
+                            }
+                        },
+                        {
+                            "sTitle": "官网", "mData": "Official",
+                            "render": function (data, type, row) {
+                                const isEdit = vApp.edit_token
+                                return isEdit ? `<input type="text" id="Official_${row.PlatformID}" name="Official_${row.PlatformID}" class ="form-control input-medium" placeholder="请填写官网" value="${data}" />` : data
+                            }
+                        },
+                        {
+                            "sTitle": "备注", "mData": "Memo",
+                            "render": function (data, type, row) {
+                                const isEdit = vApp.edit_token
+                                return isEdit ? `<textarea rows="5" cols="50" id="Memo_${row.PlatformID}" name="Memo_${row.PlatformID}" class ="form-control input-medium" placeholder="请填写备注" >${data}</textarea>` : data
+                            }
+                        },
+                        {
+                            "sTitle": "更新日期", "mData": "UpdateTime"
+                        },
+                        {
+                            "sTitle": "上架/下架", "mData": "IOSTerminate",
+                            "render": function (data, type, row) {
+                                if (data == 0) {
+                                    return '上架'
+                                }
+                                return '下架'
+                            }
+                        },
+                        {
+                            "sTitle": "资讯正确", "mData": "Correct",
+                            "render": function (data, type, row) {
+
+                                let exclamation_control = `
+                                            <div>
+                                            <div class ="btn-check_n"></div>
+                                            </div>`
+
+                                if (data === 0) {
+                                    exclamation_control = `
+                                            <div>
+                                            <div class ="btn-exclamation"></div>
+                                            </div>`
+                                }
+                                return `<div class="control">${exclamation_control}<div>`
+                            }
+                        },
+                        {
+                            "sTitle": "操作", "mData": "PlatformID",
+                            "render": function (data, type, row) {
+                                const isEdit = vApp.edit_token
+                                const IOSTerminate = row.IOSTerminate
+                                const IOSTerminate_control = isEdit ? `<button class="btn gray btn_contain" onclick="vApp.saveVIPUser(${row.PlatformID}, ${IOSTerminate === 0 ? 1 : 0}, ${row.Correct})">${IOSTerminate === 0 ? '下架' : '上架'}</button>` : ''
+                                const save_control = isEdit ? `<button class="btn gray btn_contain" onclick="vApp.saveVIPUser(${data}, ${row.IOSTerminate}, 1)">保存</button>` : ''
+
+                                return `${save_control}
+                                        ${IOSTerminate_control}
+                                        <button class ="btn gray" onclick="vApp.saveVIPUser(${data}, ${row.IOSTerminate}, 0)">通报错误</button>`
+                            }
+                        }
+                    ]
+
+                    const opt = {
+                        "ordering": false,
+                        "searching": false,
+                        "aoColumns": head,
+                        "processing": true,
+                        "serverSide": true,
+                        "bLengthChange": false,
+                        "bPaginate": false,
+                        "ajax": {
+                            "type": "POST",
+                            "url": "/info/GetDownloadList",
+                            data: function (d) {
+                                const platformid = $('#platformid').val()
+                                Object.assign(d, {
+                                    "platformID": platformid
+                                });
+                                return d;
+                            }
+                        },
+                        "destroy": true
+                    }
+                    vApp.dataTable = $("#FishReward_table").dataTable(opt)
+                },
+
+                saveVIPUser: function (PlatformID, IOSTerminate, Correct) {
+                    const IOS = $(`#IOS_${PlatformID}`).val();
+                    const Android = $(`#Android_${PlatformID}`).val();
+                    const Official = $(`#Official_${PlatformID}`).val();
+                    const IOSMemo = $(`#IOSMemo_${PlatformID}`).val();
+                    const Memo = $(`#Memo_${PlatformID}`).val();
+
+                    vApp.updatePlatformDownload({
+                        PlatformID,
+                        IOS,
+                        Android,
+                        Official,
+                        IOSMemo,
+                        IOSTerminate,
+                        Correct,
+                        Memo
+                        });
+                        },
+
+                updatePlatformDownload: function (data) {
+                    $.ajax({
+                        type: "POST",
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        traditional: true,
+                        url: "/info/UpdatePlatformDownload",
+                        success: function (result) {
+                            alert(result.msg);
+                            vApp.dataTable.DataTable().ajax.reload();
+                        },
+                        error: function (err) {
+                            alert("操作失敗");
+                        }
+                    });
+
+                }
+            }
+        });
+
+        vApp.getDownloadList();
+
+        $('#platformid').change(() => {
+            vApp.dataTable.DataTable().ajax.reload();
+        })
+    </script>
+}

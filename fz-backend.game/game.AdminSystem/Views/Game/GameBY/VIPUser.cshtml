@@ -1,0 +1,326 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .portlet-body .btn_link {
+        padding-left: 5px;
+        font-weight: bold;
+        text-decoration: underline;
+        color: #428bca;
+    }
+
+    .portlet-body .btn_link_Red {
+        padding-left: 5px;
+        font-weight: bold;
+        text-decoration: underline;
+        color: red;
+    }
+
+    .update_Red {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: red;
+    }
+
+    .update_Green {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: #58ae63;
+    }
+</style>
+
+<div class="row" id="VIPUserList">
+    <div class="col-md-12">
+        <div style="margin-top:20px;">
+            <form class="form-inline" style="margin:20px;">
+                <div class="form-group">
+                    <label>玩家ID：</label>
+                    <input type="text" class="form-control input-small" value="" v-model="fastEditData.UserID" placeholder="请输入玩家ID">
+                </div>
+                <div class="form-group">
+                    <label>指定放分金额：</label>
+                    <input type="text" class="form-control input-small" placeholder="指定放分金额" value="" v-model="fastEditData.AssignAmount" />
+                </div>
+                <div class="form-group">
+                    <label>爆率：</label>
+                    <select class="form-control input-medium" value="" v-model="fastEditData.AssignRate">
+                        <option value="1">20% 急速杀分</option>
+                        <option value="2">50% 快速杀分</option>
+                        <option value="3">80% 慢速杀分</option>
+                        <option value="4">110% 极慢放分</option>
+                        <option value="5">150% 慢放分</option>
+                        <option value="6">200% 快放分</option>
+                        <option value="7">300% 快速放分</option>
+                        <option value="8">500% 极快放分</option>
+                        <option value="9">10000% 鱼秒死</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>状态：</label>
+                    <select class="form-control input-small" v-model="fastEditData.Status">
+                        <option value="1">开始</option>
+                        <option value="0">暂停</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="button" class="btn dark" value="监控添加" v-on:click="addVIPUser()" />
+                    <span style="color:red;">{{fastErrMsg}}</span>
+                </div>
+            </form>
+        </div>
+
+        <div class="portlet box grey" style="margin-top:20px;">
+            <div class="portlet-title">
+                <div class="caption">监控名单</div>
+            </div>
+            <div class="portlet-body">
+                <form class="form-inline" style="margin-top:20px;">
+                    <div class="form-group">
+                        <label>显示玩家</label>
+                        <input type="text" class="form-control input-small" value="" v-model="filterUserID" placeholder="请输入玩家ID">
+                    </div>
+                </form>
+                <table class="table table-striped table-bordered table-hover progressTable" id="FishVIPUser_table"></table>
+            </div>
+        </div>
+    </div>
+    <!--编辑-->
+    <div class="modal fade" id="editVIP" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal.large modal-size">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">编辑</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">指定放分金额：</label>
+                            <div class="col-md-6">
+                                <input value="" class="form-control input-small" v-model="editData.AssignAmount" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">状态：</label>
+                            <div class="col-md-6">
+                                <select class="form-control input-small" v-model="editData.Status">
+                                    <option value="0">暂停</option>
+                                    <option value="1">开始</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">爆率：</label>
+                            <div class="col-md-6">
+                                <select class="form-control input-medium" value="" v-model="editData.AssignRate">
+                                    <option value="1">20% 急速杀分</option>
+                                    <option value="2">50% 快速杀分</option>
+                                    <option value="3">80% 慢速杀分</option>
+                                    <option value="4">110% 极慢放分</option>
+                                    <option value="5">150% 慢放分</option>
+                                    <option value="6">200% 快放分</option>
+                                    <option value="7">300% 快速放分</option>
+                                    <option value="8">500% 极快放分</option>
+                                    <option value="9">10000% 鱼秒死</option>
+                                </select>
+                                <span style="color:red;">{{errMsg}}</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn dark" v-on:click="editVIPUser(editData)">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        var vApp = new Vue({
+            el: '#VIPUserList',
+            data: {
+                datas: [],
+                gameID: '@ViewBag.GameID',
+                filterUserID: '@ViewBag.UserID',
+                fastEditData: {
+                    UserID: '@ViewBag.UserID',
+                    AssignRate: 1,
+                    Status: 1
+                },
+                editData: {},
+                fastErrMsg: '',
+                errMsg: '',
+                RateType: [0, 20, 50, 80, 110, 150, 200, 300, 500, 10000]
+            },
+            methods: {
+                ToCash: function (val) {
+                    return ToCash(val);
+                },
+                getVIPUser: function () {
+                    vApp.datas = [];
+
+                    const head = [
+                           {
+                               "sTitle": "玩家ID", "mData": "UserID",
+                               "render": function (data, type, row) {
+                                   return `<a class="link" target="_blank" href="/UserInfo/Search?userId=${data}&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">${data}</a>`
+                               }
+                           },
+                           {
+                               "sTitle": "指定放分金额", "mData": "AssignAmount",
+                               "render": function (data, type, row) {
+                                   return ToCash(data);
+                               }
+                           },
+                           {
+                               "sTitle": "爆率(%)", "mData": "AssignRate",
+                               "render": function (data, type, row) {
+                                   return vApp.RateType[data];
+                               }
+                           },
+                           {
+                               "sTitle": "完成金额", "mData": "CompleteAmount",
+                               "render": function (data, type, row) {
+                                   return ToCash(data);
+                               }
+                           },
+                           { "sTitle": "是否完成", "mData": "StrComplete" },
+                           {
+                               "sTitle": "开始/暂停", "mData": "Status",
+                               "render": function (data, type, rowData, meta) {
+                                   if (data == 0) {
+                                       return `<a class="btn_link" href="#" onclick="vApp.editStatus(${meta.row},1)" >开始</a>`
+                                   }
+                                   return `<a class="btn_link" href="#" onclick="vApp.editStatus(${meta.row},0)" >暂停</a>`
+                               }
+                           },
+                           {
+                               "sTitle": "删除监控", "mData": "UserID",
+                               "render": function (data, type, row) {
+                                   return `<a class="btn_link_Red" href="#" onclick="vApp.delVIPUser(${data})" >删除</a>`
+                               }
+                           },
+                           { "sTitle": "放分时间", "mData": "StrUpdateTime" },
+                           { "sTitle": "完成时间", "mData": "StrFinishTime" },
+                           { "sTitle": "操作人", "mData": "Operator" },
+                           {
+                               "sTitle": "操作", "mData": "UserID",
+                               "render": function (data, type, rowData, meta) {
+                                   vApp.datas[meta.row] = rowData;
+                                   return `<button class="btn gray" href="#" onclick="vApp.showEdit(${meta.row})" data-toggle="modal" data-target="#editVIP" >编辑</a>`
+                               }
+                           },
+                    ]
+
+                    const opt = {
+                        "ordering": false,
+                        "searching": false,
+                        "aoColumns": head,
+                        "processing": true,
+                        "serverSide": true,
+                        "bLengthChange": false,
+                        "bPaginate": false,
+                        "ajax": {
+                            "type": "POST",
+                            "url": "/GameCommon/GetVIPUser",
+                            "data": {
+                                'userID': vApp.filterUserID,
+                                'gameID': vApp.gameID
+                            }
+                        },
+                        "destroy": true
+                    }
+                    $("#FishVIPUser_table").dataTable(opt)
+                },
+                addVIPUser: function () {
+                    if (vApp.fastEditData.AssignAmount > 0 && vApp.fastEditData.AssignRate < 4) {
+                        vApp.fastErrMsg = "*爆率需大于100";
+                        return;
+                    }
+
+                    if (vApp.fastEditData.AssignAmount < 0 && vApp.fastEditData.AssignRate > 4) {
+                        vApp.fastErrMsg = "*爆率需小于100";
+                        return;
+                    }
+
+                    if (this.fastEditData.UserID && this.fastEditData.AssignAmount)
+                        $.ajax({
+                            type: "POST",
+                            data: JSON.stringify(this.fastEditData),
+                            contentType: 'application/json',
+                            traditional: true,
+                            url: "/GameCommon/EditVIPUser",
+                            success: function (result) {
+                                vApp.fastErrMsg = '';
+                                alert(result.msg);
+                                vApp.getVIPUser();
+                            },
+                            error: function (err) {
+                                alert("操作失敗");
+                            }
+                        });
+                },
+                delVIPUser: function (userID) {
+                    $.get('/GameCommon/DelVIPUser', { 'userID': userID }, function (result) {
+                        alert(result.msg);
+                        vApp.getVIPUser();
+                    });
+                },
+                showEdit: function (rowIndex) {
+                    vApp.errMsg = '';
+                    vApp.editData = vApp.datas[rowIndex];
+                    vApp.editData.AssignAmount = ToCash(vApp.editData.AssignAmount);
+                },
+                editStatus: function (rowIndex, status) {
+                    var data = vApp.datas[rowIndex];
+                    data.Status = status;
+                    data.AssignAmount = ToCash(data.AssignAmount);
+                    vApp.editVIPUser(data);
+                    vApp.getVIPUser();
+                },
+                editVIPUser: function (data) {
+
+                    if (data.AssignAmount > 0 && data.AssignRate < 4) {
+                        vApp.errMsg = "*爆率需大于100";
+                        return;
+                    }
+
+                    if (data.AssignAmount < 0 && data.AssignRate > 4) {
+                        vApp.errMsg = "*爆率需小于100";
+                        return;
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        traditional: true,
+                        url: "/GameCommon/EditVIPUser",
+                        success: function (result) {
+                            alert(result.msg);
+                            vApp.getVIPUser();
+                            $('#editVIP').modal('hide');
+                        },
+                        error: function (err) {
+                            alert("操作失敗");
+                        }
+                    });
+                }
+            }
+        });
+
+        vApp.getVIPUser();
+        setInterval(function () {
+            vApp.getVIPUser();
+        }, 10000);
+
+    </script>
+}

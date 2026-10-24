@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "game-server.fullname" . }}-admin-web
+  labels:
+    {{- include "game-server.labels" . | nindent 4 }}
+  # annotations:
+  #   metallb.universe.tf/address-pool: {{ .Release.Namespace }}
+    # metallb.universe.tf/allow-shared-ip: {{ .Release.Namespace }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 3000
+  selector:
+    app: admin-web

@@ -1,0 +1,78 @@
+package qz21gamelogic
+
+import (
+	"conf"
+	"config"
+	"event"
+	"fixtures"
+	"gamelog"
+	"gamelogic"
+	"mlog"
+	"robot/robotcomm"
+	"robot/robotlogic"
+	"roomserver"
+	"testing"
+)
+
+func TestGameRound(t *testing.T) {
+	endChannel := make(chan bool)
+	conf.CLogLevel = 0
+	conf.TimerFastMode = 100
+	//conf.TestMode = true
+	roomserver.GameLogicCreator = func(t *gamelogic.Table, tfManager *event.TimerFuncManager, cfgs *config.ConfigGroup) gamelogic.GameLogic {
+		return NewQz21GameLogic(t, tfManager, cfgs)
+	}
+	roomserver.RobotLogicCreator = func(table *gamelogic.Table, tfManager *event.TimerFuncManager, robotCfg *robotcomm.RobotConfig, configs *config.ConfigGroup, glc gamelogic.GameLogic, evtChannel *event.EventDispatcher) robotlogic.RobotLogic {
+		return NewQZ21RobotLogic(table, tfManager, robotCfg, configs, glc, evtChannel)
+	}
+
+	tgrs := fixtures.NewTestGameRoomServer()
+	glc := tgrs.GameLogicManager.GetGameLogic(0).(*Qz21Table)
+
+	glc.GameLog = gamelogic.NewGameLogHelper(gamelog.NewEmptyGameLog(), glc.GameLogicBase)
+	glc.RegisterAfterGameEndFunc(func() {
+		endChannel <- true
+	})
+	/*
+		待完善事項
+		1. 目前無法使用撮合(真實用戶)或配桌(機器人)逻辑, 需要主動安排入座
+	*/
+	_, robots := fixtures.GetGameUsers()
+	//非機器人無法從free 到 sit, 故先統一狀態為QUEUE
+	//Test Round 1 正常開始
+	robotManager := tgrs.RobotService.GetRobotManager()
+
+	if robotManager.RobotCount() != 0 {
+		t.Errorf("初始化, 機器人數量應為0, RobotCount=>%d", robotManager.RobotCount())
+	}
+
+	for i := 0; i < 3; i++ {
+		robot := new(robotcomm.Robot)
+		robot.UserInfo = robots[i]
+		robot.RebotLevel = 6
+		robotManager.AddRobot(robot)
+	}
+	if robotManager.RobotCount() != 3 {
+		t.Errorf("加載機器人後數量應為3, RobotCount=>%d", robotManager.RobotCount())
+	}
+
+	//users := fixtures.GetGameUser()
+
+	robots[0].UserState.OnUserQueue(robots[0], tgrs.Room)
+	robots[1].UserState.OnUserQueue(robots[1], tgrs.Room)
+	robots[2].UserState.OnUserQueue(robots[2], tgrs.Room)
+
+	glc.UserEnter(robots[0], glc.GetTable().TableNo, glc.GetTable().GetFreeSeat().SeatNo)
+	glc.UserEnter(robots[1], glc.GetTable().TableNo, glc.GetTable().GetFreeSeat().SeatNo)
+	glc.UserEnter(robots[2], glc.GetTable().TableNo, glc.GetTable().GetFreeSeat().SeatNo)
+
+	glc.UserReady(robots[0])
+	glc.UserReady(robots[1])
+	glc.UserReady(robots[2])
+
+	select {
+	case _ = <-endChannel:
+		mlog.NewDefaultLogger().Error("qz21 game end")
+	}
+
+}

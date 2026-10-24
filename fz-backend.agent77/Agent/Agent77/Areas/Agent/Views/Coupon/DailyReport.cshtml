@@ -1,0 +1,121 @@
+﻿@{
+    ViewBag.Title = "我的代理";
+}
+@model Coupon_DailyReportModel
+<div class="row">
+    <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="info-box bg-blue-gradient">
+            <span class="info-box-icon"><i class="fa fa-fw fa-star"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">总输入组数</span>
+                <span class="info-box-number">@(Model.CouponPullCount)</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+    </div>
+    <!-- /.col -->
+    <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-red"><i class="fa fa-fw fa-cny"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">
+                    总发送金额
+                </span>
+                <span class="info-box-number">@(Model.CouponPullAmount.ToCash())</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    <!-- /.col -->
+    <!-- fix for small devices only -->
+    <div class="clearfix visible-sm-block"></div>
+
+    <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-green"><i class="fa fa-fw fa-money"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">
+                    总消耗金额
+                </span>
+                <span class="info-box-number">@(Model.CouponUsedAmount.ToCash())</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    @*<div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="info-box">
+            <span class="info-box-icon bg-yellow-active"><i class="fa fa-fw fa-user"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">----</span>
+                <span class="info-box-number">----</span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>*@
+</div>
+
+
+<div class="box box-primary">
+    <!-- form start -->
+
+    <div class="box-body">
+
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>日期</th>
+                        <th>本日输入组数</th>
+                        <th>本日发送金额</th>
+                        <th>本日消耗</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.DailyItemList)
+                    {
+                    <tr>
+                        <td>@item.LogDate.ToShortDateString()</td>
+                        <td>@item.CouponCount</td>
+                        <td>@item.Amount.ToCash()</td>
+                        <td>@item.DailyUsedCouponAmount.ToCash()</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+    </div>
+</div>
+
+<!-- /.box -->
+@section scripts{
+    <!-- Page script -->
+    <script type="text/javascript">
+        $(function () {
+
+            //DataTable
+            var table =
+                $('#example1').DataTable({
+                    "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                    "searching": false,
+                    "ordering": false,
+                    "autoWidth": false,
+                    "deferLoading": 0,
+                    "pageLength": 50,
+                    "sort": [0, 'DESC'],
+                    responsive: true
+                });
+
+            $('#btnQuery').click(function () {
+                table.draw();
+            });
+        })
+    </script>
+}

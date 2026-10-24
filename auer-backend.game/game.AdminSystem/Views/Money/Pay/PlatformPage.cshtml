@@ -1,0 +1,119 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .content {
+        padding: .5%;
+        font-size: 1.2em;
+        font-family: serif;
+    }
+
+    .flexbox {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+    }
+
+    .calculator {
+        margin: 6px;
+        padding: 4px;
+        /*box-shadow: 4px 4px rgba(20%,20%,40%,0.5);*/
+        border-radius: 5px !important;
+        text-align: center;
+        font-weight: bold;
+        font-size: 10px;
+        color: white;
+    }
+
+    .calculatornum {
+        font-weight: bold;
+        font-size: 15px;
+    }
+
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                <div class="form-group">
+                    <label>时间筛选</label>
+                    <input type="text" class="form-control " style="width:180px" id="statTime" name="statTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("yyyy-MM-dd HH:mm")">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="endTime" name="endTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                </div>
+            </form>
+            <div class="content">
+				<div class="flexbox" id="calculatorArea">
+					<div class="calculator" style="background-color:#ff6a00"><br><span class="calculatornum">今日</span><br><span class="calculatornum">昨日</span></div>
+					<div class="calculator" style="background-color:#CE463C">支付总金额<br><span name="TotalCharge" class="calculatornum">0</span><br><span name="yesTotalCharge" class="calculatornum">0</span></div>
+					<div class="calculator" style="background-color:#CE463C">充值金币总額<br><span name="TotalPointAmount" class="calculatornum">0</span><br><span name="yesTotalPointAmount" class="calculatornum">0</span></div>
+					<div class="calculator" style="background-color:#D55586">订单总数<br><span name="TotalCount" class="calculatornum">0</span><br><span name="yesTotalCount" class="calculatornum">0</span></div>
+					<div class="calculator" style="background-color:#D55586">成功订单<br><span name="SuccessCount" class="calculatornum">0</span><br><span name="yesSuccessCount" class="calculatornum">0</span></div>
+					<div class="calculator" style="background-color:#D55586">失敗订单<br><span name="FailCount" class="calculatornum">0</span><br><span name="yesFailCount" class="calculatornum">0</span></div>
+					<div class="calculator" style="background-color:#84B357">订单數成功率<br><span name="SuccessRate" class="calculatornum">0</span>%<br><span name="yesSuccessRate" class="calculatornum">0</span>%</div>
+					<div class="calculator" style="background-color:#325293">充值用户数(去重)<br><span name="TotalChargeUser" class="calculatornum">0</span><br><span name="yesTotalChargeUser" class="calculatornum">0</span></div>
+				</div>
+                <table id="platformpage_table" class="display" style="width:100%"></table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+
+        function createTable() {
+            const url = '/Pay/GetPlatformLog'
+            const thead = [{ "sTitle": "支付渠道", "mData": "TypeName" },
+                            { "sTitle": "支付平台", "mData": "GatewayName" },
+							{ "sTitle": "支付金额", "mData": "TotalAmount" },
+							{ "sTitle": "充值金币", "mData": "TotalPointAmount" },
+							{ "sTitle": "订单数", "mData": "TotalCount" },
+                            { "sTitle": "成功数", "mData": "SuccessCount" },
+                            { "sTitle": "成功率", "mData": "SuccessRate", "className": "text_right" }]
+
+            var areaID = $('#areaID').val()
+            var statTime = $('#statTime').val()
+            var endTime = $('#endTime').val()
+
+            const data = {
+                areaID: areaID,
+                statTime: statTime,
+                endTime: endTime
+            }
+
+            createDataTable('platformpage', thead, url, data, function (data) {
+                var _transData = data.transData;
+                if (_transData) {
+                    FillCalculatorDIV(JSON.parse(data.transData));
+                }
+            });
+        }
+
+        function search() {
+            var errorMsg = validateFunc()
+            if (errorMsg) {
+                Msg.alert(errorMsg, 'danger')
+                return false
+            }
+            createTable()
+        }
+
+        function FillCalculatorDIV(transData) {
+            $.each(transData, function (name, value) {
+                $("#calculatorArea span[name='" + name + "']").text(value);
+            });
+        }
+
+        $(function () {
+            fillFormData('form_search');
+            createTable()
+        })
+    </script>
+}

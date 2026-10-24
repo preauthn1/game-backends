@@ -1,0 +1,197 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    table td, th {
+        text-align: center;
+    }
+
+    .width10 {
+     width:10%;
+    }
+
+     .width15 {
+     width:15%;
+    }
+</style>
+
+<div class="row" id="assignRewardList">
+    <div class="col-md-12">
+        <div class="protlet-body" style="margin-top:20px;">
+            <form class="form-inline" id="form_search" method="get">
+                <div class="form-group">
+                    <label></label>
+                </div>
+            </form>
+
+            <div class="col-md-4" style="padding:0;">
+                <div class="portlet box grey" style="margin:20px;">
+                    <div class="portlet-title">
+                        <div class="caption">指定9局开奖</div>
+                        <input style="float: right;" type="button" class="btn btn-default" v-on:click="setAssignReward()" value="送出" />
+                    </div>
+                    <div class="portlet-body">
+                        <table class="table table-striped table-bordered table-hover">
+                            <tr>
+                                <th></th>
+                                <th>青龙</th>
+                                <th>白虎</th>
+                                <th>朱雀</th>
+                                <th>玄武</th>
+                            </tr>
+                            @{
+                                for (var i = 1; i <= 9; i++)
+                                {
+                                    <tr>
+                                        <th>@i</th>
+                                        <td>
+                                            <label>
+                                                胜
+                                                <input type="radio" value="1" v-model="assignChingLong[@i]" name="assignChingLong_@i" />
+                                            </label>
+                                            <label>
+                                                负
+                                                <input type="radio" value="0" v-model="assignChingLong[@i]" name="assignChingLong_@i" />
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                胜
+                                                <input type="radio" value="1" v-model="assignBaiHu[@i]" name="assignBaiHu_@i" />
+                                            </label>
+                                            <label>
+                                                负
+                                                <input type="radio" value="0" v-model="assignBaiHu[@i]" name="assignBaiHu_@i" />
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                胜
+                                                <input type="radio" value="1" v-model="assignChuChueh[@i]" name="assignChuChueh_@i" />
+                                            </label>
+                                            <label>
+                                                负
+                                                <input type="radio" value="0" v-model="assignChuChueh[@i]" name="assignChuChueh_@i" />
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                胜
+                                                <input type="radio" value="1" v-model="assignHsuanWu[@i]" name="assignHsuanWu_@i" />
+                                            </label>
+                                            <label>
+                                                负
+                                                <input type="radio" value="0" v-model="assignHsuanWu[@i]" name="assignHsuanWu_@i" />
+                                            </label>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8" style="padding:0;">
+                <div class="portlet box grey" style="margin:20px;">
+                    <div class="portlet-title">
+                        <div class="caption">指定记录</div>
+                    </div>
+                    <div class="portlet-body" style="height:450px; overflow:auto;">
+                        <table class="table table-striped table-bordered table-hover progressTable" id="AssignReward_table"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        var vApp = new Vue({
+            el: '#assignRewardList',
+            data: {
+                serverID: '@ViewBag.ServerID',
+                tableNo: '@ViewBag.TableNo',
+                gameID: '@ViewBag.GameID',
+                assignChingLong: [, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                assignBaiHu: [, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                assignChuChueh: [, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                assignHsuanWu: [, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            },
+            methods: {
+                getAssignReward: function () {
+                    const head = [                      
+                           { "sTitle": "时间", "mData": "StrCreateTime", "class": "width15", },
+                           {
+                               "sTitle": "完成度", "mData": "Complete", "class": "width10",
+                               "render": function (data, type, row) {
+                                   return data + "局";
+                               }
+                           },
+                           { "sTitle": "操作人", "mData": "Operator", "class": "width10" },
+                           {
+                               "sTitle": "开奖内容", "mData": "Result",
+                               "render": function (data, type, row) {
+                                   if (!data) { return data; }
+
+                                   return data.replace(/1/g, '胜').replace(/0/g, '负');
+                               }
+                           }]
+
+                    const opt = {
+                        "ordering": false,
+                        "searching": false,
+                        "aoColumns": head,
+                        "processing": true,
+                        "serverSide": true,
+                        "bLengthChange": false,
+                        "bPaginate": false,
+                        "ajax": {
+                            "type": "POST",
+                            "url": "/GameCommon/GetAssignReward",
+                            "data": {
+                                'gameID': vApp.gameID
+                            }
+                        },
+                        "destroy": true
+                    }
+                    $("#AssignReward_table").dataTable(opt)
+                },
+                setAssignReward: function () {
+                    var assignarray = [];
+                    for (var i = 1; i <= 9; i++) {
+                        var array = [];
+                        array.push(vApp.assignChingLong[i]);
+                        array.push(vApp.assignBaiHu[i]);
+                        array.push(vApp.assignChuChueh[i]);
+                        array.push(vApp.assignHsuanWu[i]);
+                        assignarray.push(array.join(','));
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            setting: assignarray.join(';'),
+                            serverID: vApp.serverID,
+                            tableNo: vApp.tableNo
+                        },
+                        traditional: true,
+                        url: "/GameCommon/SetAssignReward",
+                        success: function (result) {
+                            alert(result.msg);
+                            vApp.getAssignReward();
+                        },
+                        error: function (err) {
+                            alert("操作失敗");
+                        }
+                    });
+                }
+            }
+        });
+
+        vApp.getAssignReward();
+    </script>
+}

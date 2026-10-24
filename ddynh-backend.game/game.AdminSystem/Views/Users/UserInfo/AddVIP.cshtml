@@ -1,0 +1,48 @@
+﻿<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>添加监控用户
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="form1" method="post" class="form-horizontal form-bordered">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">用户ID</label>
+                            <div class="col-md-8">
+                                <input type="text" name="userID" class="form-control input-medium" placeholder="请输入用户ID" value="" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @Html.OkWithRight()
+                            @Html.Back(Url.Action("VIPList"))
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+@section initScripts{
+    <script>
+        var num = 0;
+        $(function () {
+            $("#form1").validate({
+                rules: {
+                    userID: {
+                        required: true,
+                        digits: true
+                    }
+                }
+            });
+        })
+    </script>
+}

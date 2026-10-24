@@ -1,0 +1,243 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+@using FW.Core.Helper
+
+@model game.Entity.Money.Cash
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_message")
+                @Html.Partial("~/Views/Shared/_userPartial.cshtml")
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default"> 搜 索 </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@if (Model != null)
+{
+    <br />
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i>修改金币
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <form id="form1" class="form-horizontal form-bordered" method="post">
+                        <div class="form-body">
+                            @Html.Partial("UserInfo", Model.User)
+                            <input hidden value="@Model.User.Id" name="userID" id="userID" />
+
+                            <div class="form-group">
+                                <label class="control-label col-md-5 ">余额</label>
+                                <div class="col-md-7">
+                                    <span>@Model.Amount.ToCash()</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 ">修改金额</label>
+                                <div class="col-md-7">
+                                    <input type="number" class="form-control input-small" id="amount" name="amount" placeholder="金额">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 ">增加稽核</label>
+                                <div class="col-md-7">
+                                    <input type="number" class="form-control input-small" id="auditAmount" name="auditAmount" placeholder="稽核流水金额">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-5 ">方案</label>
+                                <div class="col-md-7">
+                                    <div class="radio-list">
+                                        <label>
+                                            <input type="radio" name="auditType" value="1" onclick="javascript:clearAmount();" checked />人工补单(不计充值)
+                                            <i class="fa fa-question-circle tooltips active" data-container="body" data-placement="right" data-html="true" data-original-title="充值掉单/金额遗失"></i>
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="auditType" value="2" onclick="javascript:clearAmount();" />人工入款(计充值金额)
+                                            <i class="fa fa-question-circle tooltips active" data-container="body" data-placement="right" data-html="true" data-original-title="线下入款/三方金额收款但金额不对追加单"></i>
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="auditType" value="3" onclick="javascript:clearAmount();" />优惠活动
+                                            <i class="fa fa-question-circle tooltips active" data-container="body" data-placement="right" data-html="true" data-original-title="人工活动用、不计充值"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="control-label col-md-5 ">备注</label>
+                                <div class="col-md-7">
+                                    <textarea rows="3" name="memo" id="memo" class="form-control  input-large" placeholder="修改原因"></textarea>
+                                </div>
+                            </div>
+                            @*
+                            <div class="form-group">
+                                <label class="control-label col-md-5 ">金钥</label>
+                                <div class="col-md-7">
+                                    <input class="form-control placeholder-no-fix input-inline input-medium" type="text" autocomplete="off" data-required="1" id="txtScretKey" name="txtScretKey" placeholder="请输入金钥...">
+                                </div>
+                            </div>
+                            *@
+                            <input type="hidden" id="txtScretKey" name="txtScretKey" value="">
+                            <div class="form-actions">
+                                <div class="col-md-offset-5 col-md-7">
+                                    @Html.OkWithRight(value: "修改金币")
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+else
+{
+    game.Entity.Users.UserInfo data = ViewBag.Model as game.Entity.Users.UserInfo;
+    if (data != null)
+    {
+        <br />
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="portlet box grey">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-globe"></i>修改金币
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <form id="form1" class="form-horizontal form-bordered" method="post">
+                            <div class="form-body">
+                                @Html.Partial("UserInfo", data)
+                                <input hidden value="@Model.User.Id" name="userID" id="userID" />
+                                <div class="form-group">
+                                    <label class="control-label col-md-5 ">余额</label>
+                                    <div class="col-md-7">
+                                        <span>--</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-5 ">修改金额</label>
+                                    <div class="col-md-7">
+                                        <input type="number" class="form-control input-small " id="amount" name="amount" placeholder="金额">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-5 ">备注</label>
+                                    <div class="col-md-7">
+                                        <textarea rows="3" name="memo" id="memo" class="form-control  input-large" placeholder="修改原因"></textarea>
+                                    </div>
+                                </div>
+                                @*
+                                <div class="form-group">
+                                    <label class="control-label col-md-5 ">金钥</label>
+                                    <div class="col-md-7">
+                                        <input class="form-control placeholder-no-fix input-inline input-medium" type="text" autocomplete="off" data-required="1" id="txtScretKey" name="txtScretKey" placeholder="请输入金钥...">
+                                    </div>
+                                </div>
+                                *@
+                                <input type="hidden" id="txtScretKey" name="txtScretKey" value="">
+                                <div class="form-actions">
+                                    <div class="col-md-offset-5 col-md-7">
+                                        @Html.OkWithRight(value: "修改金币")
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                        <!-- END FORM-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    }
+}
+@section initScripts{
+    <script>
+        $(function () {
+            var validateFunc = function () {
+                var validator = new Validator()
+                validator.add([form_search.loginName, form_search.nickName, form_search.userID], [{
+                    strategy: 'isSomeNonEmpty',
+                    errorMsg: '账户信息不能全为空,请输入昵称、账号或者ID！'
+                }])
+
+                var errorMsg = validator.start()
+                return errorMsg
+            }
+
+            var form = document.getElementById('form_search')
+            form.onsubmit = function () {
+                var errorMsg = validateFunc()
+                if (errorMsg) {
+                    Msg.alert(errorMsg, 'danger')
+                    return false
+                }
+            }
+
+            fillFormData('form_search');
+
+            //增加小數第二位判斷
+            $.validator.addMethod("minNumber", (amount, el) => {
+                var ArrMen = amount.split(".");
+                if (ArrMen.length == 2) {
+                    if (ArrMen[1].length > 2) {
+                        return false;
+                    }
+                }
+                return true;
+            }, "小数点后最多为两位");
+
+            $("#form1").validate({
+                rules: {
+                    userID: {
+                        required: true
+                    },
+                    amount: {
+                        required: true,
+                        number: true,
+                        digits: {
+                            depends: function () {
+                                return ($('input[name="auditType"]:checked').val() == 2) ? true : false;
+                            }
+                        },
+                        range: [-2000000000, 2000000000],
+                        minNumber: $("#auditAmount").val()
+                    },
+                    memo: {
+                        required: true,
+                        minlength: 5,
+                        maxlength: 512
+                    },
+                    auditAmount: {
+                        required: true,
+                        number: true,
+                        minNumber: $("#auditAmount").val()
+                    },
+                    auditType: {
+                        required: true
+                    }
+                }
+            });
+        })
+
+        function clearAmount() {
+            $("#amount").val('');
+            $("#amount").focus();
+        }
+    </script>
+}

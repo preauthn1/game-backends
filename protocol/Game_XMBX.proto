@@ -1,0 +1,20 @@
+syntax = "proto2";
+
+package netproto;
+
+// XMBX 熊貓報喜遊戲訊息 1xxxx
+enum XMBX_GameMessageClassID {
+    // Server to Client 10xxx
+    XMBX_LightningPrepareID = 10001;  // Lightning 準備訊息
+    XMBX_LightningResultID = 10002;   // Lightning 結果
+
+    // Client to Server 11xxx
+    XMBX_ActionLightningSpinID = 11001;  // Lightning 轉轉轉
+
+    // 會一來一回的資訊 12xxx
+
+    // DB Handler {GAME_ID}xxxx
+    XMBX_LightningReadID = 10030001;     // 向DB讀取Lightning資訊
+    XMBX_LightningReadRetID = 10030002;  // DB回傳讀取Lightning資訊
+    XMBX_LightningRecordID = 10030003;   // 向DB更新Lightning資訊
+};

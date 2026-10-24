@@ -1,0 +1,21 @@
+server:
+  port: 888
+release:
+  root: D:\ftproot\release
+target:
+  root: D:\Server
+  gsdir: gameserver
+  srcdir: file
+  extname: exe
+stop:
+  base: D:\Server
+  commands:
+    - killall.bat
+    - killmain.bat
+start:
+  base: D:\Server
+  commands:
+    - startmain.bat
+    - startall.bat
+notify:
+  webhook: "https://example.invalid/webhook/1ef22373-712e-43fb-ab7e-f7e1bcd2d4d6@e16cc667-9473-4fc9-9b30-211cdec6647e/JenkinsCI/bf755502cd39488f834cf9dbcb285af9/4a62c4d6-f68a-464f-bf6e-eed5003fccff"

@@ -1,0 +1,54 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+
+@model  List<game.Entity.Warning.WarningType>
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>类型名称</th>
+                            <th>报警类型状态</th>
+                            <th>报警配置</th>
+                            <th>
+                                操作
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.TypeName</td>
+                                    <td>@item.Status.GetDisplayName()</td>
+                                    <td>
+                                        <div style="width:100%;white-space:normal;min-width:300px;">@item.Setting</div>     
+                                    </td>
+                                    <td>
+                                        @Html.LinkWithRight(action: "EditWarningType", href: "EditWarningType/"+item.Id)
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+            fillFormData('form_search');
+        })
+    </script>
+}

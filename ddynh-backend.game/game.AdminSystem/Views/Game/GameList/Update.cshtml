@@ -1,0 +1,213 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@using game.Infrastructure.Extensions
+@using game.AdminSystem
+
+@model game.AdminSystem.Models.ViewModels.GameListAdminUpdateViewModel
+
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>新增／修改　游戏项目
+                </div>
+            </div>
+            <div class="portlet-body form">
+
+                <!-- BEGIN FORM-->
+                <form id="myForm" method="post" class="form-horizontal form-bordered" novalidate="novalidate">
+                    <div class="form-body">
+
+                        <input type="hidden" id="IsUpdatePage" name="IsUpdatePage" value="@Model.IsUpdatePage.ToString()" />
+
+
+                        @if (Model.IsUpdatePage)
+                        {
+                            <input type="hidden" id="GameID" name="GameID" value="@Model.GameID" />
+                        }
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">游戏ID</label>
+                            <div class="col-md-3">
+                                <input type="text" id="GameID" name="GameID" class="form-control input-medium" value="@Model.GameID" placeholder="" maxlength="8"  @(Model.IsUpdatePage ?  "disabled='disabled'" : "") >
+                            </div>
+                        </div>
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">游戏名称</label>
+                            <div class="col-md-3">
+                                <input type="text" id="GameName" name="GameName" class="form-control input-medium" value="@Model.GameName" placeholder="">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">缩写代码</label>
+                            <div class="col-md-3">
+                                <input type="text" id="ShortName" name="ShortName" class="form-control input-medium" value="@Model.ShortName" placeholder="">
+                            </div>
+                        </div>
+
+
+                        @if (!Model.IsUpdatePage)
+                        {
+                            <div class="form-group last">
+                                <label class="control-label col-md-3">Android版本</label>
+                                <div class="col-md-3">
+                                    <input type="text" id="AndroidVersion" name="AndroidVersion" class="form-control input-medium" value="@Model.AndroidVersion" placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="form-group last">
+                                <label class="control-label col-md-3">iOS版本</label>
+                                <div class="col-md-3">
+                                    <input type="text" id="IOSVersion" name="IOSVersion" class="form-control input-medium" value="@Model.IOSVersion" placeholder="">
+                                </div>
+                            </div>
+                        }
+
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">启用状态</label>
+                            <div class="col-md-3">
+
+                                @{
+                                    var setting_status = new DropdownPartialSettingViewModel(FirstOptionValueEnum.None, Model.Status);
+                                }
+
+                                @Html.Partial("_DropdownActiveStatus", setting_status)
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">所属游戏商</label>
+                            <div class="col-md-3">
+
+                                @{
+                                    var dopdownModel = new DropdownPartialSettingViewModel(FirstOptionValueEnum.None, Model.GameMerchantID);
+                                    dopdownModel.FirstOption = new FirstOptionSettingModel
+                                    {
+                                        Text = "无",
+                                        Value = ""
+                                    };
+
+                                    dopdownModel.IsLockSelect = Model.IsUpdatePage;
+                                }
+
+                                @Html.Partial("_DropdownGameMerchant", dopdownModel)
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">对应游戏钱包</label>
+                            <div class="col-md-3">
+
+                                @{
+                                    var dopdownModel_walletType = new DropdownPartialSettingViewModel(FirstOptionValueEnum.None, Model.GameMerchantID);
+
+                                    //如果是新增
+                                    if (!Model.IsUpdatePage)
+                                    {
+                                        dopdownModel_walletType = new DropdownPartialSettingViewModel(FirstOptionValueEnum.MustSelect);
+                                    }
+
+                                    dopdownModel_walletType.IsLockSelect = Model.IsUpdatePage;
+
+
+                                    if (Model.IsUpdatePage)
+                                    {
+                                        dopdownModel_walletType.FirstOption = null;
+                                    }
+
+
+                                }
+
+                                @Html.Partial("_DropdownGameWalletType", dopdownModel_walletType)
+
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button id="btnOk" type="submit" class="btn dark" style="" onclick=""><i class="fa fa-file-o"></i> 确定</button>
+                             @Html.Back(Url.Action("List", "GameList"))
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section initScripts
+{
+    <script>
+
+
+        $("#myForm").validate({
+            rules: {
+
+                GmaeID: {
+                    required: true,
+                },
+                
+                GameName: {
+                    required: true,
+                    maxlength: 25
+                },
+
+
+                AndroidVersion: {
+                    required: true,
+                    maxlength: 25
+                },
+
+                 IOSVersion: {
+                    required: true,
+                    maxlength: 25
+                },
+
+
+                ShortName: {
+                    required: true,
+                    maxlength: 25
+                },
+
+                GameMerchantWalletID: {
+                    required: true
+                },
+
+            },
+            messages: {
+                Name: {
+                    required: "不能为空",
+                }
+            }
+        });
+
+    </script>
+}

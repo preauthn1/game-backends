@@ -1,0 +1,163 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@model game.AdminSystem.Models.ViewModels.PromotionEventUpdateModel
+
+@{
+
+    string beginTimeText = Model.EventStartTime.HasValue ? Model.EventStartTime.Value.ToString("yyyy-MM-dd HH:mm") : "";
+    string endTimeText = Model.EventEndTime.HasValue ? Model.EventEndTime.Value.ToString("yyyy-MM-dd HH:mm") : "";
+
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>活动公告管理
+                </div>
+            </div>
+            <div class="portlet-body form">
+
+                <!-- BEGIN FORM-->
+                <form id="myForm" method="post" class="form-horizontal form-bordered" novalidate="novalidate">
+                    <div class="form-body">
+
+
+                        <input type="hidden" value="@Model.EventId" name="EventId" id="EventId" />
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">活动名称</label>
+                            <div class="col-md-3">
+                                <input type="text" id="Title" name="Title" class="form-control input-medium" value="@Model.Title" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">活动备注</label>
+                            <div class="col-md-3">
+                                <input type="text" id="Memo" name="Memo" class="form-control input-medium" value="@Model.Memo" placeholder="">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">所属平台</label>
+                            <div class="col-md-3">
+
+                                @{ 
+                                    var dopdownModel = new DropdownPartialSettingViewModel(FirstOptionValueEnum.MustSelect, Model.PlatformID);
+                                    dopdownModel.IsLockSelect = Model.IsUpdatePage;
+                                }
+
+                                @Html.Partial("_DropdownPlatform", dopdownModel)
+
+                            </div>
+                        </div>
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">启用状态</label>
+                            <div class="col-md-3">
+
+                                @Html.Partial("_DropdownActiveStatus", new DropdownPartialSettingViewModel(FirstOptionValueEnum.None, Model.Status))
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">活动起始时间</label>
+                            <div class="col-md-3">
+
+                                <input type="text" class="form-control " style="width:180px" id="EventStartTime" name="EventStartTime" value="@beginTimeText" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间">
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">活动结束时间</label>
+                            <div class="col-md-3">
+
+                                <input type="text" class="form-control " style="width:180px" id="EventEndTime" name="EventEndTime" value="@endTimeText" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button id="btnOk" type="submit" class="btn dark" style="" onclick=""><i class="fa fa-file-o"></i> 确定</button>
+                            <button id="btnBack" type="button" class="btn " style="" onclick="javascript:window.history.back();return false;"><i class="fa  fa-mail-reply-all"></i> 返回</button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section initScripts
+{
+    <script>
+
+         $.validator.addMethod("checkMaxLength", function (val, el) {
+                var len = 0;
+                for (var i = 0; i < val.length; i++) {
+                    len += (val[i].match(/[^\x00-\xff]/ig) != null) ? 2 : 1;
+                }
+                if (len <= 12) 
+                    return true;
+                else
+                    return false;
+         }, "请输入一个 字元长度最多是 12 的字符串");
+
+
+        $("#myForm").validate({
+            rules: {
+                Title: {
+                    required: true,
+                    checkMaxLength : $("#Title").val()
+                },
+
+                Memo: {
+                    maxlength: 100
+                },
+
+                AreaID: {
+                    required: true
+                },
+
+                EventStartTime: {
+                    required: true
+                },
+
+                EventEndTime: {
+                    required: true
+                },
+
+            },
+            messages: {
+                Name: {
+                    required: "不能为空",
+                }
+            }
+        });
+
+    </script>
+}

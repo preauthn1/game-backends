@@ -1,0 +1,44 @@
+﻿@model List<KCKJ.Core.AdminSys.Provider.Entity.Right>
+
+@helper  BuildRightTree(int rid)
+{
+    var rt = Model.Where(r => r.RightID == rid).FirstOrDefault();
+    var crs = Model.Where(r => r.ParentID == rid).OrderBy(r => r.Sort).ToList();
+
+    <li>
+        <span>
+        @if(String.IsNullOrWhiteSpace(rt.PageUrl))
+        {
+            @rt.RightName
+        }
+        else
+        {
+            <a href="@rt.PageUrl" target="main">
+                @rt.RightName
+            </a> 
+        }
+        </span>
+        @{
+            if (crs.Count > 0)
+            {
+                <ul>
+                    @foreach (var cr in crs)
+                    {
+                        @BuildRightTree(cr.RightID);
+                    }
+                </ul>
+            }
+        }
+    </li>
+}
+
+@if (Model != null && Model.Count > 0)
+{
+    var prights = Model.Where(r => r.ParentID == 0 || r.ParentID == r.RightID);
+    @:<ul id="tt" class="easyui-tree">
+    foreach (var pr in prights)
+    {
+        @BuildRightTree(pr.RightID);
+    }
+    @:</ul>
+}

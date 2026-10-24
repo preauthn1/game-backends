@@ -1,0 +1,409 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@using game.Infrastructure.Extensions;
+@using game.Entity.Event;
+
+@model game.AdminSystem.Models.ViewModels.EventSettingAdvanceSettingUpdateModel
+
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+@{ 
+    bool isMultipleGroup = Model.BonusGroupCategory.Count() > 1;
+
+    //若是比例型 (e.g. 1%) 的獎勵 有特殊的參數可以設置
+    bool isRateBonus = Model.BonusGroupCategory.SelectMany(x => x.BonusItems).Any(z => z.BonusType == (int)EventBonusTypeEnum.PercentageFromChargeAmount);
+
+}
+
+
+<style>
+
+    .rowBox {
+        padding: 10px;
+        clear: both;
+    }
+
+    .step_title {
+        
+        /*border-bottom: solid 1px #CCC;*/
+        font-size: 15px;
+        padding: 3px;
+        width:90%;
+        font-weight: 700;
+        color: #444;
+    }
+
+    .table th {
+        color: #666;
+        font-weight:400 !important;
+    }
+
+    .innerBox {
+        padding: 15px 10px 5px 25px;
+    }
+
+
+    .eachGroup
+    {
+        border: solid 7px #EEE;
+        padding:15px 3px 15px 35px;
+    }
+
+
+    .smallHintText
+    {
+        font-size:12px;
+        color:#888;
+        font-weight:400;
+    }
+
+
+    .bonusGroupTitle
+    {
+        font-size:18px;
+        font-weight:700;
+        margin-left:-10px;
+        margin-bottom:20px;
+        color:#204ea2;
+    }
+
+    .priorityText
+    {
+        padding: 5px 15px;
+        font-size: 12px;
+        float: right;
+        background: #5c98b5;
+        border-radius: 5px !important;
+        font-weight: 400;
+        color: #FFF;
+        margin-right: 10px;
+    }
+
+</style>
+
+@if(isMultipleGroup)
+{
+    <style>
+        .eachGroup
+        {
+            margin-bottom:50px;
+        }
+    </style>
+}
+
+
+
+
+
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>奖励活动高級設置
+                </div>
+            </div>
+
+            <div class="portlet-body form">
+
+                <!-- BEGIN FORM-->
+                <form id="myForm" method="post" class="form-horizontal form-bordered" novalidate="novalidate">
+                    <div class="form-body" style="padding-top:20px;">
+
+                        <input type="hidden" value="@Model.EventSettingID" name="eventId" id="eventId" />
+
+
+                        @{ 
+                            var eventType = Model.EventType;
+                            string tipMSg = string.Empty;
+
+                            if(eventType == ApplyEventTypeEnum.SeventDaysBonus)
+                            {
+                                tipMSg = "请针对七日登入设置一个奖励金额，鼓励用户登入";
+                            }
+                            else if(eventType == ApplyEventTypeEnum.FirstChargeBonus)
+                            {                                
+                                tipMSg = "首存奖励设置";
+                            }                            
+                        }
+
+                        <div>
+
+                            <div style="font-size:20px;text-align:center;font-weight:700;" title="活动名称">
+                                @Model.EventName
+
+                                @if(!string.IsNullOrWhiteSpace(Model.EventStatusHintText))
+                                {
+                                <span style="font-size:14px;margin-left:5px;">(状态:@Model.EventStatusHintText)</span>
+                                }
+                            </div>
+
+                            <div style="font-size:12px;text-align:center;margin-top:5px;color:#888;margin-bottom:10px;">
+                                <span title="活动类型">
+                                    @Model.EventTypeName
+                                </span>
+                                <span id="myTip" aria-hidden="true" style="color:#444;" title="" data-original-title="@tipMSg" class="glyphicon glyphicon-exclamation-sign">
+                                </span>
+                            </div>
+
+                           
+                        </div>
+
+
+
+                        @* 迴圈 eachGroup *@
+                    <div class="eachGroup" v-for="(eachGroup, index) in BonusGroupCategory">
+
+
+                        @if (isMultipleGroup)
+                        {
+                        <div class="bonusGroupTitle">
+                            {{eachGroup.BonusGroupDisplayName}}
+                            <span class="priorityText">
+                                排序{{eachGroup.BonusGroup}}
+                            </span>
+                        </div>
+                        }
+
+
+                        <div class="step_title">
+                            奖励设置
+                        </div>
+
+                        <div class="innerBox">
+
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:150px;">项目</th>
+                                        <th>
+                                            设置数值
+                                        </th>
+                                        <th>
+                                            流水倍数 (需整数)
+                                            <span id="noticeTip" aria-hidden="true" style="color:#444;" data-original-title="需设定整数，不允许小数点" class="glyphicon myTips glyphicon-exclamation-sign">
+                                            </span>
+                                        </th>
+
+
+                                        @if (isRateBonus)
+                                        {
+                                        <th>
+                                            赠送金币上限(需整数)
+                                        </th>
+                                        }
+
+
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+
+                                    <tr v-for="(item, index) in eachGroup.BonusItems">
+                                        <td style="line-height:30px;">
+                                            {{item.DisplayName}}
+                                        </td>
+                                        <td>
+                                            <input type="number" name="Amount" class="form-control input-medium" v-model="item.Amount" placeholder="" />
+                                        </td>
+                                        <td>
+                                            <input type="number" name="FlowRate" class="form-control input-medium" v-model="item.FlowRate" placeholder="" />
+                                        </td>
+
+                                        @if (isRateBonus)
+                                        {
+                                            <td>
+                                                <input type="number" name="MaxAmountLimit" class="form-control input-medium" v-model="item.MaxAmountLimit" placeholder="" />
+                                            </td>
+                                        }
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <div class="step_title" style="margin-top:15px;">
+                            领取资格设置
+                        </div>
+
+
+                        <div class="innerBox">
+
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:150px;">限制条件</th>
+                                        <th>设置数值</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    <tr v-for="(item, index) in eachGroup.Rules">
+                                        <td style="line-height:30px;">
+                                            {{item.DisplayName}}
+                                        </td>
+                                        <td>
+                                            <input v-bind:type="item.TextboxType" class="form-control input-medium" v-model="item.Value" v-if="item.TextboxType != 'checkbox'" />
+                                            <input v-bind:type="item.TextboxType" class="form-control" style="width:16px;" v-model="item.Value" v-if="item.TextboxType == 'checkbox'" :disabled="item.IsDisabled" />
+                                        </td>
+                                    </tr>
+
+
+                                </tbody>
+
+                            </table>
+                        </div>
+
+
+
+                    </div>
+
+
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-4 col-md-8">
+
+                            @if (Model.IsNotAllowEdit)
+                            {
+                                <span id="myTip" aria-hidden="true" style="color:#444;" title="" data-original-title="不同类型的活动，可设置的项目不同" class="glyphicon glyphicon-exclamation-sign">
+                                </span>
+                                <span>
+                                    您没有编辑权限或此活动已被删除不允许编辑
+                                </span>
+                            }
+                            else
+                            {
+                                <button id="btnOk" type="button" class="btn dark" style="" v-on:click="saveChange()"><i class="fa fa-file-o"></i> 确定</button>
+                            }
+
+
+                            @Html.Back(Url.Action("List", "Activity"))
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+
+
+
+
+        </div>
+
+    </div>
+</div>
+
+
+@section initScripts
+{
+    <script>
+
+        $(function () {
+        
+            var vApp = new Vue({
+                el: '#myForm',
+                data: {
+                    BonusGroupCategory: @Html.Raw(Model.BonusGroupCategory.ConvertToJsonString())
+                },
+                 methods: {
+                    saveChange: function (ID) {
+
+                         var model =
+                         {
+                             EventSettingID: '@Model.EventSettingID',
+                             BonusGroupCategory: this.BonusGroupCategory
+                         };
+
+                         //jquery validate無法檢查name相同的元素 (只會檢查第一個)，所以只好自己寫alert了
+                         if ($('#myForm').valid() == false)
+                         {
+                             return;
+                         }                         
+
+                         
+                         global_valid = true; //重製檢查值
+                         checkNotNullAndNotMinusByElementClass('Amount');
+                         checkNotNullAndNotMinusByElementClass('FlowRate');
+
+
+                         if (!global_valid)
+                             return;
+
+
+                         $.ajax({
+                            cache: false,
+                            url: '/ActivityEventRule/EditAdvance',
+                            type: 'POST',
+                            contentType: "application/json",
+                            dataType: "json",
+                            data: JSON.stringify(model)                           ,
+                            success: function (data) {
+
+                                if (data.IsSuccess)
+                                {
+                                    alert(data.Message);
+                                    location.reload();
+                                }
+                                else
+                                {
+                                    alert(data.Message);
+                                }
+
+                            },
+                            error: function (err) {
+                                swal({
+                                    type: 'error',
+                                    title: '操作失败',
+                                    text: err
+                                })
+                            }
+                        });
+                    }
+                }
+            });
+
+
+
+
+            $("#myForm").validate({
+                rules: {
+                    FlowRate: {
+                        required: true
+                    },
+                    Amount: {
+                        required: true,
+                        maxlength: 32
+                    }
+                },
+                messages: {
+                    GiftCash: {
+                        number: '只能使用数字'
+                    }
+                }
+            });
+
+            
+            $('#myTip').tooltip();
+            $('.myTips').tooltip();
+
+        });
+
+
+
+    </script>
+}

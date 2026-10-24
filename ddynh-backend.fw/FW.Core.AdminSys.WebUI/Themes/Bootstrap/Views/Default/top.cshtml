@@ -1,0 +1,99 @@
+﻿@model FW.Core.AdminSys.Provider.AdminSysInfo
+@{
+    FW.Core.Auth.AuthUser user = ViewBag.User;
+    Layout = null;
+}
+
+<div class="header-inner">
+    <!-- BEGIN LOGO -->
+    <a class="navbar-brand" style="color:aliceblue;margin-left:12px;margin-top:5px;font-size:18px;" href="/Admin/Default/Index" >
+        @ViewBag.Logo
+    </a>
+    <!-- END LOGO -->
+    
+    <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+    <a href="javascript:;" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <img src="@Url.Content("~/Content/Bootstrap/assets/img/menu-toggler.png")" alt="" />
+    </a>
+    <!-- END RESPONSIVE MENU TOGGLER -->
+    <!-- BEGIN TOP NAVIGATION MENU -->
+    <ul class="nav navbar-nav pull-right">
+        <!-- BEGIN NOTIFICATION DROPDOWN -->
+        <!-- END NOTIFICATION DROPDOWN -->
+        <!-- BEGIN INBOX DROPDOWN -->
+        <!-- END INBOX DROPDOWN -->
+        <!-- BEGIN TODO DROPDOWN -->
+        <!-- END TODO DROPDOWN -->
+        <!-- BEGIN USER LOGIN DROPDOWN -->
+        @{Html.RenderPartial("customRightTop");}
+
+        <li class="dropdown user">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                <img alt="" src="https://example.invalid/api/?size=32&background=0D8ABC&color=fff&name=@user.LoginName">
+                <span class="username">
+                    @user.LoginName
+                </span>
+                <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="@Url.Action("ModifyPassword", "Account")">
+                        <i class="fa fa-lock"></i> 修改密码
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Logout","Default")">
+                        <i class="fa fa-key"></i> 退出登陆
+                    </a>
+                </li>
+            </ul>
+        </li>
+        @*<li><a class="btn dark" style="padding: 10px; margin-top: 10px;">@user.LoginName</a></li>
+        <li>
+            <a href="@Url.Action("ModifyPassword", "Account")" class="btn dark" style="padding:10px; margin-top:10px;">
+                <i class="fa fa-edit"></i> 修改密码
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Logout","Default")" class="btn dark" style="padding: 10px; margin-top: 10px;">
+                <i class="fa fa-sign-out"></i> 退出登陆
+            </a>
+        </li>*@
+        @*<li class="dropdown user">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                <img alt="" src="~/Content/Bootstrap/assets/img/avatar.png" />
+                <span class="username">
+                    @user.LoginName
+                </span>
+                <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="@Url.Action("ModifyLoginName", "Account")">
+                        <i class="fa fa-user"></i> 我的账号
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ModifyPassword", "Account")">
+                        <i class="fa fa-user"></i> 修改密码
+                    </a>
+                </li>
+                <li class="divider">
+                </li>
+                <li>
+                    <a href="javascript:;" id="trigger_fullscreen">
+                        <i class="fa fa-arrows"></i> 全屏显示
+                    </a>
+                </li>
+
+                <li>
+                    <a href="@Url.Action("Logout","Default")">
+                        <i class="fa fa-key"></i> 退出登陆
+                    </a>
+                </li>
+            </ul>
+        </li>*@
+        <!-- END USER LOGIN DROPDOWN -->
+    </ul>
+    <!-- END TOP NAVIGATION MENU -->
+</div>

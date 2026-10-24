@@ -1,0 +1,60 @@
+{{- $root := . }}
+{{- $adminver := .Values.defaultVersion | default "latest" }}
+{{- if $root.Values.versions }}
+  {{- if $root.Values.versions.common }}
+    {{- if index $root.Values.versions.common "admin-web" }}
+    {{- $adminver = index $root.Values.versions.common "admin-web" }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "game-server.fullname" . }}-admin-web
+  labels:
+    {{- include "game-server.labels" . | nindent 4 }}
+  annotations:
+    example.invalid/auto: "true"
+spec:
+  replicas: {{ .Values.adminweb.replicas }}
+  selector:
+    matchLabels:
+      app: admin-web
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      name: {{ include "game-server.fullname" . }}-admin-web
+      labels:
+        app: admin-web
+        {{- include "game-server.labels" . | nindent 8 }}
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      volumes:
+        - name: storage
+          emptyDir: {}
+        - name: tz-config
+          hostPath: 
+            path: /usr/share/zoneinfo/{{ .Values.timezone | default "UTC" }}
+      containers:
+        - name: admin-web
+          image: example.invalid/admin-web:{{ $adminver | default "latest" }}
+          imagePullPolicy: Always
+          env:
+            - name: NUXT_API_BASE
+              value: http://{{ include "game-server.fullname" . }}-admin-api
+            - name: NUXT_PUBLIC_API_BASE
+              value: {{ .Values.adminweb.apibase }}
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          volumeMounts:
+            - name: tz-config
+              mountPath: /etc/localtime
+              readOnly: true

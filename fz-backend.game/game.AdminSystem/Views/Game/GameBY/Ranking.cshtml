@@ -1,0 +1,209 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .portlet-body .btn_link {
+        padding-left: 5px;
+        font-weight: bold;
+        text-decoration: underline;
+        color: #428bca;
+    }
+
+    .portlet-body .btn_link_Red {
+        padding-left: 5px;
+        font-weight: bold;
+        text-decoration: underline;
+        color: red;
+    }
+
+    .update_Red {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: red;
+    }
+
+    .update_Green {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: #58ae63;
+    }
+
+    .ranking_contain {
+      display: flex;
+    }
+
+    .ranking_main {
+      margin:5px
+    }
+</style>
+
+<div class="row" id="rankingList">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <div class="ranking_contain">
+                <div class="col-md-4 ranking_main">
+                    <div class="portlet box grey">
+                        <div class="portlet-title">
+                            <div class="caption">捕鱼输赢总榜</div>
+                        </div>
+                        <div class="portlet-body">
+                            <table class="table table-striped table-bordered table-hover progressTable" id="Ranking_table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>放分金额</th>
+                                        <th>今日输赢</th>
+                                        <th>总输赢</th>
+                                        <th>最后上线时间</th>
+                                        <th>放分设置</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="data in totalRanking">
+                                        <td>
+                                            <a target="_blank" :href="'/UserInfo/Search?userID=' + data.UserID + '&beginTime=@(DateTime.Now.ToString("yyyy-MM-01 HH:mm"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))'">{{data.UserID}}</a>
+                                        </td>
+                                        <td>{{ToCash(data.SumAssignAmount)}}</td>
+                                        <td>
+                                            <span class="update_Red" v-if="(data.TodayUserWinLose) < 0">{{ToCash(data.TodayUserWinLose)}}</span>
+                                            <span class="update_Green" v-else>{{ToCash(data.TodayUserWinLose)}}</span>
+                                        </td>
+                                        <td>
+                                            <span class="update_Red" v-if="(data.TotalUserWinLose) < 0">{{ToCash(data.TotalUserWinLose)}}</span>
+                                            <span class="update_Green" v-else>{{ToCash(data.TotalUserWinLose)}}</span>
+                                        </td>
+                                        <td>{{data.StrLoginTime}}</td>
+                                        <td>
+                                            <a target="_blank" class="btn_link" :href="'/GameBY/VIPUser?gameid=14&userId=' +data.UserID">跳转</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 ranking_main" >
+                    <div class="portlet box grey">
+                        <div class="portlet-title">
+                            <div class="caption">捕鱼输赢今日榜</div>
+                        </div>
+                        <div class="portlet-body">
+                            <table class="table table-striped table-bordered table-hover progressTable" id="TodayRanking_table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>放分金额</th>
+                                        <th>今日输赢</th>
+                                        <th>总输赢</th>
+                                        <th>放分设置</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="data in todayRanking">
+                                        <td>
+                                            <a target="_blank" :href="'/UserInfo/Search?userID=' + data.UserID + '&beginTime=@(DateTime.Now.ToString("yyyy-MM-01 HH:mm"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))'">{{data.UserID}}</a>
+                                        </td>
+                                        <td>{{ToCash(data.SumAssignAmount)}}</td>
+                                        <td>
+                                            <span class="update_Red" v-if="(data.TodayUserWinLose) < 0">{{ToCash(data.TodayUserWinLose)}}</span>
+                                            <span class="update_Green" v-else>{{ToCash(data.TodayUserWinLose)}}</span>
+                                        </td>
+                                        <td>
+                                            <span class="update_Red" v-if="(data.TotalUserWinLose) < 0">{{ToCash(data.TotalUserWinLose)}}</span>
+                                            <span class="update_Green" v-else>{{ToCash(data.TotalUserWinLose)}}</span>
+                                        </td>
+                                        <td>
+                                            <a target="_blank" class="btn_link" :href="'/GameBY/VIPUser?gameid=14&userId=' +data.UserID">跳转</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 ranking_main">
+                    <div class="portlet box grey">
+                        <div class="portlet-title">
+                            <div class="caption">捕鱼输赢昨日榜</div>
+                        </div>
+                        <div class="portlet-body">
+                            <table class="table table-striped table-bordered table-hover progressTable" id="TodayRanking_table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>放分金额</th>
+                                        <th>昨日输赢</th>
+                                        <th>截至昨日总输赢</th>
+                                        <th>放分设置</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="data in yestodayRanking">
+                                        <td>
+                                            <a target="_blank" :href="'/UserInfo/Search?userID=' + data.UserID + '&beginTime=@(DateTime.Now.ToString("yyyy-MM-01 HH:mm"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))'">{{data.UserID}}</a>
+                                        </td>
+                                        <td>{{ToCash(data.SumAssignAmount)}}</td>
+                                        <td>
+                                            <span class="update_Red" v-if="(data.TodayUserWinLose) < 0">{{ToCash(data.TodayUserWinLose)}}</span>
+                                            <span class="update_Green" v-else>{{ToCash(data.TodayUserWinLose)}}</span>
+                                        </td>
+                                        <td>
+                                            <span class="update_Red" v-if="(data.TotalUserWinLose) < 0">{{ToCash(data.TotalUserWinLose)}}</span>
+                                            <span class="update_Green" v-else>{{ToCash(data.TotalUserWinLose)}}</span>
+                                        </td>
+                                        <td>
+                                            <a target="_blank" class="btn_link" :href="'/GameBY/VIPUser?gameid=14&userId=' +data.UserID">跳转</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        var vApp = new Vue({
+            el: '#rankingList',
+            data: {
+                todayRanking: {},
+                totalRanking: {},
+                yestodayRanking: {}
+            },
+            methods: {
+                ToCash: function (val) {
+                    return ToCash(val);
+                },
+                getRankingList: function () {
+                    $.get('/GameBY/GetFishRanking', {}, function (data) {
+                        if (data instanceof Object) {
+                            vApp.todayRanking = data.TodayRanking;
+                            vApp.totalRanking = data.TotalRanking;
+                            vApp.yestodayRanking = data.YestodayRanking
+                        }
+                        else {
+                            vApp.todayRanking = {};
+                            vApp.totalRanking = {};
+                        }
+                    });
+                }
+            }
+        });
+
+        vApp.getRankingList();
+        setInterval(function () {
+            vApp.getRankingList();
+        }, 5000);
+
+    </script>
+}

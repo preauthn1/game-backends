@@ -1,0 +1,5 @@
+GameId: 14
+ServerId: 88
+WorkerCount: 1
+SiteId: 2
+TfAPI: http://example.invalid/ServerNode/Transfer?data=%s

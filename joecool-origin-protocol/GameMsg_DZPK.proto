@@ -1,0 +1,249 @@
+//==================================================================
+//文件名： GameMsg_DZPK.proto
+//作者：
+//日期：
+//说明：   德州扑克游戏客户服务器通信协议
+//修改记录：
+//==================================================================
+syntax = "proto2";
+
+package netproto;
+
+import "GameMsg.proto";
+
+message DZPK_WaitOpt {
+    required bool bet = 1;
+    required bool call = 2;
+    required bool raise = 3;
+    required bool allin = 4;
+    required bool check = 5;
+    required bool fold = 6;
+    required int32 optTime = 7;
+    repeated int32 betaddvalue = 8;
+};
+
+message DZPK_WaitOptSeat {
+    required int32 SeatNo = 1;         //座位号
+    required int32 optTime = 2;        //可操作时间
+    repeated DZPK_Operability op = 3;  //可操作信息
+    required int64 TotalJetton = 4;    //当前底池
+};
+
+message DZPK_Operability {
+    required int32 opType = 1;
+    required int64 opJetton = 2;
+}
+
+//选中座位号
+message DZPK_SeatNO {
+    required int32 SeatNo = 1;
+};
+
+//下底操作
+message DZPK_BetBase {
+    repeated DZPK_BetBaseInfo Betbasedata = 1;
+};
+
+message DZPK_BetBaseInfo {
+    required int32 SeatNo = 1;   //座位号
+    required int64 betbase = 2;  //盲注筹码
+    required int32 Role = 3;     //角色
+}
+
+//客户端请求：下注
+message DZPK_Bet {
+    required int64 jetton = 1;
+};
+
+//客户端请求：加注
+message DZPK_Raise {
+    required int64 jetton = 1;
+};
+
+//客户端请求：看牌，过
+message DZPK_Check {
+    required int64 jetton = 1;
+};
+//客户端请求：跟注
+message DZPK_Call {
+    required int64 jetton = 1;
+};
+
+//客户端请求：Allin
+message DZPK_AllIn {
+    required int64 jetton = 1;
+};
+
+//客户端请求：弃牌
+message DZPK_Fold {
+    required int64 jetton = 1;
+};
+
+//服务端消息：广播下注消息
+message DZPK_BrodCastBet {
+    required int32 SeatNo = 1;
+    required int64 jetton = 2;
+};
+
+//服务端消息：广播加注消息
+message DZPK_BrodCastRaise {
+    required int32 SeatNo = 1;
+    required int64 jetton = 2;
+};
+
+//服务端消息：广播跟注消息
+message DZPK_BrodCastCall {
+    required int32 SeatNo = 1;
+    required int64 jetton = 2;
+};
+
+//服务端消息：广播过，看牌消息
+message DZPK_BrodCastCheck {
+    required int32 SeatNo = 1;
+    required int64 jetton = 2;
+};
+
+//服务端消息：广播Allin消息
+message DZPK_BrodCastAllIn {
+    required int32 SeatNo = 1;
+    required int64 jetton = 2;
+};
+
+//服务端消息：广播弃牌消息
+message DZPK_BrodCastFold {
+    required int32 SeatNo = 1;
+    required int64 jetton = 2;
+};
+
+message DZPK_GameRet {
+    required int32 winSeatNO = 1;
+    required int32 money = 2;
+    repeated DZPK_Poker OtherPoker = 3;
+};
+
+message DZPK_Poker {
+    required int32 PokerType = 1;
+    required UserPoker userpokergroup = 2;
+};
+
+//服务端消息：发牌结构，用于开局发两张私有牌
+message DZPK_PrivatePoker {
+    repeated DZPK_PrivateCard Cards = 2;
+};
+message DZPK_PrivateCard {
+    required int32 SeatNo = 1;
+    repeated PokerCard Cards = 2;
+};
+
+//服务端消息：牌结构体
+message DZPK_BrodCastCardsPoker {
+    required int32 Type = 1;  // 0,私有牌；1公共牌
+    repeated PokerCard Cards = 2;
+};
+
+//服务端消息：彩池结构
+message DZPK_BroadCastPotInfo {
+    repeated int64 jetton = 1;
+};
+
+// 服务端消息：更新用户牌型信息
+message DZPK_BroadCastCardType {
+    required int32 Type = 1;
+};
+// 服务端消息：亮牌，比牌
+message DZPK_BroadCastSettlement {
+    required int32 UserId = 1;
+};
+
+//服务端消息：用户断线重连数据结构
+message DZPK_UserInfoArr {
+    required int32 CurrOptSeatNo = 1;
+    required int32 OptTime = 2;
+    required int32 OptTimeTotal = 3;
+    required int32 ButtonNO = 4;
+    required int64 JettonTotal = 5;
+    repeated DZPK_UserInfo UserInfo = 6;
+};
+
+message DZPK_UserInfo {
+    required int32 SeatNo = 1;
+    required bool bfold = 3;
+};
+
+//********************************************
+//服务端消息：单局结算信息
+message DZPK_SettleMentRound {
+    repeated DZPK_PotInfo PotData = 1;
+}
+message DZPK_PotInfo {
+    required int32 PotIndex = 1;             //奖池号
+    repeated DZPK_PotUserInfo UserInfo = 2;  //赢得奖池的玩家信息
+}
+message DZPK_PotUserInfo {
+    required int32 SeatNo = 1;     //座位号
+    required int64 WinJetton = 2;  //获得的筹码
+    optional int32 CardType = 3;   //胜利者牌型
+    repeated PokerCard Cards = 4;  //胜利者牌（只显示最大胜利者）
+}
+//********************************************
+
+//服务端消息：游戏设置
+message DZPK_GameSetting {
+    required int32 SeatNo = 1;     //座位号
+    required int64 Bigblind = 2;   //大盲盲注
+    required int32 ReadyTime = 3;  //准备时间
+}
+
+//***********************************************
+//服务端消息：游戏场景
+message DZPK_GameSence {
+    required int32 GameState = 1;          //游戏状态阶段
+    repeated PokerCard PubCards = 2;       //公共牌
+    repeated DZPK_UsersInfo Users = 3;     //其他玩家信息
+    repeated int64 Pots = 4;               //玩家奖池
+    required int32 CurOprationSeatNo = 5;  //当前操作玩家座位号
+    required int32 BeginOutTime = 6;       //当前玩家开始操作倒计时，unix时间戳
+    required int32 OpWaitTime = 7;         //操作等待时间
+}
+message DZPK_UsersInfo {
+    required int32 SeatNo = 1;            //座位号
+    required int32 Role = 2;              //玩家角色
+    required int32 CardType = 3;          //玩家牌型
+    required int64 TotalJetton = 4;       //玩家总筹码
+    required int64 CurBetJetton = 5;      //玩家当前下注筹码筹码
+    repeated PokerCard Cards = 6;         //玩家私有牌
+    required int32 UserState = 7;         //玩家状态：-1未参与游戏，0游戏，1弃牌，2Allin
+    repeated DZPK_Operability op = 8;     //可操作信息
+    required int64 CurTurnBetJetton = 9;  //玩家当前轮下注筹码筹码
+    required int64 NetProfit = 10;        //玩家当前纯利润
+}
+//***********************************************
+
+message DZPK_ErrorMsg {
+    required int32 ErrorType = 1;   //错误类型，-1操作错误
+    required string ErrorInfo = 2;  //错误信息
+}
+
+//***********************************************
+//所有玩家手牌
+message DZPK_UserCardsInfo {
+    repeated DZPK_UserHandCards data = 1;  //用户数据
+}
+
+message DZPK_UserHandCards {
+    required int32 SeatNo = 1;     //座位号
+    repeated PokerCard Cards = 2;  //手牌
+    required int32 CardType = 3;   //玩家牌型
+}
+//***********************************************
+
+//预操作
+message DZPK_PreOpration {
+    required int32 SeatNo = 1;         //座位号
+    repeated DZPK_Operability op = 2;  //可操作信息
+}
+
+// GM
+message DZPK_GM {
+    required string Commond = 1;  //命令
+}

@@ -1,0 +1,155 @@
+﻿@{
+    ViewBag.Title = "活动管理";
+}
+
+<div class="box box-primary">
+    <!-- form start -->
+
+    <div class="box-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">平台</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    @Html.DropDownList("intPlatformID", (SelectList)ViewBag.PlatformID, "请选择", new { @class = "form-control" })
+                </div>
+
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">活动ID</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="text" class="form-control" id="intEventID">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                    <button type="button" id="btnQuery" class="btn btn-primary btn-block">搜索</button>
+                </div>
+                <div class="col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                    <a class="btn btn-default  btn-block" href="@Url.Action("EventAdd", "Admin")">新增</a>
+                </div>
+            </div>
+        </div>
+        <hr class="hr-sm1">
+
+        <!-- 查詢結果 -->
+        <div class="box-header">
+            <h3 class="box-title">搜索结果</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>平台</th>
+                        <th>渠道</th>
+                        <th>活动</th>
+                        <th>活动名称</th>
+                        <th>建立时间</th>
+                        <th>开始日期</th>
+                        <th>结束日期</th>
+                        <th>状态</th>
+                        <th>条件1</th>
+                        <th>条件2</th>
+                        <th>条件3</th>
+                        <th>条件4</th>
+                        <th>条件5</th>
+                        <th>条件6</th>
+                        <th>条件7</th>
+                        <th>条件8</th>
+                        <th>条件9</th>
+                        <th>条件10</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <!-- /.box-body -->
+    </div>
+</div>
+
+<!-- /.box -->
+@section scripts{
+    <!-- Page script -->
+    <script type="text/javascript">
+        $(function () {
+
+            //DataTable
+            var table =
+                $('#example1').DataTable({
+                    "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                    "searching": false,
+                    "autoWidth": false,
+                    "serverSide": true,
+                    "deferLoading": 0,
+                    "ajax": {
+                        method : 'post',
+                        url: '@Url.Action("EventDetail", "Admin")',
+                        data:function(d)
+                        {
+                            d.intEventID = $('#intEventID').val();
+                            d.intPlatformID = $('#intPlatformID').val();
+                        },
+                        "dataSrc": function (json) {
+                            if (json.success == false)
+                                swal("错误", json.message, "error");
+
+                            return json.data;
+                        }
+                    },
+                    columns: [
+                        { name: "PlatformID", data: "PlatformID" },
+                        { name: "AreaID", data: "AreaID" },
+                        { name: "EventID", data: "EventID" },
+                        { name: "EventName", data: "EventName" },                      
+                        {
+                            name: "CreateTime",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                return moment(data.CreateTime).format("YYYY-MM-DD HH:mm");
+                            }
+                        },
+                        {
+                            name: "EventStartDate",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                return moment(data.EventStartDate).format("YYYY-MM-DD");
+                            }
+                        },
+                        {
+                            name: "EventEndDate",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                return moment(data.EventEndDate).format("YYYY-MM-DD");
+                            }
+                        },                      
+                        {
+                            name: "Status",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                return data.Status == 1 ? "开启" : "关闭";
+                            }
+                        },
+                        { name: "LngValue1", data: "LngValue1" },
+                        { name: "LngValue2", data: "LngValue2" },
+                        { name: "LngValue3", data: "LngValue3" },
+                        { name: "LngValue4", data: "LngValue4" },
+                        { name: "LngValue5", data: "LngValue5" },
+                        { name: "LngValue6", data: "LngValue6" },
+                        { name: "LngValue7", data: "LngValue7" },
+                        { name: "LngValue8", data: "LngValue8" },
+                        { name: "LngValue9", data: "LngValue9" },
+                        { name: "LngValue10", data: "LngValue10" },
+                        {
+                            orderable: false,
+                            data: function (data, type, row) {
+                                return '<a class="btn btn-sm btn-success" href="/Agent/Admin/EventEdit?eventID=' + data.EventID + '&platformID=' + data.PlatformID + '&areaID=' + data.AreaID + '">編輯</a>';
+                            }
+                        }
+                    ],
+                    responsive: true
+                });
+
+            $('#btnQuery').click(function () {
+                table.draw();
+            });
+        })
+    </script>
+}

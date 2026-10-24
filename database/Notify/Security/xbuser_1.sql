@@ -1,0 +1,3 @@
+﻿CREATE LOGIN [xbuser]
+    WITH PASSWORD = N'djdaWhuxdrrltdcljLn|qxycmsFT7_&#$!~<xakDk|zbufah', SID = 0x700933F5F726BD4AB99DE030E4CD04E2, DEFAULT_LANGUAGE = [简体中文], CHECK_POLICY = OFF;
+

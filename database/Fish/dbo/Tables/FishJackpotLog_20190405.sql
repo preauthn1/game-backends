@@ -1,0 +1,27 @@
+﻿CREATE TABLE [dbo].[FishJackpotLog_20190405] (
+    [SeqID]           BIGINT          IDENTITY (1, 1) NOT NULL,
+    [ServerID]        INT             NOT NULL,
+    [ShotID]          BIGINT          NOT NULL,
+    [ShotNum]         INT             NOT NULL,
+    [ShotBet]         BIGINT          NOT NULL,
+    [FishMoney]       BIGINT          NOT NULL,
+    [Win]             BIGINT          NOT NULL,
+    [CommissionMoney] INT             NOT NULL,
+    [LineNum]         INT             NOT NULL,
+    [LineBase]        INT             NOT NULL,
+    [LineUp]          INT             NOT NULL,
+    [LineDown]        INT             NOT NULL,
+    [PowerBase]       INT             NOT NULL,
+    [PowerAdd]        INT             NOT NULL,
+    [Power]           INT             NOT NULL,
+    [AvgBetTotal]     DECIMAL (13, 3) NULL,
+    [ShotTotal]       BIGINT          NOT NULL,
+    [ShotBetCalc]     BIGINT          NOT NULL,
+    [FishMoneyTotal]  BIGINT          NOT NULL,
+    [WinTotal]        BIGINT          NOT NULL,
+    [ShotBetTotal]    BIGINT          NOT NULL,
+    [CommissionTotal] BIGINT          NOT NULL,
+    [InitCalc]        INT             NOT NULL,
+    [CurrDate]        DATETIME2 (7)   NULL
+);
+

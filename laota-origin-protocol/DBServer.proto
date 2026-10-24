@@ -1,0 +1,34 @@
+syntax = "proto2";
+
+package netproto;
+
+enum DBServerClassID {
+    DBRetID = 1;
+    HallServerStartID = 2;
+    GameServerStartID = 3;
+    HallServerStartRetID = 4;
+    GameServerStartRetID = 5;
+    LogoutRoomID = 6;
+    UpdateUserScoreID = 7;
+    BlockIPID = 8;
+    LoadBlockIPID = 9;
+    BlockIPListID = 10;
+    DealLogID = 11;
+    LogonRobotID = 12;
+    LogonRobotRetID = 13;
+    LogoutRobotID = 14;
+    GameVerID = 15;
+    GameVerRetID = 16;
+    UpdateExperenceScore = 17;         //體驗金幣
+    UpdatePiSaiScoreID = 18;           //比賽積分
+    UpdateContestUserDataID = 19;      //更新比賽活動用戶資料
+    GetContestUserDataID = 20;         //取得比賽活動用戶資料
+    GetContestUserDataRetID = 21;      //回傳比賽活動用戶資料
+    UpdateGameJackpotScore = 22;       //更新遊戲獎金池
+    GetAreaConfigID = 23;              //取得大廳AreaId的AreaConfig
+    GetAreaConfigRetID = 24;           //回傳大廳AreaId的AreaConfig
+    GetAreaServerRelationsID = 25;     //取得遊戲渠道
+    GetAreaServerRelationsRetID = 26;  //回傳遊戲渠道
+    GetGameCategoryListID = 27;        //查询游戏分类清单
+    GetGameCategoryListRetID = 28;     //回传游戏分类清单
+};

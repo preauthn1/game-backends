@@ -1,0 +1,146 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@model game.AdminSystem.Models.ViewModels.UpdateEventAreaMappingViewModel
+
+@{
+
+
+}
+
+<style>
+
+    .checkbox-row
+    {
+        margin-top:10px;
+    }
+
+    .checkbox-row label
+    {
+        cursor:pointer;
+        min-width:100px;
+    }
+
+
+</style>
+
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>活动公告渠道配置
+                </div>
+            </div>
+            <div class="portlet-body form">
+
+                <!-- BEGIN FORM-->
+                <form id="myForm" method="post" class="form-horizontal form-bordered" novalidate="novalidate">
+                    <div class="form-body" style="padding:20px;">
+
+
+                        <div >
+                            <label style="font-size: 14px;">
+                                <b>
+                                    活动名称：
+                                </b>
+                            </label>
+
+                            @Model.EventName
+                        </div>
+
+                        <div class="hr-s"></div>
+
+                        <input type="hidden" value="@Model.EventID" name="eventId" id="eventId" />
+                        <input type="hidden" value="" name="selectAreaIDs" id="selectAreaIDss" />
+
+                        <div class="checkbox-row">
+
+                            <input type="checkbox" name="select_all" class="select_all" id="select_all" />
+                            <label for="select_all">全选</label>
+
+                        </div>
+
+
+                        @foreach (var item in Model.CurrentPlatformAreas)
+                        {
+                            bool isSeleted = Model.CurrentSettings.Any(z => z.AreaID == item.Id);
+                            string elementID = "areaID_" + item.Id;
+
+                            <div class="checkbox-row">
+
+                                <input type="checkbox" name="areaID" class="areaID" id="@elementID" attr-id="@item.Id"   @(isSeleted ? "checked='checked'"  : "")   />
+                                <label for="@elementID">
+                                   @item.Id @item.AreaName
+                                </label>
+
+                            </div>
+
+                        }
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button id="btnOk" type="submit" class="btn dark" style="" onclick=""><i class="fa fa-file-o"></i> 确定</button>
+                            @Html.Back(Url.Action("EventList", "PromotionEvent"))
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section initScripts
+{
+    <script>
+
+
+
+        $(function () {
+            
+            $('#select_all').click(function () {
+                if ($(this).is(':checked')) {
+                    $('.areaID').attr("checked", true);
+                }
+                else {
+                    $('.areaID').attr("checked", false);
+                }
+                $.uniform.update();
+            });
+
+
+            $('.areaID , #select_all ').change(function () {
+                                
+                setCheckboxValues();
+
+            });
+
+
+            setCheckboxValues();
+
+        })
+
+        function setCheckboxValues() {
+
+            var selectValues = "";
+
+            $(".areaID").each(function (index) {
+                var isCheck = $(this).is(':checked');
+                if (isCheck) {
+                    var id = $(this).attr('attr-id');
+                    selectValues = selectValues + "," + + id;
+                }
+            });
+
+            $("#selectAreaIDss").val(selectValues);
+        }
+
+
+    </script>
+}

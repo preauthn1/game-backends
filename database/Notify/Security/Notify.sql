@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [Notify]
+    AUTHORIZATION [dbo];
+

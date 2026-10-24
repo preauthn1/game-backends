@@ -1,0 +1,296 @@
+syntax = "proto2";
+
+package netproto;
+
+message TestGameChat {
+    required string Message = 1;
+};
+
+message TestGameScore {
+    required int32 Score = 1;
+};
+
+message TestGameEnd {};
+
+message UserEnter {
+    required GameUser User = 1;
+};
+
+message UserLeave {
+    required GameUser User = 1;
+};
+
+message UserStateChange {
+    required GameUser User = 1;
+};
+
+message GameUser {
+    required int32 UserID = 1;
+    required string NickName = 2;
+    required int32 Sex = 3;
+    required int32 FaceID = 4;
+    required int64 Score = 5;
+    required int32 WinCount = 6;
+    required int32 LoseCount = 7;
+    required int32 DrawCount = 8;
+    required int32 StateValue = 9;
+    required int32 TableNo = 10;
+    required int32 SeatNo = 11;
+    optional int32 LastWinLose = 12;
+};
+
+message GamePoker {
+    repeated UserPoker Poker = 1;
+};
+
+message UserPoker {
+    required int32 UserID = 1;
+    required int32 SeatNo = 2;
+    repeated PokerCard Cards = 3;
+};
+
+message PokerCard {
+    required int32 Color = 1;
+    required int32 CardNumber = 2;
+};
+message UserActionCommited {
+    required string ActionName = 1;
+};
+message AllUserActionCommited {
+    required string ActionName = 1;
+};
+message LookOnUserNotify {
+    repeated int32 UserID = 1;
+};
+message UserLuckScore {
+    required int32 UserID = 1;
+    required int64 Score = 2;
+};
+message UserLuckScoreRet {
+    required int32 UserID = 1;
+    required string Value = 2;
+};
+
+message GameBeginCountDown {
+    required int32 Time = 1;
+};
+
+message SuperToolAddChangeLog {
+    required int32 GameID = 1;
+    required int32 TableNo = 3;
+    required int32 Type = 4;
+    required string Result = 5;
+    required string Operator = 6;
+}
+
+message SuperToolAddAssignReward {
+    required int32 GameID = 1;
+    required int32 FlagID = 2;
+    required int32 TableNo = 3;
+    required string Result = 4;
+    required string Operator = 5;
+    repeated SuperToolAddAssignRewardDetail DetailList = 6;
+}
+
+message SuperToolGetAssignRewardDetail {
+    required int32 GameID = 1;
+    required int32 FlagID = 2;
+    required int32 TableNo = 3;
+}
+
+message SuperToolAddAssignRewardDetail {
+    required int32 Idx = 1;
+    required string Description = 2;
+    required string Reward = 3;
+    required int32 Status = 4;
+}
+
+message SuperToolAssignRewardDetail {
+    required int32 LogID = 1;
+    required int32 Idx = 2;
+    required string Description = 3;
+    required string Reward = 4;
+    required int32 Status = 5;
+}
+
+message SuperToolGetVipUserRequest {
+    required int32 GameID = 1;
+}
+
+message SuperToolVipUserDataList {
+    repeated SuperToolVipUserData DataList = 1;
+}
+
+message SuperToolVipUserData {
+    required int32 UserID = 1;
+    required int64 AssignAmount = 2;
+    required int32 AssignRate = 3;
+    required int64 CompleteAmount = 4;
+    required int32 Complete = 5;
+    required int32 Status = 6;
+    required int32 TotalAll = 7;
+    required int32 TotalUserWinLose = 8;
+    required int32 TodayUserWinLose = 9;
+}
+
+message SuperToolFishGetSystemRewardDetail {
+    repeated FishSystemRewardDataList FishRewardList = 1;
+}
+
+message FishSystemRewardDataList {
+    required int32 FishID = 1;
+    required int64 Amount = 2;
+    required int64 FinishAmount = 3;
+    required int32 Rate = 4;
+    required int32 Status = 5;
+}
+
+message SuperToolFishGetVIPUserRewardDetail {
+    repeated FishVIPUserRewardDataList FishVIPUserList = 1;
+}
+
+message FishVIPUserRewardDataList {
+    required int32 UserID = 1;
+    required int64 AssignAmount = 2;
+    required int32 Rate = 3;
+    required int64 FinishAmount = 4;
+    required int32 Status = 5;
+    required int64 SumAssignAmount = 6;
+}
+
+message SuperToolFishUpdSystemRewardDetail {
+    required int32 FlagID = 1;
+    repeated SuperToolFishUpdSystemRewardDataList FishRewardList = 2;
+}
+
+message SuperToolFishUpdSystemRewardDataList {
+    required int32 FishID = 1;
+    required int64 FinishAmount = 2;
+}
+
+message SuperToolfishUpdVIPUserRewardDetail {
+    required int32 GameID = 1;
+    repeated SuperToolFishUpdVIPUserRewardDataList FishUserRewardList = 2;
+}
+
+message SuperToolFishUpdVIPUserRewardDataList {
+    required int32 UserID = 1;
+    required int64 FinishAmount = 2;
+}
+
+message SuperToolZjhVipUserDataList {
+    repeated SuperToolZjhVipUserData DataList = 1;
+}
+
+message SuperToolZjhVipUserData {
+    required int32 UserID = 1;
+    required int64 NextType = 2;
+    required int64 NextWinLose = 3;
+    required int64 NextWinLoseNum = 4;
+    required int64 Finish = 5;
+    required int64 FinishNextWinLoseNum = 6;
+    required int32 NextTable = 7;
+    required int32 Status = 8;
+    required int64 TodaySumcharge = 9;
+    required int64 TodaySumConvert = 10;
+    required int64 TodayUserWinLose = 11;
+}
+
+message SuperToolZjhUpdVipUserData {
+    required int32 UserID = 1;
+    optional int64 Finish = 2;
+    optional int64 FinishNextWinLoseNum = 3;
+    optional int32 NextTable = 4;
+    optional int64 NextType = 5;
+}
+
+message FishSysPoolData {
+    required int32 FlagID = 1;
+    required int64 SumBetMoney = 2;
+    required int64 SumBullet = 3;
+    required int64 SysSumWinLoss = 4;
+    optional int64 AfterAdjustSyspoolWinLoss = 5;  //系統水池贏錢抽水後水池
+    optional int64 PoolAmount = 6;                 //調控水池
+}
+
+message FishPlayerPoolDetail {
+    optional int32 FlagID = 1;
+    repeated FishPlayerPoolDetailList FishRewardList = 2;
+}
+
+message FishPlayerPoolDetailList {
+    required int32 UserID = 1;
+    required int64 HitMoney = 2;
+    required int64 SpendMoney = 3;
+}
+
+message FindFishBeginnerOfferByUserID {
+    required int32 UserID = 1;
+    optional int32 NewPlayerAdjustSyspool = 2;
+}
+
+message FishBeginnerOfferDetail {
+    repeated FishBeginnerOffer NewPlayerList = 1;
+    optional int32 NewPlayerAdjustSyspool = 2;
+}
+
+message FishBeginnerOffer {
+    required int32 UserID = 1;
+    required int32 Bullet = 2;
+    required int32 Score = 3;
+    required int32 Status = 4;
+}
+
+message Cd21SysPoolData {
+    required int32 FlagID = 1;
+    required int64 SumBetMoney = 2;
+    required int64 SumBetCount = 3;
+    required int64 PoolAmount = 4;
+}
+
+message UserJackpotToBox {
+    required int32 UserID = 1;
+    required int64 UpdateAmount = 2;
+}
+
+// jackpot資料
+message JackpotData {
+    required int32 GameID = 1;             // GameID
+    required int32 FlagID = 2;             // FlagID
+    required int32 TableNo = 3;            // 桌子編號
+    required int64 Contribution = 4;       // 玩家貢獻值
+    required int64 TotalContribution = 5;  // 總貢獻值
+    required int64 AwardTotal = 6;         // 已發送獎金總和
+    required int32 Level = 7;              // Jackpot層級
+    required int64 JackpotPool = 8;        // 彩金池
+}
+
+// jackpot資料
+message JackpotAllData {
+    repeated JackpotData AllData = 1;  // 各池異動值
+}
+
+// 要求 水線控制遊戲輸贏結果
+message SuperTool_Msg_GetSysPoolWinLose {
+    required int32 GameID = 1;          // 遊戲編號
+    required int32 FlagID = 2;          // 房間編號
+};
+
+// 回傳 水線控制遊戲輸贏結果
+message SuperTool_Msg_GetSysPoolWinLoseRet {
+    required int32 GameID = 1;          // 遊戲編號
+    required int32 FlagID = 2;          // 房間編號
+    required int64 PoolAmount = 3;      // 水線
+    required int64 WinLine = 4;         // 贏錢線
+	required string WinLoseData = 5;    // 遊戲輸贏結果
+};
+
+// 更新 水線控制遊戲輸贏結果
+message SuperTool_Msg_UpdateSysPoolWinLose {
+    required int32 GameID = 1;          // 遊戲編號
+    required int32 FlagID = 2;          // 房間編號
+    required int64 PoolAmount = 3;      // 水線
+    required int64 WinLine = 4;         // 贏錢線
+	required string WinLoseData = 5;    // 遊戲輸贏結果
+    required int64 UpdatePoolAmount = 6;    //更新水線
+};

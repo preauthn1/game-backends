@@ -1,0 +1,87 @@
+﻿@using KCKJ.Core.AdminSys.WebUI
+@model List<KCKJ.Core.AdminSys.Provider.Entity.Right>
+@{
+    int parentID = ViewBag.parentID;
+}
+<p style="margin-top:15px;margin-bottom:10px">
+    @Html.AddWithRight(id: "btnAdd", action: "Add", href: "#")
+    @Html.ModifyWithRight(id: "btnModify", action: "Modify", href: "#")
+    @Html.DeleteWithRight(id: "btnDel", action: "Del", href: "#")
+    @Html.Back()
+</p>
+<table class="easyui-datagrid" data-options="singleSelect:true,fitColumns:true" style="width:950px">
+    <thead>
+        <tr>
+            <th data-options="field:'ck'"></th>
+            <th data-options="field:'RightID',width:50">编号</th>
+            <th data-options="field:'RightName',width:150">名称</th>
+            <th data-options="field:'RightType',width:80">类型</th>
+            <th data-options="field:'RightToken',width:250">标识</th>
+            <th data-options="field:'PageUrl',width:400">页面地址</th>
+            <th data-options="field:'Sort',width:50">排序</th>
+            <th data-options="field:'ShowInMenu',width:50">显示</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var right in Model)
+        {
+            <tr>
+                <td><input type="checkbox" name="ck" value="@right.RightID" /></td>
+                <td>@right.RightID</td>
+                <td><a href="@Url.Action("List", new {parentID = right.RightID})">@right.RightName</a></td>
+                <td>@(right.RightType == KCKJ.Core.AdminSys.Provider.Entity.RightType.CommandRight ? "功能" : "页面")</td>
+                <td>@right.RightToken</td>
+                <td>@right.PageUrl</td>
+                <td>@right.Sort</td>
+                <td>@right.ShowInMenu</td>
+            </tr>
+        }
+    </tbody>
+
+</table>  
+
+
+<script>
+   
+
+    $(function () {
+        $("#btnAdd").click(function () {
+            var url = "@Url.Action("Add")";
+            url = url + "?parentID=@parentID";
+
+            window.location.href = url;
+        });
+        $("#btnDel").click(function () {
+            var id = $(":checkbox:checked").val();
+            if (typeof id == "undefined") {
+                $.messager.alert('提示', '请选择一项数据');
+                return;
+            }
+
+            $.messager.confirm('确认', '您确认想要删除记录吗？', function (r) {
+                if (r) {
+                    var url = "@Url.Action("Del")";
+                    url = url + "?id=";
+                    url = url + id;
+                    window.location.href = url;
+                    return;
+                }
+            });
+
+        });
+        $("#btnModify").click(function () {
+            var id = $(":checkbox:checked").val();
+            if (typeof id == "undefined") {
+                $.messager.alert('提示', '请选择一项数据');
+                return;
+            }
+
+            var url = "@Url.Action("Modify")";
+            url = url + "?id=";
+            url = url + id;
+
+            window.location.href = url;
+        });
+    })
+
+</script>

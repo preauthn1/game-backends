@@ -1,0 +1,29 @@
+package netproto;
+
+enum DCZZ_GameMessageClassID {
+    //---------- Server - Client ----------
+    DCZZ_GameInfo = 10001;                      // S2C 牌局資訊，於玩家進入牌局或斷線重連時傳送
+    DCZZ_AllUserInfo = 10002;                   // S2C 玩家資訊，當玩家人數或狀態有變動時傳送
+    DCZZ_WaitingStart = 10003;                  // S2C 等待遊戲開始，此階段玩家可自由進出遊戲
+    DCZZ_Shuffle = 10004;                       // S2C 洗牌
+    DCZZ_ShuffleOK = 10005;                     // C2S 洗牌動畫播放完成
+    DCZZ_StartBetting = 10006;                  // S2C 開始下注
+    DCZZ_Bet = 10007;                           // C2S 玩家下注
+    DCZZ_BetResult = 10008;                     // S2C 玩家下注結果
+    DCZZ_StopBetting = 10009;                   // S2C 玩家停止下注
+    DCZZ_StopBettingAnimationOK = 10010;        // C2S 玩家停止下注動畫播放完成
+    DCZZ_Deal_Normal = 10011;                   // S2C 一般發牌
+    DCZZ_DealAnimationOK_Normal = 10012;        // C2S 一般發牌動畫播放完成
+    DCZZ_Settlement_Normal = 10013;             // S2C 一般結算
+    DCZZ_Settlement_Normal_OK = 10014;          // C2S 一般結算動畫播放完成
+    DCZZ_WarPhase = 10015;                      // S2C 進入戰爭階段，符合資格玩家選擇是否要進入
+    DCZZ_WarPhaseSelection = 10016;             // C2S 戰爭階段選項
+    DCZZ_WarPhaseselectionResult = 10017;       // S2C 戰爭階段選擇結果
+    DCZZ_WarPhaseBegin = 10018;                 // S2C 開始戰爭階段
+    DCZZ_WarPhaseAnimationOK = 10019;           // C2S 進入戰爭階段動畫播放完成
+    DCZZ_Deal_War = 10020;                      // S2C 戰爭階段發牌
+    DCZZ_DealAnimationOK_War = 10021;           // C2S 戰爭階段發牌動畫播放完成
+    DCZZ_Settlement_War = 10022;                // S2C 戰爭階段結算
+    DCZZ_Settlement_War_OK = 10023;             // C2S 戰爭階段結算動畫播放完成
+    DCZZ_GameOver = 10024;                      // S2C 本局結束
+};

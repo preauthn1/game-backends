@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = "代理提现记录";
+}
+
+@Html.Action("Index", "Profit")
+
+<div class="box box-primary">
+    <!-- form start -->
+    <div class="box-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">狀態</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    @Html.DropDownList("status", null, "全部", new { @class = "form-control select2" })
+                </div>
+
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">统计日期</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="date" class="form-control" id="dtStartTime">
+                </div>
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">到</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="date" class="form-control" id="dtEndTime">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                    <button type="button" id="btnQuery" class="btn btn-primary btn-block">搜索</button>
+                </div>
+            </div>
+        </div>
+        <hr class="hr-sm1">
+
+        <!-- 查詢結果 -->
+        <div class="box-header">
+            <h3 class="box-title">搜索结果</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>用户ID</th>
+                        <th>日期</th>
+                        <th>提現金額</th>
+                        <th>是否完成</th>
+                        <th>說明</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="description-block">
+                        <h5 class="description-header" id="totalAmount">0</h5>
+                        <span class="description-text">总金额</span>
+                    </div>
+                    <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+            </div><!-- /.row -->
+        </div>
+    </div>
+</div>
+
+<!-- /.box -->
+@section scripts{
+    <!-- Page script -->
+    <script type="text/javascript">
+        $(function () {
+
+            //DataTable
+            var table =
+                $('#example1').DataTable({
+                    "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                    "searching": false,
+                    "autoWidth": false,
+                    "serverSide": true,                   
+                    "deferLoading": 0,
+                    "order": [[1, 'desc']],
+                    "ajax": {
+                        method: 'post',
+                        url: '@Url.Action("AgentWithdrawLog", "Profit")',
+                        data: function (d) {
+                            d.status = $('#status').val();
+                            d.dtStartTime = $('#dtStartTime').val();
+                            d.dtEndTime = $('#dtEndTime').val();
+                        },
+                        "dataSrc": function (json) {   
+                            $('#totalAmount').text(json.data.totalAmount);
+                            return json.data.data;
+                        }
+                    },
+                    columns: [
+                        { name: "UserID", data: "UserID" },
+                        { name: "CreateTime", data: "CreateTime" },
+                        { name: "WithDrawAmount", data: "WithDrawAmount" },
+                        { name: "Status", data: "Status" },
+                        { name: "Memo", data: "Memo" }
+                    ],
+                    responsive: true
+                });
+
+            $('#btnQuery').click(function () {
+                table.draw();
+            });
+        })
+    </script>
+}
+

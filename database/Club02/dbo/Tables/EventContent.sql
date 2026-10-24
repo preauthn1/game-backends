@@ -1,0 +1,27 @@
+﻿CREATE TABLE [dbo].[EventContent] (
+    [PlatformID] INT           NOT NULL,
+    [AreaID]     INT           NOT NULL,
+    [EventID]    INT           NOT NULL,
+    [LngValue1]  BIGINT        NULL,
+    [LngValue2]  BIGINT        NULL,
+    [LngValue3]  BIGINT        NULL,
+    [LngValue4]  BIGINT        NULL,
+    [LngValue5]  BIGINT        NULL,
+    [LngValue6]  BIGINT        NULL,
+    [LngValue7]  BIGINT        NULL,
+    [LngValue8]  BIGINT        NULL,
+    [LngValue9]  BIGINT        NULL,
+    [LngValue10] BIGINT        NULL,
+    [StrValue1]  VARCHAR (250) NULL,
+    [StrValue2]  VARCHAR (250) NULL,
+    [StrValue3]  VARCHAR (250) NULL,
+    [StrValue4]  VARCHAR (250) NULL,
+    [StrValue5]  VARCHAR (250) NULL,
+    [StrValue6]  VARCHAR (250) NULL,
+    [StrValue7]  VARCHAR (250) NULL,
+    [StrValue8]  VARCHAR (250) NULL,
+    [StrValue9]  VARCHAR (250) NULL,
+    [StrValue10] VARCHAR (250) NULL,
+    CONSTRAINT [PK_EventContent_1] PRIMARY KEY CLUSTERED ([PlatformID] ASC, [AreaID] ASC, [EventID] ASC)
+);
+

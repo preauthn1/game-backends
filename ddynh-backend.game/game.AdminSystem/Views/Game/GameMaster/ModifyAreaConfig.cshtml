@@ -1,0 +1,1918 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/Component/target.js")"></script>
+    <script src="https://example.invalid/npm/sortablejs@latest/Sortable.min.js"> </script>
+    <script src="https://example.invalid/ajax/libs/lodash.js/4.15.0/lodash.min.js"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Plugins/Vue/css/main.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .areaConfig_contain {
+        display: flex;
+        position: relative;
+        height: 77vh;
+    }
+
+    .areaConfig_contain__leftItem {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .areaConfig_contain__arealist {
+        flex: 1;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+
+    .areaConfig_contain__areasetting {
+        flex: 1;
+        padding: 0 1%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .areaConfig_arealist__item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 15%;
+        height: 65px;
+        font-size: 13px;
+        cursor: pointer;
+    }
+
+    .js--active {
+        background-color: #ebecf3;
+    }
+
+    .areaConfig_arealist__item:hover {
+        background-color: #f7f6fa;
+    }
+
+    .areaConfig_contain__gamelist {
+        overflow: auto;
+    }
+
+    .areaConfig_arealist__add {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 65px;
+    }
+
+    .gameitem_contain__iconItem {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        margin: .5% 0px;
+    }
+
+    .gameitem_contain__sortable {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 412px;
+    }
+
+        .gameitem_contain__sortable li {
+            margin: 3px 3px 3px 0;
+            padding: 1px;
+            float: left;
+            width: 80px;
+            height: 80px;
+            border: 1px solid #c5c5c5;
+            background: #f6f6f6;
+            font-size: 1.5em;
+            text-align: center;
+            color: #000;
+            border-radius: 10px !important;
+        }
+
+            .gameitem_contain__sortable li:nth-child(8n+1):before {
+                content: "\f091";
+                font-family: FontAwesome;
+                text-decoration: inherit;
+                border: 1px solid #555;
+                background-color: #555;
+                display: block;
+                opacity: .8;
+                border-radius: 8px 8px 0 0 !important;
+            }
+
+
+    .areaConfig_tool__contain {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-evenly;
+    }
+
+    .gameitem_contain__newGame {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: .5% 0px;
+    }
+
+    .areaConfig_gameItem__contain {
+        margin: 5% 0;
+    }
+
+    .areaConfig_arealist__icon:after {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        font-family: 'FontAwesome';
+        content: '\f091';
+        color: #5E35B1;
+        font-size: 2em;
+    }
+
+    .areaConfig_flex {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .areaConfig_arealist__addIcon:before {
+        font-family: 'FontAwesome';
+        content: '\f0fe';
+        color: #26292e;
+        font-size: 3em;
+        cursor: pointer;
+    }
+
+    .areaConfig_arealist__spinner:before {
+        font-family: 'FontAwesome';
+        content: '\f110';
+        color: #26292e;
+        font-size: 3em;
+        cursor: pointer;
+        animation: myRotate 1s linear infinite;
+    }
+
+    .areaConfig_arealist__saveIcon:before {
+        font-family: 'FontAwesome';
+        content: '\f0c7';
+        color: #26292e;
+        font-size: 3em;
+        cursor: pointer;
+    }
+
+
+    .areaConfig_arealist__undoIcon:before {
+        font-family: 'FontAwesome';
+        content: '\f0e2';
+        color: #26292e;
+        font-size: 3em;
+        cursor: pointer;
+    }
+
+    .areaConfig_arealist__gamepadIcon:before {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: 'FontAwesome';
+        content: '\f11b';
+        color: #26292e;
+        font-size: 3em;
+        cursor: pointer;
+    }
+
+    .areaConfig_arealist__areaIcon:before {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: 'FontAwesome';
+        content: '\f0f9';
+        color: #26292e;
+        font-size: 3em;
+        cursor: pointer;
+    }
+
+
+    .areaConfig_arealist__syncIcon:before {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: 'FontAwesome';
+        content: '\f021';
+        color: #26292e;
+        font-size: 3em;
+        cursor: pointer;
+    }
+
+    .areaConfig_arealist__syncIconSync:before {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: 'FontAwesome';
+        content: '\f021';
+        color: #26292e;
+        font-size: 3em;
+        cursor: pointer;
+        animation: myRotate 1s linear infinite;
+    }
+
+
+    @@keyframes myRotate {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+
+        50% {
+            -webkit-transform: rotate(180deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+
+    .areaConfig_ad__image_contain {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .areaConfig_ad__image {
+        height: 20em;
+        width: 15em;
+        background-repeat: round;
+    }
+
+    .areaConfig_searchBar__contain {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        width: 244px;
+        margin: 0 auto 6px;
+    }
+
+        .areaConfig_searchBar__contain .frmSearch {
+            width: 100%;
+            height: 32px;
+            line-height: 32px;
+            border: 0;
+            border-radius: 2px;
+            -moz-border-radius: 2px;
+            -webkit-border-radius: 2px;
+            background-color: #26292e;
+            color: #fff;
+            padding-left: 30px;
+            font-size: 12px;
+        }
+
+    .previewImage_contain {
+        display: flex;
+        justify-content: center;
+        border: 2px dashed rgb(214, 214, 214);
+    }
+
+    .previewImage_contain__image {
+        width: 50%;
+        height: 50%;
+    }
+
+    .nowrap {
+        white-space: nowrap;
+    }
+
+    .areaConfig_n_flex {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .areaConfig_osk__square {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        flex: 1 0 32%;
+        margin: 3px 3px;
+        height: 48px;
+        border: 1px solid #c5c5c5;
+        font-size: 17px;
+        font-weight: 900;
+        cursor: pointer;
+    }
+
+    .areaConfig_label {
+        display: flex;
+        justify-content: center;
+        font-size: 20px;
+    }
+</style>
+
+
+<!--平台同步設定的彈窗-->
+@Html.Partial("_PopupSelectAreaModal")
+
+
+<div class="areaConfig_contain" id="vApp">
+    <v-loading v-if="isSave"></v-loading>
+    <div class="areaConfig_contain__leftItem">
+        <div>
+            <div class="areaConfig_tool__contain">
+                <div v-if="!isLoading" class="areaConfig_arealist__spinner areaConfig_flex">读取中</div>
+                <div v-else-if="!isGameSetting && isLoading && !isAddArea" class="areaConfig_arealist__saveIcon areaConfig_flex" v-on:click="saveArea()">保存</div>
+                <div v-else-if="" class="areaConfig_arealist__syncIcon areaConfig_flex" v-on:click="cmdRefreshArea()">更新設定</div>
+                @*<div v-else-if="!isGameSetting && isAddArea" class="areaConfig_arealist__saveIcon areaConfig_flex" v-on:click="savePlatform()">保存平台</div>
+        <div v-else-if="isGameSetting" class="areaConfig_arealist__saveIcon areaConfig_flex" v-on:click="saveGame()">保存遊戲</div>
+
+        <div v-if="!isGameSetting && isAdvanced" class="areaConfig_arealist__addIcon areaConfig_flex" v-on:click="addArea()">新增平台</div>
+        <div v-else-if="isGameSetting" class="areaConfig_arealist__addIcon areaConfig_flex" v-on:click="addGame()">新增遊戲</div>
+
+        <div v-if="!isGameSetting" class="areaConfig_arealist__undoIcon areaConfig_flex" v-on:click="closeArea()">取消</div>
+        <div v-else class="areaConfig_arealist__undoIcon areaConfig_flex" v-on:click="closeGame()">取消</div>
+
+        <div v-if="!isGameSetting" class="areaConfig_arealist__gamepadIcon areaConfig_flex" v-on:click="openGameSetting()">遊戲管理</div>
+        <div v-else class="areaConfig_arealist__areaIcon areaConfig_flex" v-on:click="openGameSetting()">渠道管理</div>*@
+            </div>
+            <div class="areaConfig_searchBar__contain">
+                <input v-if="!isGameSetting" class="frmSearch" type="text" placeholder="搜尋" v-model="searchArea">
+                <input v-else class="frmSearch" type="text" placeholder="搜尋" v-model="searchGame">
+            </div>
+        </div>
+        <div v-show="!isGameSetting" class="areaConfig_contain__arealist">
+            <div v-if="isAddArea" class="areaConfig_n_flex">
+
+            </div>
+            <div v-else class="areaConfig_arealist__item" v-for="(no , index) in searchlist" v-on:click="chooseArea(no.Id)"
+                 v-bind:class="{'areaConfig_arealist__icon': no.SetDefault == 1 , 'js--active': no.Id == defaultAreaID}">
+                <div style="color: blueviolet;">{{no.Id}}</div>
+                <div>{{no.AreaName}}</div>
+            </div>
+        </div>
+        <div v-show="isGameSetting" class="areaConfig_contain__gamelist">
+            <div v-if="isAddGame">
+            </div>
+            <div v-else class="areaConfig_arealist__item" v-for="(no , index) in searchGamelist" v-on:click="choseIcon(no.IconID)"
+                 v-bind:class="{'js--active': no.IconID == defaultIconID}">
+                <div>{{no.AliasName}}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="areaConfig_contain__areasetting">
+        <div v-show="!isGameSetting && !isAddArea" class="tab-content">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#platformForm">平台设定</a></li>
+                <li><a data-toggle="tab" href="#AdForm">广告设定</a></li>
+            </ul>
+            <!-- 平台設定-->
+            <div class="tab-pane active liDiv" id="platformForm">
+				<form id="form1" ref="form1" method="post" class="form-horizontal form-bordered">
+					<div class="form-group">
+						<label class="control-label col-md-2 xing">平台</label>
+						<div class="col-md-2">
+							<select class="form-control input-small" id="ClientPlatform" v-model="submitForm.PlatformID" v-bind:disabled="!isAddArea">
+								<option v-for="option in platformList"
+										v-bind:value="option.Id"
+										v-bind:selected="option.Id == submitForm.PlatformID">
+									{{ option.Name }}
+								</option>
+							</select>
+						</div>
+                        <div class="col-md-8">
+                                                                                    
+                            <a class="btn btn-sm btn-primary modal-pop" attr-modal-id="modal_empty_template" v-bind:attr-source-url="'/AreaConfigSync/ShowAreasCheckboxes?areaID='+ submitForm.Id">
+                                平台设定同步
+                            </a>
+
+                            <span></span>  
+
+                        </div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2">全平台预设</label>
+						<div class="col-md-10">
+							<input type="checkbox" id="SetDefault" name="SetDefault" v-model="submitForm.SetDefault" v-bind:value="submitForm.SetDefault" v-bind:disabled="true">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2 xing">渠道编号</label>
+						<div class="col-md-9">
+							<input type="text" id="AreaIdText" name="AreaIdText" class="form-control input-medium" v-model="submitForm.Id" v-bind:readonly="!isAddArea" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2 xing">渠道类型</label>
+						<div class="col-md-9">
+							<select class="form-control input-small" id="ClientPlatform" v-model="submitForm.ClientPlatform" v-bind:disabled="true">
+								<option v-for="option in options"
+										v-bind:value="option"
+										v-bind:selected="option == submitForm.ClientPlatform">
+									{{ option }}
+								</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2 xing">渠道名称</label>
+						<div class="col-md-10">
+							<input type="text" name="AreaName" class="form-control input-medium" placeholder="请输入渠道名称" v-model="submitForm.AreaName" v-bind:readonly="!isAdvanced" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-2">公告开关</label>
+						<div class="col-md-10">
+							<input type="checkbox" id="AnnMsgShow" name="AnnMsgShow" v-model="submitForm.AnnMsgShow" v-bind:value="submitForm.AnnMsgShow">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-2 xing">备注</label>
+						<div class="col-md-10">
+							<input type="text" id="Memo" name="Memo" class="form-control input-medium" v-model="submitForm.Memo" v-bind:readonly="!isAdvanced" />
+						</div>
+					</div>
+					<div class="form-body">
+						<div class="form-group">
+							<label class="control-label col-md-2 xing">平台游戏排列顺序</label>
+							<div class="col-md-3">
+								<div class="gameSortList_contain">
+									<ul id="sortable" class="gameitem_contain__sortable">
+										<li v-if="no.Status == 1" style="background-repeat:round" class="ui-state-default" v-for="(no , index) in gamelist" v-bind:id="no.GameID" v-bind:value="no.Sort" v-bind:style="{ 'background-image': 'url(' + imageUrl(no.GameID) + ')' }">
+											<span v-if="imageUrl(no.GameID)"></span>
+											<span v-else>{{no.GameName}}</span>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="col-md-7">
+								<div class="gameitem_contain__newGame" style="display:none;">
+									<div class="gameitem_contain__iconItem option_newgame">
+										<div class="nowrap">可新增游戏: </div>
+										<select class="form-control">
+											<option v-for="option in newGameJson"
+													v-bind:value="option.Id"
+													v-bind:data-gameID="option.Id">
+												{{ option.Name }}
+											</option>
+										</select>
+									</div>
+									<input type="button" value="新增游戏" v-on:click="addNewGame" class="btn btn-light" />
+								</div>
+
+								<div v-for="(no , index) in gamelist" class="iconList gameitem_contain__iconItem">
+									<div class="gameitem_contain__iconItem option_popular">
+										<span class="nowrap">热门程度: </span>
+										<select class="form-control" name="Popular" id="Popular">
+											<option v-for="option in popularJson"
+													v-bind:value="option.Id"
+													v-bind:data-gameID="no.GameID"
+													v-bind:selected="option.Id == no.Popular">
+												{{ option.Name }}
+											</option>
+										</select>
+									</div>
+									<div class="gameitem_contain__iconItem option_game">
+										游戏名称:
+										<select class="form-control" name="Game" id="Game" v-bind:disabled="!isAddArea">
+											<option v-for="option in gameJson"
+													v-bind:value="option.Id"
+													v-bind:data-gameID="no.GameID"
+													v-bind:selected="option.Id == no.GameID">
+												{{ option.Name }}
+											</option>
+										</select>
+									</div>
+									<div class="gameitem_contain__iconItem option_aliasName">
+										显示名称:
+										<select class="form-control input-small">
+											<option v-for="option in getIconList(no.GameID)"
+													v-bind:value="option.IconID"
+													v-bind:data-gameID="no.GameID"
+													v-bind:selected="option.IconID == no.IconID">
+												{{ option.AliasName }}
+											</option>
+										</select>
+									</div>
+									<div class="gameitem_contain__iconItem option_status">
+										是否显示:
+										<select class="form-control" name="Status" id="Status" v-bind:value="no.Status">
+											<option v-bind:data-gameID="no.GameID" value="0">关闭</option>
+											<option v-bind:data-gameID="no.GameID" value="1">开启</option>
+										</select>
+									</div>
+									<input type="button" value="删除游戏" v-on:click="delGame(no)" class="btn btn-light" style="display:none;" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-2 xing"> 支付图像切换:</label>
+						<div class="col-md-2">
+							<select class="form-control" name="ShopNameID" id="ShopNameID" v-bind:value="submitForm.ShopNameID">
+								<option value="1">商城</option>
+								<option value="2">支付</option>
+								<option value="3">充值</option>
+								<option value="4">商城充值</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2 xing"> 代理支付图像切换:</label>
+						<div class="col-md-2">
+							<select class="form-control" name="AgentNameID" id="AgentNameID" v-bind:value="submitForm.AgentNameID">
+								<option value="1">代理支付</option>
+								<option value="2">VIP</option>
+							</select>
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<label class="control-label col-md-2 xing">常见问题解答</label>
+						<div class="col-md-10">
+							<textarea rows="20" id="FAQContent" name="FAQContent" ref="FAQContent" class="form-control input-xxlarge" placeholder="请输入常见问题解答" v-model="FAQContent"> </textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2 xing">充值提示</label>
+						<div class="col-md-10">
+							<textarea rows="3" id="PayTip" name="PayTip" ref="PayTip" class="form-control input-xlarge" placeholder="请输入充值提示文本" v-model="PayTips"></textarea>
+						</div>
+					</div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 xing">升级提示</label>
+                        <div class="col-md-10">
+                            <input type="text" id="UpGradeMsg" name="UpGradeMsg" class="form-control input-medium" placeholder="请输入升级提示" v-model="submitForm.UpGradeMsg" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2 xing">公告讯息</label>
+                        <div class="col-md-10">
+                            <input type="text" id="AnnMsg" name="AnnMsg" class="form-control input-medium" placeholder="请输入公告讯息" v-model="submitForm.AnnMsg" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2 xing">绑定帐号赠送金币</label>
+                        <div class="col-md-10">
+                            <input type="text" id="GiftMoney" name="GiftMoney" class="form-control input-medium" placeholder="请输入绑定帐号赠送金币" v-model="submitForm.GiftMoney" v-bind:readonly="!isAdvanced" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2 xing">绑定赠送金币流水限制</label>
+                        <div class="col-md-10">
+                            <input type="text" id="GiftMoneyFlowLimit" name="GiftMoneyFlowLimit" class="form-control input-medium" placeholder="请输入绑定赠送金币流水限制" v-model="submitForm.GiftMoneyFlowLimit" v-bind:readonly="!isAdvanced" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2 xing">注册预设金币</label>
+                        <div class="col-md-10">
+                            <input type="text" id="DefaultMoney" name="DefaultMoney" class="form-control input-medium" placeholder="请输入注册预设金币" v-model="submitForm.DefaultMoney" v-bind:readonly="!isAdvanced" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2 xing">注册赠送金币流水限制</label>
+                        <div class="col-md-10">
+                            <input type="text" id="DefaultMoneyFlowLimit" name="DefaultMoneyFlowLimit" class="form-control input-medium" placeholder="请输入注册赠送金币流水限制" v-model="submitForm.DefaultMoneyFlowLimit" v-bind:readonly="!isAdvanced" />
+                        </div>
+                    </div>
+
+					<div v-if="isAddArea" class="form-group areaConfig_label">
+						<span>-------------------------- 以下未填写将自动填入 全平台预设 -----------------------------</span>
+					</div>
+					<div class="form-group" v-for="(item , index) in areaJsonSetting" v-show="!item.disabled">
+						<label class="control-label col-md-2">{{item.name}}</label>
+						<div class="col-md-10">
+							<input v-if="item.input == 'text'" type="text" v-bind:id="item.key" class="form-control input-medium" v-bind:placeholder="item.placeholder" v-model="submitForm.AreaConfig.systemConfig[item.model][item.key]" v-bind:readonly="!isAdvanced" />
+							<input v-if="item.input == 'number'" type="number" v-bind:id="item.key" class="form-control input-medium" v-model="submitForm.AreaConfig.systemConfig[item.model][item.key]" min="0" max="2147483647" v-bind:readonly="!isAdvanced" />
+							<select v-if="item.input == 'select'" class="form-control input-small" v-model="submitForm.AreaConfig.systemConfig[item.model][item.key]" v-bind:disabled="!isAdvanced">
+								<option v-for="option in item.options"
+										v-bind:value="option.value"
+										v-bind:selected="option.value == submitForm.AreaConfig.systemConfig[item.model][item.key]"
+                                        v-show="AreaJsonSettingIncludePlatform(option.platformIds, submitForm.PlatformID, item.key)">
+									{{ option.name }}
+								</option>
+							</select>
+							<div v-if="item.input == 'checkboxlist'" class="checkbox-list">
+								<label class="checkbox-inline" v-for="data in item.list">
+									<input type="checkbox" v-bind:id="data.key" v-model="submitForm.AreaConfig.systemConfig.payConfig[data.key]" v-bind:value="data.key" v-bind:disabled="!isAdvanced"> {{data.name}}
+								</label>
+							</div>
+						</div>
+					</div>
+
+
+
+
+
+
+
+
+					<div class="form-group">
+						<label class="control-label col-md-2 xing"> 兑换未达成强制显示:</label>
+						<div class="col-md-2">
+							<select class="form-control" name="ShowConvertPopup" id="ShowConvertPopup" v-model="submitForm.ShowConvertPopup">
+								<option value="0">关闭</option>
+								<option value="1">开启</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2 xing"> 兑换禁止提示文本:</label>
+						<div class="col-md-10">
+							<textarea rows="3" id="ConvertPopupText" name="ConvertPopupText" ref="ConvertPopupText" class="form-control input-xlarge" placeholder="请输入兑换禁止提示文本" v-model="submitForm.ConvertPopupText"></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2 xing"> 绑定手机显示兑换:</label>
+						<div class="col-md-2">
+							<select class="form-control" name="ShowConvertBindPhone" id="ShowConvertBindPhone" v-model="submitForm.ShowConvertBindPhone">
+								<option value="0">关闭</option>
+								<option value="1">开启</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2 xing"> 绑定手机显示所有游戏:</label>
+						<div class="col-md-2">
+							<select class="form-control" name="ShowAllGameBindPhone" id="ShowAllGameBindPhone" v-model="submitForm.ShowAllGameBindPhone">
+								<option value="0">关闭</option>
+								<option value="1">开启</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-2 xing"> 绑定手机显示VIP代理充值:</label>
+						<div class="col-md-2">
+							<select class="form-control" name="ShowVIPAgentBindPhone" id="ShowVIPAgentBindPhone" v-model="submitForm.ShowVIPAgentBindPhone">
+								<option value="0">关闭</option>
+								<option value="1">开启</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2 xing"> 绑定手机显示客服:</label>
+						<div class="col-md-2">
+							<select class="form-control" name="ShowCSBindPhone" id="ShowCSBindPhone" v-model="submitForm.ShowCSBindPhone">
+								<option value="0">关闭</option>
+								<option value="1">开启</option>
+							</select>
+						</div>
+					</div>
+
+
+
+					<div class="form-group">
+						<label class="control-label col-md-2 xing">到达金额显示兑换</label>
+						<div class="col-md-10">
+							<input type="text" id="ShowConvertLimit" name="ShowConvertLimit" class="form-control input-medium" placeholder="请输入到达金额显示兑换" v-model="submitForm.ShowConvertLimit" v-bind:readonly="!isAdvanced" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-2 xing">到达金额显示VIP代理充值</label>
+						<div class="col-md-10">
+							<input type="text" id="ShowVIPAgent" name="ShowVIPAgent" class="form-control input-medium" placeholder="VIP额度" v-model="submitForm.ShowVIPAgent" v-bind:readonly="!isAdvanced" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label col-md-2 xing">到达金额显示客服</label>
+						<div class="col-md-10">
+							<input type="text" id="ShowCS" name="ShowCS" class="form-control input-medium" placeholder="輸入额度" v-model="submitForm.ShowCS" v-bind:readonly="!isAdvanced" />
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<label class="control-label col-md-2 xing">到达金额显示所有游戏</label>
+						<div class="col-md-10">
+							<input type="text" id="ShowAllGameLimit" name="ShowAllGameLimit" class="form-control input-medium" placeholder="请输入到达金额显示所有游戏" v-model="submitForm.ShowAllGameLimit" v-bind:readonly="!isAdvanced" />
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<label class="control-label col-md-2 xing">游玩多少时间显示客服</label>
+						<div class="col-md-10">
+							<input type="text" id="PlaytimeCS" name="PlaytimeCS" class="form-control input-medium" placeholder="輸入分钟数" v-model="submitForm.PlaytimeCS" v-bind:readonly="!isAdvanced" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2 xing">游玩多少时间显示兑换</label>
+						<div class="col-md-10">
+							<input type="text" id="PlaytimeConvert" name="PlaytimeConvert" class="form-control input-medium" placeholder="輸入分钟数" v-model="submitForm.PlaytimeConvert" v-bind:readonly="!isAdvanced" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2 xing">游玩多少时间显示VIP代理充值</label>
+						<div class="col-md-10">
+							<input type="text" id="PlaytimeVIPAgent" name="PlaytimeVIPAgent" class="form-control input-medium" placeholder="輸入分钟数" v-model="submitForm.PlaytimeVIPAgent" v-bind:readonly="!isAdvanced" />
+						</div>
+					</div>
+
+
+
+
+
+
+
+
+
+
+
+
+				</form>
+            </div>
+            <!-- END FORM-->
+            <!-- 廣告設定-->
+            <div id="AdForm" class="tab-pane fade">
+                <button type="button" class="btn btn-light" data-toggle="modal" data-target="#advertisement-modal" v-on:click="openADNew">新增</button>
+                <div class="row liDiv">
+                    <div class="col-md-12">
+                        <table class="table table-bordered table-striped table-hover" id="AD_table"></table>
+                    </div>
+                </div>
+            </div>
+            <!-- END FORM-->
+        </div>
+        <div v-show="isAddArea" class="areaConfig_gameItem__contain">
+            <form id="form3" ref="form3" method="post" class="form-horizontal form-bordered">
+                <div class="form-group">
+                    <label class="control-label col-md-2">平台号</label>
+                    <div class="col-md-10">
+                        <input type="text" name="PlatformID" class="form-control input-medium" v-model="platform.PlatformID" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2">平台名称</label>
+                    <div class="col-md-10">
+                        <input type="text" name="PlatformName" class="form-control input-medium" v-model="platform.PlatformName" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2">营运平台</label>
+                    <div class="col-md-10">
+                        <select class="form-control input-medium" id="Company" v-model="platform.Company">
+                            <option v-for="option in companyList"
+                                    v-bind:value="option.Id"
+                                    v-bind:selected="option.Id == platform.Company">
+                                {{ option.Name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="control-label col-md-2">建立渠道数量</label>
+                    <div class="col-md-10">
+                        <input type="text" name="AreaNum" class="form-control input-medium" v-model="platform.AreaNum" />
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div v-show="isGameSetting && !isAddArea" class="areaConfig_gameItem__contain">
+            <form id="form2" ref="form1" method="post" class="form-horizontal form-bordered">
+                <div class="form-group">
+                    <label class="control-label col-md-2">IconID</label>
+                    <div class="col-md-10">
+                        <input type="text" name="IconID" class="form-control input-medium" readonly v-model="gameForm.IconID" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 xing">游戏编号</label>
+                    <div class="col-md-2">
+                        <select class="form-control" name="Game" id="Game" v-model="gameForm.GameID" v-bind:disabled="!isAddGame">
+                            <option v-for="option in gameJson"
+                                    v-bind:value="option.Id"
+                                    v-bind:data-gameID="gameForm.GameID"
+                                    v-bind:selected="option.Id == gameForm.GameID">
+                                {{ option.Name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 xing">IconTitle</label>
+                    <div class="col-md-10">
+                        <input type="text" id="IconTitle" name="IconTitle" class="form-control input-medium" placeholder="请输入IconTitle" v-model="gameForm.IconTitle" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2 xing">Icon名称</label>
+                    <div class="col-md-10">
+                        <input type="text" name="IconName" class="form-control input-medium" placeholder="请输入Icon名称" v-model="gameForm.IconName" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2 xing">Skin</label>
+                    <div class="col-md-10">
+                        <input type="text" id="Skin" name="Skin" class="form-control input-medium" placeholder="请输入Skin" v-model="gameForm.Skin" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2 xing">游戏名称</label>
+                    <div class="col-md-10">
+                        <input type="text" id="AliasName" name="AliasName" class="form-control input-medium" placeholder="请输入游戏名称" v-model="gameForm.AliasName" />
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- 新增Model-->
+    <div class="modal fade" id="advertisement-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form enctype="multipart/form-data" id="advertisement-form" method="post">
+                    <input hidden v-bind:value="adForm.Id" name="Id" id="Id">
+                    <input hidden v-bind:value="submitForm.PlatformID" name="PlatformID" id="PlatformID">
+                    <input hidden v-bind:value="defaultAreaID" name="AreaID" id="AreaID">
+                    <input hidden v-bind:value="adForm.Picture" name="Picture" id="Picture">
+                    <input hidden value="@ViewBag.WebUrl" name="UploadUrl">
+                    <input hidden id="fileSize">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">新增广告</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>档案</label>
+                            <span class="msgSpan" id="flieMsg"></span>
+                            <input type="file" name="File" id="File" ref="File" v-on:change="changeFile" class="form-control" accept="image/x-png,image/jpeg" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="">预览</label>
+                            <div class="previewImage_contain">
+                                <img class="previewImage_contain__image" id="previewFile" v-bind:src="adForm.Picture" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="Link">自订连结</label>
+                            <span class="msgSpan" id="linkMsg"></span>
+                            <input type="text" class="form-control" name="Link" id="Link" v-model="adForm.Link">
+                        </div>
+                        <div class="form-group">
+                            <label for="Behavior">开启方式</label>
+                            <select class="form-control" name="Behavior" id="Behavior" v-model="adForm.Behavior">
+                                <option v-for="option in behaviorJson"
+                                        v-bind:value="option.Id"
+                                        v-bind:selected="option.Id == adForm.Behavior">
+                                    {{ option.Name }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="Behavior">状态</label>
+                            <select class="form-control" name="Status" id="Status" v-model="adForm.Status">
+                                <option v-for="option in statusJson"
+                                        v-bind:value="option.Id"
+                                        v-bind:selected="option.Id == adForm.Status">
+                                    {{ option.Name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="add-advertisement-button" v-on:click="addAD">確定</button>
+                        <button type="button" class="btn btn-default" id="closeModel" data-dismiss="modal">返回</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- END-->
+</div>
+
+@section initScripts{
+    <script>
+        $(document).ready(function () {
+            $('#form1').validate({
+                rules: {
+                    AreaIdText: {
+                        required: true,
+                        number: true
+                    },
+                    AreaName: {
+                        required: true
+                    },
+                    ClientPlatform: {
+                        required: true
+                    },
+                    Memo: {
+                        required: true
+                    },
+                    UpGradeMsg: {
+                        required: true,
+                        maxlength: 128
+                    },
+                    AnnMsg: {
+                        required: true,
+                        maxlength: 128
+                    },
+                    PayTip: {
+                        required: true,
+                        maxlength: 128
+                    },
+                    FAQContent: {
+                        required: true
+                    },
+                    ShowConvertLimit: {
+                        required: true,
+                        number: true
+                    },
+                    ShowVIPAgent: {
+                        required: true,
+                        number: true
+                    },
+                    ShowCS: {
+                        required: true,
+                        number: true
+                    },
+                    ShowAllGameLimit: {
+                        required: true,
+                        number: true
+                    },
+                    PlaytimeCS: {
+                        required: true,
+                        number: true
+                    },
+                    PlaytimeConvert: {
+                        required: true,
+                        number: true
+                    },
+                    PlaytimeVIPAgent: {
+                        required: true,
+                        number: true
+                    }
+                },
+                messages: {
+                    AreaIdText: {
+                        number: '只能使用数字'
+                    },
+                    ShowConvertLimit: {
+                        number: '只能使用数字'
+                    },
+                    ShowVIPAgent: {
+                        number: '只能使用数字'
+                    },
+                    ShowCS: {
+                        number: '只能使用数字'
+                    },
+                    ShowAllGameLimit: {
+                        number: '只能使用数字'
+                    },
+                    PlaytimeCS: {
+                        number: '只能使用数字'
+                    },
+                    PlaytimeConvert: {
+                        number: '只能使用数字'
+                    },
+                    PlaytimeVIPAgent: {
+                        number: '只能使用数字'
+                    }
+                }
+            })
+
+            $('#form2').validate({
+                rules: {
+                    GameFormGameID: {
+                        required: true,
+                        number: true
+                    },
+                    AliasName: {
+                        required: true
+                    },
+                    IconName: {
+                        required: true
+                    },
+                    IconTitle: {
+                        required: true
+                    },
+                    Skin: {
+                        required: true
+                    }
+                }
+            })
+
+
+            $('#form3').validate({
+                rules: {
+                    PlatformID: {
+                        required: true,
+                        number: true
+                    },
+                    PlatformName: {
+                        required: true
+                    },
+                    AreaNum: {
+                        required: true
+                    }
+                }
+            })
+        })
+
+        var vApp = new Vue({
+            el: '#vApp',
+            data: {
+                arealist: JSON.parse(`@Html.Raw(Json.Encode(@ViewBag.AreaList))`),
+                systemConfig: JSON.parse(`@Html.Raw(@ViewBag.SystemConfig)`),
+                advertisements: JSON.parse(`@Html.Raw(Json.Encode(@ViewBag.Advertisements))`),
+                gameAliasName: JSON.parse(`@Html.Raw(Json.Encode(@ViewBag.GameAliasName))`),
+                platformList: JSON.parse(`@Html.Raw(Json.Encode(@ViewBag.PlatformList))`),
+                companyList: JSON.parse(`@Html.Raw(Json.Encode(@ViewBag.CompanyList))`),
+                gameJson: JSON.parse(`@Html.Raw(Json.Encode(@ViewBag.GameJson))`),
+                popularJson: JSON.parse(`@Html.Raw(Json.Encode(@ViewBag.PopularJson))`),
+                behaviorJson: JSON.parse(`@Html.Raw(Json.Encode(@ViewBag.BehaviorJson))`),
+                statusJson: JSON.parse(`@Html.Raw(Json.Encode(@ViewBag.StatusJson))`),
+                isAdvanced: (`@ViewBag.isAdvanced` !== 'False'),
+                options: ['Android', 'IOS'],
+                gamelist: [],
+                areaJsonSetting: null,
+                defaultAreaID: null,
+                defaultIconID: null,
+                searchArea: null,
+                searchGame: null,
+                isAddArea: false,
+                isAddGame: false,
+                isSync: false,
+                isSave: false,
+                isGameSetting: false,
+                isLoading: false,
+                defaultForm: {
+                    Id: null,
+                    PlatformID: null,
+                    AreaName: null,
+                    ClientPlatform: 'Android',
+                    Memo: '',
+                    ShowConvertLimit: null,
+                    ShowVIPAgent: null,
+                    ShowCS: null,
+                    ShowAllGameLimit: null,
+                    PlaytimeCS: null,
+                    PlaytimeConvert: null,
+                    PlaytimeVIPAgent: null,
+                    FAQContent: null,
+                    PayTips: null,
+                    UpGradeMsg: null,
+                    AnnMsg: null,
+                    AnnMsgShow: null,
+                    SetDefault: null,
+                    GiftMoney: null,
+                    GiftMoneyFlowLimit:null,
+                    DefaultMoney: null,
+                    DefaultMoneyFlowLimit:null,
+                    ShopNameID: null,
+					AgentNameID: null,
+					ShowConvertPopup: null,
+					ConvertPopupText: null,
+                    ShowConvertBindPhone: null,
+                    ShowAllGameBindPhone: null,
+                    ShowVIPAgentBindPhone: null,
+                    ShowCSBindPhone: null,
+                    AreaConfig: {
+                        systemConfig: {
+                            Info: {
+                                PlatformID: undefined,
+                                BundleID: undefined,
+                                AppName: undefined,
+                                AppleID: undefined,
+                                Template: 'UI3.0',
+                                Agent: 0,
+                                FlagExchage: 0,
+                                ExchangeFontType: 0,
+                                Club2Agent: 0,
+                                ShowCaiJinchi: 0,
+                                FlagWebViewIcon1: 0,
+                                WebViewIcon1Type: 0,
+                                WebViewIcon1Url: undefined,
+                                FlagCSThirdparty: 0,
+                                CSThirdpartyUrl: undefined
+                            },
+                            payConfig: {
+                                UIFlagPay: undefined,
+                                UIFlagAgent: undefined,
+                                UIFlagApplyAgent: undefined,
+                                UIFlagJiuLiao: undefined,
+                                UIFlagShanFu: undefined,
+                                UIClub2AgentMode1: undefined,
+                                UIClub2AgentMode2: undefined,
+                                UIClub2AgentMode3: undefined,
+                                UIClub2AgentMode4: undefined,
+                                UIClub2AgentMode5: undefined,
+                                UIClub2AgentMode6: undefined,
+                                ConvertAndOr: undefined,
+                                AllGameAndOr: undefined,
+                                VIPAgentAndOr: undefined,
+                                CSAndOr: undefined,
+                                FlagWebViewIcon1: 0,
+                                WebViewIcon1Type: 0,
+                                WebViewIcon1Url: undefined,
+                                FlagCSThirdparty: 0,
+                                CSThirdpartyUrl: undefined
+                            },
+                            JiuLiao: {
+                                JiuLiaoId: undefined,
+                                JiuLiaoSecrety: undefined,
+                                JiuLiaoName: undefined,
+                                DownloadUrl: undefined
+                            }
+                        }
+                    }
+                },
+                submitForm: {
+                    Id: null,
+                    PlatformID: null,
+                    AreaName: null,
+                    ClientPlatform: null,
+                    Memo: '',
+                    ShowConvertLimit: null,
+                    ShowVIPAgent: null,
+                    ShowAllGameLimit: null,
+                    ShowCS: null,
+                    PlaytimeCS: null,
+                    PlaytimeConvert: null,
+                    PlaytimeVIPAgent: null,
+                    FAQContent: null,
+                    PayTips: null,
+                    UpGradeMsg: null,
+                    AnnMsg: null,
+                    AnnMsgShow: null,
+                    SetDefault: null,
+                    GiftMoney: null,
+                    GiftMoneyFlowLimit:null,
+                    DefaultMoney: null,
+                    DefaultMoneyFlowLimit:null,
+                    ShopNameID: null,
+					AgentNameID: null,
+					ShowConvertPopup: null,
+					ConvertPopupText: null,
+                    ShowConvertBindPhone: null,
+                    ShowAllGameBindPhone: null,
+                    ShowVIPAgentBindPhone: null,
+                    ShowCSBindPhone: null,
+                    AreaConfig: {
+                        systemConfig: {
+                            Info: {
+                                PlatformID: undefined,
+                                BundleID: undefined,
+                                AppName: undefined,
+                                AppleID: undefined,
+                                Template: undefined,
+                                Agent: 0,
+                                FlagExchage: 0,
+                                ExchangeFontType: 0,
+                                Club2Agent: 0,
+                                ShowCaiJinchi: 0,
+                                FlagWebViewIcon1: 0,
+                                WebViewIcon1Type: 0,
+                                WebViewIcon1Url: undefined,
+                                FlagCSThirdparty: 0,
+                                CSThirdpartyUrl: undefined
+                            },
+                            payConfig: {
+                                UIFlagPay: undefined,
+                                UIFlagAgent: undefined,
+                                UIFlagApplyAgent: undefined,
+                                UIFlagJiuLiao: undefined,
+                                UIFlagShanFu: undefined,
+                                UIClub2AgentMode1: undefined,
+                                UIClub2AgentMode2: undefined,
+                                UIClub2AgentMode3: undefined,
+                                UIClub2AgentMode4: undefined,
+                                UIClub2AgentMode5: undefined,
+                                UIClub2AgentMode6: undefined,
+                                ConvertAndOr: undefined,
+                                AllGameAndOr: undefined,
+                                VIPAgentAndOr: undefined,
+                                CSAndOr: undefined
+                            },
+                            JiuLiao: {
+                                JiuLiaoId: undefined,
+                                JiuLiaoSecrety: undefined,
+                                JiuLiaoName: undefined,
+                                DownloadUrl: undefined
+                            }
+                        }
+                    }
+                },
+                adForm: {
+                    Id: null,
+                    Picture: null,
+                    Link: null,
+                    Behavior: 0,
+                    Status: 0
+                },
+                defaultAdForm: {
+                    Id: null,
+                    Picture: null,
+                    Link: null,
+                    Behavior: 0,
+                    Status: 0
+                },
+
+                gameForm: {
+                    GameID: null,
+                    IconID: null,
+                    IconTitle: null,
+                    IconName: null,
+                    AliasName: null,
+                    Skin: null
+                },
+
+                platform: {
+                    PlatformID: null,
+                    PlatformName: null,
+                    AreaNum: null,
+                    Company: 0
+                },
+                searchlist: null,
+                searchGamelist: null,
+                adDataTable: null,
+                previewFile: null,
+                isAddAD: false,
+                newGamelist: null,
+                gameAliasList: []
+            },
+
+            watch: {
+                defaultAreaID: function (val) {
+                    if (val) {
+                        this.getArealist(val)
+                        this.getAreaGameSortById(val)
+                    }
+                },
+                searchArea: function (value) {
+                    vApp.searchlist = this.arealist.filter((x) => {
+                        const areaName = x.AreaName
+                        const areaID = `'${x.Id}'`
+                        return value === null ? true : ~areaName.indexOf(value) || ~areaID.indexOf(value)
+                    })
+                },
+                searchGame: function (value) {
+                    vApp.searchGamelist = this.gameAliasName.filter((x) => {
+                        const aliasName = x.AliasName
+                        return value === null ? true : ~aliasName.indexOf(value)
+                    })
+                },
+                defaultIconID: function (val) {
+                    const item = this.gameAliasName.filter((x) => x.IconID == val)
+                    if (item.length > 0) {
+                        this.gameForm = Object.assign({}, item[0])
+                    }
+                }
+            },
+
+			computed: {
+				PayTips: {
+					get: function () {
+						return this.encode(this.submitForm.PayTips)
+					},
+					set: function (value) {
+						vApp.submitForm.PayTips = value
+					}
+				},
+				FAQContent: {
+					get: function () {
+						return this.encode(this.submitForm.FAQContent)
+					},
+					set: function (value) {
+						vApp.submitForm.FAQContent = value
+					}
+				},
+				newGameJson: function () {
+					const gamelist = this.gamelist.map((x) => x.GameID)
+					return this.gameJson.filter((i) => !~gamelist.indexOf(i.Id))
+				},
+				ConvertPopupText: {
+					get: function () {
+						return this.encode(this.submitForm.ConvertPopupText)
+					},
+					set: function (value) {
+						vApp.submitForm.ConvertPopupText = value
+					}
+				}
+            },
+
+            mounted: function () {
+                this.$set(this, 'searchlist', this.arealist)
+                this.$set(this, 'searchGamelist', this.gameAliasName)
+                this.$set(this, 'areaJsonSetting', this.systemConfig.AreaJsonSetting)
+            },
+
+            created: function () {
+                this.init()
+                this.$nextTick(function () {
+                    this.createSortable()
+                })
+            },
+
+            methods: {
+                init() {
+                    if (this.arealist.length > 0) {
+                        const areaID = _.get(this, 'arealist[0].Id')
+                        this.$set(this, 'defaultAreaID', areaID)
+                    }
+
+                    if (this.gameAliasName.length > 0) {
+                        const IconID = _.get(this, 'gameAliasName[0].IconID')
+                        this.$set(this, 'defaultIconID', IconID)
+                    }
+                },
+                chooseArea(id) {
+                    this.$set(this, 'isAddArea', false)
+                    this.$set(this, 'defaultAreaID', id)
+                },
+
+                choseIcon(IconID) {
+                    this.$set(this, 'isAddGame', false)
+                    this.$set(this, 'defaultIconID', IconID)
+                },
+                createSortable() {
+                    if (this.isAdvanced) {
+                        var el = document.getElementById('sortable')
+                        Sortable.create(el, {
+                            animation: 100,
+                            onUpdate: function (evt) {
+                                var res = $("#sortable .ui-state-default").map(function (index) {
+                                    const length = vApp.gamelist.length
+                                    const sort = length - index
+                                    return { GameID: this.id, Sort: sort }
+                                }).get()
+                                vApp.$set(vApp, 'newGamelist', res)
+                            }
+                        })
+                    }
+                },
+                getArealist(id) {
+                    $.get('/GameMaster/GetAreaById', { 'id': id, '_r': Math.random() }, function (res) {
+                        let payItem = []
+                        vApp.$set(vApp, 'defaultAreaID', id)
+                        const defaults = _.partialRight(_.assignWith, customizer)
+                        const setting = res
+                        vApp.submitForm = Object.assign({}, setting)
+                        vApp.submitForm.AreaConfig = defaults(setting.AreaConfig, vApp.defaultForm.AreaConfig)
+                        example.invalid.PlatformID = vApp.submitForm.PlatformID
+                        const deep = _.cloneDeep(vApp.submitForm.AreaConfig.systemConfig)
+
+                        
+
+
+                        vApp.$nextTick(function () {
+                            Object.keys(deep.payConfig).map(function (objectKey, index) {
+                                var value = deep.payConfig[objectKey]
+                                if (value == 1) {
+                                    payItem.push(objectKey)
+                                    $(`#uniform-${objectKey}`).find('span').addClass('checked');
+                                    $(`#uniform-${objectKey}`).prop("checked", true);
+                                } else {
+                                    $(`#uniform-${objectKey}`).find('span').removeClass('checked');
+                                    $(`#uniform-${objectKey}`).prop("checked", false);
+                                }
+                            })
+
+                            $(`#uniform-SetDefault`).find('span').removeClass('checked')
+                            $(`#uniform-AnnMsgShow`).find('span').removeClass('checked')
+
+                            if (vApp.submitForm.SetDefault === 1) $(`#uniform-SetDefault`).find('span').addClass('checked')
+                            if (vApp.submitForm.AnnMsgShow === 1) $(`#uniform-AnnMsgShow`).find('span').addClass('checked')
+
+                            $(`#uniform-SetDefault`).prop("checked", vApp.submitForm.SetDefault === 1)
+                            $(`#uniform-AnnMsgShow`).prop("checked", vApp.submitForm.AnnMsgShow === 1)
+                        })
+                        vApp.createADTable(id)
+                    })
+                },
+                getAreaGameSortById(id) {
+                    vApp.$set(vApp, 'gamelist', [])
+                    vApp.$set(vApp, 'isLoading', false)
+
+                    if (!id) {
+                        const defaultArea = this.arealist.filter((x) => x.SetDefault == 1)
+                        if (defaultArea.length > 0) {
+                            id = defaultArea[0].Id
+                        }
+                    }
+                    if (id) {
+                        $.get('/GameMaster/GetAreaGameSortById', { 'id': id, '_r': Math.random() }, function (res) {
+                            vApp.$set(vApp, 'isLoading', true)
+                            vApp.$set(vApp, 'gamelist', res)
+                        })
+                    }
+
+                    this.$nextTick(function () {
+                        this.createSortable()
+                    })
+                },
+
+                createADTable(areaID) {
+                    if (this.adDataTable) this.adDataTable.fnDestroy()
+                    const columns = [
+                        {
+                            "sTitle": "图片", "mData": "Picture", "width": "15%",
+                            "render": function (data, type, row) {
+                                return `<div class="areaConfig_ad__image_contain"><div class="areaConfig_ad__image" style="background-image: url('${data}');"></div></div>`
+                            }
+                        },
+                        { "sTitle": "自订连结", "mData": "Link" },
+                        { "sTitle": "开启方式", "mData": "BehaviorName", "width": "15%" },
+                        { "sTitle": "状态", "mData": "StatusName", "width": "8%" },
+                        { "sTitle": "建立时间", "mData": "StrCreateTime", "width": "10%" },
+                        {
+                            "sTitle": "操作", "mData": "Id", "width": "15%",
+                            "render": function (data, type, row) {
+                                return `<button type="button" class="btn dark edit" data-toggle="modal" data-target="#advertisement-modal" onclick="editAD_action(this)">修改</button>
+                                      <button type="button" class="btn dark" onclick="deleteAD(this)">刪除</button>`;
+                            }
+                        }
+                    ]
+
+                    var table = $('#AD_table').dataTable({
+                        "aaData": this.advertisements.filter((x) => x.AreaID == areaID),
+                        "ordering": false,
+                        "searching": false,
+                        "aoColumns": columns,
+                        "bPaginate": false,
+                        "destroy": true
+                    })
+
+                    this.$set(this, 'adDataTable', table)
+                },
+                imageUrl(id) {
+                    return '';
+                    const res = this.systemConfig.gameListIcon.filter((x) => x.GameID == id)
+                    if (res.length > 0) return res[0].Image
+                    return ''
+                },
+                jsonEscape(str) {
+                    return str.replace(/n/g, "\n").replace(/r/g, "\r").replace(/t/g, "\t");
+                },
+
+                savePlatform() {
+                    if (this.isAddArea) if (!$("#form3").valid()) return false
+                    this.$nextTick(function () {
+                        this.$set(this, 'isSave', true)
+                        $.post(`/GameMaster/CreateNewPlatform`, {
+                            PlatformID: this.platform.PlatformID,
+                            PlatformName: this.platform.PlatformName,
+                            AreaNum: this.platform.AreaNum,
+                            Company: this.platform.Company
+                        }, function (res) {
+                            vApp.$set(vApp, 'isSave', false)
+                            swal({
+                                type: res.Result ? 'success' : 'error',
+                                title: res.Message,
+                            }).then((result) => {
+                                vApp.reloadData()
+                                if (vApp.isAddArea) vApp.closeArea()
+                            })
+                        })
+                    })
+                },
+                cmdRefreshArea() {
+                    $.get('/GameMaster/CreateCmdWorker', { 'commandType': 0, 'param': '' }, function (res) {
+                        swal({
+                            type: res.Result ? 'success' : 'error',
+                            title: res.Message,
+                        }).then((result) => {
+                            vApp.reloadData()
+                            if (vApp.isAddArea) vApp.closeArea()
+                        });
+                    });
+                },
+                saveArea() {
+                    if (!$("#form1").valid()) return false
+                    this.$nextTick(function () {
+                        this.$set(this, 'isSave', true)
+                        const FAQContent = this.$refs.FAQContent.value
+                        const PayTips = this.$refs.PayTip.value
+                        const AnnMsgShow = +vApp.submitForm.AnnMsgShow
+						const SetDefault = +vApp.submitForm.SetDefault
+						const ConvertPopupText = this.$refs.ConvertPopupText.value
+
+                        vApp.gamelist = vApp.mergeIconID(vApp.gamelist)
+                        vApp.newGamelist = vApp.mergeIconID(vApp.newGamelist)
+
+                        const old = JSON.stringify(vApp.gamelist)
+                        const newD = JSON.stringify(vApp.newGamelist)
+                        const gameSortList = newD === 'null' ? old : newD
+
+                        let promises = []
+
+                        this.$set(vApp.submitForm, 'FAQContent', FAQContent)
+                        this.$set(vApp.submitForm, 'PayTips', PayTips)
+                        this.$set(vApp.submitForm, 'AnnMsgShow', AnnMsgShow)
+						this.$set(vApp.submitForm, 'SetDefault', SetDefault)
+						this.$set(vApp.submitForm, 'ConvertPopupText', ConvertPopupText)
+
+                        let submitForm = _.cloneDeep(vApp.submitForm)
+
+                        example.invalid.PlatformID = submitForm.PlatformID
+                        example.invalid.SiteID = submitForm.Id
+
+                        const deep = _.cloneDeep(this.arealist)
+                        const data = _.filter(deep, function (o) {
+                            return o.SetDefault === 1
+                        })
+
+                        if (data.length > 0) {
+                            const areaConfig = submitForm.AreaConfig
+                            const setDefault = data[0].AreaConfig
+                            const res = _.defaultsDeep(areaConfig, setDefault)
+                            submitForm.AreaConfig = res
+                        }
+
+                        const areaConfig = JSON.stringify(submitForm.AreaConfig)
+                        submitForm.AreaConfig = areaConfig
+
+                        const ShopNameID = $('#ShopNameID').val()
+                        const AgentNameID = $('#AgentNameID').val()
+                        this.$set(vApp.submitForm, 'ShopNameID', ShopNameID)
+                        this.$set(vApp.submitForm, 'AgentNameID', AgentNameID)
+
+
+                        const promise = new Promise((resolve, reject) => {
+                            $.post(`/GameMaster/UpdateAreaConfig`, {
+                                Id: submitForm.Id,
+                                PlatformID: submitForm.PlatformID,
+                                AreaName: submitForm.AreaName,
+                                ClientPlatform: submitForm.ClientPlatform,
+                                Memo: submitForm.Memo,
+                                ShowConvertLimit: submitForm.ShowConvertLimit,
+                                ShowVIPAgent: submitForm.ShowVIPAgent,
+                                ShowCS: submitForm.ShowCS,
+                                ShowAllGameLimit: submitForm.ShowAllGameLimit,
+                                PlaytimeCS: submitForm.PlaytimeCS,
+                                PlaytimeConvert: submitForm.PlaytimeConvert,
+                                PlaytimeVIPAgent: submitForm.PlaytimeVIPAgent,
+                                FAQContent: submitForm.FAQContent,
+                                PayTips: submitForm.PayTips,
+                                UpGradeMsg: submitForm.UpGradeMsg,
+                                GiftMoney: submitForm.GiftMoney,
+                                GiftMoneyFlowLimit:submitForm.GiftMoneyFlowLimit,
+                                DefaultMoney: submitForm.DefaultMoney,
+                                DefaultMoneyFlowLimit:submitForm.DefaultMoneyFlowLimit,
+                                ShopNameID: +ShopNameID,
+								AgentNameID: +AgentNameID,
+								ShowConvertPopup: submitForm.ShowConvertPopup,
+								ConvertPopupText: submitForm.ConvertPopupText,
+                                ShowConvertBindPhone: submitForm.ShowConvertBindPhone,
+                                ShowAllGameBindPhone: submitForm.ShowAllGameBindPhone,
+                                ShowVIPAgentBindPhone: submitForm.ShowVIPAgentBindPhone,
+                                ShowCSBindPhone: submitForm.ShowCSBindPhone,
+                                AnnMsg: submitForm.AnnMsg,
+                                AnnMsgShow: submitForm.AnnMsgShow,
+                                SetDefault: submitForm.SetDefault,
+                                AreaConfig: submitForm.AreaConfig,
+                                GameSortList: gameSortList
+                            }, function (res) {
+                                resolve()
+                            })
+                        })
+                        promises.push(promise)
+
+
+                        Promise.all(promises).then(values => {
+                            this.$set(this, 'isSave', false)
+                            if (vApp.isSync) vApp.syncAreaConfig()
+                            this.$set(this, 'isSync', false)
+                            swal({
+                                type: 'success',
+                                title: '操作成功',
+                            }).then((result) => {
+                                vApp.reloadData()
+                                if (vApp.isAddArea) vApp.closeArea()
+                            })
+                        })
+
+                    })
+                },
+                addArea () {
+                    const deep = _.cloneDeep(this.defaultForm)
+                    this.$set(this, 'submitForm', deep)
+                    this.$set(this, 'defaultAreaID', null)
+                    this.$set(this, 'isAddArea', true)
+
+                    Object.keys(this.defaultForm.AreaConfig.systemConfig.payConfig).map(function (objectKey, index) {
+                        $(`#uniform-${objectKey}`).find('span').removeClass('checked')
+                        $(`#uniform-${objectKey}`).prop("checked", false)
+                    })
+                    $(`#uniform-SetDefault`).find('span').removeClass('checked')
+                    $(`#uniform-SetDefault`).prop("checked", false)
+                    $(`#uniform-AnnMsgShow`).find('span').removeClass('checked')
+                    $(`#uniform-AnnMsgShow`).prop("checked", false)
+
+                },
+                closeArea () {
+                    this.init()
+                    this.$set(this, 'isAddArea', false)
+                },
+
+                closeGame() {
+                    this.init()
+                    this.$set(this, 'isAddGame', false)
+                },
+                addGame () {
+                    this.$set(this, 'gameForm', {})
+                    this.$set(this, 'defaultIconID', null)
+                    this.$set(this, 'isAddGame', true)
+                },
+
+                saveGame () {
+                    if (!$("#form2").valid()) return false
+
+                    const GameMasterAction = this.isAddGame ? 'InsertGameAliasName' : 'UpdGameAliasName'
+                    $.post(`/GameMaster/${GameMasterAction}`, vApp.gameForm
+                        , function (res) {
+                            swal({
+                                type: 'success',
+                                title: res.Message,
+                            }).then((result) => {
+                                vApp.reloadData()
+                                if (vApp.isAddGame) vApp.closeGame()
+                            })
+                        })
+                },
+                changeFile() {
+                    const file = this.$refs.File.files[0]
+                    if (file === void 0) {
+                        this.$set(this.adForm, 'Picture', '')
+                        return
+                    }
+                    var tmppath = URL.createObjectURL(file);
+                    this.$set(this.adForm, 'Picture', tmppath)
+                    $("#fileSize").val(file.size);
+                },
+                addNewGame () {
+                    const _option = $(".option_newgame select option:selected")
+                    if (_option.length == 0) return false
+
+                    const gameId = +_option[0].value
+                    const gameName = _option[0].text
+                    const platformID = this.submitForm.PlatformID
+                    const aeaID = this.defaultAreaID
+
+                    const data = {
+                        AliasName: null,
+                        AreaID: aeaID,
+                        GameID: gameId,
+                        GameName: gameName,
+                        IconID: null,
+                        PlatformID: platformID,
+                        Popular: 0,
+                        Sort: 99,
+                        Status: 1
+                    }
+                    this.gamelist.push(data)
+                },
+                delGame(item) {
+                    const gameId = item.GameID
+                    const id = item.Id
+                    this.gamelist = this.gamelist.filter((x) => x.GameID != gameId)
+
+                    $.post(`/AreaGameSetting/DeleteAreaGame`, {
+                        ID: id
+                    }, function (res) {
+                    })
+                },
+                addAD() {
+                    if (this.isAddAD) {
+                        $.ajax({
+                            url: '@ViewBag.InsertAdvertisementUrl',
+                            type: "POST",
+                            data: new FormData($("#advertisement-form")[0]),
+                            contentType: false,
+                            processData: false,
+                            dataType: 'json',
+                            success: function (data) {
+                                $("#closeModel").click();
+                                swal({
+                                    type: 'success',
+                                    title: data.msg
+                                }).then((result) => {
+                                    vApp.reloadData()
+                                })
+                            }
+                        });
+                    } else {
+                        editAD()
+                    }
+                },
+                reloadData () {
+                    $.get(`/GameMaster/ReloadAreaConfig`, function (res) {
+                        vApp.arealist = res.areaList
+                        vApp.searchlist = res.areaList.filter((x) => {
+                            const areaName = x.AreaName
+                            const areaID = `'${x.Id}'`
+                            return vApp.searchArea === null ? true : ~areaName.indexOf(vApp.searchArea) || ~areaID.indexOf(vApp.searchArea)
+                        })
+                        vApp.searchGamelist = res.gameAliasName.filter((x) => {
+                            const aliasName = x.AliasName
+                            return vApp.searchGame === null ? true : ~aliasName.indexOf(vApp.searchGame)
+                        })
+                        vApp.advertisements = res.advertisements
+                        vApp.gameAliasName = res.gameAliasName
+                        vApp.gameJson = res.gameJson
+                        vApp.createADTable(vApp.defaultAreaID)
+                    })
+                },
+                openGameSetting() {
+                    this.$set(this, 'isGameSetting', !this.isGameSetting)
+                },
+                getIconList(val) {
+                    return this.gameAliasName.filter((x) => x.GameID == val)
+                },
+                mergeIconID (list) {
+                    if (!list) return list
+
+                    const option_aliasName = $(".option_aliasName select option:selected")
+                    let data = list.map((x) => {
+                        const temp = option_aliasName.filter((i, op) => {
+                            const gameid = op.attributes['data-gameid']
+                            return gameid.value == x.GameID
+                        })
+                        if (temp.length > 0) {
+                            x.IconID = temp[0].value
+                            return x
+                        }
+                    })
+
+                    const option_popular = $(".option_popular select option:selected")
+                    data = list.map((x) => {
+                        const temp = option_popular.filter((i, op) => {
+                            const gameid = op.attributes['data-gameid']
+                            return gameid.value == x.GameID
+                        })
+                        if (temp.length > 0) {
+                            x.Popular = temp[0].value
+                            return x
+                        }
+                    })
+
+                    const option_game = $(".option_game select option:selected")
+                    data = list.map((x) => {
+                        const temp = option_game.filter((i, op) => {
+                            const gameid = op.attributes['data-gameid']
+                            return gameid.value == x.GameID
+                        })
+                        if (temp.length > 0) {
+                            x.GameID = +temp[0].value
+                            return x
+                        }
+                    })
+
+                    const option_status = $(".option_status select option:selected")
+                    data = list.map((x) => {
+                        const temp = option_status.filter((i, op) => {
+                            const gameid = op.attributes['data-gameid']
+                            return gameid.value == x.GameID
+                        })
+                        if (temp.length > 0) {
+                            x.Status = temp[0].value
+                            return x
+                        }
+                    })
+
+                    return data
+                },
+
+                isSyncPlatform (platformID) {
+                    this.$set(this, 'isSync', true)
+                    this.saveArea()
+                },
+
+                syncAreaConfig () {
+                    const platformID = this.submitForm.PlatformID
+                    const areaID = this.submitForm.Id
+                    $.post('/GameMaster/SyncAreaConfig', { platformID, areaID }, function (res) {
+                    })
+                    },
+
+                encode (str) {
+                    if (str) {
+                        return str.replace(/\<br>/g, "\n")
+                    }
+                },
+                openADNew() {
+                    this.$refs.File.value = ''
+                    const copy = Object.assign({}, this.defaultAdForm)
+                    this.$set(this, 'adForm', copy)
+                    this.isAddAD = true
+                },
+                AreaJsonSettingIncludePlatform(sourcePlatformIds, platformId, areaJsonSettingKey) {
+                    if (areaJsonSettingKey != "Template") {
+                        return true;
+                    }
+
+                    if (sourcePlatformIds == undefined) {
+                        return false;
+                    }
+                    if (sourcePlatformIds.length == 0) {
+                        return true;
+                    }
+                    return sourcePlatformIds.includes(platformId);
+                }
+            }
+        })
+
+        function editAD_action(ob) {
+            vApp.isAddAD = false
+            vApp.$refs.File.value = ""
+            const table = $('#AD_table').DataTable();
+            const $tr = $(ob).closest('tr');
+            const row = table.row($tr).data();
+            const id = row.Id;
+            const picture = row.Picture;
+            const link = row.Link;
+            const behavior = row.Behavior
+            const status = row.Status
+            var uploadURL = '@ViewBag.WebUrl'
+
+            vApp.adForm = Object.assign({}, {
+                Id: id,
+                Picture: picture,
+                Link: link,
+                Behavior: behavior,
+                Status: status
+            })
+        }
+
+        function editAD() {
+            const item = new FormData($("#advertisement-form")[0])
+            $.ajax({
+                url: '@ViewBag.UploadAdvertisementUrl',
+                type: "POST",
+                data: item,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function (data) {
+                    $("#closeModel").click();
+                    swal({
+                        type: 'success',
+                        title: data.msg
+                    }).then((result) => {
+                        vApp.reloadData()
+                    })
+                }
+            })
+        }
+
+        function deleteAD(ob) {
+            const table = $('#AD_table').DataTable();
+            const $tr = $(ob).closest('tr');
+            const row = table.row($tr).data();
+
+            var id = row.Id;
+            var picture = row.Picture;
+            var uploadURL = '@ViewBag.WebUrl';
+
+            $.ajax({
+                cache: false,
+                dataType: 'json',
+                url: '@ViewBag.DelAdvertisementUrl',
+                data: {
+                    adId: id,
+                    picture: picture,
+                    uploadURL: uploadURL
+                },
+                contentType: "application/x-www-form-urlencoded",
+                type: 'POST',
+                success: function (data) {
+                    swal({
+                        type: 'success',
+                        title: data.msg
+                    }).then((result) => {
+                        vApp.reloadData()
+                    })
+                },
+                error: function (err) {
+                }
+            });
+        }
+
+        function customizer(objValue, srcValue) {
+            return _.isUndefined(objValue) ? srcValue : objValue;
+        }
+
+    </script>
+}
+

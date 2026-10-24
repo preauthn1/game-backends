@@ -1,0 +1,314 @@
+﻿@using FW.Core.Web.Mvc
+@using game.Infrastructure.Extensions;
+@using game.Infrastructure.Helper;
+
+
+@model FW.Core.Helper.PagedList<game.Entity.PerLog.DetailLog>
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_message")
+                @Html.Partial("_userPartial")
+                @Html.Partial("GameServer")
+
+                <input type="hidden" value="false" id="isExport" name="isExport" />
+
+                <div class="form-group">
+                    <label>牌局编号</label>
+                    <input type="text" class="form-control input-small " id="dealNo" name="dealNo" placeholder="牌局编号">
+                </div>
+                <div class="form-group">
+                    <label>时间</label>
+                    <input type="text" class="form-control " style="width:180px" id="beginTime" name="beginTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss")">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="endTime" name="endTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: true })" placeholder="结束时间" value="@DateTime.Now.To_23_59_59().ToString("yyyy-MM-dd HH:mm:ss")" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+
+                    <button type="submit" class="btn btn-default" onclick="global_changeExportType('false')"> 搜 索 </button>
+
+                    <button type="submit" class="btn btn-default" onclick="global_changeExportType('true')"> 匯 出 (上限2000笔) </button>
+
+                </div>
+
+                <div style="margin-top:25px;">
+                    <div class="" id="transferInfo_table_length">
+                        显示
+                        <select id="pageSize" name="pageSize" aria-controls="transferInfo_table" class="">
+                            <option value="20">20</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                            <option value="1000">1,000</option>
+                        </select> 记录
+                    </div>
+                </div>
+
+
+            </form>
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th class="hide">编号</th>
+                            <th>时间</th>
+                            <th>牌局标识</th>
+                            <th>服务器编号</th>
+                            <th>服务器名称</th>
+                            <th>游戏名称</th>
+                            <th>所属平台</th>
+                            @Html.Partial("~/Views/Shared/_userTHeadPartial.cshtml")
+                            <th>当前金币</th>
+                            <th>更新金币</th>
+
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (var item in Model.PageData)
+                            {
+                                <tr>
+                                    <td class="hide">@item.Id</td>
+                                    <td>@item.GameTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>@item.LogID</td>
+                                    <td>@item.ServerID</td>
+                                    <td>@item.ServerName</td>
+                                    <td>@item.GameName</td>
+                                    <td>@item.PlatformName</td>
+                                    @Html.Partial("~/Views/Shared/_userTBodyPartial.cshtml", new game.Entity.Users.UserInfo() { Id = item.UserID, NickName = item.NickName, LoginName = item.LoginName, GradeID = item.GradeID })
+                                    <td>@AppLogicHelper.ShowCashAmountOrDashText(item.GameID , item.CurrentAmount)</td>
+                                    <td>@item.UpdateAmount.ToCash()</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" data-toggle="modal"
+                                                data-target="#myModal" data-logid="@item.LogID" onclick="loadDetailLog('@item.GameTime.ToString("yyyy-MM-dd HH:mm:ss")',@item.Id)" id="user@example.invalid">
+                                            详情
+                                        </button>
+
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="row rpager">
+                <div class="pager">
+                    <div class="pagerc">
+                        @Html.Pager(Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    详情
+                </h4>
+            </div>
+            <div class="modal-body">
+                <!--列表-->
+                <div class="table-scrollable">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th class="hide">编号</th>
+                                <th>牌局标识</th>
+                                <th>服务器编号</th>
+                                <th>服务器名称</th>
+                                <th>游戏名称</th>
+                                <th>用户ID</th>
+                                <th>账号</th>
+                                <th>真实姓名</th>
+                                <th>银行真实姓名</th>
+                                <th>用户等级</th>
+                                <th>当前金币</th>
+                                <th>更新金币</th>
+                                <th>时间</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-data"></tbody>
+                    </table>
+                </div>
+                <!--列表-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet box grey">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="fa fa-globe"></i>游戏记录详情
+                                </div>
+                            </div>
+                            <div class="portlet-body form">
+                                <form id="form1" class="form-horizontal form-bordered">
+                                    <div class="form-body">
+                                        <div class="form-group hide">
+                                            <label class="control-label col-md-5 ">编号</label>
+                                            <div class="col-md-7">
+                                                <span id="text-Id"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5 ">牌局标识</label>
+                                            <div class="col-md-7">
+                                                <span id="text-LogID"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group hide">
+                                            <label class="control-label col-md-5 ">牌局编号</label>
+                                            <div class="col-md-7">
+                                                <span id="text-DealNo"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5 ">服务器编号</label>
+                                            <div class="col-md-7">
+                                                <span id="text-ServerID"></span>
+                                            </div>
+                                        </div><div class="form-group">
+                                            <label class="control-label col-md-5 ">服务器名称</label>
+                                            <div class="col-md-7">
+                                                <span id="text-ServerName"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5 ">游戏名称</label>
+                                            <div class="col-md-7">
+                                                <span id="text-GameName"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5 ">税收</label>
+                                            <div class="col-md-7">
+                                                <span id="text-TaxAmount"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5 ">游戏数据</label>
+                                            <div class="col-md-7">
+                                                <span id="text-GameData" style="word-break:break-all;"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group hide">
+                                            <label class="control-label col-md-5 "> 参数1</label>
+                                            <div class="col-md-7">
+                                                <span id="text-Param1"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group hide">
+                                            <label class="control-label col-md-5 "> 参数2</label>
+                                            <div class="col-md-7">
+                                                <span id="text-Param2"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-5 ">时间</label>
+                                            <div class="col-md-7">
+                                                <span id="text-GameTime"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </form>
+                                <!-- END FORM-->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                    关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+@section initScripts{
+    <script>
+        $(function () {
+            
+            fillFormData('form_search');
+        })
+
+        function loadDetailLog(gametime, t) {
+            var logid = $("#log_" + t).attr("data-logid");
+
+            $("#text-Id").html('');
+            $("#text-LogID").html('');
+            $("#text-DealNo").html('');
+            $("#text-ServerID").html('');
+            $("#text-ServerName").html('');
+            $("#text-GameName").html('');
+            $("#text-TaxAmount").html('');
+            $("#text-GameData").html('');
+            $("#text-Param1").html('');
+            $("#text-Param2").html('');
+            $("#text-GameTime").html('');
+
+            //加载详情
+            $.get("/Game/GetPerGameLogByLogID", { logID: logid, gametime: gametime, r: Math.random() }, function (data) {
+                var result = JSON.parse(data);
+                $("#text-Id").html(result.Id);
+                $("#text-LogID").html(result.Id);
+                $("#text-DealNo").html(result.DealNo);
+                $("#text-ServerID").html(result.ServerID);
+                $("#text-ServerName").html(result.ServerName);
+                $("#text-GameName").html(result.GameName);
+                $("#text-TaxAmount").html(result.TaxAmount);
+                $("#text-GameData").html(result.GameData.replace('\r\n', '').replace(/\r\n/g, '<br />'));
+                $("#text-Param1").html(result.Param1);
+                $("#text-Param2").html(result.Param2);
+                $("#text-GameTime").html('【' + result.BeginTime + '】~【' + result.EndTime + '】');
+            });
+
+            $("#tbody-data").html('');
+
+            //加载列表
+            $.get("/Game/GetDetailLogByLogID", { logID: logid, gametime: gametime }, function (data) {
+                var result = JSON.parse(data);
+                var html = "";
+                for (var i = 0; i < result.length; i++) {
+                    html += "<tr>"
+                        + " <td class='hide'>" + result[i].Id + "</td>"
+                        + "<td>" + result[i].LogID + "</td>"
+                        + "<td>" + result[i].ServerID + "</td>"
+                        + "<td>" + result[i].ServerName + "</td>"
+                        + "<td>" + result[i].GameName + "</td>"
+                        + '<td> <a class="link" target="_blank" href="/UserInfo/Search?userId=' + result[i].UserID + '&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">' + result[i].UserID + '</a></td>'
+                        + "<td>" + result[i].LoginName + "</td>"
+                        + "<td>" + result[i].RealName + "</td>"
+                        + "<td>" + result[i].UnionpayRealName + "</td>"
+                        + "<td>" + result[i].GradeID + "</td>"
+                        + "<td>" + result[i].CurrentAmount + "</td>"
+                        + "<td>" + result[i].UpdateAmount + "</td>"
+                        + "<td>" + result[i].GameTime + "</td>"
+                    html += "</tr>";
+                }
+                $("#tbody-data").html(html);
+            });
+        }
+    </script>
+}

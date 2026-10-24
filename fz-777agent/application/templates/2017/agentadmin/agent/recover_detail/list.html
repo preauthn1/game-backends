@@ -1,0 +1,31 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+{% autoescape false %}{{formSearch}}{% endautoescape %}
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                <th data-options="{name:'created_at',align:'center'}">提交时间</th>
+                <th data-options="{name:'exchange_id',align:'center'}">订单ID</th>
+                <th data-options="{name:'code',align:'center'}">订单码</th>
+                <th data-options="{name:'player_id',align:'center'}">玩家ID</th>
+                <th data-options="{name:'money',align:'center'}">提现金额</th>
+                <th data-options="{name:'fee',align:'center'}">手续费</th>
+                <th data-options="{name:'alipay_account',align:'center'}">支付宝账号</th>
+                <th data-options="{name:'alipay_name',align:'center'}">支付宝名字</th>
+                <th data-options="{name:'bank_account',align:'center'}">银行账号</th>
+                <th data-options="{name:'bank_name',align:'center'}">银行名字</th>
+                <th data-options="{name:'bank_affiliate',align:'center'}">所属银行</th>
+                <th data-options="{name:'old_agent_money',align:'center'}">代理旧金额</th>
+                <th data-options="{name:'new_agent_money',align:'center'}">代理新金额</th>
+                <th data-options="{name:'created_at',align:'center'}">接单倒计时</th>
+                <th data-options="{name:'status',align:'center',render:function(value,data){
+                if(value==1){return '已接单';}else if(value==2){return '超时订单失效';}else{return '<a href=\'javascript:;\'>接单</a>';}}
+                }">接单操作</th>
+                <th data-options="{name:'turn_status',align:'center',render:function(value,data){
+                if(value==1){return '完成';}else{return '<a href=\'javascript:;\'>未完成</a>';}}
+                }">转账操作</th>
+            </tr>
+        </thead>
+    </table>
+</div>

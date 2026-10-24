@@ -1,0 +1,124 @@
+syntax = "proto2";
+
+package netproto;
+
+import "GameMsg.proto";
+
+//下注设置
+message FKEB_Setting{
+	repeated int32 BetCount=1;//一次下注的数量
+	required int32 BetMoney=2;//一次下注的钱
+	required int64 ZhuangLimit=3;//上庄钱限制
+	optional int64 betlimitmoney=4;//下注攜帶金額限制
+};
+
+//状态消息
+message FKEB_Sate{
+	required int32 State=1;//状态
+	required int32 Time=2;//此状态的剩余时间
+};
+
+//用户断线重连下注消息
+message FKEB_UserBetInfo{
+	required int64 UserMoney=1;
+	repeated FKEB_BroadCastBet BetInfo=2;
+};
+
+//广播用户下注的数组
+message FKEB_BroadCastBetArr{
+	required int32 UserID=1;
+	repeated FKEB_BroadCastBet BroadCastBetArr=2;
+};
+
+//广播用户下注内容数据结构
+message FKEB_BroadCastBet{
+	required int32 Type=1;
+	required int64 Money=2;
+};
+
+//用户下注数组
+message FKEB_BetArr{
+	repeated FKEB_Bet BetArr=1;
+};
+
+//用户下注数据结构
+message FKEB_Bet{
+	required int32 BetType=1;
+	required int32 Count=2;
+};
+
+//疯狂二八下注的结果
+message FKEB_BetRet{
+	required int32 Ret=1;//0下注成功，-1用户金额不足，-2下注的类型未找到，-3庄家不能下注，-4此类下注已达到上限
+	required int64 Money=2;//用户的钱，下注以后的金额。
+	optional int32 Type=3;//下注超过限制的下注类型
+	repeated FKEB_Bet BetArr=4;//用户下注数据
+}
+
+//游戏麻将结果
+message FKEB_GameResultMajiang{
+	repeated int32 RetType=1;	//开奖结果
+	repeated int32 SeZi=2;		//色子点数
+	repeated FKEB_Majiang Majiang=3;//按照庄，顺，天，地顺序排列
+};
+
+//游戏用户赢钱结果
+message FKEB_GameResultUserMoney{
+	required int64	ZhuangWin=1;
+	required int64	SelfWin=2;
+	repeated FKEB_WinUerInfo WinUserInfo=3;//赢钱前三名的人信息
+};
+//赢钱玩家信息
+message FKEB_WinUerInfo{
+	required string UserName=1;
+	required int64 Win=2;
+};
+
+//疯狂二八牌的点数
+message FKEB_Majiang{
+	required int32 Majiang1=1;//麻将1
+	required int32 Majiang2=2;//麻将2
+};
+
+//一局的麻将牌
+message FKEB_Majiangs{
+	repeated int32 RetType=1;	//开奖结果
+	repeated FKEB_Majiang Majiangs=2;//按照庄，顺，天，地顺序排列
+};
+
+//前20次开出的牌
+message FKEB_ResultCardList{
+	repeated FKEB_Majiangs MaJiangList=1;
+};
+
+//上庄结果
+message FKEB_ShangzhuangRet{
+	required int32 ret=1;//值为1时下庄成功，值为0表示上庄成功，值为-1时上庄失败资金不足，值为-2时已经在上庄列表中。
+};
+
+//是否上庄
+message FKEB_ShangZhuang{
+	required bool IsShangZhuang=1;
+};
+
+//庄家信息
+message FKEB_ZhuangInfo{
+	required int32 UserID=1;
+	required int32 LastTurn=2;
+	repeated GameUser UserInfo=3;
+};
+
+//上庄列表
+message FKEB_ZhuangList{
+	repeated GameUser UserInfo=1;
+};
+//清除结果回应消息
+message FKEB_BetClearRet{
+	required int64	Money=1;//当前的钱
+	required int32 Ret=2;//清除结果-1，清理失败，达到清理上限，0清理成功
+};
+
+//游戏用户赢钱结果
+message FKEB_GameZhuangWinRet {
+	required int64	ZhuangWin=1;
+}

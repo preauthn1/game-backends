@@ -1,0 +1,21 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+{% autoescape false %}{{formSearch}}{% endautoescape %}
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                <th data-options="{name:'status',align:'center',item:[{'0':'未处理'},{'1':'已处理'}]}">状态</th>
+                <th data-options="{name:'type',align:'center',item:[{'1':'代理购入'},{'2':'代理转出'}]}">类型</th>
+                <th data-options="{name:'id',align:'center'}">订单ID</th>
+                <th data-options="{name:'agent_id',align:'center'}">代理ID</th>
+                <th data-options="{name:'money',align:'center'}">订单金额</th>
+                <th data-options="{name:'agent_old_money',align:'center'}">代理退分前金额</th>
+                <th data-options="{name:'agent_new_money',align:'center'}">代理退分后金额</th>
+                <th data-options="{name:'user_id',align:'center'}">转错玩家ID（代理ID）</th>
+                <th data-options="{name:'created_at',align:'center'}">生成时间</th>
+                <th data-options="{name:'updated_at',align:'center'}">处理时间</th>
+            </tr>
+        </thead>
+    </table>
+</div>

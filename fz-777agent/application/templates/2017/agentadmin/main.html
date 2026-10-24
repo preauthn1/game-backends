@@ -1,0 +1,47 @@
+    {% include 'agentadmin/header.html' with {'title': title} %}
+    {% include 'agentadmin/topnav.html'%}
+    {% include 'agentadmin/menunav.html'%}
+    <div id="bjui-body-box">
+        <div class="container_fluid" id="bjui-body">
+            <div id="bjui-sidenav-col">
+                <div id="bjui-sidenav">
+                    <div id="bjui-sidenav-arrow" data-toggle="tooltip" data-placement="left" data-title="隐藏左侧菜单">
+                        <i class="fa fa-long-arrow-left"></i>
+                    </div>
+                    <div id="bjui-sidenav-box">
+                        
+                    </div>
+                </div>
+            </div>
+            <div id="bjui-navtab" class="tabsPage">
+                <div id="bjui-sidenav-btn" data-toggle="tooltip" data-title="显示左侧菜单" data-placement="right">
+                    <i class="fa fa-bars"></i>
+                </div>
+                <div class="tabsPageHeader">
+                    <div class="tabsPageHeaderContent">
+                        <ul class="navtab-tab nav nav-tabs">
+                            <li><a href="javascript:;"><span><i class="fa fa-home"></i> #maintab#</span></a></li>
+                        </ul>
+                    </div>
+                    <div class="tabsLeft"><i class="fa fa-angle-double-left"></i></div>
+                    <div class="tabsRight"><i class="fa fa-angle-double-right"></i></div>
+                    <div class="tabsMore"><i class="fa fa-angle-double-down"></i></div>
+                </div>
+                <ul class="tabsMoreList">
+                    <li><a href="javascript:;">#maintab#</a></li>
+                </ul>
+                <div class="navtab-panel tabsPageContent">
+                    <div class="navtabPage unitBox">
+                        <div class="bjui-pageContent">
+                            <div class="highlight">
+                                <pre class="prettyprint">
+
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'agentadmin/footer.html' %}

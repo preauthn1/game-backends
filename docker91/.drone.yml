@@ -1,0 +1,14 @@
+debug: true
+workspace:
+  base: /go
+  path: /docker91
+pipeline:
+  deploy-to-qa:
+    image: appleboy/drone-ssh
+    host: 0.0.0.0
+    username: root
+    password: [REDACTED]
+    script:
+      - /allen/dbserver/dbserver.sh
+    when:
+      event: [ push ]

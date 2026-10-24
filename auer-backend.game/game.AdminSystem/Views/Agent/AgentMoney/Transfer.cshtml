@@ -1,0 +1,102 @@
+﻿<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>转账
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="transferForm" method="post" class="form-horizontal form-bordered">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">总代理编号</label>
+                            <div class="col-md-9">
+                                <input type="text" id="agentID" name="agentID" class="form-control input-medium" placeholder="请输入总代理编号">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">厂商名称</label>
+                            <div class="col-md-9">
+                                <span id="agent_name">未找到总代理</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">总代理名称</label>
+                            <div class="col-md-9">
+                                <span id="agent_username">请输入总代理编号</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">总代理金币</label>
+                            <div class="col-md-9">
+                                <span id="agent_money">请输入总代理编号</span>
+                            </div>
+                        </div>
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">加款金额</label>
+                            <div class="col-md-9">
+                                <input type="text" id="amount" name="amount" class="form-control input-medium" placeholder="请输入金币数量">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @Html.OkWithRight()
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $('#agentID').blur(function () {
+                var agentID = $(this).val();
+                if (agentID) {
+                    $.getJSON('/AgentMoney/GetAgentInfoById', { 'agentID': $.trim(agentID), '_r': Math.random() }, function (msg) {
+                        if (msg.success && msg.data) {
+                            const money = msg.data.money
+                            const username = msg.data.username
+                            const name = msg.data.name
+                            $('#agent_name').html(name);
+                            $('#agent_money').html(money);
+                            $('#agent_username').html(username);
+                        }
+                        else {
+                            $('#agent_name').html('未找到总代理');
+                            $('#agent_money').html('未找到总代理');
+                            $('#agent_username').html('未找到总代理');
+                        }
+                    });
+                }
+            });
+
+            $('#transferForm').validate({
+                rules: {
+                    agentID: {
+                        required: true
+                    },
+                    amount: {
+                        required: true,
+                        number: true
+                    }
+                },
+                messages: {
+                    agentID: {
+                        required: '总代理编号不能为空'
+                    },
+                    amount: {
+                        required: '金币数量不能为空',
+                        number: '只能为数字'
+                    }
+                }
+            });
+        });
+    </script>
+}

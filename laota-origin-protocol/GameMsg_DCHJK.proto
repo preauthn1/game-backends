@@ -1,0 +1,233 @@
+syntax = "proto2";
+
+package netproto;
+
+import "GameMsg.proto";
+
+//---------- Server - Client ----------
+// DCHJK_GameInfo = 10001;                   // S2C 牌局資訊，於玩家進入牌局或斷線重連時傳送
+message DCHJK_Msg_GameInfo {
+    required int32 GameState = 1;                       // 遊戲狀態，0:等待遊戲開始，1:玩家下注，2:切牌，3:發牌，4:保險，5:保險結算，6:玩家操作，7:莊家開牌/結算
+    required int32 TimeRemain = 2;                      // 剩餘時間
+    required int64 MaxTotalBetBase = 3;                 // 底注押注總額上限
+    repeated int32 ChipValue = 4;                       // 籌碼面額
+    required DCHJK_Msg_CardSetInfo DealerCards = 5;    // 莊家手牌
+    repeated DCHJK_Msg_UserInfo AllUserInfo = 6;       // 所有玩家資訊
+    required int32 SeatNo = 7;                          // 執行切牌/遊戲操作的玩家
+    required int32 MinCardIndex = 8;                    // 切牌區間的最小值
+    required int32 MaxCardIndex = 9;                    // 切牌區間的最大值
+    required int32 CardSetIndex = 10;                   // 手上第幾組牌，從 1 開始
+    repeated string PokerManual = 11;                   // 遊戲說明
+    required int32 TableNo = 12;                        // 桌號
+};
+
+// 手牌牌組
+message DCHJK_Msg_CardSetInfo {
+    required int32 CardSetIndex = 1;        // 手中的第 N 組牌，Index 從 1 開始
+    repeated PokerCard CardSet = 2;         // 牌組
+                                            // Color，0:梅花，1:方塊，2:紅桃，3:黑桃，4:其他(例如小王、大王、蓋牌）
+                                            // Number，1~13:1(A)~K，15:小王，16:大王，17:蓋牌
+    required int32 Point1 = 3;              // 第一個點數，主要點數，當牌組中有 A 時，A 以 1 點計算（非 BlackJack 時）
+    required int32 Point2 = 4;              // 第二個點數，值 = -1，當手牌中有 A 時（BlackJack 例外），此值為以 A 為 11 點計算後的點數值
+    required bool IsBlackJack = 5;          // 是否為 BlackJack
+    required bool IsBusted = 6;             // 是否爆牌
+    required int64 BetBase = 7;             // 底注
+    required int64 BetDouble = 8;           // 加倍的金額
+    required bool CanSplit = 9;             // 是否可以分牌
+    required bool CanDouble = 10;           // 是否可以加倍
+    required int64 WinLose = 11;            // 此組牌組的輸贏
+};
+
+// 玩家資訊
+message DCHJK_Msg_UserInfo {
+    required int32 UserID = 1;                      // 玩家ID，若是空位時，玩家ID = -1
+    required int32 SeatNo = 2;                      // 玩家座位，從 1 開始
+    required int32 State = 3;                       // 玩家狀態，0:空位，1:正常，2:觀戰
+    required int64 Money = 4;                       // 玩家金錢
+    required int64 MaxBetBase = 5;                  // 可以下的最大底注值
+    repeated DCHJK_Msg_CardSetInfo HandCards = 6;  // 玩家手牌
+    required int64 TotalWinLose = 7;                // 總輸贏
+    required bool IsSurrendered = 8;                // 是否已投降
+    required int64 Insurance = 9;                   // 玩家買的保險金額
+    required int32 FaceID = 10;                     // 頭像ID
+};
+
+// 旁觀者資訊
+message DCHJK_Msg_GuestInfo {
+    required int32 UserID = 1;                      // 玩家ID，若是空位時，玩家ID = -1
+    required int64 Money = 2;                       // 玩家金錢
+    required int32 FaceID = 3;                      // 頭像ID
+};
+
+// DCHJK_AllUserInfo = 10002;                // S2C 玩家資訊，當玩家人數或狀態有變動時傳送
+message DCHJK_Msg_AllUserInfo {
+    repeated DCHJK_Msg_UserInfo AllUserInfo = 1;                        // 所有玩家資訊
+    repeated DCHJK_Msg_GuestInfo AllGuestInfo = 2;                      // 所有旁觀者資訊
+}
+
+// DCHJK_WaitingStart = 10003;               // S2C 等待遊戲開始，此階段玩家可自由進出遊戲
+message DCHJK_Msg_WaitingStart {
+    required int32 TimeRemain = 1;      // 剩餘時間
+};
+
+// DCHJK_StartBetting = 10004;               // S2C 開始下注
+message DCHJK_Msg_StartBetting {
+    required int32 TimeRemain = 1;      // 剩餘時間
+};
+
+// DCHJK_Bet = 10005;                        // C2S 玩家下注
+message DCHJK_Msg_Bet {
+    required int64 Bet = 1;             // 下注金額
+};
+
+// DCHJK_BetResult = 10006;                  // S2C 玩家下注結果
+message DCHJK_Msg_BetResult {
+    required int32 SeatNo = 1;          // 下注玩家座位
+    required int64 Bet = 2;             // 下注金額
+    required int64 MoneyRemain = 3;     // 下注後玩家剩餘金錢
+    required int32 Result = 4;          // 下注結果，0:下注成功，-1:玩家餘額不足，-2:已停止下注，-3:總押注額超過上限，-4:押注金額<=0
+};
+
+// DCHJK_WhosTurn = 10009;                   // S2C 現在輪到哪一個玩家動作
+message DCHJK_Msg_WhosTurn {
+    required int32 SeatNo = 1;          // 動作玩家的座位，除這個座位的玩家外，其他玩家均不可以動作，-1:所有玩家都可以動作，1~N:玩家座位
+};
+
+// DCHJK_UserCutCards = 10010;               // S2C 進入切牌階段
+message DCHJK_Msg_UserCutCards {
+    required int32 SeatNo = 1;          // 執行切牌的玩家
+    required int32 MinCardIndex = 2;    // 切牌區間的最小值
+    required int32 MaxCardIndex = 3;    // 切牌區間的最大值
+    required int32 TimeRemain = 4;      // 剩餘時間
+};
+
+// DCHJK_CutCards = 10011;                   // C2S 玩家切牌
+message DCHJK_Msg_CutCards {
+    required int32 CardIndex = 1;       // 切牌位置索引值
+};
+
+// DCHJK_CutCardsResult = 10012;             // S2C 玩家切牌結果，切牌時間到時，玩家若尚未切牌，則 server 自動傳送切牌結果
+message DCHJK_Msg_CutCardsResult {
+    required int32 SeatNo = 1;          // 執行切牌的玩家
+    required int32 CardIndex = 2;       // 切牌位置索引值
+};
+
+// DCHJK_Deal = 10014;                       // S2C 發牌
+message DCHJK_Msg_Deal {
+    required DCHJK_Msg_CardSetInfo DealerCards = 1;    // 莊家手牌
+    repeated DCHJK_Msg_UserInfo AllUserInfo = 2;       // 所有玩家資訊
+    required bool IsLastGame = 3;                       // 是否為最後一局
+};
+
+// DCHJK_InsuranceOrNot = 10016;             // S2C 詢問玩家是否買保險
+message DCHJK_Msg_InsuranceOrNot {
+    required int32 TimeRemain = 1;                      // 剩餘時間
+    repeated DCHJK_Msg_UserInfo AllUserInfo = 2;       // 所有玩家資訊
+};
+
+// DCHJK_TakeInsurance = 10017;              // C2S 玩家買保險
+message DCHJK_Msg_TakeInsurance {
+    required int32 Action = 1;          // 是否要買保險，0:不保，1:買保險
+}
+
+// DCHJK_TakeInsuranceResult = 10018;        // S2C 玩家買保險結果
+message DCHJK_Msg_TakeInsuranceResult {
+    required int32 SeatNo = 1;          // 買保險的玩家
+    required int64 Insurance = 2;       // 保險金額
+    required int64 MoneyRemain = 3;     // 玩家剩餘金錢
+    required int32 Result = 4;          // 買保險結果，0:成功，-1:餘額不足
+};
+
+// DCHJK_Settlement_Insurance = 10021;       // S2C 保險結算
+message DCHJK_Msg_Settlement_Insurance {
+    required DCHJK_Msg_CardSetInfo DealerCards = 1;    // 莊家手牌
+    repeated DCHJK_Msg_UserInfo AllUserInfo = 2;       // 所有玩家資訊
+};
+
+// DCHJK_StartPlaying = 10023;               // S2C 進入玩家操作階段
+message DCHJK_Msg_StartPlaying {
+    required int32 TimeRemain = 1;      // 剩餘時間
+    required int32 SeatNo = 2;          // 動作玩家的座位，除這個座位的玩家外，其他玩家均不可以動作，-1:所有玩家都可以動作，1~N:玩家座位
+    required int32 CardSetIndex = 3;    // 手上第幾組牌，從 1 開始
+    required bool CanSplit = 4;         // 是否可以分牌
+    required bool CanDouble = 5;        // 是否可以加倍
+};
+
+// DCHJK_UserPlaying = 10025;                // C2S 玩家動作
+message DCHJK_Msg_UserPlaying {
+    required int32 Action = 1;          // 執行的動作，0:停牌，1:分牌，2:加倍，3:要牌，4:投降
+    required int32 CardSetIndex = 2;    // 手上第幾組牌，從 1 開始
+};
+
+// DCHJK_UserPlayingResult = 10026;          // S2C 玩家動作結果
+message DCHJK_Msg_UserPlayingResult {
+    required int32 SeatNo = 1;                  // 執行動作的玩家
+    required int32 CardSetIndex = 2;            // 手上第幾組牌，從 1 開始
+    required int32 Action = 3;                  // 執行的動作，0:停牌，1:分牌，2:加倍，3:要牌，4:投降
+    required int32 Result = 4;                  // 結果，0:成功，-1:失敗，-2:餘額不足，-3:此牌組已不可操作，-4:不可分牌，-5:不可加倍，-6:已經爆牌，-7:不可投降
+    required int32 TimeRemain = 5;              // 剩餘時間
+    required DCHJK_Msg_UserInfo UserInfo = 6;  // 執行動作玩家資訊
+};
+
+// DCHJK_Settlement_Dealer = 10027;          // S2C 莊家開牌/結算
+message DCHJK_Msg_Settlement_Dealer {
+    required DCHJK_Msg_CardSetInfo DealerCards = 1;    // 莊家手牌
+    repeated DCHJK_Msg_UserInfo AllUserInfo = 2;       // 所有玩家資訊
+};
+
+// DCHJK_SelectSeat = 10029;                    // C2S 玩家選座位
+message DCHJK_Msg_SelectSeat {
+    required int32 SeatNo = 1;                  // 選取座位號
+};
+
+// DCHJK_SelectSeat_OK = 10030;                 // S2C 玩家選座位結果
+message DCHJK_Msg_SelectSeat_OK {
+    required int32 SeatNo = 1;                  // 選取座位號
+    required int32 Result = 2;                  // 選取結果，0:選取成功，-1:座位已有其他玩家，-2其它錯誤
+};
+
+// DCHJK_KickTip = 10031;                       // S2C 踢人倒數提示
+message DCHJK_Msg_KickTip {
+    required int32 Time = 1;                    // 倒數時間
+    required int32 Round = 2;                    // 倒數回合
+};
+
+
+//---------- SysPool ----------
+// DCHJK_GetSysPoolDynamicSetting = 20001;    // 取得動態水線區間表
+message DCHJK_Msg_SysPoolDynamicSetting {
+    required int32 FlagID = 1;          // 房間編號
+};
+
+// DCHJK_GetSysPoolDynamicSettingRet = 20002; // 回傳動態水線區間表
+message DCHJK_Msg_SysPoolDynamicList {
+    required int32 RetCode = 1;
+    repeated DCHJK_Msg_SysPoolSetting DataList = 2;
+    required int64 AverageBet = 3;      // 平均押注
+    required int32 Factor = 4;          // 係數定值
+    required int64 PoolAmount = 5;      // 水池量
+};
+
+message DCHJK_Msg_SysPoolSetting {
+    required int32 FlagID = 1;          // 房間編號
+    required int32 AreaNo = 2;          // 區間編號
+    required int32 XVariation = 3;      // 變數加減，千分比，例如值 50 表示 0.050
+    required int32 ConditionOdds = 4;   // 輸贏區間
+};
+
+// DCHJK_UpdateSysPoolData = 20003;           // 更新水池資料表
+message DCHJK_Msg_SysPoolData {
+    required int32 FlagID = 1;          // 房間編號
+    required int64 BetMoney = 2;        // 押注金額
+    required int32 BetCount = 3;        // 押注次數
+    required int64 PoolAmount = 4;      // 水池量
+};
+
+// DCHJK_UpdateSysPoolDataRet = 20004;        // 更新水池資料表回傳值
+message DCHJK_Msg_SysPoolDataRet {
+    required int32 RetCode = 1;
+    required int32 FlagID = 2;          // 房間編號
+    required int64 AverageBet = 3;      // 平均押注
+    required int32 Factor = 4;          // 係數定值
+    required int64 PoolAmount = 5;      // 水池量
+};

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'header.html' with {'title': title} %}
+
+<body>
+    {% include 'user/top.html' %}
+    <div class="container">
+        
+    </div>
+    <!-- /container -->
+    {% include 'user/bottom.html' %} {% include 'footer.html' %}
+    <script>
+    var goto = function(url) {
+        if (url) {
+            window.location.href = url;
+        }
+    }
+    </script>
+</body>
+
+</html>

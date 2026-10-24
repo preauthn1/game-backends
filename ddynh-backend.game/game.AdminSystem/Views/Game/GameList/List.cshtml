@@ -1,0 +1,113 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using game.Entity.Pay
+@using game.AdminSystem.Models.ViewModels
+@using game.Entity.Money
+@using game.AdminSystem
+
+@{ 
+   
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+
+<div class="row tableListPage">
+    <div class="col-md-12">
+        <div class="protlet-body" style="padding-left:10px;">
+            <form class="form-inline" id="form_search" method="get">
+
+                <div class="form-group">
+                    <label>游戏商：</label>
+                    @Html.Partial("_DropdownGameMerchant", new DropdownPartialSettingViewModel(FirstOptionValueEnum.DefaultSelectAll))
+                </div>
+
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                </div>
+
+                <div class="hr-s"></div>
+
+            </form>
+
+            <div class="content">
+                <table id="myTable_table" class="display border-r" style="width:100%"></table>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section initScripts{
+    <script>
+      
+        function createTable() {
+
+            const urlEdit = '/GameList/Update';
+            const url = '/GameList/GetList'
+            const thead =
+                [
+                    { "sTitle": "游戏编号", "mData": "GameID", "className": "algin-l", "width" : "8%"  },
+                    { "sTitle": "游戏名称", "mData": "GameName", "className": "algin-l" },
+                    { "sTitle": "缩写代码", "mData": "ShortName", "className": "algin-l" },
+                    { "sTitle": "Android版本", "mData": "AndroidVersion", "className": "algin-l" },
+                    { "sTitle": "iOS版本", "mData": "IOSVersion", "className": "algin-l" },                    
+
+
+                    { "sTitle": "游戏伺服器数量", "mData": "GameServerCount", "className": "algin-l" },
+                    {
+                        "sTitle": "显示名称笔数", "mData": "AliasNameCount", "className": "algin-c", "width" : "8%" ,
+                        "render": function (data, type, row) {
+                            var html = "";
+                            html = html + String.format('<span class="count_{0}" >{0}</span>' ,row.AliasNameCount); 
+                            return html;
+                        }
+                    },
+                    { "sTitle": "所属三方游戏商", "mData": "GameMerchantText", "className": "algin-l" },
+                    { "sTitle": "对应游戏钱包", "mData": "GameMerchantWalletText", "className": "algin-l" },
+                    { "sTitle": "启用状态", "mData": "StatusText", "className": "algin-c" , "width" : "8%"  },
+
+                    {
+                        "sTitle": "操作", "mData": "Title",
+                        "render": function (data, type, row) {
+                            var html = "";
+                            html = html + String.format('<a id="" class="btn btn-sm dark" style="" href="{0}?targetId={1}">编辑</a>', urlEdit ,row.GameID); 
+                            return html;
+                        }
+                    }
+                ]
+                        
+            var gameMerchantID = $('#gameMerchantID').val();
+
+            //将表单上的筛选条件、下拉选单带入api
+            const data =
+            {
+                GameMerchantID : gameMerchantID
+            }
+
+            createDataTable('myTable', thead, url, data);
+        }
+
+
+        $(function () {            
+
+            fillFormData('form_search');
+            createTable();
+        
+        })
+
+
+
+
+
+
+    </script>
+}

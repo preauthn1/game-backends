@@ -1,0 +1,25 @@
+﻿﻿@model DropdownPartialSettingViewModel
+
+@{
+    DropdownPartialSettingViewModel myModel = Model;
+    myModel = myModel ?? new DropdownPartialSettingViewModel();
+
+    string name = myModel.DOM_ElementName ?? "organizationID";
+    var listOrganization = DataService.GetOrganizations();
+}
+
+@if (listOrganization.Count > 0)
+{
+    <select class="form-control input-small" id="@name" name="@name">
+
+        @if (myModel.FirstOption != null)
+        {
+            <option value="@myModel.FirstOption.Value">@myModel.FirstOption.Text</option>
+        }
+
+        @foreach (var row in listOrganization)
+        {
+            <option value="@row.OrgID">@row.Name</option>
+        }
+    </select>
+}

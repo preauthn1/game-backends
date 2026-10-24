@@ -1,0 +1,1 @@
+ALTER TABLE [Game].[Slot_FreeSpinRecord] ADD [Data] text

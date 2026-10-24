@@ -1,0 +1,56 @@
+syntax = "proto2";
+
+package netproto;
+
+enum CD21_GameMessageClassID {
+    CD21SettingID = 10001;       //设置相关  S2C
+    CD21StateID = 10002;         //阶段ID S2C
+    CD21BetID = 10003;           //下注ID C2S
+    CD21BroadCastBetID = 10004;  //广播下注 S2C
+    CD21GameSceneID = 10005;     //游戏场景 断线重连 S2C (CD21_UserInfoArr)
+    CD21BetInfoID = 100006;      //用户断线重连已下注的消息 S2C
+    CD21BetRetID = 100007;       //下注结果 S2C
+
+    CD21CutpaiID = 10008;              //切牌 S2C
+    CD21BroadCastCutpaiRetID = 10009;  //切哪張牌 C2S
+    CD21BroadCastCutpaiID = 10010;     //切牌廣播 S2C
+    CD21BroadCastFapaiID = 10011;      //發牌 S2C
+
+    CD21UserOptID = 10012;        //玩家可操作行為 S2C
+    CD21UserOptRetID = 10013;     //玩家操作行為 C2S
+    CD21GameResultWinID = 10014;  //游戏结果赢钱 S2C
+
+    CD21UserDiZhuRetID = 10015;        //用戶底注 C2S
+    CD21BroadCastUserDiZhuID = 10016;  //廣播用戶底注 S2C
+
+    CD21UserSurrender = 10017;  //玩家投降 C2S
+    CD21UserInsurence = 10018;  //玩家保險 C2S
+    CD21UserHit = 10019;        //玩家要牌 C2S
+    CD21UserStand = 10020;      //玩家停牌 C2S
+    CD21UserSplit = 10021;      //玩家分牌 C2S
+    CD21UserDouble = 10022;     //玩家加倍 C2S
+    CD21UserCancel = 10023;     //玩家不投降不保險 C2S
+
+    CD21CurrOptID = 10024;         //当前操作的椅子号 S2C
+    CD21StandBroadCastID = 10025;  //停牌广播 S2C
+
+    CD21UserSplitHit = 10026;       //玩家要牌 C2S
+    CD21UserSplitStand = 10027;     //玩家停牌 C2S
+    CD21UserSplitDouble = 10028;    //玩家加倍 C2S
+    CD21SplitCardBroacast = 10029;  //玩家分牌 S2C (CD21_SplitCard)
+
+    CD21BroadCastYaopaiID = 10030;     //要牌廣播 S2C (CD21_Yaopai)
+    CD21BroadCastFanPaiID = 10031;     //莊家翻牌廣播 S2C (CD21_FanPai)
+    CD21ZhuangJiaYaoPaiID = 10032;     //莊家要牌廣播 S2C (CD21_ZhuangYaoPai)
+    CD21ZhuangTuoBaoID = 10033;        //莊家保險廣播 S2C (CD21_UserCheck)
+    CD21UserRecoverBetID = 10034;      //斷線重連下注消息 S2C (CD21_RecoverScene)
+    CD21UserSpecialBetID = 10035;      //廣播特殊下注 S2C (CD21_BroadCastSpecialBet)
+    CD21GameEndReadyTimeID = 10036;    //游戏结束准备时间 S2C (CD21_ReadyTime)
+    CD21UserPokerRecoverID = 10037;    //斷線重連後的牌 S2C (CD21_UserPokerRecover)
+    CD21UserWinLoseRecoverID = 10038;  //斷線重連後的籌碼 S2C (CD21_WinLoseRecover)
+    CD21UserWatchDataID = 10039;       //觀戰資訊S2C (CD21_WatchData)
+    CD21CheckTimeUpID = 10040;         //觀戰資訊C2S
+    Cd21SysPoolID = 10041;             // 21點水池載入
+    Cd21SysPoolRetID = 10042;          // 21點水池結果
+    CD21GetAllUserBetID = 10043;       //玩家已下注多少金額 S2C
+};

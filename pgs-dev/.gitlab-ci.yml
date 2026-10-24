@@ -1,0 +1,19 @@
+stages:
+  - deploy
+
+deploy:
+  image: dtzar/helm-kubectl:3.0.0
+  stage: deploy
+  tags:
+    - node
+  environment:
+    name: target DEV 0.0.0.0
+  variables:
+    BRANCH: master
+  script: 
+    - echo $BRANCH
+    - git clone -b $BRANCH --single-branch http://gitlab-ci-token:[REDACTED]
+    - echo $BUILD_NAME
+    - echo $CI_BUILD_TARGETS
+    - echo $Message
+    - bash servers/scripts/gitlab-ci-deploy-helm.sh target-dev game-server servers/deployments/game-server-target . $BUILD_NAME

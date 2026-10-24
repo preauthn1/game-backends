@@ -1,0 +1,88 @@
+﻿@model FW.Core.AdminSys.Provider.Entity.QuickAction
+@{
+    Layout = null;
+    string pageName = ViewBag.pageName;
+    string saveStyle = "";
+    string cancelStyle = "";
+
+    if (Model == null)
+    {
+        saveStyle = "";
+        cancelStyle = "display:none";
+    }
+    else
+    {
+        saveStyle = "display:none";
+        cancelStyle = "";
+    }
+}
+
+
+
+    <a id="qa_save" href="#savePage" data-toggle="modal" class="btn default" style="margin-right:2px;@saveStyle">
+    <i class="fa fa-plus"></i>
+    收藏当前页面
+</a>
+     <a id="qa_cancel" href="#" class="btn btn-warning" style="margin-right:2px;@cancelStyle">
+    <i class="fa fa-minus"></i>
+    取消收藏当前页面
+</a>
+    
+        <div class="modal fade" id="savePage" tabindex="-1" role="savePage" aria-hidden="true">
+        <form id="actionFrm" method="post" class="form-horizontal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">收藏页面</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="portlet box">
+
+                            <div class="portlet-body form">
+                                <!-- BEGIN FORM-->
+
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">页面名称</label>
+                                        <div class="col-md-3">
+                                            <input type="text" id="qa_pagename" name="qa_pagename" value="@pageName" class="form-control input-medium" placeholder="请输入页面名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">页面地址</label>
+                                        <div class="col-md-3">
+                                            @Request.Url
+                                            <input type="hidden" id="qa_pageurl" value="@Request.Url" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">排序</label>
+                                        <div class="col-md-3">
+                                            <input type="text" id="qa_sort" value="0" name="qa_sort" class="form-control input-small" placeholder="请输入排序值">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- END FORM-->
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn default" data-dismiss="modal" id="btnClosePage"> 关 闭 </button>
+                        <button type="submit" class="btn blue" id="btnSavePage"> 确 定 </button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+        </form>
+        <!-- /.modal-dialog -->
+    </div>
+
+
+

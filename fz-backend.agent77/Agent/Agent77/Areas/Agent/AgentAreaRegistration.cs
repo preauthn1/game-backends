@@ -1,0 +1,24 @@
+﻿using System.Web.Mvc;
+
+namespace Agent77.Areas.Agent
+{
+    public class AgentAreaRegistration : AreaRegistration 
+    {
+        public override string AreaName 
+        {
+            get 
+            {
+                return "Agent";
+            }
+        }
+
+        public override void RegisterArea(AreaRegistrationContext context) 
+        {
+            context.MapRoute(
+                "Agent_default",
+                "Agent/{controller}/{action}/{id}",
+                new { controller = "Admin", action = "login", id = UrlParameter.Optional }
+            );
+        }
+    }
+}

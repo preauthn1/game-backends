@@ -1,0 +1,431 @@
+
+.download-url-wrapper {
+    display: none !important;
+}
+
+
+tr[data-param-name="XXXXXXXXXX"] {
+    display: none !important;
+}
+
+
+button.try-out__btn {
+    display: none !important;
+}
+
+
+td input[type=text] {
+    display: none !important;
+}
+
+
+tr[data-param-in="query"] .parameter__in {
+    display: none !important;
+}
+
+
+.response p {
+    white-space: break-spaces;
+}
+
+
+.response-control-media-type__accept-message {
+    display: none !important;
+}
+
+
+table.responseColmns {
+    width: 650px;
+    padding: 4px 0 !important;
+    line-height: 23px;
+}
+
+    table.responseColmns td {
+        padding: 4px 0 !important;
+    }
+
+    table.responseColmns th {
+        text-align: left;
+        font-weight: 700;
+        padding: 8px 0 !important;
+    }
+
+
+[data-param-name="orderByColumn"] {
+    display: none !important;
+}
+
+[data-param-name="isASC"] {
+    display: none !important;
+}
+
+
+[data-name="model"] {
+    display: none !important;
+}
+
+
+h4.opblock-tag {
+    display: none !important;
+}
+
+div.opblock-summary-description {
+    margin-left: 15px !important;
+    text-align: right;
+}
+
+
+.wrapper .models {
+    display: none !important;
+}
+
+
+.info a.link {
+    display: none !important;
+}
+
+
+.opblock-description p {
+    line-height: 25px;
+}
+
+
+.topbar-wrapper img {
+    display: none;
+}
+
+td.columnName {
+    padding-right: 10px !important;
+}
+
+.text-l {
+    text-align: left;
+}
+
+.documentPanel {
+    padding: 25px;
+}
+
+.documentPanel.vipLevelPage {
+    padding: 5px 25px !important;
+}
+
+
+.enumsTable {
+    width: 500px !important;
+    margin-bottom: 50px !important;
+}
+
+    .enumsTable.bigSize {
+        width: 750px !important;
+    }
+
+    .gamesTable {
+        width: 1280px !important;
+        margin-bottom: 50px !important;
+    }
+
+.bold {
+    font-weight: 700;
+}
+
+.spanKeyword {
+    background: #EEE;
+    color: #d95353;
+    border-radius: 5px;
+    padding: 3px;
+}
+
+.currency_color_0 {
+    color: #685737;
+    font-weight: 700;
+}
+
+.currency_color_1 {
+    color: #005fd9;
+    font-weight: 700;
+}
+
+.headerBarTitle {
+    font-size: 36px;
+    background: #1c1f40;
+    padding: 10px 20px;
+    color: #FFF;
+}
+
+
+
+
+    .headerBarTitle img {
+        margin-left: 20px;
+        width: 70px;
+    }
+
+
+
+.vipLevelTable {
+    max-width: 500px !important;
+    margin-bottom: 50px !important;
+    font-size:16px;
+}
+
+    .vipLevelTable tr
+    {
+        border-bottom: solid 1px #EEE;
+    }
+
+    .vipLevelTable thead td {
+        font-weight: 700;
+        background:#EEE;
+    }
+
+    .vipLevelTable th,
+    .vipLevelTable td {
+        padding: 3px 10px;
+    }
+
+.enumsTable th,
+.enumsTable td {
+    padding: 3px 10px;
+}
+
+.enumsTable .column {
+    width: 25%;
+}
+
+.vipLevelTable tr:hover,
+.enumsTable tr:hover,
+.gamesTable tr:hover {
+    background: #EEE;
+}
+
+.tableTitle {
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 25px;
+}
+
+.extra_description {
+    padding: 5px;
+    color: #CCC
+}
+
+
+select:disabled {
+    display: none;
+}
+
+
+.font400 {
+    font-weight: 400;
+}
+
+
+
+.f12 {
+    font-size: 12px;
+}
+
+.f14 {
+    font-size: 14px;
+}
+
+.f16 {
+    font-size: 16px;
+}
+
+.f18 {
+    font-size: 18px;
+}
+
+
+.f20 {
+    font-size: 20px;
+}
+
+
+.f22 {
+    font-size: 22px;
+}
+
+
+.f24 {
+    font-size: 24px;
+}
+
+
+
+
+.mt-1 {
+    margin-top: 5px;
+}
+
+.mt-2 {
+    margin-top: 10px;
+}
+
+.mt-3 {
+    margin-top: 15px;
+}
+
+.mt-4 {
+    margin-top: 20px;
+}
+
+
+.text-r {
+    text-align: right;
+}
+
+
+.link-text {
+    font-weight: 400;
+    text-decoration: underline;
+}
+
+.link-logo {
+    font-weight: 400;
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+.logoPanel {
+    font-size: 18px;
+}
+
+.logoPageTitle {
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: 15px;
+}
+
+.ml-1 {
+    margin-left: 5px;
+}
+
+.ml-2 {
+    margin-left: 10px;
+}
+
+.mt10 {
+    margin-top: 10px;
+}
+
+.mt20 {
+    margin-top: 20px;
+}
+
+.mt30 {
+    margin-top: 30px;
+}
+
+
+.exportButton a {
+    color: #000;
+}
+
+.extraHint {
+    color: #487957;
+    margin-top: 25px;
+}
+
+.grey-text {
+    color: #666;
+}
+
+
+.exportButton button {
+    min-width: 125px;
+    color: #FFF;
+    background: #348d3a;
+    box-shadow: none;
+    border: none;
+}
+
+.max-w-600{
+    max-width: 600px;
+}
+
+.no-padding
+{
+    padding: 0px !important;
+}
+
+
+.border-top-style
+{
+    border-top: solid 1px #888;
+}
+
+
+
+
+
+.required {
+    background: rgba(0,0,0,.05);
+    font-family: monospace;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 5px 7px;
+    border-radius: 4px;
+    color: #c61313;
+}
+
+.text-c
+{
+    text-align:center;
+}
+
+
+
+.error-msg-1 {
+    font-size: 18px;
+    background: #ffe6e6;
+    color: #b33030;
+    display: inline-block;
+    padding: 3px 5px;
+    border-radius: 5px;
+}
+
+
+.errorMsgText
+{
+    font-size: 28px;
+}
+
+.errorMsgText .text-m-size {
+    font-size: 24px;
+}
+
+
+
+
+@media only screen and (max-width: 550px) {
+    .vipLevelTable {
+        max-width: 400px !important;
+        margin-bottom: 50px !important;
+        font-size: 13px;
+    }
+    .documentPanel {
+        padding: 0px 5px;
+    }
+    .container {
+        padding-right: 0px;
+    }
+
+    .errorMsgText {
+        font-size: 18px;
+        text-align: left;
+        margin-top: 15px;
+    }
+        .errorMsgText .text-m-size {
+            font-size: 14px;
+            margin-top: 15px;
+        }
+}
+
+
+.extraDescription {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

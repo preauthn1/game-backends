@@ -1,0 +1,143 @@
+syntax = "proto3";
+
+option go_package = "/cliapisvc";
+
+package cliapisvc;
+
+import "common.proto";
+
+service GameAdminLHD {
+    rpc TableDashboard (LHDQueryTableDashBoard) returns ( LHDTableDashboard);
+    rpc TableDashboardStream (LHDQueryTableDashBoard) returns ( stream LHDTableDashboard);
+    rpc Cheat (LHDCheatRequest) returns (Empty);
+    rpc SetSpecialRewardCount (SetSpecialRewardCountRequest) returns (Empty);
+    rpc IncreaseSysPool (IncreaseSysPoolRequest) returns (Empty);
+    rpc AssignNextAward (LHDAssignNextAwardRequest) returns (Empty);
+    rpc SetTableDisabled (LHDSetTableDisabledRequest) returns (Empty);
+    rpc SetJackpotEnabled (LHDJackpotEnabledRequest) returns (Empty);
+    rpc AssignJackpotToRandomPlayer (LHDAssignJackpotRequest) returns (Empty);
+    rpc AssignJackpotToRecycle (LHDAssignJackpotRequest) returns (Empty);
+    rpc EditJackpotPool (LHDEditJackpotPoolRequest) returns (Empty);
+}
+
+enum LHDAward {
+    LHDAward_NONE = 0;
+    LHDAward_LONG = 1;
+    LHDAward_TIE = 2;
+    LHDAward_HU = 3;
+}
+
+enum LHDState {
+    LHDState_Prepare = 0;
+    LHDState_Bet = 1;
+    LHDState_KaiJiang = 2;
+    LHDState_KaiJiangAction = 3;
+    LHDState_EndAction = 4;
+}
+
+enum LHDJackpotLevel {
+    LHDJackpotLevel_NONE = 0;
+    LHDJackpotLevel_MINI = 1;
+    LHDJackpotLevel_MINOR = 2;
+    LHDJackpotLevel_GRAND = 3;
+}
+
+enum LHDJackpotAssignType {
+    LHDJackpotAssignType_NONE = 0;
+    LHDJackpotAssignType_RANDOM = 1;
+    LHDJackpotAssignType_RECYCLE = 2;
+}
+
+message LHDPlayerInfo {
+    int32 PID = 1;
+    int64 BetAmount = 2;
+    bool IsRobot = 3;
+    int64 Long = 4;
+    int64 Hu = 5;
+    int64 Tie = 6;
+}
+
+message LHDBetAreaInfo {
+    int64 Total = 1; // 所有下注金額
+    int64 PlayerCount = 2; // 玩家數量
+    int64 PlayerBetAmount = 3; // 玩家下注金額
+    int64 RobotCount = 4; // 機器人數量
+    int64 RobotBetAmount = 5; // 機器人下注金額
+}
+
+message LHDTableDashboard {
+    int32 TableID = 1; // 桌號
+    LHDBetAreaInfo Long = 2; // 下注區域 龍
+    LHDBetAreaInfo Hu = 3; // 下注區域 虎
+    LHDBetAreaInfo Tie = 4; // 下注區域 和
+    LHDAward NextAward = 5; // 下一場指定開獎
+    repeated LHDAward History = 6; // 歷史路單
+    repeated LHDPlayerInfo Players = 7; // 所有玩家
+    LHDState State = 8; // 遊戲狀態
+    bool Cheatable = 9; // 現在可否作弊
+    int64 SysPool = 10; // 系統水池
+    int64 SysPoolWinLine = 11; // 系統水池贏錢線
+    bool Cheating = 12; // 是否開啟作弊
+    int64 TotalBetAmount = 13; // 今日總下注
+    int64 TotalWinLossAmount = 14; // 今日總輸贏
+    int64 TotalValidAmount = 15; // 今日總流水
+
+    int32 SpecialRewardCount = 101;     // 特殊獎勵次數
+    int32 SpecialRewardRate = 102;      // 特殊獎勵機率 百分比
+
+    repeated LHDAward NextAwardList = 201; // 下一場指定開獎列表
+
+    bool TableDisabled = 301; // 是否禁用
+
+    LHDJackpotInfo JackpotInfo = 401; // 獎池資訊
+}
+
+message LHDQueryTableDashBoard {
+    int32 TableID = 1; // 桌號
+}
+
+message LHDCheatRequest {
+    int32 TableID = 1; // 桌號
+    int32 KickCnt = 2; // 踢人數
+}
+
+message LHDSetTableDisabledRequest {
+    int32 TableID = 1; // 桌號
+    bool Disabled = 2; // 是否禁用
+}
+
+message LHDAssignNextAwardRequest {
+    int32 TableID = 1; // 桌號
+    LHDAward NextAward = 2; // 下一場指定開獎
+}
+
+message LHDJackpotEnabledRequest {
+    int32 TableID = 1; // 桌號
+    bool Enabled = 2; // 是否禁用
+}
+
+message LHDAssignJackpotRequest {
+    int32 TableID = 1; // 桌號
+    LHDJackpotLevel Level = 2; // 獎池等級
+}
+
+message LHDJackpotAssignment {
+    LHDJackpotLevel Level = 1; // 獎池等級
+    LHDJackpotAssignType AssignType = 2; // 指定類型
+}
+
+message LHDJackpotInfo {
+    bool Enabled = 1; // 是否啟用獎池
+    int64 Current = 2; // 獎池金額
+    LHDJackpotAssignment Assignment = 3; // 獎池指定狀態
+    int64 BasePool = 4; // 基礎獎池
+    int64 AwardLine = 5; // 獎池贏錢線
+    int32 Phase = 6; // 獎池階段
+    int32 PhaseRate = 7; // 獎池階段比例
+    bool Awardpause = 8; // 獎池暫停
+}
+
+message LHDEditJackpotPoolRequest {
+    int32 TableID = 1; // 桌號
+    int64 FinalPool = 2; // 最終金額
+}

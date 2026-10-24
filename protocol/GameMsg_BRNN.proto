@@ -1,0 +1,164 @@
+syntax = "proto2";
+
+package netproto;
+
+import "GameMsg.proto";
+
+//下注设置
+message BRNN_Setting {
+    repeated int32 BetCount = 1;     // 一次下注的数量
+    required int32 BetMoney = 2;     // 一次下注的钱
+    required int64 ZhuangLimit = 3;  // 上庄钱限制
+    required int32 MaxZhuang = 4;    // 当庄局数
+    required int32 OnceFapei = 5;    // true一次開獎結果 或 false分次發牌開獎
+};
+
+//状态消息
+message BRNN_Sate {
+    required int32 State = 1;   // 状态
+    required int32 Time = 2;    // 此状态的剩余时间
+    required bool IsScene = 3;  // 是否來自場景
+};
+
+//用户断线重连下注消息
+message BRNN_UserBetInfo {
+    required int64 UserMoney = 1;
+    repeated BRNN_BroadCastBet BetInfo = 2;
+};
+
+//廣播發牌給所有(莊*1 , 閒*4)
+message BRNN_BrodcastPokerCard {
+    repeated BRNN_BrodcastUserPokerCard UserPokerCard = 1;
+}
+
+//每個座位上的亮牌
+message BRNN_BrodcastUserPokerCard {
+    required int32 SitNo = 1;
+    repeated PokerCard CardGroup = 2;
+}
+
+//广播用户下注的数组, 廣播下注消息
+message BRNN_BroadCastBetArr {
+    required int32 UserID = 1;
+    repeated BRNN_BroadCastBet BroadCastBetArr = 2;
+};
+
+//广播用户下注内容数据结构
+message BRNN_BroadCastBet {
+    required int32 Type = 1;
+    required int64 Money = 2;
+    optional int32 UserID = 3;  //此下注籌碼的UserID
+    required bool LuckyStar = 4;
+};
+
+//廣播已下注和還可下注
+message BRNN_BroadCastTotal {
+    required int64 AlreadyTotalBet = 1;  //已下注
+    required int64 AbleTotalBet = 2;     //還可下注
+}
+
+//用户下注数组, 用户下注
+message BRNN_BetArr {
+    repeated BRNN_Bet BetArr = 1;
+};
+
+//用户下注数据结构
+message BRNN_Bet {
+    required int32 BetType = 1;
+    required int32 Count = 2;
+};
+
+//下注的结果
+message BRNN_BetRet {
+    required RetType Ret = 1 [default = UNKNOWN];
+    required int64 Money = 2;      //用户的钱，下注以后的金额。
+    optional int32 Type = 3;       //下注超过限制的下注类型
+    repeated BRNN_Bet BetArr = 4;  //用户下注数据
+}
+
+enum RetType {
+    UNKNOWN = 0;
+    SUCCESS = 1;         //下注成功
+    NOMONEY = 2;         //用户金额不足
+    NONTYPE = 3;         //下注的类型未找到
+    ISZHUANG = 4;        //庄家不能下注
+    BETOUTOFRANGE = 5;   //此类下注已达到上限
+    MONEYLESSLIMIT = 6;  //用戶金幣低於最低限制
+}
+
+//游戏撲克结果
+message BRNN_GameResultPoker {
+    required int32 SitNo = 1;         //座位的編號
+    repeated PokerCard SitPoker = 2;  //座位上的撲克牌
+    required int32 NiuNiuRet = 3;     //牛牛類型: 0 五小牛; 1四炸; 2 五花牛; 3 牛牛; 4 有牛; 5 無牛;
+    required int32 NiuNiuNumber = 4;  //牛幾
+    required int32 WinLoss = 5;       // 0 輸 , 1 贏
+};
+
+//游戏用户赢钱结果
+message BRNN_GameResultUserMoney {
+    required int64 ZhuangWin = 1;
+    required int64 SelfWin = 2;
+    repeated BRNN_WinUerInfo WinUserInfo = 3;     //赢钱前三名的人信息
+    repeated BRNN_StageUerInfo StageUerInfo = 4;  //標誌玩家赢钱信息
+};
+//赢钱玩家信息
+message BRNN_WinUerInfo {
+    required string UserName = 1;
+    required int64 Win = 2;
+};
+
+//上庄结果
+message BRNN_ShangzhuangRet {
+    required int32 ret = 1;  //值为1时下庄成功，值为0表示上庄成功，值为-1时上庄失败资金不足，值为-2时已经在上庄列表中。
+};
+
+//是否上庄
+message BRNN_ShangZhuang {
+    required bool IsShangZhuang = 1;
+};
+
+//庄家信息
+message BRNN_ZhuangInfo {
+    required int32 UserID = 1;
+    required int32 LastTurn = 2;
+    repeated GameUser UserInfo = 3;
+};
+
+//上庄列表
+message BRNN_ZhuangList {
+    repeated GameUser UserInfo = 1;
+};
+
+//清除结果回应消息
+message BRNN_BetClearRet {
+    required int64 Money = 1;  //当前的钱
+    required int32 Ret = 2;    //清除结果-1，清理失败，达到清理上限，0清理成功
+};
+
+//大富豪列表消息
+message BRNN_RichestList {
+    repeated BRNN_Richest RichestList = 1;  //富豪的排行榜
+};
+
+//大富豪的玩家資訊
+message BRNN_Richest {
+    required int32 Ranking = 1;        //富豪排名
+    required int32 UserID = 2;         //富豪ID
+    required int32 UserFaceID = 3;     //富豪頭像ID
+    required int64 Money = 4;          //富豪当前身上的钱
+    optional int32 AvatarFrameID = 5;  // VIP頭框像ID
+};
+
+//幸運星玩家資訊
+message BRNN_LuckyStar {
+    required int32 UserID = 1;         //幸運星ID
+    required int32 UserFaceID = 2;     //幸運星頭像ID
+    optional int32 AvatarFrameID = 3;  // VIP頭框像ID
+};
+
+//標誌玩家赢钱信息
+message BRNN_StageUerInfo {
+    required int32 UserID = 1;
+    required int64 Win = 2;
+};

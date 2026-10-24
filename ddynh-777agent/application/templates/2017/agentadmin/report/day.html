@@ -1,0 +1,59 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+<form data-toggle="ajaxsearch" data-options="{searchDatagrid:$.CurrentNavtab.find('#datagrid-test-filter')}">
+    <fieldset>
+        <legend style="font-weight:normal;">页头搜索：</legend>
+        <div style="margin:0; padding:1px 5px 5px;">
+            <span>门诊号：</span>
+            <input type="text" name="obj.code" class="form-control" size="15">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <span>姓名：</span>
+            <input type="text" name="obj.name" class="form-control" size="15">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <div class="btn-group">
+                <button type="submit" class="btn-green" data-icon="search">开始搜索！</button>
+                <button type="reset" class="btn-orange" data-icon="times">重置</button>
+            </div>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="btn-blue" data-toggle="dialog" data-options="{url:'../../html/datagrid/datagrid-search-source.html', id:'dialog-datagrid-search', width:1000, height:600, title:'查看Datagrid示例- 页头搜索、自定义编辑 - 源码'}">点击查看示例源码</button>
+        </div>
+    </fieldset>
+</form>
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{
+        tableWidth:'100%',
+        height: '100%',
+        gridTitle : '系统日报表',
+        showToolbar: true,
+        toolbarItem: 'add,edit,del,|,import,export,exportf',
+        dataUrl: '/qpadmin/api/report/day',
+        dataType: 'jsonp',
+        jsonPrefix: 'obj',
+        editMode: {dialog:{width:'800',height:500,title:'编辑挂号信息',mask:true}},
+        editUrl: '../../html/datagrid/datagrid-edit.html?code={code}',
+        paging: {pageSize:60},
+        showCheckboxcol: true,
+        linenumberAll: true,
+        importOption: {type:'dialog', options:{url:'../../html/datagrid/datagrid-import.html', width:500, height:300, title:'导入挂号信息'}},
+        exportOption: {type:'file', options:{url:'http://example.invalid/demo/export', loadingmask:true}}
+    }">
+        <thead>
+            <tr>
+                <th data-options="{name:'code',align:'center',width:70}">用户ID</th>
+                <th align="center">订单ID</th>
+                <th align="center">金额</th>
+                <th data-options="{name:'fr',align:'center',width:70,type:'boolean',render:function(value){return value ? '√' : '×'}}">状态</th>
+                <th data-options="{name:'opercode',align:'center',type:'date',pattern:'yyyy-MM-dd HH:mm:ss'}">创建时间</th>
+                <th data-options="{name:'operdate',align:'center',type:'date',pattern:'yyyy-MM-dd HH:mm:ss'}">支付时间</th>
+                <th data-options="{name:'operdate',align:'center',type:'date',pattern:'yyyy-MM-dd HH:mm:ss'}">支付渠道</th>
+                <th data-options="{name:'operdate',align:'center',type:'date',pattern:'yyyy-MM-dd HH:mm:ss'}">支付平台</th>
+                <th data-options="{name:'operdate',align:'center',type:'date',pattern:'yyyy-MM-dd HH:mm:ss'}">IP</th>
+                <th data-options="{name:'operdate',align:'center',type:'date',pattern:'yyyy-MM-dd HH:mm:ss'}">旧金额</th>
+                <th data-options="{name:'operdate',align:'center',type:'date',pattern:'yyyy-MM-dd HH:mm:ss'}">保险箱</th>
+                <th data-options="{name:'operdate',align:'center',type:'date',pattern:'yyyy-MM-dd HH:mm:ss'}">渠道包</th>
+                <th data-options="{name:'operdate',align:'center',type:'date',pattern:'yyyy-MM-dd HH:mm:ss'}">平台</th>
+                <th data-options="{name:'operdate',align:'center',type:'date',pattern:'yyyy-MM-dd HH:mm:ss'}">代理</th>
+            </tr>
+        </thead>
+    </table>
+</div>

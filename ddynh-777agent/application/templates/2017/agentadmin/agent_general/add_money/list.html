@@ -1,0 +1,29 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+    <div class="row">
+        <div class="col-sm-12">
+           <div class="bjui-row col-4">
+                <label class="row-label">当前余额：</label>
+                <div class="row-input">{{initPageData.total_money}}</div>
+                <label class="row-label">转出金额：</label>
+                <div class="row-input">{{initPageData.total_turn_out}}</div>
+                <label class="row-label">总充值：</label>
+                <div class="row-input">{{initPageData.total_recharge}}</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                <th data-options="{name:'id',align:'center'}">日志ID</th>
+                <th data-options="{name:'total_agent_id',align:'center'}">代理ID</th>
+                <th data-options="{name:'username',align:'center'}">代理账户</th>
+                <th data-options="{name:'username',align:'center'}">代理名</th>
+                <th data-options="{name:'num',align:'center'}">加款金额</th>
+                <th data-options="{name:'created_at',align:'center'}">加款时间</th>
+                <th data-options="{name:'remark',align:'center'}">备注</th>
+            </tr>
+        </thead>
+    </table>
+</div>

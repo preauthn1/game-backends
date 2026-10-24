@@ -1,0 +1,18 @@
+Interval: 180
+AlertConnLimit: 40
+NodeConnTimeout: 5
+AlertBotAPI: https://example.invalid/bot646282942:AAF_NU36KBQks3-bUoHNdvWfxCPIzUVhz-0/sendmessage?chat_id=-273153112&text=%s
+NodeDB:
+  Host: 0.0.0.0
+  Port: 1333
+  Database: JK_K
+  User: sa
+  Password: [REDACTED]
+  Encrypt: disable
+  Semaphore: 5
+  Pool: 200
+WhiteList:
+  - 0.0.0.0
+  - 0.0.0.0
+  - 0.0.0.0
+  - 0.0.0.0

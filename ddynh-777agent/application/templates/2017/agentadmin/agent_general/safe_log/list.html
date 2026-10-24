@@ -1,0 +1,108 @@
+<style type="text/css">
+    .bjui-row.col-1 .row-label{
+        width: 30%;
+    }
+</style>
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+<div class="row">
+    <form class="form-inline" action="{{agentApiRoute}}/changeTelphone" data-toggle="ajaxform" data-options='{"closeCurrent":true,"confirmMsg":"确定要更改？"}'>
+       <div class="col-sm-3">
+           <div class="bjui-row col-1">
+                <label class="row-label">解除手机绑定</label>
+                <div class="row-input"></div>
+                <label class="row-label">原来手机号：</label>
+                <div class="row-input">
+                    <input type="Number" class="form-control" name="telphone" value="" data-rule="required;mobile" data-rule-mobile="[/^1[345678]\d{9}$/, '请检查手机号格式']">
+                </div>
+                <label class="row-label">手机验证码：</label>
+                <div class="row-input">
+                    <input type="Number" class="form-control"  style="width: 50%" name="telphoneCode" value="" size="10" data-rule="required">
+                    <a href="javascript:void(0);">发送验证码</a>
+                </div>
+                <div style="text-align: center;">
+                <button type="submit" class="btn btn-primary">解除绑定</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form class="form-inline" action="{{agentApiRoute}}/bandIp" data-toggle="ajaxform" data-options='{"closeCurrent":true,"confirmMsg":"确定要更改？"}'>
+        <div class="col-sm-3">
+           <div class="bjui-row col-1">
+                <label class="row-label">绑定IP</label>
+                <div class="row-input">
+                   
+                </div>
+                <label class="row-label">新增绑定IP</label>
+                <div class="row-input">
+                    <input type="text" class="form-control" name="bandIp" value="" data-rule="required">
+                </div>
+                <label class="row-label">绑定IP登录：</label>
+                <div class="row-input">
+                    <select class="form-control" name="bandIpSwitch" data-rule="required">
+                        <option value="1" selected>开启</option>
+                        <option value="0">关闭</option>
+                    </select>
+                </div>
+                <div style="text-align: center;">
+                <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </div>
+    </form>
+     <form class="form-inline" action="{{agentApiRoute}}/telphoneLoginSwitch" data-toggle="ajaxform" data-options='{"closeCurrent":true,"confirmMsg":"确定要更改？"}'>
+        <div class="col-sm-3">
+           <div class="bjui-row col-1">
+                <label class="row-label">手机登录开关</label>
+                <div class="row-input">
+                   
+                </div>
+                <label class="row-label">手机验证码登录：</label>
+                <div class="row-input">
+                    <select class="form-control" name="telphoneCodeSwitch" data-rule="required">
+                        <option value="1" selected>开启</option>
+                        <option value="0">关闭</option>
+                    </select>
+                </div>
+                <div style="text-align: center;">
+                <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form class="form-inline" action="{{agentApiRoute}}/changePwd" data-toggle="ajaxform" data-options='{"closeCurrent":true,"tabid":"sider-menu-1003","confirmMsg":"确定要更改？"}'>
+        <div class="col-sm-3">
+           <div class="bjui-row col-1">
+                <label class="row-label">修改密码</label>
+                <div class="row-input"></div>
+                <label class="row-label">原密码：</label>
+                <div class="row-input">
+                    <input type="text" class="form-control" name="password" value="" data-rule="required">
+                </div>
+                <label class="row-label">新密码：</label>
+                <div class="row-input">
+                    <input type="text" class="form-control" name="passwordNew" value="" data-rule="required">
+                </div>
+                <label class="row-label">再次输入新密码：</label>
+                <div class="row-input">
+                    <input type="text" class="form-control" name="passwordNew2" value="" data-rule="required">
+                </div>
+                <div style="text-align: center;">
+                <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                <th data-options="{name:'ip',align:'center'}">登录IP</th>
+                <th data-options="{name:'area',align:'center'}">登录区域</th>
+                <th data-options="{name:'remark',align:'center'}">备注</th>
+                <th data-options="{name:'created_at',align:'center'}">时间</th>
+            </tr>
+        </thead>
+    </table>
+</div>

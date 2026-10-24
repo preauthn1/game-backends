@@ -1,0 +1,53 @@
+﻿@using FW.Core.AdminSys.WebUI
+@model List<FW.Core.AdminSys.Provider.Entity.Role>
+
+
+    <div class="row">
+        <div class="col-md-12 ">
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>名称</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var role in Model)
+                        {
+                            <tr>
+                                <td>@role.RoleID</td>
+                                <td>@role.RoleName</td>
+                                <td>
+                                    @Html.ModifyLinkWithRightHref(href: Url.Action("Modify", new { roleid = role.RoleID }))
+                                    &nbsp;&nbsp;
+                                    @Html.LinkWithRight(action: "Del", href: "#", onclick: "del(" + @role.RoleID + ")")
+                                    &nbsp;&nbsp;
+                                    @Html.LinkWithRight(action: "RoleRight", method: "Get", value: "角色权限", href: Url.Action("RoleRight", new { roleID = role.RoleID }))
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    @section initScripts
+    {
+        <script>
+            function del(id) {
+                if(confirm('您确认想要删除记录吗？')) {
+                    var url = "@Url.Action("Del")";
+                    url = url + "?roleid=";
+                    url = url + id;
+                    window.location.href = url;
+                    return;
+                }
+            }
+        </script>
+
+       
+    }

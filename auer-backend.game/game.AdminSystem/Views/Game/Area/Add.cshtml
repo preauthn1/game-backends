@@ -1,0 +1,146 @@
+﻿@{
+    var adminUsers = ViewBag.AdminUsers as List<game.Entity.AdminSys.AdminUser>;
+}
+@section themeStyles{
+    <link href="@Url.Content("~/Content/Bootstrap/assets/plugins/select2/select2.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Bootstrap/assets/plugins/select2/select2-metronic.css")" rel="stylesheet" type="text/css" />
+}
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Content/Bootstrap/assets/plugins/select2/select2.min.js")"></script>
+}
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>添加渠道
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="form1" method="post" class="form-horizontal form-bordered">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">渠道名称</label>
+                            <div class="col-md-8">
+                                <input type="text" name="AreaName" class="form-control input-medium" placeholder="请输入渠道名称" value="" />
+                            </div>
+                        </div>
+                        @Html.Partial("_PlatformSelect", true)
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">渠道ID</label>
+                            <div class="col-md-8">
+                                <input type="number" name="Id" class="form-control input-medium" placeholder="请输入渠道ID" value="" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4">平台类型</label>
+                            <div class="col-md-8">
+                                <select name="ClientPlatform" class="form-control input-medium">
+                                    <option value="Android">Android</option>
+                                    <option value="IOS">IOS</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">所属管理员</label>
+                            <div class="col-md-8">
+                                <select name="AdminID" class="form-control input-medium select2" data-placeholder="请选择所属管理员登录账号">
+                                    @foreach (var item in adminUsers)
+                                    {
+                                        <option value="@item.Id">@item.LoginName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">渠道说明</label>
+                            <div class="col-md-8">
+                                <input type="text" name="Memo" class="form-control input-medium" placeholder="请输入渠道说明" value="" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">排序</label>
+                            <div class="col-md-8">
+                                <input type="text" name="Sort" class="form-control input-medium" placeholder="请输入排序" value="" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">QRCode分享位置</label>
+                            <div class="col-md-8">
+                                <input type="text" name="ShareURL" class="form-control input-medium" placeholder="请输入分享位置" value="" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">显示兑换的充值金额</label>
+                            <div class="col-md-8">
+                                <input type="text" name="ShowConvertLimit" class="form-control input-medium" placeholder="请输入金額" value="" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">顯示其他遊戲的充值金額</label>
+                            <div class="col-md-8">
+                                <input type="text" name="ShowAllGameLimit" class="form-control input-medium" placeholder="请输入金額" value="" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-4 col-md-8">
+                            @Html.OkWithRight()
+                            @Html.Back(Url.Action("List"))
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section initScripts{
+    <script>
+        $(function () {
+            $("#form1").validate({
+                rules: {
+                    AreaName: {
+                        required: true,
+                        maxlength: 16
+                    },
+                    AdminLoginName: {
+                        required: true,
+                        maxlength: 32
+                    },
+                    Memo: {
+                        required: true,
+                        maxlength: 128
+                    },
+                    Sort: {
+                        required: true,
+                        digits: true
+                    },
+                    ShowConvertLimit: {
+                        required: true,
+                        number: true
+                    },
+                    ShowAllGameLimit: {
+                        required: true,
+                        number: true
+                    }
+
+                },
+                messages: {
+                    ShowConvertLimit: {
+                        number: '只能使用数字'
+                    },
+                    ShowAllGameLimit: {
+                        number: '只能使用数字'
+                    }
+                }
+            });
+
+            $('.select2').select2();
+        })
+    </script>
+}

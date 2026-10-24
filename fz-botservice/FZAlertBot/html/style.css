@@ -1,0 +1,80 @@
+/* tooltip */
+abbr
+{
+    border-bottom: 1px dotted #666;
+	cursor: help;
+}
+
+.tooltip
+{
+	position:absolute;
+	background-color: #cbe8ff;
+	border: 1px solid #93b1ff;
+	border-radius: 4px;
+    padding: 6px 3px 6px 3px;
+	font-size: 15px;	
+
+
+}
+
+/* table */
+table 
+{
+	border-collapse: collapse;
+}
+
+table, td, th 
+{
+	border: 1px dotted #cccccc;
+	padding: 6px;
+}
+
+tr.title {
+    height: 40px;
+    background-color: #f5fbff;
+}
+
+.dotRed {
+    height: 15px;
+    width: 15px;
+    background-color: #f72525;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 8px;
+}
+
+.dotYellow {
+    height: 15px;
+    width: 15px;
+    background-color: #ffd800;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 8px;
+}
+
+.dotGreen {
+    height: 15px;
+    width: 15px;
+    background-color: #a3d723;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 8px;
+}
+
+.dotLightGreen {
+    height: 15px;
+    width: 15px;
+    background-color: #c6f258;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 8px;
+}
+
+.dotGray {
+    height: 15px;
+    width: 15px;
+    background-color: #cccccc;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 8px;
+}

@@ -1,0 +1,130 @@
+﻿@{
+    ViewBag.Title = "提取收益记录";
+}
+@Html.Action("Index", "Customer")
+
+<div class="box box-primary">
+    <!-- form start -->
+    <div class="box-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">申请时间</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="date" class="form-control" id="dtStartTime" >
+                </div>
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">到</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="date" class="form-control" id="dtEndTime" >
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                    <button type="button" id="btnQuery" class="btn btn-primary btn-block">搜索</button>
+                </div>
+            </div>
+        </div>
+        <hr class="hr-sm1">
+
+        <!-- 查詢結果 -->
+        <div class="box-header">
+            <h3 class="box-title">搜索结果</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>申请时间</th>
+                        <th>提领金额</th>
+                        <th>提领状态</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+
+            <div class="row">
+                <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                        <h5 class="description-header" id="TotalTaxAmount">0</h5>
+                        <span class="description-text">税收总</span>
+                    </div>
+                    <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                        <h5 class="description-header" id="ConvertAmount">0</h5>
+                        <span class="description-text">已提现收益</span>
+                    </div>
+                    <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4">
+                    <div class="description-block">
+                        <h5 class="description-header" id="PerformedAmount">0</h5>
+                        <span class="description-text">今日可提现</span>
+                    </div>
+                    <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+            </div><!-- /.row -->
+        </div>
+    </div>
+</div>
+
+<!-- /.box -->
+@section scripts{
+    <!-- Page script -->
+    <script type="text/javascript">
+        $(function () {
+
+            //DataTable
+            var table =
+                $('#example1').DataTable({
+                    "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                    "searching": false,
+                    "autoWidth": false,
+                    "serverSide": true,
+                    "deferLoading": 0,
+                    "order": [[0, 'desc']],
+                    "ajax": {
+                        method: 'post',
+                        url: '@Url.Action("WithdrawList", "Customer")',
+                        data: function (d) {
+                            d.dtStartTime = $('#dtStartTime').val();
+                            d.dtEndTime = $('#dtEndTime').val();
+                        },
+                        "dataSrc": function (json) {
+                            $('#TotalTaxAmount').text(json.data.TotalTaxAmount);
+                            $('#ConvertAmount').text(json.data.ConvertAmount);
+                            $('#PerformedAmount').text(json.data.PerformedAmount);
+
+                            if (json.success == false)
+                                swal("错误", json.message, "error");
+
+                            return json.data.data;
+                        }
+                    },
+                    columns: [
+                        {
+                            name: "LogDate",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                return moment(data.LogDate).format("YYYY-MM-DD");
+                            }
+                        },
+                        { name: "WithdrawAmount", data: "WithdrawAmount" },
+                        { name: "Status", data: "Status" }
+                    ],
+                    responsive: true
+                });
+
+            $('#btnQuery').click(function () {
+                table.draw();
+            });
+        })
+    </script>
+}
+

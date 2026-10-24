@@ -1,0 +1,40 @@
+#emoji {
+  display: flex;
+  flex-flow: row wrap;
+  margin-bottom: 1%;
+  background-color: #f5f5f5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.176);
+  transition: max-height 0.35s ease-out;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.emoji_content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1%;
+  cursor: pointer;
+}
+
+.box-close {
+  max-height: 0;
+}
+
+.box-close div {
+  display: none !important;
+}
+
+.box-open {
+  max-height: 400px;
+}
+
+
+.img_face {
+   width: 55px;
+}
+
+.img_face_m {
+    width: 35px;
+}
+

@@ -1,0 +1,106 @@
+﻿@model bool
+@{
+    List<game.Entity.Area.Platform> listPlatform = DataService.GetAllPlatform();
+    string name = "platformid";
+    string controllerName = Request.RequestContext.RouteData.Values["controller"].ToString().ToLower();
+    string actionName = Request.RequestContext.RouteData.Values["action"].ToString().ToLower();
+    if (
+        (controllerName == "money" && actionName == "convertlog")
+       ||
+        (controllerName == "userquestionlog" && actionName == "getquestionpagelist")
+       ||
+        (controllerName == "pay" && actionName == "orderlist")
+       ||
+        (controllerName == "userstat" && actionName == "reguser")
+       ||
+        (controllerName == "userstat" && actionName == "getreguserlog")
+       ||
+        (controllerName == "onlinestat" && actionName == "hallonlineuserlog")
+       ||
+        (controllerName == "onlinestat" && actionName == "totalgameonlinelog")
+       ||
+        (controllerName == "onlinestat" && actionName == "gameonlineuserlog")
+       ||
+        (controllerName == "onlinestat" && actionName == "serveronlineuserlog")
+       ||
+        (controllerName == "onlinestat" && actionName == "maxgameonlineuserlog")
+       ||
+        (controllerName == "onlinestat" && actionName == "daymaxtotalgameonlinelog")
+       ||
+        (controllerName == "onlinestat" && actionName == "maxhallonlineuserlog")
+       ||
+        (controllerName == "moneystat" && actionName == "moneysourcestatlog")
+       ||
+        (controllerName == "moneystat" && actionName == "banksourcestatlog")
+       ||
+        (controllerName == "moneystat" && actionName == "gametaxlog")
+       ||
+        (controllerName == "moneystat" && actionName == "gameservertaxlog")
+       ||
+        (controllerName == "moneystat" && actionName == "summoneylog")
+       ||
+        (controllerName == "userstat" && actionName == "getlogonuserlog")
+       ||
+        (controllerName == "userstat" && actionName == "getkeeplog")
+       ||
+        (controllerName == "areastat" && actionName == "statallareadata")
+       ||
+        (controllerName == "onlinestat" && actionName == "maxserveronlineuserlog")
+       ||
+        (controllerName == "gamemessage" && actionName == "list")
+       ||
+        (controllerName == "agentreportlog" && actionName == "list")
+
+       )
+    {
+        name = "platformids";
+        listPlatform = DataService.GetAllPlatform().FindAll(m => SiteHelper.GetPlatformIDs().Contains(m.Id));
+    }
+
+    if (
+        (controllerName == "gamemessage" && actionName == "add")
+       ||
+        (controllerName == "gamemessage" && actionName == "edit")
+       ||
+        (controllerName == "info" && actionName == "downloadList")
+       ||
+        (controllerName == "message" && actionName == "send")
+       ||
+        (controllerName == "areastat" && actionName == "statallareadataday")
+       )
+    {
+        name = "platformid";
+        listPlatform = DataService.GetAllPlatform().FindAll(m => SiteHelper.GetPlatformIDs().Contains(m.Id));
+    }
+}
+
+@if (listPlatform.Count > 0)
+{
+    if (Model)
+    {
+        <div class="form-group _clear">
+            <label class="_hide control-label col-md-4 xing ">平台</label>
+            <div class="col-md-8">
+                <select class="form-control input-small" id="@name" name="@name">
+                    @foreach (var p in listPlatform)
+                    {
+                        <option value="@p.Id">@p.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="form-group _clear">
+            <label class="_hide">平台</label>
+            <select class="form-control input-small" id="@name" name="@name">
+                <option value="">--不限--</option>
+                @foreach (var p in listPlatform)
+                {
+                    <option value="@p.Id">@p.Name</option>
+                }
+            </select>
+        </div>
+    }
+}

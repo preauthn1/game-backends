@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://example.invalid/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D37032A0-C770-4E75-9371-FE6B8505F284}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FW.Core.Web</RootNamespace>
+    <AssemblyName>FW.Core.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\using\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.0.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="example.invalid.Http" />
+    <Reference Include="example.invalid.Http.Formatting, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.0.0\lib\net45\example.invalid.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.0.0\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Web.WebPages, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ModelStateExtensions.cs" />
+    <Compile Include="Mvc\BaseController.cs" />
+    <Compile Include="Mvc\EmbeddedViews\EmbeddedViewProvider.cs" />
+    <Compile Include="Mvc\EmbeddedViews\EmbeddedVirtualFile.cs" />
+    <Compile Include="Mvc\EmbeddedViews\EmbeddedViewCollection.cs" />
+    <Compile Include="Mvc\EmbeddedViews\EmbeddedViewMetadata.cs" />
+    <Compile Include="Mvc\EmbeddedViews\EmbeddedViewVirtualPathProvider.cs" />
+    <Compile Include="Mvc\EngineDepencyResolver.cs" />
+    <Compile Include="Mvc\JsonpResult.cs" />
+    <Compile Include="Mvc\LocalizedWebViewPage.cs" />
+    <Compile Include="Mvc\MvcAuthoizeFilter.cs" />
+    <Compile Include="Mvc\MvcExceptionFilterAttribute.cs" />
+    <Compile Include="Mvc\MvcPager.cs" />
+    <Compile Include="Mvc\SiteableViewEngine\SiteableBuildManagerViewEngine.cs" />
+    <Compile Include="Mvc\SiteableViewEngine\SiteableRazorViewEngine.cs" />
+    <Compile Include="Mvc\SiteableViewEngine\SiteableVirtualPathProviderViewEngine.cs" />
+    <Compile Include="Mvc\ThemeableViewEngine\ConfigThemeProvider.cs" />
+    <Compile Include="Mvc\ThemeableViewEngine\CookieThemeProvider.cs" />
+    <Compile Include="Mvc\ThemeableViewEngine\IThemeProvider.cs" />
+    <Compile Include="Mvc\ThemeableViewEngine\ThemeableBuildManagerViewEngine.cs" />
+    <Compile Include="Mvc\ThemeableViewEngine\ThemeableRazorViewEngine.cs" />
+    <Compile Include="Mvc\ThemeableViewEngine\ThemeableVirtualPathProviderViewEngine.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebAPI\APIAuthResult.cs" />
+    <Compile Include="WebAPI\APICaller.cs" />
+    <Compile Include="WebAPI\APIHandler\CultureDelegatingHandler.cs" />
+    <Compile Include="WebAPI\APIHandler\ProfilerDelegatingHandler.cs" />
+    <Compile Include="WebAPI\DepencyRegister.cs" />
+    <Compile Include="WebAPI\ExceptionFilterAttribute.cs" />
+    <Compile Include="WebAPI\NullableParameterBinding.cs" />
+    <Compile Include="WebAPI\WebAPIClient.cs" />
+    <Compile Include="WebAPI\APIConsumerCollection.cs" />
+    <Compile Include="WebAPI\APIConsumerConfigHandler.cs" />
+    <Compile Include="WebAPI\APIConsumerInfo.cs" />
+    <Compile Include="WebAPI\APIHandler\ClientAuthDelegatingHandler.cs" />
+    <Compile Include="WebAPI\APIHandler\ServerAuthDelegatingHandler.cs" />
+    <Compile Include="WebAPI\APIHandler\LogDelegatingHandler.cs" />
+    <Compile Include="WebAPI\APIHandler\LogonDelegatingHandler.cs" />
+    <Compile Include="WebAPI\ApiLogonHandler.cs" />
+    <Compile Include="WebAPI\ConfigAPIConsumerProvider.cs" />
+    <Compile Include="WebAPI\ConsumerAuthorizeFilter.cs" />
+    <Compile Include="WebAPI\Dependency\EngineDepencyResolver.cs" />
+    <Compile Include="WebAPI\Dependency\EngineHttpControllerActivator.cs" />
+    <Compile Include="WebAPI\Dependency\EngineWebApiScope.cs" />
+    <Compile Include="WebAPI\IAPIConsumerProvider.cs" />
+    <Compile Include="WebAPI\JsonpMediaTypeFormatter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FW.Core.Auth\FW.Core.Auth.csproj">
+      <Project>{fa28482a-313d-429c-8653-781a77de049b}</Project>
+      <Name>FW.Core.Auth</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FW.Core.Engine\FW.Core.Engine.csproj">
+      <Project>{5110f534-a73a-4a18-9d83-5d9a8ed1a5b9}</Project>
+      <Name>FW.Core.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FW.Core.Helper\FW.Core.Helper.csproj">
+      <Project>{4f70d664-a9b0-4f2b-b461-d2c12548eddc}</Project>
+      <Name>FW.Core.Helper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FW.Core.Language\FW.Core.Language.csproj">
+      <Project>{d513a86c-f59d-4332-bf07-3f3674b96f7f}</Project>
+      <Name>FW.Core.Language</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FW.Core.Logger\FW.Core.Logger.csproj">
+      <Project>{9a4d7d0f-d6e2-4814-8cfb-fdc6644ac840}</Project>
+      <Name>FW.Core.Logger</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

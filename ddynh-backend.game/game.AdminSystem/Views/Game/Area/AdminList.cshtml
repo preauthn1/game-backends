@@ -1,0 +1,257 @@
+﻿
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Chosen/chosen.jquery.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Plugins/Chosen/css/chosen.min.css")" rel="stylesheet" />
+}
+
+<style>
+    .table_contain {
+        margin-top: 1em;
+    }
+
+    .adminList_contain {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12 ">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" class="form-control input-small" id="loginName" name="loginName" placeholder="用户名">
+                    <label>所属组织</label>
+                    @Html.Partial("_DropdownAdminOrganization", new DropdownPartialSettingViewModel(FirstOptionValueEnum.DefaultSelectAll))
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                </div>
+            </form>
+            <div class="table_contain">
+                <table id="adminList_table" class="display" style="width:100%"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section initScripts{
+    <script>
+
+        var _areaItem = [];
+
+        function createTable() {
+            const url = '/Area/GetAdminList'
+            const thead = [{ "sTitle": "用户名", "mData": "LoginName" },
+                           { "sTitle": "用户显示名称", "mData": "DisplayName" },
+                           { "sTitle": "所属组织", "mData": "OrganizationName" },
+                           {
+                               "data": null,
+                               "mRender": function (data, type, full) {
+
+                                   var delete_token = [REDACTED]"AdminPlatform", "post")`
+                                   var details_control = ''
+                                   
+                                   if (delete_token === 'True') {
+                                       details_control = `
+                                           <div class ="pointer details-control">
+                                            <div class ="btn-edit"></div>
+                                            <span>修改<span>
+                                           </div>`
+                                   }
+                                   return `<div class="control">
+                             ${details_control}<div>`
+                               }
+                           }]
+
+            const loginName = $('#loginName').val()
+            const organizationID = parseInt($('#organizationID').val(),10)
+            const data = {
+                loginName,
+                organizationID
+            }
+
+            createDataTable('adminList', thead, url, data, function (data) {
+            });
+        }
+
+        function format(d) {
+            return `<div class ="form-body">
+                        <div class ="adminList_contain">
+                            <div>
+                                <label>平台</label>
+                                <select class ="platform_${d.UserID}" data-placeholder="请选择平台" multiple style="width: 500px">
+                                </select>
+
+                                <button type="button" class ="btn" onclick="selectAll(${d.UserID}, true)">全选</button>
+                                <button type="button" class ="btn" onclick="selectAll(${d.UserID}, false)">清空</button>
+                            </div>
+                             <div>
+                                <label>渠道</label>
+                                <select class ="area_${d.UserID}" data-placeholder="请选择渠道" multiple style="width: 500px">
+                                </select>
+
+                                <button type="button" class ="btn" onclick="selectAreaAll(${d.UserID}, true)">全选</button>
+                                <button type="button" class ="btn" onclick="selectAreaAll(${d.UserID}, false)">清空</button>
+                            </div>
+                            <div class ="form-group">
+                                <button type="button" class ="btn btn-primary" onclick="update(${d.UserID})">保存</button>
+                            </div>
+                        </div>
+
+                    </div>`;
+        }
+
+
+        function update(userID) {
+            let result = []
+            const platform = $(`.platform_${userID}`).val()
+            const area = $(`.area_${userID}`).val()
+            if (area != null) {
+                result = _areaItem.filter(item => area.includes(item.AreaID.toString()))
+            }
+
+            const _platform = platform.filter(i => {
+                const res = _areaItem.filter(item => i == item.AreaID)
+                return res.length === 0
+            })
+
+            for (var index = 0; index < _platform.length; index++) {
+                result.push({
+                    PlatformID: _platform[index]
+                });
+            }
+            $.ajax({
+                cache: false,
+                dataType: 'json',
+                url: '/Area/AdminPlatform',
+                data: JSON.stringify({
+                    areaIds: JSON.stringify(result),
+                    adminID: userID
+                }),
+                contentType: "application/json; charset=utf-8",
+                type: 'post',
+                beforeSend: function () {
+
+                },
+                success: function (val) {
+                    const status = val.status
+                    swal({
+                        type: status ? 'success' : 'error',
+                        title: val.msg,
+                    }).then((result) => {
+                        dataTable.ajax.reload(null, false);
+                    })
+                },
+                error: function (err) {
+                }
+            });
+        }
+
+        function selectAll(userID, isSelect) {
+            $(`.platform_${userID} option`).prop('selected', isSelect);
+            $(`.platform_${userID}`).trigger('chosen:updated')
+
+            const _platform = $(`.platform_${userID}`).val()
+            selectArea(_platform, _areaItem, userID)
+        }
+
+        function selectAreaAll(userID, isSelect) {
+            $(`.area_${userID} option`).prop('selected', isSelect);
+            $(`.area_${userID}`).trigger('chosen:updated')
+        }
+
+        function selectArea(platforms, area, userID) {
+
+            if (platforms === null) {
+                $(`.area_${userID}`).find('option').remove()
+                $(`.area_${userID}`).trigger("chosen:updated");
+                return
+            }
+            const result = area.filter(item => platforms.some(data => data == item.PlatformID))
+            const _area = $(`.area_${userID}`).val()
+
+            $(`.area_${userID}`).find('option').remove()
+
+            $.each(result, function (i, item) {
+                $(`.area_${userID}`).append($('<option>', {
+                    value: item.AreaID,
+                    text: item.AreaName
+                }))
+            })
+
+            $(`.area_${userID}`).val(_area).trigger('chosen:updated');
+        }
+
+        $(function () {
+            fillFormData('form_search');
+            createTable()
+
+            $('#adminList_table tbody').on('click', '.details-control', function () {
+                var tr = $(this).closest('tr');
+                var row = dataTable.row(tr);
+                if (row.child.isShown()) {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                }
+                else {
+                    var tr_old = dataTable.$('tr.shown')
+                    var row_old = dataTable.row(tr_old)
+
+                    tr_old.removeClass('shown')
+                    row_old.child.hide()
+
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                    const userID = row.data().UserID
+
+                    $.ajax({
+                        cache: false,
+                        dataType: 'json',
+                        url: '/Area/GetAdminPlatform',
+                        data: { adminID: userID },
+                        contentType: "application/x-www-form-urlencoded",
+                        type: 'get',
+                        success: function (val) {
+                            const platforms = val.platforms
+                            const area = val.area
+                            _areaItem = area
+
+                            $.each(platforms, function (i, item) {
+                                $(`.platform_${userID}`).append($('<option>', {
+                                    value: item.Id,
+                                    text: item.Name
+                                }));
+                            });
+
+                            $.each(area, function (i, item) {
+                                $(`.area_${userID}`).append($('<option>', {
+                                    value: item.AreaID,
+                                    text: item.AreaName
+                                }));
+                            });
+
+                            selectArea(val.userPlatformIDs, area, userID)
+
+                            $(`.platform_${userID}`).val(val.userPlatformIDs).trigger('chosen:updated');
+                            $(`.area_${userID}`).val(val.userAreaIDs).trigger('chosen:updated');
+
+                            $(`.platform_${userID}`).chosen().change(function () {
+                                var id = $(this).val()
+                                selectArea(id, area, userID)
+                            });
+                            $(`.area_${userID}`).chosen()
+                        },
+                        error: function (err) {
+                        }
+                    });
+                }
+            });
+        })
+
+    </script>
+}

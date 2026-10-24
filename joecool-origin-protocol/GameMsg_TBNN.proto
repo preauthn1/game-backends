@@ -1,0 +1,55 @@
+syntax = "proto2";
+
+package netproto;
+
+import "GameMsg.proto";
+
+message TBNN_GameStep {
+    required int32 Step = 1;
+};
+message TBNN_UserBaseScore {
+    required int32 BaseScore = 1;
+};
+message TBNN_NotifyUserBaseScore {
+    required int32 UserID = 1;
+    required int32 BaseScore = 2;
+};
+message TBNN_NotifyGameBaseScore {
+    repeated TBNN_NotifyUserBaseScore GameBet = 1;
+};
+message TBNN_GameSetting {
+    required int32 BaseScoreTimeout = 1;
+    required int32 CardGroupTimeout = 2;
+    required int32 BaseScore = 3;
+    required int32 TableNo = 4;
+    required int32 GameID = 5;
+    required int32 ReadyTimeout = 6;
+    repeated int32 BaseScoreTimes = 7;
+};
+message TBNN_NotifyUserCardGroup {
+    required int32 UserID = 1;
+};
+message TBNN_UserBetRet {
+    required int32 UserID = 1;
+    required int32 NiuNiuRet = 2;
+    required int32 UserBetTimes = 3;
+    required int32 NiuNiuBetTimes = 4;
+    required int32 NiuNiuNumber = 5;
+    required int64 WinLose = 6;
+    repeated PokerCard CardGroup = 7;
+};
+message TBNN_GameRet {
+    repeated TBNN_UserBetRet UserRet = 1;
+};
+message TBNN_GameScene {
+    required int32 GameStep = 1;
+    optional UserPoker UserPoker = 2;
+    optional TBNN_NotifyGameBaseScore GameBaseScore = 3;
+    optional int32 ElapsedSeconds = 5;
+    optional TBNN_GameRet GameRet = 6;
+    repeated int32 FinishedGroupUsers = 7;
+    repeated int32 BetTimes = 8;
+};
+message TBNN_UserBetInfo {
+    repeated int32 BetTimes = 1;
+};

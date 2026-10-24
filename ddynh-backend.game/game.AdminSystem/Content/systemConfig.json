@@ -1,0 +1,336 @@
+﻿{
+  "name": "Game",
+  "gameListIcon": [
+    {
+      "GameID": 1,
+      "Image": "/Content/GameIcon/1.png"
+    },
+    {
+      "GameID": 2,
+      "Image": "/Content/GameIcon/2.png"
+    },
+    {
+      "GameID": 3,
+      "Image": "/Content/GameIcon/3.png"
+    },
+    {
+      "GameID": 10,
+      "Image": "/Content/GameIcon/10.png"
+    },
+    {
+      "GameID": 11,
+      "Image": "/Content/GameIcon/11.png"
+    },
+    {
+      "GameID": 12,
+      "Image": "/Content/GameIcon/12.png"
+    },
+    {
+      "GameID": 13,
+      "Image": "/Content/GameIcon/13.png"
+    },
+    {
+      "GameID": 15,
+      "Image": "/Content/GameIcon/15.png"
+    },
+    {
+      "GameID": 18,
+      "Image": "/Content/GameIcon/18.png"
+    },
+    {
+      "GameID": 19,
+      "Image": "/Content/GameIcon/19.png"
+    },
+    {
+      "GameID": 20,
+      "Image": "/Content/GameIcon/20.png"
+    },
+    {
+      "GameID": 21,
+      "Image": "/Content/GameIcon/21.png"
+    }
+  ],
+  "AreaJsonSetting": [
+    {
+      "type": "string",
+      "name": "大廳樣版",
+      "key": "Template",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "真人（预设）",
+          "value": "UI_6",
+          "platformIds": []
+        },
+        {
+          "name": "中国",
+          "value": "UI_5",
+          "platformIds": []
+        },
+        {
+          "name": "城市",
+          "value": "UI_7",
+          "platformIds": []
+        },
+        {
+          "name": "kqp",
+          "value": "UI_kqp",
+          "platformIds": [ 3000, 3001, 3002, 3003, 1005 ]
+        },
+        {
+          "name": "kqp_c",
+          "value": "UI_kqp_c",
+          "platformIds": [ 3000, 3001, 3002, 3003, 1005 ]
+        },
+        {
+          "name": "kqp_k",
+          "value": "UI_kqp_k",
+          "platformIds": [ 3000, 3001, 3002, 3003, 1005 ]
+        }
+      ],
+      "disabled": false
+    },  
+    {
+      "type": "int",
+      "name": "是否顯示全民代理",
+      "key": "Agent",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "关闭",
+          "value": 0
+        },
+        {
+          "name": "开启",
+          "value": 1
+        }
+      ],
+      "disabled": true
+    },
+    {
+      "type": "int",
+      "name": "是否使用三方客服",
+      "key": "FlagCSThirdparty",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "关闭",
+          "value": 0
+        },
+
+        {
+          "name": "开启",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "type": "string",
+      "name": "三方客服网址",
+      "key": "CSThirdpartyUrl",
+      "model": "Info",
+      "placeholder": "请输入直播网址",
+      "input": "text"
+    },
+    {
+      "type": "int",
+      "name": "是否显示直播Icon",
+      "key": "FlagWebViewIcon1",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "关闭",
+          "value": 0
+        },
+
+        {
+          "name": "开启",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "type": "int",
+      "name": "直播Icon文字类型",
+      "key": "WebViewIcon1Type",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "直播",
+          "value": 0
+        },
+        {
+          "name": "影城",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "type": "string",
+      "name": "直播网址",
+      "key": "WebViewIcon1Url",
+      "model": "Info",
+      "placeholder": "请输入直播网址",
+      "input": "text"
+    },
+    {
+      "type": "int",
+      "name": "是否显示兑换",
+      "key": "FlagExchage",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "关闭",
+          "value": 0
+        },
+
+        {
+          "name": "开启",
+          "value": 1
+        }
+      ]
+    },
+
+    {
+      "type": "int",
+      "name": "兑换文字类型",
+      "key": "ExchangeFontType",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "兑换",
+          "value": 0
+        },
+
+        {
+          "name": "福利",
+          "value": 1
+        },
+
+        {
+          "name": "清算",
+          "value": 2
+        },
+
+        {
+          "name": "提現",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "type": "string",
+      "name": "下載網址",
+      "key": "DownloadUrl",
+      "model": "JiuLiao",
+      "placeholder": "请输入下載網址",
+      "input": "text"
+    },
+    {
+      "type": "boolean",
+      "name": "界面控制标识",
+      "input": "checkboxlist",
+      "list": [
+        {
+          "name": "显示在线充值",
+          "key": "UIFlagPay"
+        },
+        {
+          "name": "显示代理充值",
+          "key": "UIFlagAgent"
+        }
+      ]
+    },
+    {
+      "type": "int",
+      "name": "是否顯示新代理",
+      "key": "Club2Agent",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "关闭",
+          "value": 0
+        },
+        {
+          "name": "开启",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "type": "boolean",
+      "name": "新代理模式控制",
+      "input": "checkboxlist",
+      "list": [
+        {
+          "name": "全民代理",
+          "key": "UIClub2AgentMode1"
+        },
+        {
+          "name": "全民净利润",
+          "key": "UIClub2AgentMode2"
+        },
+        {
+          "name": "裂变",
+          "key": "UIClub2AgentMode3"
+        },
+        {
+          "name": "联运",
+          "key": "UIClub2AgentMode4"
+        },
+        {
+          "name": "无限极",
+          "key": "UIClub2AgentMode5"
+        }
+      ]
+    },
+    {
+      "type": "int",
+      "name": "是否显示彩金池",
+      "key": "ShowCaiJinchi",
+      "input": "select",
+      "model": "Info",
+      "options": [
+        {
+          "name": "关闭",
+          "value": 0
+        },
+        {
+          "name": "开启",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "type": "boolean",
+      "name": "功能條件控制 (打勾代表or)",
+      "input": "checkboxlist",
+      "list": [
+        {
+          "name": "兌換",
+          "key": "ConvertAndOr"
+        },
+        {
+          "name": "顯示所有遊戲",
+          "key": "AllGameAndOr"
+        },
+        {
+          "name": "VIP代理充值",
+          "key": "VIPAgentAndOr"
+        },
+        {
+          "name": "顯示客服",
+          "key": "CSAndOr"
+        }
+      ]
+    }
+  ]
+}

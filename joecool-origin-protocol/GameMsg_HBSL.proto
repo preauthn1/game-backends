@@ -1,0 +1,81 @@
+syntax = "proto2";
+package netproto;
+
+//---------- Server - Client ----------
+// HBSL_GameInfo = 10001;                   // S2C 牌局資訊，於玩家進入牌局或斷線重連時傳送
+message HBSL_Msg_GameInfo {
+	required int32 HBCount = 1;	             		     // 紅包數量
+	required int32 LandmineRate = 2;	           		 // 踩雷倍率
+	repeated int64 HBValue = 3;      	 				 // 紅包面額
+    repeated HBSL_Msg_UserInfo AllUserInfo = 4;      	 // 所有玩家資訊
+    required HBSL_Msg_UserInfo SelfUserInfo = 5;      	 // 自己資訊
+    repeated string PokerManual = 6;                     // 遊戲說明
+};
+
+// 玩家資訊
+message HBSL_Msg_UserInfo {
+    required int32 UserID = 1;                      // 玩家ID，若是空位時，玩家ID = -1            都要
+    required int64 Money = 2;                       // 玩家金錢                                  遊戲
+    required int32 FaceID = 3;                      // 頭像ID                                    都要
+    required int32 Rounds = 4;                      // 参加局數                                  列表
+    required int32 WinRounds = 5;                   // 勝利局數                                  列表
+    required int64 WinMoney = 6;                    // 獲得金額(贏得金額-中雷金額),可以出現負數     列表
+    required int64 HBMoney = 7;                     // 紅包金額                                  遊戲
+    required int64 LoseMoney = 8;                   // 本輪輸掉金額                               遊戲
+};
+
+// HBSL_AllUserInfoResult = 10003;                 // S2C 在線玩家
+message HBSL_Msg_AllUserInfoResult {
+    repeated HBSL_Msg_UserInfo AllUserInfo = 1;    // 在線玩家資訊
+};
+
+// HBSL_StartGrab = 10004;               	// S2C 開始搶紅包
+message HBSL_Msg_StartGrab {
+    required int32 TimeRemain = 1;				    // 剩餘時間
+	required int32 FaceID = 2;                      // 頭像ID
+	required int32 ZhuangID = 3;                    // 莊家ID
+	required int64 HBMoney = 4;                     // 紅包金額
+	required bool IsReconnect = 5;                    // 是否為斷線重連
+};
+
+// HBSL_GrabResult = 10006;     // S2C 玩家搶紅包結果
+message HBSL_Msg_GrabResult {
+    required int32 Result = 1;                  // 搶紅包結果
+	required int32 HBRemain = 2;                // 剩餘紅包數量
+    required HBSL_Msg_UserInfo UserInfo = 3;    // 玩家資訊
+}
+
+// HBSL_FaHB = 10007;							// C2S 發紅包
+message HBSL_Msg_FaHB {
+    required int64 HBMoney = 1;               // 紅包金額
+	required int32 LandmineNumber = 2;      // 雷號
+}
+
+// HBSL_FaHBResult=10008;					// S2C 發紅包結果
+message HBSL_Msg_FaHBResult {
+    required int32 Result = 1;                  // 發紅包結果
+    required int64 RemainMoney = 2;             // 玩家剩餘金錢
+}
+
+// 紅包資訊
+message HBSL_Msg_HBInfo {
+    required int32 UserID = 1;                      // 玩家ID，若是空位時，玩家ID = -1
+    required int64 HBMoney = 2;                     // 紅包金額
+    required int32 FaceID = 3;                      // 頭像ID
+};
+
+// HBSL_AllHBInfoResult=10010;				// S2C 紅包列表結果
+message HBSL_Msg_AllHBInfoResult {
+    repeated HBSL_Msg_HBInfo AllHBInfo = 1;                  // 紅包列表
+}
+
+// HBSL_Settlement = 10011;                     // S2C 結算
+message HBSL_Msg_Settlement {
+    required int32 FaceID = 1;                      // 頭像ID
+	required int32 ZhuangID = 2;                    // 莊家ID
+	required int64 ZhuangWinLose = 3;               // 莊家輸贏
+    required int64 ZhuangRemainMoney = 4;           // 莊家剩餘金錢
+	required int32 LandmineNumber = 5;              // 雷號
+    repeated HBSL_Msg_UserInfo AllUserInfo = 6;     // 所有玩家資訊
+    required int64 HBMoney = 7;                     // 紅包金額
+};

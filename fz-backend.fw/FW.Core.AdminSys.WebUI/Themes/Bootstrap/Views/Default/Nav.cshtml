@@ -1,0 +1,28 @@
+﻿@model List<FW.Core.AdminSys.Provider.Entity.Right>
+    @{
+        Layout = null;
+    }
+
+
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var r in Model)
+            {
+                string href = "#";
+                if (!String.IsNullOrEmpty(r.PageUrl))
+                {
+                    href = r.PageUrl; 
+                }
+                @:<li><a href="@href">
+                @r.RightName
+                @:</a>
+                if (r != Model.Last())
+                {
+                    @:<i class="fa fa-angle-right"></i>
+                }
+                @:</li>
+            }
+            
+        }
+
+   

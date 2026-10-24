@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "/cliapisvc";
+
+package cliapisvc;
+
+import "common.proto";
+
+service TimerManagerService {
+    rpc Status (Empty) returns (TimerManagerStatus);
+    rpc Remove (TimerQueryCondition) returns (Empty);
+}
+
+message TimerManagerStatus {
+    int32 Length = 1;
+    repeated string Keys = 2;
+}
+
+message TimerQueryCondition {
+    string Key = 1;
+}
+

@@ -1,0 +1,160 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+<form>
+    <fieldset>
+        <legend style="font-weight:normal;">搜索：</legend>
+        <div style="margin:0; padding:1px 5px 5px;">
+            <span>转错订单ID：</span>
+            <input type="text" name="id" id="id" class="form-control" size="15">
+            &nbsp;&nbsp;
+            <a class="btn btn-default btnCopy" data-clipboard-action="copy" data-clipboard-target="#id">复制订单</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <div class="btn-group">
+                <button type="button" class="btn-green" data-icon="search" onclick="searchAgentBack()">开始搜索！</button>
+                <button type="reset" class="btn-orange" data-icon="times">重置</button>
+            </div>
+        </div>
+    </fieldset>
+</form>
+</div>
+<div class="bjui-pageContent">
+    <div class="row">
+            <div class="col-sm-6" id="agent-to-play" style="display: none;">
+                <form class="form-inline" action="{{agentApiRoute}}/ErrorOrderOpt" data-toggle="ajaxform">
+                    <div class="bjui-row col-1">
+                        <label class="row-label">代理转玩家：</label>
+                        <div class="row-input"></div>
+                        <label class="row-label">转错订单金额：</label>
+                        <div class="row-input">
+                            <input type="text" class="form-control" name="money" value="" disabled>
+                        </div>
+                        <label class="row-label">订单所属商人：</label>
+                        <div class="row-input">
+                            <input type="text" class="form-control" name="agent_id" value="" disabled>
+            <!--                 <button>封停10分钟</button> -->
+                        </div>
+                        <label class="row-label">转错玩家ID：</label>
+                        <div class="row-input">
+                            <input type="text" class="form-control" name="user_id" value="" disabled>
+            <!--                 <button>封停10分钟</button> -->
+                        </div>
+                        <label class="row-label">转错玩家余额：</label>
+                        <div class="row-input">
+                            <input type="text" class="form-control" name="new_money" value="" disabled>
+                        </div>
+                        <label class="row-label">订单时间：</label>
+                        <div class="row-input">
+                            <input type="text" class="form-control" name="created_at" value="" disabled>
+                        </div>						
+                    </div>
+                    <div class="col-sm-12">
+                        <input type="hidden" name="id" value=""/>
+                        <div class="form-group">
+                            <label>金额</label>
+                            <input type="Number" class="form-control" name="backMoney" size="8" placeholder="">
+                        </div>
+                        <div class="form-group">
+                            <label>验证码</label>
+                            <input type="text" class="form-control" name="telphoneCode" size="8" placeholder="" data-rule="required">
+                            <!--<a href="javascript:void(0);" class="getSmsCode">获取验证码</a>-->
+                        </div>
+                        <button type="submit" class="btn btn-blue">确认回调</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-6" id="agenttotal-to-agent" style="display: none;">
+                <form class="form-inline" action="{{agentApiRoute}}/ErrorOrderOpt" data-toggle="ajaxform">
+                    <div class="bjui-row col-1">
+                        <label class="row-label">总代理转代理：</label>
+                        <div class="row-input"></div>
+                        <label class="row-label">转错订单金额：</label>
+                        <div class="row-input">
+                            <input type="text" class="form-control" name="money" value="" disabled>
+                        </div>
+                        <label class="row-label">订单所属商人：</label>
+                        <div class="row-input">
+                            <input type="text" class="form-control" name="agent_id" value="" disabled>
+            <!--                 <button>封停10分钟</button> -->
+                        </div>
+                        <label class="row-label">转错商人ID：</label>
+                        <div class="row-input">
+                            <input type="text" class="form-control" name="user_id" value="" disabled>
+            <!--                 <button>封停10分钟</button> -->
+                        </div>
+                        <label class="row-label">转错商人余额：</label>
+                        <div class="row-input">
+                            <input type="text" class="form-control" name="new_money" value="" disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <input type="hidden" name="id" value=""/>
+                        <div class="form-group">
+                            <label>金额</label>
+                            <input type="Number" class="form-control" name="backMoney" size="8" placeholder="" data-rule="required">
+                        </div>
+                        <div class="form-group">
+                            <label>验证码</label>
+                            <input type="text" class="form-control" name="telphoneCode" size="8" placeholder="">
+                            <!--<a href="javascript:void(0);" class="getSmsCode">获取验证码</a>-->
+                        </div>
+                        <button type="submit" class="form-group btn btn-blue">确认回调</button>
+                    </div>
+                </form>
+            </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function searchAgentBack(){
+        var id = $("#id").val();
+        BJUI.ajax('doajax', {
+            url: "{{agentApiRoute}}/GetErrorOrder",
+            type:"POST",
+            data:{id:id},
+            loadingmask: true,
+            forward:"/agentadmin/page/agent_general/player_disable?title=%E7%8E%A9%E5%AE%B6%E5%9B%9E%E8%B0%83",
+            okCallback: function(json, options) {
+                if(json.type==2){
+                    $("#agenttotal-to-agent").show();
+                    $("#agent-to-play").hide();
+                    $("#agenttotal-to-agent input[name='id']").val(json.id);
+                    $("#agenttotal-to-agent input[name='money']").val(json.money);
+                    $("#agenttotal-to-agent input[name='agent_id']").val(json.agent_id);
+                    $("#agenttotal-to-agent input[name='user_id']").val(json.user_id);
+                    $("#agenttotal-to-agent input[name='new_money']").val(json.new_money);
+                }else{
+                    $("#agenttotal-to-agent").hide();
+                    $("#agent-to-play").show();
+                    $("#agent-to-play input[name='id']").val(json.id);
+                    $("#agent-to-play input[name='money']").val(json.money);
+                    $("#agent-to-play input[name='agent_id']").val(json.agent_id);
+                    $("#agent-to-play input[name='user_id']").val(json.user_id);
+                    $("#agent-to-play input[name='new_money']").val(json.new_money);
+					$("#agent-to-play input[name='created_at']").val(json.created_at);
+                }
+                //console.log('返回内容1：\n'+ JSON.stringify(json))
+            }
+        })
+    }
+
+    $(".getSmsCode").click(function(){
+        BJUI.ajax('doajax', {
+            url: '/agentadmin/sms/api/smsCodeAddMoney',
+            data:{},
+            loadingmask: true,
+            callback:function(json, options){
+                if(json.statusCode == 200){
+                    BJUI.alertmsg('ok', '获取验证码成功');
+                }else{
+                    BJUI.alertmsg('fail', '获取验证码失败');
+                }
+            },
+        })
+    })
+
+    var clipboard = new Clipboard('.btnCopy');
+    clipboard.on('success', function(e) {
+        console.log(e);
+    });
+    clipboard.on('error', function(e) {
+        console.log(e);
+    });
+</script>

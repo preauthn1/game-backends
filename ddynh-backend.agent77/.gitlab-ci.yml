@@ -1,0 +1,45 @@
+
+variables:
+  SLACK_TOKEN: [REDACTED]"
+  SLACK_BOT_NAME: "gitlab_ci_機器人"  
+  SLACK_CHANNEL: "backend_jenkins"  
+  SLACK_API_URL: "https://example.invalid/api/chat.postMessage"    
+  JENKINS_URL: "http://0.0.0.0:8080"
+  JENKINS_TOKEN_USER: "111e63c3c2ea9748457d7de03c0ba2dcc2"    
+  JENKINS_TOKEN_JOB: "Terpro_DDYNN_PGS_2019"    
+
+stages:
+  - trigger-jenkins-UAT
+  - trigger-jenkins-Production
+  - send-slack-notify  
+
+
+#觸發jenkins (UAT)
+step-trigger-jenkins-UAT:
+  stage: trigger-jenkins-UAT
+  only:
+    - gitlab_ci_test
+    - UAT_Agent77    
+  script:
+    - curl -X POST -u admin:$JENKINS_TOKEN_USER "$JENKINS_URL/job/DD.Agent77.UAT/build?token=[REDACTED]"
+        
+#觸發jenkins (Production)
+step-trigger-jenkins-Production:
+  stage: trigger-jenkins-Production
+  only:
+    - Production_Agent77
+  script:
+    - curl -X POST -u admin:$JENKINS_TOKEN_USER "$JENKINS_URL/job/DD.Agent77.Production/build?token=[REDACTED]"    
+    
+    
+#若中途失敗，發送slack通知
+step-send-slack-notify:
+  stage: send-slack-notify
+  except:
+    - master
+  script:
+    - curl -H "Content-Type:application/x-www-form-urlencoded" -X POST --data "token=[REDACTED] gitlab pipeline 建置失敗 ($CI_COMMIT_REF_NAME)" "$SLACK_API_URL"
+  when: on_failure
+    
+    
+    

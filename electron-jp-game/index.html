@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://example.invalid/en-US/docs/Web/HTTP/CSP -->
+  <!--  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
+
+    <link href="./styles.css" rel="stylesheet">
+    <title>target Game</title>
+  </head>
+  <body>
+
+    <div class="webviewPanel">
+
+      <div id="loading-overlay" class="loading-overlay">
+        <img src="assets/img/loading_123.svg" class="loading-img">
+      </div>
+
+
+      <div id="fixVersion" class="fixVersion">       
+      </div>
+
+<!-- 
+      <button id="myButton">按我</button> -->
+
+<!-- 
+   <button  onclick="initialWebviewUrl()">
+按鈕請點我
+   </button> -->
+   
+        <webview id="mywebview" src="http://0.0.0.0" autosize="on"></webview>  
+    </div>
+
+
+    <!-- You can also require other files to run in this process -->
+    <script src="./renderer.js"></script>   
+    <script src="./app.js"></script>
+
+    <script>
+
+      setTimeout(() => {        
+        initialWebviewUrl();
+      }, 150);      
+
+      setTimeout(() => {        
+        hideOverlay();
+      }, 3500);      
+
+      setTimeout(() => {        
+        showVersion();
+      }, 500);     
+
+    </script>
+
+  </body>
+</html>

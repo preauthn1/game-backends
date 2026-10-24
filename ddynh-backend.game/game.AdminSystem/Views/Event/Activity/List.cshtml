@@ -1,0 +1,397 @@
+﻿
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .instructions {
+        flex: .6;
+    }
+
+        .instructions span {
+            padding: 2%;
+        }
+
+    .menu {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 1%;
+    }
+
+    .table th {
+        text-align: center;
+    }
+
+    .isExpired
+    {
+        color:#CCC;
+    }
+
+
+</style>
+
+<div id="vApp">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="protlet-body">
+                <div class="menu">
+                    <div class="form-inline instructions" id="form_search">
+
+
+
+                        <div class="form-group">
+                            <label>平台</label>
+                            @Html.Partial("_DropdownPlatform", new DropdownPartialSettingViewModel(FirstOptionValueEnum.DefaultSelectAll))
+                        </div>
+
+                        <div class="form-group">
+                            <label>状态</label>
+                            <select class="form-control input-small" name="status_Search" id="status_Search">
+                                <option value="">--不限--</option>
+                                <option value="1">启用</option>
+                                <option value="0">已关闭</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="button" class="btn btn-default" v-on:click="getEventList()" value="搜 索" />
+                        </div>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-warning" style="width:100px; height:40px;" data-toggle="modal" data-target="#addEventModal" v-on:click="show_add()">新 增</button>
+                    </div>
+                </div>
+                <div class="table-scrollable">
+                    <table id="eventList_table" class="table table-striped table-bordered table-hover progressTable">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left;">所属平台</th>
+                                <th class="algin-l" style="width:10%;">活动类型</th>
+                                <th style="width:20%;">活动名称</th>
+                                <th>开始时间</th>
+                                <th>结束时间</th>
+                                <th style="width:5%;">状态</th>
+                                <th>最后操作人</th>
+                                <th>最后操作时间</th>
+                                <th style="width:10%;">动作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="row in tableList">
+                                <td class="algin-l" :title="row.PlatformID" >{{row.PlatformName}}</td>
+                                <td style="text-align:left">{{row.EventTypeText}}</td>
+                                <td>{{row.EventName}}</td>
+                                <td :class="'algin-c ' + (row.IsExpired ? 'isExpired' : '')">{{row.StartTimeText}}</td>
+                                <td :class="'algin-c ' + (row.IsExpired ? 'isExpired' : '')">{{row.EndTimeText}}</td>
+                                <td style="text-align:center"  :class="'status_' + row.Status" >{{row.StatusName}}</td>
+                                <td class="algin-c">{{row.Updater}}</td>
+                                <td>{{row.UpdateTimeText}}</td>
+                                <td style="text-align:center">
+                                    <input type="button" class="btn btn-sm dark" data-toggle="modal" data-target="#editEventModal" value="修改基本设置" v-on:click="show_edit(row)">
+
+                                    <a v-bind:href="'/ActivityEventRule/EditAdvance?id=' + row.ID">
+                                        <input type="button" class="btn btn-sm dark" value="修改高级设置">
+                                    </a>
+
+                                    <input type="button" class="btn btn-sm dark" value="删除" v-on:click="deleteEvent(row.ID)">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- add Modal-->
+    <div class="modal fade" id="addEventModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content"  style="width:900px;">
+                <div class="modal-header">
+                    <h5 class="modal-title">新增奖励活动</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form_Add" method="post" action="ModifyEvent" class="form-horizontal form-bordered">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">
+                                    活动类型
+                                    <span id="myTip" aria-hidden="true" style="color:#444;" title="" data-original-title="部分类型的活动，整个站台只能建立一笔" class="glyphicon glyphicon-exclamation-sign">
+                                    </span>
+                                </label>
+                                <div class="col-md-8">
+                                    @(Html.RenderDropdownByEnum<game.Entity.Event.ApplyEventTypeEnum>("EventType", null, true, "form-control input-medium"))
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-4 xing">所属平台</label>
+                                <div class="col-md-8">
+                                    @Html.Partial("_DropdownPlatform", new DropdownPartialSettingViewModel())
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-4 xing">活动名称</label>
+                                <div class="col-md-8">
+                                    <input type="text" name="EventName" class="form-control input-medium" placeholder="请输入活动名称" value="" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4 xing">开始时间</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control " style="width:180px" id="StartTime" name="StartTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString("yyyy-MM-dd 00:00")">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4">结束时间</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control " style="width:180px" id="EndTime" name="EndTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false })" placeholder="结束时间" value="">
+                                </div>
+                            </div>
+
+
+                            @* 设计上预设是关闭，避免高级设置还没设好、活动就开放了 *@
+
+                            @*<div class="form-group">
+                                <label class="control-label col-md-4 xing">状态</label>
+                                <div class="col-md-8">
+                                    <select class="form-control input-small" name="Status" v-model="EventSetting.Status">
+                                        <option value="">--请选择--</option>
+                                        <option value="1">启用</option>
+                                        <option value="0">已关闭</option>
+                                    </select>
+                                </div>
+                            </div>*@
+
+                            </div>
+                            <div class="modal-footer">
+
+                                <div style="display:inline-block;color:#444;margin-right:7px;">
+                                    小贴士
+                                    <span id="noticeTip" aria-hidden="true" data-original-title="建立活动后，状态预设为关闭，并需要前往高级设置调整不同类型的参数设置" class="glyphicon glyphicon-exclamation-sign">
+                                    </span>
+                                </div>
+
+                                <button type="submit" class="btn btn dark">储存</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                            </div>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--End add Modal-->
+
+    <!-- Edit Modal-->
+    <div class="modal fade" id="editEventModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content"  style="width:900px;">
+                <div class="modal-header">
+                    <h5 class="modal-title">修改奖励活动</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form_Edit" method="post" action="ModifyEvent" class="form-horizontal form-bordered">
+                        <div class="form-body">
+
+                            <input type="hidden" name="ID" v-model="EventSetting.ID" />
+
+                            <div class="form-group">
+                                <label class="control-label col-md-4">活动类型</label>
+                                <div class="col-md-8">
+                                    <input type="text" name="EventTypeText" class="form-control input-medium" v-model="EventSetting.EventTypeText" readonly="readonly" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-4">所属平台</label>
+                                <div class="col-md-8">
+                                    <input type="text" name="PlatformName" class="form-control input-medium" v-model="EventSetting.PlatformName" readonly="readonly" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-4 xing">活动名称</label>
+                                <div class="col-md-8">
+                                    <input type="text" name="EventName" class="form-control input-medium" placeholder="请输入活动名称" v-model="EventSetting.EventName" value="" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4 xing">开始时间</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control " style="width:180px" name="StartTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString(" yyyy-MM-01 HH:mm")" v-model="EventSetting.StartTimeText">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4">结束时间</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control " style="width:180px" name="EndTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false })" placeholder="结束时间" value="" v-model="EventSetting.EndTimeText">
+                                </div>
+                                <input type="hidden" name="Memo" class="form-control input-medium" v-model="EventSetting.Memo" />
+                                <input type="hidden" name="Tips" class="form-control input-medium" v-model="EventSetting.Tips" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4 xing">状态</label>
+                                <div class="col-md-8">
+                                    <select class="form-control input-small" name="Status" v-model="EventSetting.Status">
+                                        <option value="1">启用</option>
+                                        <option value="0">已关闭</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn dark">储存</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--End Edit Modal-->
+</div>
+
+@section initScripts{
+    <script>
+        $(function () {
+
+            var vApp = new Vue({
+                el: '#vApp',
+                data: {
+                    tableList: {},
+                    EventSetting: {}
+                },
+                methods: {
+                    ToCash: function (val) {
+                        return ToCash(val);
+                    },
+                    getEventList: function () {
+                        $.get('/Activity/GetEventList',
+                            {
+                                '_r': Math.random(),
+                                beginTime: $("#beginTime_Search").val(),
+                                endTime: $("#endTime_Search").val(),
+                                status: $("#status_Search").val(),
+                                eventName: $("#eventName_Search").val(),                                
+                                platformid: $("#platformid").val()
+
+                            }, function (data) {
+                                if (data instanceof Array) {
+                                    vApp.tableList = data;
+                                }
+                                else {
+                                    vApp.tableList = {};
+                                }
+                            });
+                    },
+                    deleteEvent: function (ID) {
+                        const status = -1;
+
+                        var option = {
+                            isAjax: true,
+                            method: 'post',
+                            data: {
+                                ID: ID
+                            },
+                            isReload: false,
+                            callback: function () {
+                                vApp.getEventList();
+                            }
+                        }
+
+                        swDelConfirmUrl('DeleteEvent', '确定要删除活动么？若删除部分活动并再次重建，用户将能重新领取优惠 (e.g. 七日登入活动)', option);
+                    },
+                    show_add: function () {
+                        $("#form_Add")[0].reset();
+                    },
+                    show_edit: function (rowData) {
+                        console.log(rowData.Memo);
+                        console.log(rowData.Tips);
+                        vApp.EventSettin = {};
+                        var giftCash = vApp.ToCash(rowData.GiftCash);
+                        
+                        vApp.EventSetting = rowData;
+                        vApp.EventSetting.strGiftCash = giftCash;
+                    }
+                }
+            });
+
+            $("#form_Add").validate({
+                rules: {
+                    EventType: {
+                        required: true
+                    },
+                    EventName: {
+                        required: true,
+                        maxlength: 32
+                    },
+                    StartTime: {
+                        required: true
+                    },
+                    EndTime: {
+                        required: true
+                    },
+                    GiftCash: {
+                        required: true,
+                        number: true
+                    },
+                    Status: {
+                        required: true
+                    }
+                },
+                messages: {
+                    GiftCash: {
+                        number: '只能使用数字'
+                    }
+                }
+            });
+
+            $("#form_Edit").validate({
+                rules: {
+                    EventID: {
+                        required: true
+                    },
+                    EventName: {
+                        required: true,
+                        maxlength: 32
+                    },
+                    StartTime: {
+                        required: true
+                    },
+                    EndTime: {
+                        required: true
+                    },
+                    GiftCash: {
+                        required: true,
+                        number: true
+                    },
+                    Status: {
+                        required: true
+                    }
+                },
+                messages: {
+                    GiftCash: {
+                        number: '只能使用数字'
+                    }
+                }
+            });
+
+            vApp.getEventList();
+            
+            $('#myTip').tooltip();            
+            $('#noticeTip').tooltip();
+
+            
+        });
+    </script>
+}

@@ -1,0 +1,172 @@
+﻿@model game.Entity.Agent.AgentApplyInfo
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>添加代理
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="addAgentForm" method="post" class="form-horizontal form-bordered">
+                    <div class="form-body">
+                        @Html.Partial("_PlatformSelect", true)
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">游戏账号ID</label>
+                            <div class="col-md-8">
+                                <input type="text" id="UserID" name="UserID" class="form-control input-medium" placeholder="请输入游戏用户ID" 
+                                       value="@(Model == null ? "" : Model.UserID.ToString())">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">名称</label>
+                            <div class="col-md-8">
+                                <input type="text" id="Name" name="Name" class="form-control input-medium" placeholder="请输入名称"
+                                       value="@(Model == null ? "" : Model.Name.ToString())">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">微信号</label>
+                            <div class="col-md-8">
+                                <input type="text" id="WXNo" name="WXNo" class="form-control input-medium" placeholder="请输入微信号"
+                                       value="@(Model == null ? "" : Model.WXNo.ToString())">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">QQ号</label>
+                            <div class="col-md-8">
+                                <input type="text" id="QQ" name="QQ" class="form-control input-medium" placeholder="请输入QQ号"
+                                       value="@(Model == null ? "" : Model.QQ.ToString())">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">分组</label>
+                            <div class="col-md-8">
+                                <input type="text" id="GroupName" name="GroupName" class="form-control input-medium" placeholder="请输入分组">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">是否在客户端显示</label>
+                            <div class="col-md-8">
+                                <div class="radio-list">
+                                    <label class="radio-inline">
+                                        <input type="radio" id="IsShow" name="IsShow" value="True" checked />是
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="IsShow" value="False"/>否
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">登录账号</label>
+                            <div class="col-md-8">
+                                <input type="text" id="LoginName" name="LoginName" class="form-control input-medium" placeholder="请输入登录账号">
+                            </div>
+                        </div>
+                        <div class="form-group last">
+                            <label class="control-label col-md-4 xing">登录密码</label>
+                            <div class="col-md-8">
+                                <input type="password" id="LoginPassword" name="LoginPassword" class="form-control input-medium" placeholder="请输入登录密码">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-4 col-md-8">
+                            @Html.OkWithRight()
+                            @Html.LinkWithRight(controller: "agentuser", value: "重置", action: "Add", href: "/agentuser/add")
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+@section initScripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $('#LoginName').blur(function () {
+                var loginName = $('#LoginName').val();
+                if (loginName) {
+                    $.getJSON('/AgentUser/CheckLoginNameIsUsed', { 'loginName': $.trim(loginName), '_r': Math.random() }, function (msg) {
+                        if (msg.success) {
+                            alert('登录账号已被使用');
+                        }
+                    });
+                }
+            });
+            $('#addAgentForm').validate({
+                rules: {
+                    UserID: {
+                        required: true,
+                        minlength: 1,
+                        maxlength: 16
+                    },
+                    Name: {
+                        required: true,
+                        maxlength: 16
+                    },
+                    WXNo: {
+                        required: true,
+                        maxlength: 20
+                    },
+                    QQ: {
+                        required: true,
+                        maxlength: 20
+                    },
+                    GroupName: {
+                        required: true,
+                        maxlength: 16
+                    },
+                    LoginName: {
+                        required: true,
+                        minlength: 1,
+                        maxlength: 16
+                    },
+                    LoginPassword: {
+                        required: true,
+                        minlength: 6,
+                        maxlength: 16
+                    }
+                },
+                messages: {
+                    UserID: {
+                        required: '游戏账号ID不能为空',
+                        minlength: '游戏账号ID长度不能低于1位',
+                        maxlength: '游戏账号ID长度不能超出16位'
+                    },
+                    Name: {
+                        required: '名称不能为空',
+                        maxlength: '名称长度不能超出10位'
+                    },
+                    WXNo: {
+                        required: '微信号不能为空',
+                        maxlength: '微信号长度不能超出20位'
+                    },
+                    QQ: {
+                        required: 'QQ号不能为空',
+                        maxlength: 'QQ号长度不能超出20位'
+                    },
+                    GroupName: {
+                        required: '分组不能为空',
+                        maxlength: '分组长度不能超出16位'
+                    },
+                    LoginName: {
+                        required: '登录账号不能为空',
+                        minlength: '登录账号长度至少为1位字符',
+                        maxlength: '登录账号长度不能超出16位字符'
+                    },
+                    LoginPassword: {
+                        required: '登录密码不能为空',
+                        minlength: '登录密码长度至少为6位字符',
+                        maxlength: '登录密码长度不能超出16位字符'
+                    }
+                }
+            });
+        });
+    </script>
+}

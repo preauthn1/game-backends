@@ -1,0 +1,140 @@
+game:
+  jlbpk:
+    id: 2001
+    name: 加勒比扑克
+    group: poker
+    room:
+      - port: 41101
+        serverid: 415
+        configs:
+          gameserver.dat: |
+            [gameserver]
+            gameid=2001				    //游戏ID
+            gamename=加勒比扑克		    //游戏名称
+            flag=1			     	    //显示名称,客户端可根据此名称将房间分类显示
+            minplayer=5                 //游戏最小人数
+            maxplayer=3                 //游戏最大人数
+            tablecount=100			    //桌子数
+            seatcount=3				    //椅子数
+            loginmoney=1000			    //进入游戏最小积分
+            scoremode=0					//0 即时写分 1退房间写分
+            maxuser=500					//最大人数
+            taxscale=5					//抽水比例
+            readywaittime=6				//举手超时时间,单位秒
+            reghallserverinterval=60	//注册广场时间间隔,单位秒
+            basescore=100				//底分
+            opttime=8					//可操作时间，单位秒
+            bet=10,20,30,50,		    //下注分数
+            retaction=5					//结算动画超时
+            fapaiaction=2				//发牌动画超时
+            betaction=2					//下注飞金币动画
+            compareaction=3				//比牌动画
+            pokertype=1					//1随机发牌 2 发牌器发牌
+            maxturn=5					//最多好多轮以后不会弃牌了，自动比牌
+            deallog=2					//牌局记录器类型0 不记录 ,1 文本, 2 db
+            checkturn=1					//多少轮以后可以看牌
+            maxgamecountsametable=0		//同一桌最大游戏次数
+            matchmakingtime=6           //未滿遊戲最小人數的等待時間
+            matchmakingnumber=1         //開始倒數時間的最低人數
+            radomnickname=1             //特殊名稱的開關 0 關閉 1 開啟
+            gametimeout=1000000000
+            kickoutmoney=100000000000			//達到此积分，強制退出房間
+            reversepokerorder=1         //發牌順序是否要改成逆時針 0 順時針 1 逆時針
+
+            [gamequeue]
+            gamematchwaitmintime=1		//撮合时间间隔范围小值,单位秒
+            gamematchwaitmaxtime=3		//撮合时间间隔范围大值,单位秒
+            againstsameip=0				//同IP不分配一起
+            againstlastgame=0			//最后一次游戏过的用户不分配一起
+            gameendaction=0				//游戏结束后动作,0 无动作 1 准备
+            queuetype=0 				//撮合类型 0 时间随机 1 固定人数 2输赢对战
+            queueusercount=1			//排队人数
+            queuetimeout=10				//排队人数超时
+            lessthanuser=10				//低於幾人不採用分桌機制
+
+            [robot]
+            enable=1									//是否开启机器人
+            logoninterval=30								//加载机器人时间间隔
+            minmneyamount=1000							    //机器人最小金币数
+            maxmoneyamount=6000						        //机器人最大金币数
+            queuecheckwaitspan=3,5							//配桌检查时间间隔
+            queueagainwaitspan=3,5							//继续配桌时间间隔
+            tablemaxusercount=3								//配桌时桌子上最大人数
+            tableminusercount=1								//配桌时桌子上最小人数
+            gameendleaveodds=1							    //游戏结束时离开游戏几率
+            autositwaitspan=1,3							    //主动入座时间间隔
+            gameactionwaitspan=1,2							//游戏动作响应时间间隔
+            gamereadywaitspan=1,5							//游戏准备相应时间间隔
+            maxusergameendleaveodds=0						//人数达到上限时离开游戏几率
+            maxcardsrndlvl=1								//机器人换牌概率0-10
+            againstgameing=0                                //進入正在遊戲中的(觀戰) 0是 1否
+            matchtablemode=1                                //配桌方式, 0輪詢桌子每次放一個機器人 1輪詢桌子每次放N個機率機器人
+            tablematchrobotrate=1,0|2,40|3,33|4,27          //為機器人人數,20機率%.  桌子隨機配N個機器人.分母为固定值,所有数字总和需为100
+
+            Odds_FoldByNoAK=80                              // 機器人拿到高牌且無A、K時的棄牌機率
+            Odds_BetSide=10                                 // 機器人下邊注機率
+
+            [GameSetting]
+            Timeout_WaitingStart=6				        // 等待遊戲開始 timeout
+            Timeout_StartBettingAnimation=2 			// 開始下注動畫 timeout
+            Timeout_StartBetting=10 					// 開始下注 timeout
+            Timeout_StopBettingAnimation=2 			    // 停止下注動畫 timeout
+            Timeout_DealAnimation=3 					// 發牌 timeout
+            Timeout_DoubleBetting=6 				    // 玩家加注 timeout
+            Timeout_BetSideSettlement=5 				// 邊注結算 timeout
+            Timeout_BetBaseSettlement=5				    // 底注結算 timeout
+            Timeout_BetDoubleSettlement=5			    // 加注結算 timeout
+
+            ChipValue=100,1000,5000,10000,50000,100000,500000   // 籌碼面額
+            BetSide=100                     // 邊注金額
+            JackpotBase=1000000             // 獎池回補基準值
+
+            JP_RoyalFlush=100               // 特殊邊注 - 皇家同花順，此值為獎池的百分比比例
+            JP_StraightFlush=10             // 特殊邊注 - 同花順，此值為獎池的百分比比例
+            JP_FourOfKind=10000             // 特殊邊注 - 四條，中獎金額
+            JP_FullHouse=7500               // 特殊邊注 - 葫蘆，中獎金額
+            JP_Flush=5000                   // 特殊邊注 - 同花，中獎金額
+
+            Pay_RoyalFlush=100              // 賠注表 - 皇家同花順
+            Pay_StraightFlush=50            // 賠注表 - 同花順
+            Pay_FourOfKind=20               // 賠注表 - 四條
+            Pay_FullHouse=7                 // 賠注表 - 葫蘆
+            Pay_Flush=5                     // 賠注表 - 同花
+            Pay_Straight=4                  // 賠注表 - 順子
+            Pay_ThreeOfKind=3               // 賠注表 - 三條
+            Pay_TwoPairs=2                  // 賠注表 - 兩對
+            Pay_Other=1                     // 賠注表 - 其他
+
+            [SystemPool]
+            EnablePoolControl=1             // 是否開啟水線控制功能，0:關閉，1:開啟
+            WinLine=1500000             // 贏錢線
+            PlayerWeight=100            // 預設玩家權重
+            DealerWeight=100            // 預設莊家權重
+            CheatRate=100               // 換牌率
+            RoundLimit=5             // 判定局數
+
+            [WeightTable]
+            TableCount=4        // 權重表張數
+            [0]
+            Pattern=10,9,8,7,6,5,4,3,2,1                                // 牌型
+            Weight=1,14,240,840,1265,1925,4458,17540,372540,601177      // 各牌型機率
+            [1]
+            Pattern=10,9,8,7,6,5,4,3,2,1
+            Weight=1,14,240,1440,1965,3925,21128,47540,422570,501177
+            [2]
+            Pattern=10,9,8,7,6,5,4,3,2,1
+            Weight=1,14,240,1440,1965,3925,21128,97540,422570,451177
+            [3]
+            Pattern=10,9,8,7,6,5,4,3,2,1
+            Weight=1,14,240,1440,1965,3925,21128,97540,472570,401177
+
+            // [0]A 情況、[1]B 情況、[2]C 情況、[3]D 情況、
+            // 牌型：10［皇家同花順］，9［同花順］，8［四條］，7［葫蘆］，6［同花］，5［順子］，4［三條］，3［兩對］，2［一對］，1［高牌］
+          poker.dat: |
+            [userpoker]
+            0=0,14|1,13|2,12
+            15267215=3,14|3,13|3,12
+
+            // ID=花色,數字
+            // 花色 0:梅花,1:方塊,2:紅桃,3:黑桃,4:其他
+            // 數字 1~13 A:14

@@ -1,0 +1,18 @@
+﻿@using KCKJ.Core.AdminSys.WebUI
+<form method="post">
+    <table width="800" cellpadding="2" cellspacing="2">
+        <tr>
+            <td align="right">角色名称:</td>
+            <td>
+                <input type="text" name="roleName" class="easyui-textbox" style="width:300px" value="" data-options="required:true,missingMessage:'角色名称不能为空'" />
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                @Html.OkWithRight()
+                @Html.Back(@Url.Action("List"))
+            </td>
+        </tr>
+    </table>
+</form>

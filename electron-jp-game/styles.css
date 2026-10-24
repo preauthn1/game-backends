@@ -1,0 +1,70 @@
+/* styles.css */
+
+/* Add styles here to customize the appearance of your app */
+
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+
+.webviewPanel {
+  display: block;   /* iframes are inline by default */
+  border: none;     /* Reset default border */
+  height: 100vh;     /* Viewport-relative units */
+  width: 100vw;
+  background: #000;
+}
+
+
+.webviewPanel webview {  
+  height: 100%;     /* Viewport-relative units */
+  width: 100%;
+}
+
+
+.loading-overlay
+{
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+}
+
+.loading-img
+{    
+  z-index: 999;
+  margin-top: 25%;
+}
+
+
+.fixVersion
+{
+  display: none;
+  position: fixed;
+  bottom: 5px;
+  right: 25px;
+  background: #000;
+  color: #FFF;
+  padding: 3px 20px;
+  border: solid 1px#837d5e;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+
+
+/*   
+  div{
+      background: #CCC;
+      height: 500px;
+  } */
+/* 
+  div webview {
+    width: 50px;
+    height: 800px;
+}
+    */

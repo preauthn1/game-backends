@@ -1,0 +1,18 @@
+﻿GRANT CONNECT TO [GameUser];
+
+
+GO
+GRANT CONNECT TO [testuser];
+
+
+GO
+GRANT CONNECT TO [lisa];
+
+
+GO
+GRANT CONNECT TO [xbuser];
+
+
+GO
+GRANT VIEW DEFINITION TO [xbuser];
+

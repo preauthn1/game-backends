@@ -1,0 +1,483 @@
+package dhzw
+
+import (
+	"strconv"
+	"testing"
+	"time"
+
+	"example.invalid/golang/protobuf/proto"
+	"example.invalid/ServerTeam/Servers/pkg/conf"
+	"example.invalid/ServerTeam/Servers/pkg/config"
+	"example.invalid/ServerTeam/Servers/pkg/event"
+	"example.invalid/ServerTeam/Servers/pkg/fixtures"
+	"example.invalid/ServerTeam/Servers/pkg/gamelogic"
+	"example.invalid/ServerTeam/Servers/pkg/msg"
+	"example.invalid/ServerTeam/Servers/pkg/netproto"
+	"example.invalid/ServerTeam/Servers/pkg/roomserver"
+	"example.invalid/ServerTeam/Servers/pkg/rpcmsg"
+	"example.invalid/ServerTeam/Servers/pkg/slot/slot_test"
+)
+
+func TestNewLogic(t *testing.T) {
+
+	conf.CLogLevel = 3
+	conf.TimerFastMode = 1000 //40
+	conf.TestMode = true
+
+	roomserver.GameLogicCreator = func(t *gamelogic.Table, tfManager *event.TimerFuncManager, cfgs *config.ConfigGroup) gamelogic.GameLogic {
+		return NewLogic(t, tfManager, cfgs)
+	}
+
+	grs := fixtures.NewTestGameRoomServerWithConfig(cfg)
+
+	logic := grs.GameLogicManager.GetGameLogic(0).(*Logic)
+
+	slot_test.PrintLogic(t, logic.SlotLogicBase)
+}
+
+func TestLogic_UserEnter(t *testing.T) {
+
+	roomserver.GameLogicCreator = func(t *gamelogic.Table, tfManager *event.TimerFuncManager, cfgs *config.ConfigGroup) gamelogic.GameLogic {
+		return NewLogic(t, tfManager, cfgs)
+	}
+
+	grs := fixtures.NewTestGameRoomServerWithConfig(cfg)
+
+	logic := grs.GameLogicManager.GetGameLogic(0).(*Logic)
+
+	user := fixtures.GetGameUser()[0]
+	user.Score = 10000
+	user.UserType = gamelogic.UserType_Normal
+
+	logic.SendMessgeFunc = func(userID int32, m *msg.Message) {
+
+		slot_test.PrintSendMessgeFunc(t, userID, m)
+
+		// printSendMessgeFunc(t, userID, m)
+	}
+
+	logic.SendRPCMessageFunc = func(safe bool, m *msg.Message) {
+		userEnter(logic, user, t, safe, m)
+	}
+
+	user.UserState.OnUserQueue(user, grs.Room)
+	logic.UserEnter(user, logic.GetTable().TableNo, logic.GetTable().GetFreeSeat().SeatNo)
+	logic.UserReady(user)
+
+	time.Sleep(100 * time.Millisecond)
+}
+
+func TestLogic_Spin_Normal(t *testing.T) {
+	conf.CLogLevel = 0
+	conf.TimerFastMode = 1000 //40
+	conf.TestMode = true
+
+	roomserver.GameLogicCreator = func(t *gamelogic.Table, tfManager *event.TimerFuncManager, cfgs *config.ConfigGroup) gamelogic.GameLogic {
+		return NewLogic(t, tfManager, cfgs)
+	}
+
+	grs := fixtures.NewTestGameRoomServerWithConfig(cfg)
+
+	logic := grs.GameLogicManager.GetGameLogic(0).(*Logic)
+
+	user := fixtures.GetGameUser()[0]
+	user.Score = 10000
+	user.UserType = gamelogic.UserType_Normal
+
+	logic.SendMessgeFunc = func(userID int32, m *msg.Message) {}
+	logic.SendRPCMessageFunc = func(safe bool, m *msg.Message) {
+		userEnter(logic, user, t, safe, m)
+	}
+
+	user.UserState.OnUserQueue(user, grs.Room)
+	logic.UserEnter(user, logic.GetTable().TableNo, logic.GetTable().GetFreeSeat().SeatNo)
+	logic.UserReady(user)
+
+	time.Sleep(100 * time.Millisecond)
+
+	t.Run("Random Rate 28", func(tt *testing.T) {
+
+		logic.SendMessgeFunc = func(userID int32, m *msg.Message) {
+			slot_test.PrintSendMessgeFunc(tt, userID, m)
+
+			printSendMessgeFunc(tt, userID, m)
+		}
+
+		_m := new(msg.Message)
+		_m.BClassID = int32(netproto.MessageBClassID_Game)
+		_m.SClassID = int32(netproto.Slot_GameMessageClassID_Slot_ActionSpinID)
+
+		m := new(netproto.Slot_MSG_Spin)
+		m.Money = proto.Int64(10)
+		m.Rate = proto.Int32(28)
+		b, _ := proto.Marshal(m)
+
+		_m.MsgData = b
+
+		logic.GameMessage(logic.GameUser, _m)
+
+		time.Sleep(100 * time.Millisecond)
+	})
+
+	t.Run("Random Rate 38", func(tt *testing.T) {
+
+		logic.SendMessgeFunc = func(userID int32, m *msg.Message) {
+			slot_test.PrintSendMessgeFunc(tt, userID, m)
+
+			printSendMessgeFunc(tt, userID, m)
+		}
+
+		_m := new(msg.Message)
+		_m.BClassID = int32(netproto.MessageBClassID_Game)
+		_m.SClassID = int32(netproto.Slot_GameMessageClassID_Slot_ActionSpinID)
+
+		m := new(netproto.Slot_MSG_Spin)
+		m.Money = proto.Int64(10)
+		m.Rate = proto.Int32(38)
+		b, _ := proto.Marshal(m)
+
+		_m.MsgData = b
+
+		logic.GameMessage(logic.GameUser, _m)
+
+		time.Sleep(100 * time.Millisecond)
+	})
+
+	t.Run("Random Rate 58", func(tt *testing.T) {
+
+		logic.SendMessgeFunc = func(userID int32, m *msg.Message) {
+			slot_test.PrintSendMessgeFunc(tt, userID, m)
+
+			printSendMessgeFunc(tt, userID, m)
+		}
+
+		_m := new(msg.Message)
+		_m.BClassID = int32(netproto.MessageBClassID_Game)
+		_m.SClassID = int32(netproto.Slot_GameMessageClassID_Slot_ActionSpinID)
+
+		m := new(netproto.Slot_MSG_Spin)
+		m.Money = proto.Int64(10)
+		m.Rate = proto.Int32(58)
+		b, _ := proto.Marshal(m)
+
+		_m.MsgData = b
+
+		logic.GameMessage(logic.GameUser, _m)
+
+		time.Sleep(100 * time.Millisecond)
+	})
+
+	t.Run("Random Rate 88", func(tt *testing.T) {
+
+		logic.SendMessgeFunc = func(userID int32, m *msg.Message) {
+			slot_test.PrintSendMessgeFunc(tt, userID, m)
+
+			printSendMessgeFunc(tt, userID, m)
+		}
+
+		_m := new(msg.Message)
+		_m.BClassID = int32(netproto.MessageBClassID_Game)
+		_m.SClassID = int32(netproto.Slot_GameMessageClassID_Slot_ActionSpinID)
+
+		m := new(netproto.Slot_MSG_Spin)
+		m.Money = proto.Int64(10)
+		m.Rate = proto.Int32(88)
+		b, _ := proto.Marshal(m)
+
+		_m.MsgData = b
+
+		logic.GameMessage(logic.GameUser, _m)
+
+		time.Sleep(100 * time.Millisecond)
+	})
+}
+
+func TestLogic_Spin_88(t *testing.T) {
+	conf.CLogLevel = 0
+	conf.TimerFastMode = 1000 //40
+	conf.TestMode = true
+
+	roomserver.GameLogicCreator = func(t *gamelogic.Table, tfManager *event.TimerFuncManager, cfgs *config.ConfigGroup) gamelogic.GameLogic {
+		return NewLogic(t, tfManager, cfgs)
+	}
+
+	grs := fixtures.NewTestGameRoomServerWithConfig(cfg)
+
+	logic := grs.GameLogicManager.GetGameLogic(0).(*Logic)
+
+	user := fixtures.GetGameUser()[0]
+	user.Score = 10000
+	user.UserType = gamelogic.UserType_Normal
+
+	logic.SendMessgeFunc = func(userID int32, m *msg.Message) {}
+	logic.SendRPCMessageFunc = func(safe bool, m *msg.Message) {
+		userEnter(logic, user, t, safe, m)
+	}
+
+	user.UserState.OnUserQueue(user, grs.Room)
+	logic.UserEnter(user, logic.GetTable().TableNo, logic.GetTable().GetFreeSeat().SeatNo)
+	logic.UserReady(user)
+
+	time.Sleep(100 * time.Millisecond)
+
+	t.Run("Random Rate 88", func(tt *testing.T) {
+
+		logic.SendMessgeFunc = func(userID int32, m *msg.Message) {
+			slot_test.PrintSendMessgeFunc(tt, userID, m)
+
+			printSendMessgeFunc(tt, userID, m)
+		}
+
+		_m := new(msg.Message)
+		_m.BClassID = int32(netproto.MessageBClassID_Game)
+		_m.SClassID = int32(netproto.Slot_GameMessageClassID_Slot_ActionSpinID)
+
+		m := new(netproto.Slot_MSG_Spin)
+		m.Money = proto.Int64(10)
+		m.Rate = proto.Int32(88)
+		b, _ := proto.Marshal(m)
+
+		_m.MsgData = b
+
+		logic.GameMessage(logic.GameUser, _m)
+
+		time.Sleep(100 * time.Millisecond)
+	})
+}
+
+func userEnter(logic *Logic, user *gamelogic.GameUser, t *testing.T, safe bool, m *msg.Message) {
+	handlers1 := make(map[int32]func())
+
+	handlers1[int32(netproto.Slot_GameMessageClassID_Slot_FreeGameReadID)] = func() {
+
+		detail := new(netproto.Slot_MSG_FreeGameRecord)
+		example.invalid = new(netproto.Slot_FreeSpinDetail)
+		example.invalid.UserID = proto.Int32(user.UserID)
+		example.invalid.GameID = proto.Int32(logic.TableManager.Room.GameInfo.GameID)
+		f, _ := strconv.ParseFloat(logic.TableManager.Room.Flag, 64)
+		example.invalid.FlagID = proto.Int32(int32(f))
+		example.invalid.UserBet = proto.Int64(0)
+		example.invalid.FreeSpinGroup = proto.Int32(0)
+		example.invalid.Times = proto.Int32(0)
+		example.invalid.ChooseRate = proto.Int32(0)
+		example.invalid.WinMoney = proto.Int64(0)
+		example.invalid.OriginID = proto.Int64(0)
+
+		b, _ := proto.Marshal(detail)
+
+		_m := new(rpcmsg.RPCMessage)
+		_m.MsgData = b
+
+		mm := new(msg.Message)
+		mm.BClassID = int32(netproto.MessageBClassID_Game)
+		mm.SClassID = int32(netproto.Slot_GameMessageClassID_Slot_FreeGameReadRetID)
+		mm.MsgData = _m
+
+		logic.OnRecvRPCMessage(mm)
+	}
+
+	handlers1[int32(netproto.Slot_GameMessageClassID_Slot_JackpotNoLinkReadID)] = func() {
+		detail := new(netproto.Slot_MSG_JackpotRecord)
+
+		jp1 := new(netproto.Slot_JackpotData)
+		jp1.GameID = proto.Int32(logic.TableManager.Room.GameInfo.GameID)
+		f, _ := strconv.ParseFloat(logic.TableManager.Room.Flag, 64)
+		jp1.FlagID = proto.Int32(int32(f))
+		jp1.TableNo = proto.Int32(logic.TableManager.TableNo)
+		jp1.Contribution = proto.Int64(0)
+		jp1.TotalContribution = proto.Int64(0)
+		jp1.AwardTotal = proto.Int64(0)
+		jp1.Level = proto.Int32(1)
+
+		jp2 := new(netproto.Slot_JackpotData)
+		jp2.GameID = proto.Int32(logic.TableManager.Room.GameInfo.GameID)
+		f, _ = strconv.ParseFloat(logic.TableManager.Room.Flag, 64)
+		jp2.FlagID = proto.Int32(int32(f))
+		jp2.TableNo = proto.Int32(logic.TableManager.TableNo)
+		jp2.Contribution = proto.Int64(0)
+		jp2.TotalContribution = proto.Int64(0)
+		jp2.AwardTotal = proto.Int64(0)
+		jp2.Level = proto.Int32(2)
+
+		jp3 := new(netproto.Slot_JackpotData)
+		jp3.GameID = proto.Int32(logic.TableManager.Room.GameInfo.GameID)
+		f, _ = strconv.ParseFloat(logic.TableManager.Room.Flag, 64)
+		jp3.FlagID = proto.Int32(int32(f))
+		jp3.TableNo = proto.Int32(logic.TableManager.TableNo)
+		jp3.Contribution = proto.Int64(0)
+		jp3.TotalContribution = proto.Int64(0)
+		jp3.AwardTotal = proto.Int64(0)
+		jp3.Level = proto.Int32(3)
+
+		detail.Records = append(detail.Records, jp1)
+		detail.Records = append(detail.Records, jp2)
+		detail.Records = append(detail.Records, jp3)
+
+		b, _ := proto.Marshal(detail)
+
+		_m := new(rpcmsg.RPCMessage)
+		_m.MsgData = b
+
+		mm := new(msg.Message)
+		mm.BClassID = int32(netproto.MessageBClassID_Game)
+		mm.SClassID = int32(netproto.Slot_GameMessageClassID_Slot_JackpotNoLinkReadRetID)
+		mm.MsgData = _m
+
+		logic.OnRecvRPCMessage(mm)
+	}
+
+	handlers1[int32(netproto.Slot_GameMessageClassID_Slot_SelectGameReadID)] = func() {
+
+		detail := new(netproto.Slot_MSG_SelectGameRecord)
+		example.invalid = new(netproto.Slot_SelectGameInfo)
+		example.invalid.UserID = proto.Int32(user.UserID)
+		example.invalid.GameID = proto.Int32(logic.TableManager.Room.GameInfo.GameID)
+		f, _ := strconv.ParseFloat(logic.TableManager.Room.Flag, 64)
+		example.invalid.FlagID = proto.Int32(int32(f))
+		example.invalid.Times = proto.Int32(0)
+
+		b, _ := proto.Marshal(detail)
+
+		_m := new(rpcmsg.RPCMessage)
+		_m.MsgData = b
+
+		mm := new(msg.Message)
+		mm.BClassID = int32(netproto.MessageBClassID_Game)
+		mm.SClassID = int32(netproto.Slot_GameMessageClassID_Slot_SelectGameReadRetID)
+		mm.MsgData = _m
+
+		logic.OnRecvRPCMessage(mm)
+	}
+
+	handlers1[int32(netproto.Slot_GameMessageClassID_Slot_BonusGameReadID)] = func() {
+
+		f, _ := strconv.ParseFloat(logic.TableManager.Room.Flag, 64)
+
+		detail := new(netproto.Slot_MSG_BonusGameRecord)
+		detail.Detail = append(detail.Detail, &netproto.Slot_BonusGameDetail{
+			UserID:   proto.Int32(user.UserID),
+			GameID:   proto.Int32(logic.TableManager.Room.GameInfo.GameID),
+			FlagID:   proto.Int32(int32(f)),
+			OriginID: proto.Int32(0),
+			TurnID:   proto.Int32(1),
+			Location: proto.Int32(0),
+			BetMoney: proto.Int32(10),
+			BetRate:  proto.Int32(8),
+			Data:     proto.String(""),
+		})
+
+		detail.Detail = append(detail.Detail, &netproto.Slot_BonusGameDetail{
+			UserID:   proto.Int32(user.UserID),
+			GameID:   proto.Int32(logic.TableManager.Room.GameInfo.GameID),
+			FlagID:   proto.Int32(int32(f)),
+			OriginID: proto.Int32(0),
+			TurnID:   proto.Int32(2),
+			Location: proto.Int32(0),
+			BetMoney: proto.Int32(10),
+			BetRate:  proto.Int32(8),
+			Data:     proto.String(""),
+		})
+
+		detail.Detail = append(detail.Detail, &netproto.Slot_BonusGameDetail{
+			UserID:   proto.Int32(user.UserID),
+			GameID:   proto.Int32(logic.TableManager.Room.GameInfo.GameID),
+			FlagID:   proto.Int32(int32(f)),
+			OriginID: proto.Int32(0),
+			TurnID:   proto.Int32(3),
+			Location: proto.Int32(0),
+			BetMoney: proto.Int32(10),
+			BetRate:  proto.Int32(8),
+			Data:     proto.String(""),
+		})
+
+		detail.Detail = append(detail.Detail, &netproto.Slot_BonusGameDetail{
+			UserID:   proto.Int32(user.UserID),
+			GameID:   proto.Int32(logic.TableManager.Room.GameInfo.GameID),
+			FlagID:   proto.Int32(int32(f)),
+			OriginID: proto.Int32(0),
+			TurnID:   proto.Int32(4),
+			Location: proto.Int32(0),
+			BetMoney: proto.Int32(10),
+			BetRate:  proto.Int32(8),
+			Data:     proto.String(""),
+		})
+
+		detail.Detail = append(detail.Detail, &netproto.Slot_BonusGameDetail{
+			UserID:   proto.Int32(user.UserID),
+			GameID:   proto.Int32(logic.TableManager.Room.GameInfo.GameID),
+			FlagID:   proto.Int32(int32(f)),
+			OriginID: proto.Int32(0),
+			TurnID:   proto.Int32(5),
+			Location: proto.Int32(0),
+			BetMoney: proto.Int32(10),
+			BetRate:  proto.Int32(8),
+			Data:     proto.String(""),
+		})
+
+		b, _ := proto.Marshal(detail)
+
+		_m := new(rpcmsg.RPCMessage)
+		_m.MsgData = b
+
+		mm := new(msg.Message)
+		mm.BClassID = int32(netproto.MessageBClassID_Game)
+		mm.SClassID = int32(netproto.Slot_GameMessageClassID_Slot_BonusGameReadRetID)
+		mm.MsgData = _m
+
+		logic.OnRecvRPCMessage(mm)
+	}
+
+	handlers1[int32(netproto.Slot_GameMessageClassID_Slot_DeferredAwardReadID)] = func() {
+
+		f, _ := strconv.ParseFloat(logic.TableManager.Room.Flag, 64)
+
+		detail := new(netproto.Slot_MSG_DeferredAwardRecord)
+		detail.UserID = proto.Int32(user.UserID)
+		detail.GameID = proto.Int32(logic.TableManager.Room.GameInfo.GameID)
+		detail.FlagID = proto.Int32(int32(f))
+
+		// detail.Records = append(detail.Records, &netproto.Slot_DeferredAward{
+		// 	OriginID:  proto.Int32(412),
+		// 	AwardType: proto.String(string(slot.GameModeJackpotGame)),
+		// 	Data:      proto.String("{\"RuleID\":413,\"BetMoney\":10,\"BetRate\":28,\"GameResultManager\":{\"GameResult\":[[{\"groupId\":805,\"reelNum\":1,\"symbol\":\"p1\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":1,\"symbol\":\"p1\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":1,\"symbol\":\"p1\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":1,\"symbol\":\"p1\",\"proportion\":1,\"order\":4}],[{\"groupId\":805,\"reelNum\":2,\"symbol\":\"p2\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":2,\"symbol\":\"p2\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":2,\"symbol\":\"p2\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":2,\"symbol\":\"p2\",\"proportion\":1,\"order\":4}],[{\"groupId\":805,\"reelNum\":3,\"symbol\":\"p3\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":3,\"symbol\":\"p3\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":3,\"symbol\":\"p3\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":3,\"symbol\":\"p3\",\"proportion\":1,\"order\":4}],[{\"groupId\":805,\"reelNum\":4,\"symbol\":\"p4\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":4,\"symbol\":\"p4\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":4,\"symbol\":\"p4\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":4,\"symbol\":\"p4\",\"proportion\":1,\"order\":4}],[{\"groupId\":805,\"reelNum\":5,\"symbol\":\"p5\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":5,\"symbol\":\"p5\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":5,\"symbol\":\"p5\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":5,\"symbol\":\"p5\",\"proportion\":1,\"order\":4}]],\"MultiSymbol\":{},\"Reel\":5,\"Row\":4,\"SymbolGroupID\":805,\"BackGroundGroupID\":0,\"BackgroundResult\":{\"Reel\":5,\"Row\":4,\"Distributions\":[{\"groupId\":801,\"reelNum\":5,\"bgEnum\":\"bg0\",\"proportion\":1},{\"groupId\":801,\"reelNum\":4,\"bgEnum\":\"bg4\",\"proportion\":1},{\"groupId\":801,\"reelNum\":3,\"bgEnum\":\"bg4\",\"proportion\":1},{\"groupId\":801,\"reelNum\":2,\"bgEnum\":\"bg4\",\"proportion\":1},{\"groupId\":801,\"reelNum\":1,\"bgEnum\":\"bg4\",\"proportion\":1}]}},\"Data\":{}}"),
+		// })
+
+		// detail.Records = append(detail.Records, &netproto.Slot_DeferredAward{
+		// 	OriginID:  proto.Int32(412),
+		// 	AwardType: proto.String(string(slot.GameModeJackpotGame)),
+		// 	Data:      proto.String("{\"RuleID\":413,\"BetMoney\":10,\"BetRate\":28,\"GameResultManager\":{\"GameResult\":[[{\"groupId\":805,\"reelNum\":1,\"symbol\":\"p1\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":1,\"symbol\":\"p1\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":1,\"symbol\":\"p1\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":1,\"symbol\":\"p1\",\"proportion\":1,\"order\":4}],[{\"groupId\":805,\"reelNum\":2,\"symbol\":\"p2\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":2,\"symbol\":\"p2\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":2,\"symbol\":\"p2\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":2,\"symbol\":\"p2\",\"proportion\":1,\"order\":4}],[{\"groupId\":805,\"reelNum\":3,\"symbol\":\"p3\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":3,\"symbol\":\"p3\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":3,\"symbol\":\"p3\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":3,\"symbol\":\"p3\",\"proportion\":1,\"order\":4}],[{\"groupId\":805,\"reelNum\":4,\"symbol\":\"p4\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":4,\"symbol\":\"p4\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":4,\"symbol\":\"p4\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":4,\"symbol\":\"p4\",\"proportion\":1,\"order\":4}],[{\"groupId\":805,\"reelNum\":5,\"symbol\":\"p5\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":5,\"symbol\":\"p5\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":5,\"symbol\":\"p5\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":5,\"symbol\":\"p5\",\"proportion\":1,\"order\":4}]],\"MultiSymbol\":{},\"Reel\":5,\"Row\":4,\"SymbolGroupID\":805,\"BackGroundGroupID\":0,\"BackgroundResult\":{\"Reel\":5,\"Row\":4,\"Distributions\":[{\"groupId\":801,\"reelNum\":5,\"bgEnum\":\"bg0\",\"proportion\":1},{\"groupId\":801,\"reelNum\":4,\"bgEnum\":\"bg4\",\"proportion\":1},{\"groupId\":801,\"reelNum\":3,\"bgEnum\":\"bg4\",\"proportion\":1},{\"groupId\":801,\"reelNum\":2,\"bgEnum\":\"bg4\",\"proportion\":1},{\"groupId\":801,\"reelNum\":1,\"bgEnum\":\"bg4\",\"proportion\":1}]}},\"Data\":{}}"),
+		// })
+
+		// detail.Records = append(detail.Records, &netproto.Slot_DeferredAward{
+		// 	OriginID:  proto.Int32(412),
+		// 	AwardType: proto.String(string(slot.GameModeJackpotGame)),
+		// 	Data:      proto.String("{\"RuleID\":413,\"BetMoney\":10,\"BetRate\":28,\"GameResultManager\":{\"GameResult\":[[{\"groupId\":805,\"reelNum\":1,\"symbol\":\"p1\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":1,\"symbol\":\"p1\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":1,\"symbol\":\"p1\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":1,\"symbol\":\"p1\",\"proportion\":1,\"order\":4}],[{\"groupId\":805,\"reelNum\":2,\"symbol\":\"p2\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":2,\"symbol\":\"p2\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":2,\"symbol\":\"p2\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":2,\"symbol\":\"p2\",\"proportion\":1,\"order\":4}],[{\"groupId\":805,\"reelNum\":3,\"symbol\":\"p3\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":3,\"symbol\":\"p3\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":3,\"symbol\":\"p3\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":3,\"symbol\":\"p3\",\"proportion\":1,\"order\":4}],[{\"groupId\":805,\"reelNum\":4,\"symbol\":\"p4\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":4,\"symbol\":\"p4\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":4,\"symbol\":\"p4\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":4,\"symbol\":\"p4\",\"proportion\":1,\"order\":4}],[{\"groupId\":805,\"reelNum\":5,\"symbol\":\"p5\",\"proportion\":1,\"order\":1},{\"groupId\":805,\"reelNum\":5,\"symbol\":\"p5\",\"proportion\":1,\"order\":2},{\"groupId\":805,\"reelNum\":5,\"symbol\":\"p5\",\"proportion\":1,\"order\":3},{\"groupId\":805,\"reelNum\":5,\"symbol\":\"p5\",\"proportion\":1,\"order\":4}]],\"MultiSymbol\":{},\"Reel\":5,\"Row\":4,\"SymbolGroupID\":805,\"BackGroundGroupID\":0,\"BackgroundResult\":{\"Reel\":5,\"Row\":4,\"Distributions\":[{\"groupId\":801,\"reelNum\":5,\"bgEnum\":\"bg0\",\"proportion\":1},{\"groupId\":801,\"reelNum\":4,\"bgEnum\":\"bg4\",\"proportion\":1},{\"groupId\":801,\"reelNum\":3,\"bgEnum\":\"bg4\",\"proportion\":1},{\"groupId\":801,\"reelNum\":2,\"bgEnum\":\"bg4\",\"proportion\":1},{\"groupId\":801,\"reelNum\":1,\"bgEnum\":\"bg4\",\"proportion\":1}]}},\"Data\":{}}"),
+		// })
+
+		b, _ := proto.Marshal(detail)
+
+		_m := new(rpcmsg.RPCMessage)
+		_m.MsgData = b
+
+		mm := new(msg.Message)
+		mm.BClassID = int32(netproto.MessageBClassID_Game)
+		mm.SClassID = int32(netproto.Slot_GameMessageClassID_Slot_DeferredAwardReadRetID)
+		mm.MsgData = _m
+
+		logic.OnRecvRPCMessage(mm)
+	}
+
+	slot_test.PrintSendRPCMessgeFunc(t, safe, m, handlers1)
+
+	// printSendRPCMessgeFunc(t, safe, m, handlers2)
+}
+
+func printSendMessgeFunc(t *testing.T, userID int32, m *msg.Message) {}
+
+func printSendRPCMessgeFunc(t *testing.T, safe bool, m *msg.Message, handlers map[int32]func()) {
+	if handlers != nil {
+		if f, ok := handlers[m.SClassID]; ok {
+			f()
+		}
+	}
+}

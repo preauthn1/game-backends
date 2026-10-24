@@ -1,0 +1,680 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <script src="@Url.Content("~/Scripts/datatable_settiing.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .btn_link {
+        padding-left: 5px;
+        font-weight: bold;
+        text-decoration: underline;
+        color: #428bca;
+        cursor: pointer;
+    }
+
+    .btn_link_Red {
+        padding-left: 5px;
+        font-weight: bold;
+        text-decoration: underline;
+        color: red;
+        cursor: pointer;
+    }
+
+    .search-group {
+        display: flex;
+        align-items: center;
+        padding: 2%;
+    }
+
+        .search-group div {
+            padding: 1%;
+        }
+
+    .color-red {
+        color: red;
+    }
+
+    #WinPrizeLog_table_wrapper {
+        max-height: 500px;
+        overflow: auto;
+    }
+
+    .update_Red {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: red;
+    }
+
+    .update_Green {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: #58ae63;
+    }
+
+    .text_Center {
+        text-align: center;
+    }
+
+    .text_Right {
+        text-align: right;
+    }
+
+
+    .title_Color {
+        background: gainsboro;
+    }
+
+    .portlet-body .btn_link {
+        padding-left: 5px;
+        font-weight: bold;
+        text-decoration: underline;
+        color: #428bca;
+    }
+
+    .portlet-body .btn_link_Red {
+        padding-left: 5px;
+        font-weight: bold;
+        text-decoration: underline;
+        color: red;
+    }
+
+    .backgroundColor-red {
+        background-color: #f9baba;
+    }
+
+    .backgroundColor-green {
+        background-color: #9bc7a0;
+    }
+
+    .width6 {
+        width: 6%;
+    }
+
+    .width15 {
+        width: 15%;
+    }
+    .flex_contain {
+         display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .VIPUserAdd {
+        display: flex;
+        margin-bottom: 20px;
+    }
+
+    .winLabelHei {
+        color:cornflowerblue
+    }
+
+    .winLabelHung {
+        color:red
+    }
+</style>
+
+<div id="vApp">
+    <div class="row">
+
+
+        <div class="super_back_btn_row">
+            @Html.Back(Url.Action("TableList", new { serverID = ViewBag.ServerID }))
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-5" style="padding:0;">
+                <div class="portlet box grey" style="margin-top:20px;">
+                    <div class="portlet-title">
+                        <div class="caption">游戏信息</div>
+                    </div>
+                    <div class="portlet-body">
+                        <table class="table table-striped table-bordered table-hover" style="margin-bottom:0;">
+                            <thead>
+                                <tr>
+                                    <th colspan="6" class="text_center title_Color">游戏信息</th>
+                                </tr>
+                                <tr>
+                                    <th class="col-md-1"> 游戏状态：</th>
+                                    <td class="col-md-1"><span>{{tableStatus[tableDetail.Status]}}</span></td>
+                                    <th class="col-md-1"> 当日抽水：</th>
+                                    <td class="col-md-1">{{ToCash(info.TodayTax)}}</td>
+                                    <th class="col-md-1">奖池金额：</th>
+                                    <td class="col-md-1"><a class="btn_link_Red" href="#" v-on:click="showPoolLog()" data-toggle="modal" data-target="#editPool">{{ToCash(tableDetail.PoolCurrentAmount)}}</a></td>
+                                </tr>
+                                <tr>
+                                    <th class="text_center title_Color">监控人数</th>
+                                    <th class="text_center title_Color">今日人数</th>
+                                    <td>
+                                        <div v-on:click="showTodayRanking()" class="btn_link">今日输赢排行榜</div>
+                                    </td>
+                                    <th><a class="btn_link" href="#" v-on:click="showFreeMoneyLog()" data-toggle="modal" data-target="#editFreeMoney">指定放分金额</a></th>
+                                    <th>
+                                        <span style="font-weight:bold" v-if="tableDetail.FanFengTarget > tableDetail.FanFengComplete">放分进度：</span>
+                                        <span v-else></span>
+                                    </th>
+                                    <td>
+                                        <span v-if="tableDetail.FanFengTarget > tableDetail.FanFengComplete">{{ToCash(tableDetail.FanFengTarget)}} / {{ToCash(tableDetail.FanFengComplete)}}</span>
+                                        <span v-else></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="2" style="vertical-align: middle;" class="text_center">
+                                        <div class="flex_contain">
+                                            <div class="btn_link_Red" v-on:click="showVIPUser()">{{info.VipUser}}</div>
+                                        </div>
+                                    </td>
+                                    <td rowspan="2" style="vertical-align: middle;" class="text_center">
+                                        <div class="flex_contain">
+                                            <div class="btn_link_Red" v-on:click="showTodayUser()">{{info.TodayUser}}</div>
+                                        </div>
+                                    </td>
+                                    <th colspan="5" class="text_center title_Color">当前玩家下注金额</th>
+                                </tr>
+                                <tr>
+                                    <th class="text_center">红</th>
+                                    <th colspan="2" class="text_center">致命一击</th>
+                                    <th class="text_center">黑</th>
+                                </tr>
+                                <tr>
+                                    <th class="text_Center title_Color">机器人数</th>
+                                    <th class="text_Center title_Color">玩家人数</th>
+                                    <td class="text_center"><span>{{ToCash(sum.UserHung)}}</span></td>
+                                    <td colspan="2" class="text_center"><span>{{ToCash(sum.UserPower)}}</span></td>
+                                    <td class="text_center"><span>{{ToCash(sum.UserHei)}}</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text_center"><span>{{tableDetail.RobotCount}}</span></td>
+                                    <td class="text_center"><span>{{tableDetail.GameUserCount}}</span></td>
+                                    <td style="width:5%; vertical-align: middle;" class="text_center">百局胜率: <span>{{tableDetail.HungWinRate}}</span>%</td>
+                                    <td colspan="2" style="width:5%; vertical-align: middle;" class="text_center">百局胜率: <span>{{tableDetail.PowerWinRate}}</span>%</td>
+                                    <td style="width:5%; vertical-align: middle;" class="text_center">百局胜率: <span>{{tableDetail.HeiWinRate}}</span>%</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="6" class="text_center title_Color">庄家信息</th>
+                                </tr>
+                                <tr>
+                                    <th class="text_center">庄家类型</th>
+                                    <th class="text_center">庄家昵称</th>
+                                    <th class="text_center">庄家ID</th>
+                                    <th class="text_center">初始上庄金币</th>
+                                    <th class="text_center">当前剩余金币</th>
+                                    <th class="text_center">金币变化量</th>
+                                </tr>
+                                <tr>
+                                    <td class="text_center"><span>{{bankerType[tableDetail.ZhuangType]}}</span></td>
+                                    <td class="text_center"><span>{{tableDetail.ZhuangNickName}}</span></td>
+                                    <td class="text_center"><span>{{tableDetail.ZhuangUserID}}</span></td>
+                                    <td class="text_center"><span>{{ToCash(tableDetail.ZhuangInitMoneyAmount)}}</span></td>
+                                    <td class="text_center"><span>{{ToCash(tableDetail.ZhuangCurrentMoneyAmount)}}</span></td>
+                                    <td class="text_center"><span>{{ToCash(tableDetail.ZhuangCurrentMoneyAmount-tableDetail.ZhuangInitMoneyAmount)}}</span></td>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="portlet box grey">
+                    <div class="portlet-title">
+                        <div class="caption">玩家信息(上局前50下注用户)</div>
+                    </div>
+                    <div class="portlet-body" style="height:435px; overflow:auto;">
+                        <table class="table table-striped table-bordered table-hover" style="margin-bottom:0;">
+                            <thead>
+                                <tr>
+                                    <th>玩家ID</th>
+                                    <th>监控</th>
+                                    <th>携带金币</th>
+                                    <th>总充值</th>
+                                    <th>总兑换</th>
+                                    <th>累计输赢</th>
+                                    <th>百局胜率</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="user in tableDetail.LastGameUserBet">
+                                    <td>
+                                        <a target="_blank" :href="'/UserInfo/Search?userID=' + user.UserID + '&beginTime=@(DateTime.Now.ToString("yyyy-MM-01 HH:mm"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))'">{{user.UserID}}</a>
+                                    </td>
+                                    <td>
+                                        <span v-if="user.IsVIP"><a class="btn_link_Red" href="#" v-on:click="delVIPUser(user.UserID)">删除监控</a></span>
+                                        <span v-else="user.IsVIP"><a class="btn_link" href="#" v-on:click="addVIPUser(user.UserID)">增加监控</a></span>
+                                    </td>
+                                    <td>{{ToCash(user.CurrentMoney)}}</td>
+                                    <td>{{ToCash(user.SumCharge)}}</td>
+                                    <td>{{ToCash(user.SumConvert)}}</td>
+                                    <td>{{ToCash((user.SumCharge - user.SumConvert - user.CurrentMoney)* -1)}}</td>
+                                    <td><span>{{user.WinRate}}</span>%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-3">
+                <div class="portlet box grey" style="margin-top:20px;">
+                    <div class="portlet-title">
+                        <div class="caption">20局开奖记录</div>
+                    </div>
+                    <div class="portlet-body">
+                        <table class="table table-striped table-bordered table-hover" style="margin-bottom:0;">
+                            <thead>
+                                <tr>
+                                    <th class="text_center width6"></th>
+                                    <th colspan="3" class="text_center"><a target="_blank" href="/GameHHDZ/AssignReward?serverID=@ViewBag.ServerID&gameID=@ViewBag.GameID&tableNo=@ViewBag.TableNO" class="btn_link">指定20局开奖</a></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="data in assignRewardDetail">
+                                    <th class="text_center">{{data.Idx+1}}</th>
+                                    <td v-if="data.StrStatus" class="text_center">{{showAssign(data.Reward)}}</td>
+                                    <td v-if="data.StrStatus" class="text_center">{{data.StrStatus}}</td>
+                                    <td v-if="data.StrStatus" class="text_center" v-bind:class="{'winLabelHung': data.Description === 1, 'winLabelHei': data.Description === 2  }">{{showAssign(data.Description)}}</td>
+                                    <td v-else class="text_center" v-bind:class="{'winLabelHung': data.Description === 1, 'winLabelHei': data.Description === 2  }">
+                                        {{prizeType[data.Description]}}{{showFatal(data.Description, data.HeiZuHe, data.HungZuHe)}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text_center">
+                                        <a v-if="assignRate.MainStatus == 1" class="btn_link_Red" v-on:click="cancelAssignReward()" href="#">取消指定20局开奖</a>
+                                        <span v-else-if="assignRate.MainStatus == 0" class="color-red">已取消指定20局开奖</span>
+                                        <span v-else class="color-red">暂无指定20局开奖</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="portlet box grey" style="margin-top:20px;">
+                    <div class="portlet-title">
+                        <div class="caption">当前下注</div>
+                    </div>
+                    <div class="portlet-body" style="height:770px; overflow:auto;">
+                        <table class="table table-striped table-bordered table-hover" style="margin-bottom:0;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%;">
+                                        <a href="#" v-on:click="createWinPrizeLogTable()" data-toggle="modal" data-target="#showWinPrizeLog">指定开奖：</a>
+                                        <span style="color:red;">{{tableDetail.BetTime}}</span>
+                                    </th>
+                                    <th colspan="6">
+                                        <label>
+                                            <input type="radio" name="WinPrize" value="1" v-model="setWinPrizeInfo.blackOrRed" /> 紅
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="WinPrize" value="2" v-model="setWinPrizeInfo.blackOrRed" /> 黑
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" name="WinPrize" value="3" v-model="setWinPrizeInfo.check" />致命一击
+                                        </label>
+                                        <button type="button" class="btn btn-default" v-on:click="setWinPrize()">确定</button>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th><span style="color:red;" id="WinPrizeMsg"></span></th>
+                                    <th style="width: 5%;">玩家ID</th>
+                                    <th style="width: 7%;">红</th>
+                                    <th style="width: 7%;">致命一击</th>
+                                    <th style="width: 7%;">黑</th>
+                                    <th style="width:10%;">百局胜率</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="user in tableDetail.UserInfo">
+                                    <td>
+                                        <span class="color-red" v-if="user.IsVIP">(已监控)</span>
+                                        <span v-else="user.IsVIP">(未添加)</span>
+                                    </td>
+                                    <td>
+                                        <a target="_blank" :href="'/UserInfo/Search?userID=' + user.UserID + '&beginTime=@(DateTime.Now.ToString("yyyy-MM-01 HH:mm"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm"))'">{{user.UserID}}</a>
+                                    </td>
+                                    <td v-bind:class="{'color-red':user.BetInfoDragon > 0 }">{{ToCash(user.BetInfoHung)}}</td>
+                                    <td v-bind:class="{'color-red':user.BetInfoDraw > 0 }">{{ToCash(user.BetInfoPower)}}</td>
+                                    <td v-bind:class="{'color-red':user.BetInfoTiger > 0 }">{{ToCash(user.BetInfoHei)}}</td>
+                                    <td><span>{{user.WinRate}}</span>%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+        </div>
+    </div>
+ 
+    <!--监控名单-->
+    @Html.Partial("_VIPUser", false)
+    <!--今日人数-->
+    @Html.Partial("_todayUser", false)
+    <!--今日输赢排行榜-->
+    @Html.Partial("_todayRanking", false)
+    <!--编辑水池-->
+    @Html.Partial("_editPool", false)
+    <!--指定开奖操作查询-->
+    @Html.Partial("_winPrizeLog", false)
+    <!--编辑放分-->
+    @Html.Partial("_editFreeMoney", false)
+</div>
+
+
+@section initScripts{
+    <script>
+        var vApp = new Vue({
+            el: '#vApp',
+            data: {
+                serverID: '@ViewBag.ServerID',
+                tableNO: '@ViewBag.TableNO',
+                gameID: '@ViewBag.GameID',
+                showName: '@ViewBag.ShowName',
+                tableStatus: ['下注中', '开奖中', '开奖动画', '结算动画', '等待开始游戏'],
+                bankerType: ['系统', '机器人上庄', '玩家上庄'],
+                prizeType: ['', '紅', '黑', '致命一击'],
+                userType: ['机器人', '玩家'],
+                tableDetail: {},
+                sum: {},
+                info: {},
+                assignRewardDetail: {},
+                assignRate: {},
+                setWinPrizeInfo: {},
+                editPoolInfo: {},
+                editFreeMoneyInfo: {},
+
+                /*todayRanking*/
+                selectedStatus: '',
+                todayRanking_table: null,
+                todayRanking_interval: null,
+                /*todayUser*/
+                todayUser_table: null,
+                todayUser_interval: null,
+                /*VIPUser*/
+                NewUserID: null,
+                VIPUser_table: null,
+                VIPUser_interval: null,
+            },
+
+            watch: {
+                selectedStatus (val, oldVal) {
+                    vApp.todayRanking_table.DataTable().ajax.reload();
+                },
+                'tableDetail.BetTime' (val, oldVal) {
+                    if (val < 3 && val >= 0) this.getAssignRewardDetail();
+                }
+            },
+
+            methods: {
+                ToCash: function (val) {
+                    return ToCash(val);
+                },
+                getTableDetail: function () {
+                    $.get('/GameHHDZ/GetTableDetail', { 'serverID': vApp.serverID, 'tableNo': vApp.tableNO, '_r': Math.random() }, function (data) {
+                        if (data instanceof Object) {
+                            vApp.tableDetail = data.TableDetail;
+                            vApp.sum = data.Sum;
+                            example.invalid = example.invalid;
+
+                            if (vApp.tableDetail.BetTime <= 0) {
+                                $("#WinPrizeMsg").text("");
+                                vApp.setWinPrizeInfo = {};
+                                $('input[type="checkbox"][name="WinPrize"]').closest("span").removeClass('checked');
+                                $('input[type="radio"][name="WinPrize"]').closest("span").removeClass('checked');
+                            }
+                        }
+                        else {
+                            vApp.tableDetail = {};
+                            vApp.sum = {};
+                            example.invalid = {};
+                        }
+                    });
+                },
+                getAssignRewardDetail: function () {
+                    $.get('/GameHHDZ/GetAssignRewardDetail', { 'gameID': vApp.gameID, 'serverID': vApp.serverID, 'tableNo': vApp.tableNO, '_r': Math.random() }, function (data) {
+                        if (data instanceof Object) {
+                            const history = data.History
+                            vApp.assignRewardDetail = history.length > 0 ? history : data.AssignRewardDetail;
+                            vApp.assignRate = data.Rate;
+                        }
+                        else {
+                            App.assignRewardDetail = {};
+                            vApp.assignRate = {};
+                        }
+                    });
+                },
+                cancelAssignReward: function () {
+                    $.get('/GameCommon/CancelAssignReward', { 'gameID': vApp.gameID }, function (result) {
+                        alert(result.msg);
+                    });
+                },
+                showFatal: function (win, HeiZuHe, HungZuHe) {
+                    if (win === 1) {
+                        return HungZuHe != 10 && HungZuHe != 9 && HungZuHe != 0 ? ',致命一击' : ''
+                    } else {
+                        return HeiZuHe != 10 && HungZuHe != 9 && HungZuHe != 0 ? ',致命一击' : ''
+                    }
+                },
+                showAssign:function(data){
+                    if (!data) { return ''; }
+
+                    if (data.indexOf(',') == -1) {
+                        return vApp.prizeType[data];
+                    }
+
+                    var result = [];
+                    var datas = data.split(',');
+                    datas.forEach(function (item) {
+                        result.push(vApp.prizeType[item]);
+                    });
+                    return result.join(', ');
+                },
+
+                /*TodayRanking*/
+                showTodayRanking: function () {
+                    $('#todayRanking').modal('show');
+                    this.getRankingList()
+                    this.$set(this, 'todayRanking_interval', setInterval(function () {
+                        vApp.todayRanking_table.DataTable().ajax.reload();
+                    }, 15000))
+                },
+
+                /*TodayUser*/
+                showTodayUser: function () {
+                    $('#todayUser').modal('show');
+                    this.getUserList()
+                    this.$set(this, 'todayUser_interval', setInterval(function () {
+                        vApp.todayUser_table.DataTable().ajax.reload();
+                    }, 15000))
+                },
+
+                /*VIPUser*/
+                showVIPUser: function () {
+                    $('#VIPUser').modal('show');
+                    this.getVIPUser()
+                    this.$set(this, 'VIPUser_interval', setInterval(function () {
+                        vApp.VIPUser_table.DataTable().ajax.reload();
+                    }, 30000))
+                },
+
+                getRankingList: function () {
+                    const opt = datatable_opt.TodayRanking()
+                    this.$set(this, 'todayRanking_table', $("#TodayRanking_table").dataTable(opt))
+                },
+
+                createWinPrizeLogTable: function () {
+                    const opt = datatable_opt.WinPrizeLogTable()
+                    $("#WinPrizeLog_table").dataTable(opt)
+                },
+                editPool: function () {
+                    if (this.editPoolInfo.Amount) {
+                        $.get('/GameCommon/EditPoolAndFreeMoney', { 'serverID': vApp.serverID, 'tableNo': vApp.editPoolInfo.EditTableNo, 'poolAmount': vApp.editPoolInfo.Amount, 'type': 1 }, function (msg) {
+                            if (msg.result) {
+                                alert('恭喜您，修改成功！');
+                                $('#editPool').modal('hide');
+                            }
+                            else {
+                                alert('修改失败！');
+                            }
+                        });
+                    }
+                },
+                showPoolLog: function () {
+                    this.editPoolInfo = { EditTableNo: this.tableNO };
+                    const opt = datatable_opt.PoolLog()
+                    $("#PoolLog_table").dataTable(opt)
+                },
+                showFreeMoneyLog: function () {
+                    this.editFreeMoneyInfo = {};
+                    this.editFreeMoneyInfo = { EditTableNo: this.tableNO };
+                    const opt = datatable_opt.ChangeLog()
+                    $("#FreeMoney_table").dataTable(opt)
+                },
+                editFreeMoney: function () {
+                    if (this.editFreeMoneyInfo.Amount) {
+                        $.get('/GameCommon/EditPoolAndFreeMoney', { 'serverID': vApp.serverID, 'tableNo': vApp.editFreeMoneyInfo.EditTableNo, 'poolAmount': vApp.editFreeMoneyInfo.Amount, 'type': 2 }, function (msg) {
+                            if (msg.result) {
+                                alert('恭喜您，修改成功！');
+                                $('#editFreeMoney').modal('hide');
+                            }
+                            else {
+                                alert('修改失败！');
+                            }
+                        });
+                    }
+                },
+                setWinPrize: function () {
+
+                    if (vApp.setWinPrizeInfo.check && !vApp.setWinPrizeInfo.blackOrRed) {
+                        return;
+                    }
+
+                    var array = [];
+                    array.push(vApp.setWinPrizeInfo.blackOrRed);
+                    if (vApp.setWinPrizeInfo.check) {
+                        array.push(3);
+                    }
+
+                    $.ajax({
+                        type: "GET",
+                        data: {
+                            'serverID': vApp.serverID,
+                            'tableNo': vApp.tableNO,
+                            'winPrize': array
+                        },
+                        traditional: true,
+                        url: "/GameCommon/SetWinPrize",
+                        success: function (msg) {
+                            if (msg.result) {
+                                $("#WinPrizeMsg").text("*修改成功");
+                            }
+                            else {
+                                alert('修改失败！');
+                            }
+                        },
+                        error: function (err) {
+                            alert("操作失敗");
+                        }
+                    });
+                },
+
+                getRankingList: function () {
+                    const opt = datatable_opt.TodayRanking()
+                    this.$set(this, 'todayRanking_table', $("#TodayRanking_table").dataTable(opt))
+                },
+                getUserList: function () {
+                    const opt = datatable_opt.TodayUser()
+                    this.$set(this, 'todayUser_table', $("#TodayUser_table").dataTable(opt))
+                },
+                getVIPUser: function () {
+                    vApp.datas = [];
+                    const opt = datatable_opt.VIPUser()
+                    this.$set(this, 'VIPUser_table', $("#VIPUser_table").dataTable(opt))
+                },
+                addNewUserID: function () {
+                    if (this.NewUserID)
+                        $.get('/GameCommon/AddVIPUser', { 'userID': vApp.NewUserID }, function (result) {
+                            alert(result.msg);
+                            vApp.VIPUser_table.DataTable().ajax.reload();
+                        });
+                },
+                editStatus: function (rowIndex, status) {
+                    var data = vApp.datas[rowIndex];
+                    data.Status = status;
+                    data.AssignAmount = ToCash(data.AssignAmount);
+                    vApp.editVIPUser(data);
+                },
+                saveVIPUser: function (rowIndex) {
+                    const data = vApp.datas[rowIndex];
+                    const userID = data.UserID
+                    const amount = $(`#AssignAmount_${userID}`).val();
+                    const rate = $(`#AssignRate_${userID}`).val();
+
+                    data.AssignAmount = amount
+                    data.AssignRate = rate
+                    vApp.editVIPUser(data);
+                },
+                editVIPUser: function (data) {
+                    $.ajax({
+                        type: "POST",
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        traditional: true,
+                        url: "/GameCommon/EditVIPUser",
+                        success: function (result) {
+                            alert(result.msg);
+                            vApp.VIPUser_table.DataTable().ajax.reload();
+                        },
+                        error: function (err) {
+                            alert("操作失敗");
+                        }
+                    });
+                },
+
+                addVIPUser: function (userID) {
+                    $.get('/GameCommon/AddVIPUser', { 'userID': userID }, function (result) {
+                        alert(result.msg);
+                        vApp.restart()
+                    });
+                },
+                delVIPUser: function (userID) {
+                    $.get('/GameCommon/DelVIPUser', { 'userID': userID }, function (result) {
+                        alert(result.msg);
+                        vApp.restart()
+                    });
+                },
+                restart () {
+                    if (vApp.todayRanking_table !== null) vApp.todayRanking_table.DataTable().ajax.reload();
+                    if (vApp.todayUser_table !== null) vApp.todayUser_table.DataTable().ajax.reload();
+                    if (vApp.VIPUser_table !== null) vApp.VIPUser_table.DataTable().ajax.reload();
+                },
+            }
+        });
+
+        vApp.getTableDetail();
+        vApp.getAssignRewardDetail();
+        setInterval(function () {
+            vApp.getTableDetail();
+        }, 1000);
+
+        $(function () {
+            $('#todayRanking').on('hidden.bs.modal', function () {
+                window.clearInterval(vApp.todayRanking_interval)
+                vApp.todayRanking_table = null
+            });
+
+            $('#todayUser').on('hidden.bs.modal', function () {
+                window.clearInterval(vApp.todayUser_interval)
+                vApp.todayUser_table = null
+            });
+
+            $('#VIPUser').on('hidden.bs.modal', function () {
+                window.clearInterval(vApp.VIPUser_interval)
+                vApp.VIPUser_table = null
+            });
+        })
+    </script>
+}

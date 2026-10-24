@@ -1,0 +1,127 @@
+﻿@using FW.Core.Helper
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/jquery.table2excel.js")"></script>
+}
+
+<style>
+    .content {
+        padding: .5%;
+        font-size: 1.2em;
+        font-family: serif;
+    }
+</style>
+
+
+
+@{
+    string defaultBeginTimeText = ViewBag.defaultBeginTime;
+    string defaultEndTimeText = ViewBag.defaultEndTime;    
+    int? defaultSelectSourceType = ViewBag.defaultSourceType;
+
+    string selectSourceType = defaultSelectSourceType.HasValue ? defaultSelectSourceType.Value.ToString() : "";
+    List<SelectListItem> sourceTypeDropdowns = DataService.BankSourceType(selectSourceType);
+
+}
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_userPartial")
+                <div class="form-group">
+                    <label>保險箱流通类型</label>
+                    @Html.DropDownList("sourceType", sourceTypeDropdowns , new { @class = "form-control input-small", id = "sourceType" })
+                </div>
+                <div class="form-group">
+                    <label>IP地址</label>
+                    <input type="text" class="form-control input-small " id="ipAddress" name="ipAddress" placeholder="IP地址">
+                </div>
+                <div class="form-group">
+                    <label>创建时间</label>
+                    <input type="text" class="form-control " style="width:180px" id="beginTime" name="beginTime" value="@defaultBeginTimeText" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="endTime" name="endTime" value="@defaultEndTimeText" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                    <button type="button" class="btn btn-default" onclick="exportexcel()"> 汇出本页 </button>
+                </div>
+            </form>
+            <div class="content">
+                <table id="banklog_table" class="display" style="width:100%"></table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+
+        function createTable() {
+            const url = '/Money/GetBankLog'
+            const thead = [{ "sTitle": "所属平台", "mData": "Platform" },
+                            {
+                                "sTitle": "用户ID", "mData": "UserID", "width": "8%",
+                                "render": function (data, type, row) {
+                                    return `<a class="link" target="_blank" href="/UserInfo/Search?userId=${data}&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">${data}</a>`
+                                }
+                            },
+                            {
+                                "sTitle": "帐号", "mData": "LoginName", "width": "8%",
+                                "render": function (data, type, row) {
+                                    return `<a class="link" target="_blank" href="/UserInfo/Search?loginName=${data}&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">${data}</a>`
+                                }
+                            },
+                            { "sTitle": "用户等级", "mData": "GradeID", "className": "text_right" },
+                            { "sTitle": "创建时间", "mData": "CreateTime" },
+                            { "sTitle": "流通类型", "mData": "SourceName" },
+                            { "sTitle": "当前数量", "mData": "CurrentAmount" },
+                            { "sTitle": "更新的数量", "mData": "UpdateAmount" },
+                            { "sTitle": "更新后数量", "mData": "TotalAmount" },
+                            { "sTitle": "IP地址", "mData": "IPAddress" },
+                            { "sTitle": "说明", "mData": "Memo" }]
+
+            var loginName = $('#loginName').val()
+            var userID = $('#userID').val()
+            var sourceType = $('#sourceType').val()
+            var ipAddress = $('#ipAddress').val()
+            var beginTime = $('#beginTime').val()
+            var endTime = $('#endTime').val()
+
+            const data = {
+                loginName: loginName,
+                userID: userID,
+                sourceType: sourceType,
+                ipAddress: ipAddress,
+                beginTime: beginTime,
+                endTime: endTime
+            }
+
+            createDataTable('banklog', thead, url, data)
+        }
+
+        $(function () {
+            fillFormData('form_search')
+            createTable()
+        })
+
+        function exportexcel() {
+			$("#banklog_table").table2excel({
+				exclude: ".noExl",
+				name: "BankLog",
+				filename: "BankLog" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+				fileext: ".xls",
+				exclude_img: true,
+				exclude_links: true,
+				exclude_inputs: true,
+			});
+		}
+
+    </script>
+}

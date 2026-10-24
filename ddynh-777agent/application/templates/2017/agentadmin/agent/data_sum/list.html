@@ -1,0 +1,99 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="bjui-row col-4">
+                <label class="row-label">总余额:</label>
+                <div class="row-input">{{initPageData.agent.money}}</div>
+                <label class="row-label">总购入金额:</label>
+                <div class="row-input">{{initPageData.agent.total_recharge}}</div>
+               <!-- <label class="row-label">总兑换金额:</label>
+                <div class="row-input">{{initPageData.agent.total_exchange}}</div>
+                <label class="row-label">总玩家转入:</label>
+                <div class="row-input">{{initPageData.agent.total_turn_in}}</div>-->
+                <label class="row-label">总玩家充值:</label>
+                <div class="row-input">{{initPageData.agent.total_turn_out}}</div>
+            </div>
+        </div>
+    </div>
+    <!--<div class="row">
+        <div class="col-sm-12">
+            <div class="bjui-row col-4">
+                <label class="row-label">我的保险箱金额:</label>
+                <div class="row-input">{{initPageData.player.bankgold}}</div>
+                <label class="row-label">转账ID:</label><input type="text" name="obj.code" class="form-control" size="10" style="width: 100px;">
+                <label class="row-label">保险箱密码:</label><input type="text" name="obj.code" class="form-control" size="10" style="width: 100px;">
+                <label class="row-label">转账金额:</label><input type="text" name="obj.code" class="form-control" size="10" style="width: 100px;">
+                <button type="button" class="btn-default btn">确认转账</button>
+            </div>
+        </div>
+    </div>-->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="bjui-row col-4">
+                <label class="row-label">广告显示:{{initPageData.ip}}</label>
+                {% if initPageData.agent.clock==2 %}
+                <button type="button" class="btn-default btn">永久</button>
+                {% elseif initPageData.agent.clock==1 %}
+                <button type="button" class="btn-default btn" id="ad" data-clock="0">打卡下班</button>
+                {% else %}
+                <button type="button" class="btn-default btn" id="ad" data-clock="1">打卡上班</button>
+                {% endif %}
+                <label class="row-label">玩家ID:</label><input type="tel" id="playerId" class="form-control" size="10" style="width: 100px;">
+                <label class="row-label">转账金额:</label><input type="tel" id="money" class="form-control" size="10" style="width: 100px;">
+                <button type="button" class="btn-default btn" id="agentTurn">确认转账</button>
+            </div>
+        </div>
+    </div>
+{% autoescape false %}{{formSearch}}{% endautoescape %}
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                <th data-options="{name:'id',align:'center'}">编号</th>
+                <th data-options="{name:'day',align:'center'}">时间</th>
+                <th data-options="{name:'circulate',align:'center'}">流通金额</th>
+                <th data-options="{name:'recharge',align:'center'}">代理购入</th>
+                <!--<th data-options="{name:'exchange',align:'center'}">代理兑换</th>
+                <th data-options="{name:'back',align:'center'}">玩家转入</th>-->
+                <th data-options="{name:'sale',align:'center'}">玩家充值</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<script>
+    $("#ad").click(function () {
+        var clock=$(this).attr("data-clock");
+        BJUI.ajax('doajax', {
+            url: '{{agentApiRoute}}/Clock',
+            data: {
+                clock:clock
+            },
+            loadingmask: true,
+            okCallback: function(json, options) {
+                if(clock==1){
+                    $("#ad").html("打卡下班");
+                    $("#ad").attr("data-clock",0);
+                }else{
+                    $("#ad").html("打卡上班");
+                    $("#ad").attr("data-clock",1);
+                }
+            }
+        });
+    });
+    $("#agentTurn").click(function () {
+        var playerId=$("#playerId").val();
+        var money=$("#money").val();
+        BJUI.ajax('doajax', {
+            url: '{{agentApiRoute}}/agentTurn',
+            data: {
+                playerId:playerId,
+                money:money
+            },
+            loadingmask: true,
+            okCallback: function(json, options) {
+                $("#money").val("");
+            }
+        });
+    });
+</script>

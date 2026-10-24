@@ -1,0 +1,36 @@
+﻿@model List<FW.Core.AdminSys.Provider.Entity.Right>
+@{
+    Layout = null;
+    var topMenu = Model.FirstOrDefault();
+    var lastMenu = Model.LastOrDefault();
+    string rightName = "";
+    if (Model.Count >= 2)
+    {
+        rightName = Model.ElementAt(Model.Count - 2).RightName + " - " + lastMenu.RightName;
+    }
+    else
+    {
+        rightName = lastMenu.RightName; 
+    }
+}
+
+
+    $(function () {
+        //$(".page-sidebar-menu li").removeClass("active");
+        //$(".page-sidebar-menu li .selected").remove();
+      
+        //$("#user@example.invalid a").append('<span class="selected"></span>');
+        
+        @foreach(var r in Model)
+        {
+           @:$("#user@example.invalid").addClass("active");
+        }
+
+         addActionLog("@rightName",window.location.href);
+
+@if (!String.IsNullOrWhiteSpace(Request.QueryString["systempanel"]))
+{
+    @:$(".cus_topnav li").removeClass("active");
+    @:$(".cus_topnav #menu_0").addClass("active");
+}
+    })

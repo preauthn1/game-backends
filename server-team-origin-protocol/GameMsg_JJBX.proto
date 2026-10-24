@@ -1,0 +1,386 @@
+syntax = "proto2";
+
+package netproto;
+
+message JJBX_MSG_UserEnter {
+    required JJBX_GameUser User = 1;
+}
+
+message JJBX_MSG_UserLeave {
+    required JJBX_GameUser User = 1;
+}
+
+message JJBX_MSG_UserStateChange {
+    required JJBX_GameUser User = 1;
+}
+
+message JJBX_GameUser {
+    required int32 UserID = 1;
+    required string NickName = 2;
+    required int32 Sex = 3;
+    required int32 FaceID = 4;
+    required int64 Score = 5;
+    required int32 WinCount = 6;
+    required int32 LoseCount = 7;
+    required int32 DrawCount = 8;
+    required int32 StateValue = 9;
+    required int32 TableNo = 10;
+    required int32 SeatNo = 11;
+    optional int32 LastWinLose = 12;
+    optional int64 Coupon = 13;
+    optional int64 UpdateCoupon = 14;
+    optional int32 AvatarFrameID = 15;
+}
+
+// 遊戲排列帶
+message JJBX_MSG_ReelSetting {
+    repeated JJBX_GameReels GameReels = 1;  // 所有MainGameq排列帶
+}
+
+// [訊息] 設置相關 Server to Client -> JJBX_SettingID = 20001
+message JJBX_MSG_Setting {
+    optional int32 PayLineMode = 1;                   // 賠付線類型 (0.非全線, 1.全線)
+    optional int32 TotalPayLine = 2;                  // 總共多少賠付線
+    optional int64 MinCarryMoney = 3;                 // 最小攜帶金額
+    optional int32 RowCounts = 4;                     // 顯示結算的行數
+    repeated int32 BetMoneys = 5;                     // 下注金額
+    repeated int32 BetRates = 6;                      // 下注的倍率
+    repeated int32 BigWinStep = 7;                    // BigWin各階段演出條件
+    repeated JJBX_SymbolPayTable SymbolPayTable = 8;  // 符號倍率設定
+    repeated JJBX_ReelSetting ReelSetting = 9;        // 輪軸表演設置
+    repeated JJBX_FreeGameInfo FreeGames = 10;        // 共有多少免費遊戲
+    repeated JJBX_PayLine PayLines = 11;              // 所有賠線
+    repeated JJBX_UnitPrefix UnitPrefix = 12;         // 單位縮寫對照
+    repeated JJBX_Description Descriptions = 13;      // 文字描述
+    repeated JJBX_GoldBallInfo GoldBallSetting = 14;  // 金球倍率設定
+    repeated JJBX_JackpotInfo Jackpots = 15;          // 多組奬池資訊
+}
+
+// [訊息] 遊戲狀態 Server to Client -> JJBX_StatusID = 20002
+message JJBX_MSG_Status {
+    optional int32 State = 1;  // 遊戲狀態 0: 玩家可下注, 1: 開獎, 2: 開獎動畫, 3: 結算動畫, 4: 等待遊戲開始
+}
+
+// [訊息] 下注結果 Server to Client -> JJBX_BetStatusID = 20003
+message JJBX_MSG_BetStatus {
+    optional int32 Ret = 1;  // 下注狀態 0: 下注成功, -1: 用戶金額不足, -2: 下注的類型未找到, -3: 莊家不能下注, -4: 此類下注已達到上限, -5: 非下注階段, -6: 用戶金額小於下注限制
+    optional int64 Money = 2;  // 下注金額
+}
+
+// [訊息] 遊戲結果 (轉出內容，中獎項目，中獎金額) Server to Client -> JJBX_GameResultID = 20004
+message JJBX_MSG_GameResult {
+    optional int64 BetMoney = 1;                          // 下注金額
+    optional int64 WinMoney = 2;                          // 贏得獎金
+    optional int64 FinalMoney = 3;                        // 最終身上金額
+    optional int64 JackpotMoney = 4;                      // 贏得的Jackpot金額
+    repeated JJBX_ReelResult ReelResult = 5;              // 輪軸結果
+    repeated JJBX_PayGroup PayGroups = 6;                 // 中獎內容，賠付線結果(派彩線)
+    optional int64 FreeGameWinMoney = 7;                  // 免費遊戲累計所贏得的獎金
+    optional JJBX_FreeGameExtAward FreeGameExtAward = 8;  // 免費遊戲額外獎勵
+}
+
+// [訊息] 剩餘免費遊戲資訊 Server to Client -> JJBX_LeftFreeGameID = 20005
+message JJBX_MSG_LeftFreeGameData {
+    optional int32 Count = 1;                             // 剩餘次數
+    optional int64 BetMoney = 2;                          // 下注金額
+    optional int64 BetRate = 3;                           // 下注倍率符號
+    optional int32 ID = 4;                                // 免費遊戲ID
+    optional JJBX_FreeGameExtAward FreeGameExtAward = 5;  // 免費遊戲額外獎勵
+}
+
+// [訊息] 玩家Spin Client to Server -> JJBX_ActionSpinID = 21001
+message JJBX_MSG_Spin {
+    optional int64 Money = 1;  // 下注金額
+    optional int32 Rate = 2;   // 下注倍率
+}
+
+// [訊息] Jackpot奬池資訊 Server to Client -> JJBX_JackpotPoolRetID = 22004
+message JJBX_MSG_JackpotPool {
+    repeated JJBX_JackpotInfo Jackpots = 1;  // 多組奬池資訊
+}
+
+// [訊息] 查詢遊戲歷程 Client to Server -> JJBX_LoadHistoryID = 22001 || Server to DB -> JJBX_GameLogReadID = 30031
+message JJBX_MSG_GameLogRead {
+    optional int32 UserID = 1;      // 玩家ID
+    optional int32 GameID = 2;      // 遊戲ID
+    optional string StartTime = 3;  // 起始時間
+    optional string EndTime = 4;    // 結束時間
+    optional int32 PageIndex = 5;   // 第幾頁
+    optional int32 PageSize = 6;    // 一頁幾筆
+}
+
+// [訊息] 回傳遊戲歷程 || 新增遊戲歷程 Server to Client -> JJBX_LoadHistoryRetID = 22002 || Server to DB -> JJBX_GameLogReadRetID = 30032
+message JJBX_MSG_GameLogRecord {
+    optional int32 UserID = 1;       // 回傳玩家ID
+    optional int32 GameID = 2;       // 回傳遊戲ID
+    optional int32 PageCount = 3;    // 回傳全部筆數
+    repeated JJBX_GameLog Logs = 4;  // 歷程紀錄
+}
+
+// [訊息] Lightning準備資訊 Server to Client -> XMBX_LightningPrepareID = 11001
+message JJBX_MSG_LightningPrepare {
+    optional int32 LightningStep = 1;                 // 第N次Lightning
+    repeated JJBX_ReelSetting ReelSetting = 2;        // 動態輪軸
+    repeated JJBX_LightningLock LockSymbols = 3;      // 輪軸鎖格子
+    optional int32 Count = 4;                         // 剩餘次數
+    optional bool IsFreeGame = 5;                     // 是否免費遊戲贏得
+    repeated JJBX_ReelResult ReelResult = 6;          // 輪軸結果
+    repeated JJBX_LightningPayout PastPayGroups = 7;  // 過去的中獎內容，賠付線結果(派彩線)
+    optional int64 BetMoney = 8;                      // 下注金額
+    optional int64 BetRate = 9;                       // 下注倍率
+}
+
+// [訊息] Lightning結果 Server to Client -> XMBX_LightningResultID = 11002
+message JJBX_MSG_LightningResult {
+    optional int64 BetMoney = 1;                  // 下注金額
+    optional int64 WinMoney = 2;                  // 贏得獎金
+    optional int64 FinalMoney = 3;                // 最終身上金額
+    optional int64 JackpotMoney = 4;              // 贏得的Jackpot金額
+    repeated JJBX_ReelResult ReelResult = 5;      // 輪軸結果
+    repeated JJBX_LightningPayout PayGroups = 6;  // 中獎內容，賠付線結果(派彩線)
+    optional int64 FreeGameWinMoney = 7;          // 免費遊戲累計所贏得的獎金
+    optional int32 LightningStep = 8;             // 第N次Lightning
+    optional int32 Count = 9;                     // 剩餘次數
+}
+
+// [訊息] Lightning階段表演完成 Client to Server -> XMBX_ActionLightningSpinID = 11001
+message JJBX_MSG_LightningShow {
+    optional int32 LightningStep = 1;  // 第N次Lightning
+}
+
+// [訊息] 遊戲結果 (轉出內容，中獎項目，中獎金額) Server to Client -> JJBX_GameResultID = 20004
+message JJBX_MSG_StepGameResult {
+    required int64 BetMoney = 1;                  // 下注金額
+    required int64 WinMoney = 2;                  // 贏得獎金
+    required int64 FinalMoney = 3;                // 最終身上金額
+    repeated JJBX_StepGameResult SlotResult = 4;  // 輪軸結果
+}
+
+// [訊息] 玩家贏得 BonusGame 並取得BonusGame紀錄 Server to Client ->  JJBX_BonusGameID = 20009
+message JJBX_MSG_BonusGame {
+    repeated JJBX_BonusGameRecord Records = 1;  // 目前開獎順序 [{ID:1, Location:8, RewareValue: 10}, {ID:2, Location:5, RewareValue: 20}, {ID:3, Location:6, RewareValue: 10}]
+    required int32 Count = 2;                   // 總共可翻次數，中獎進入BonusGame次數
+    required int64 WinMoney = 3;                // 中獎金額
+    repeated int32 All = 4;                     // 所有選項內容共12比，包含Records內的資料 [10, 20, 10, 30, 10, 20, 10, 10, 20, 10, 10, 20]
+    optional int64 BetMoney = 5;                // 下注金額
+    optional int64 BetRate = 6;                 // 下注倍率
+}
+
+// [訊息] 玩家選則BonusGame Client to Server -> JJBX_PickBonusID = 22005, Server to Client -> JJBX_PickBonusRetID = 22006
+message JJBX_MSG_PickBonus {
+    required JJBX_BonusGameRecord Record = 1;  // 選擇內容
+}
+
+// [訊息] 玩家選擇哪種免費遊戲 Server to Client -> WLZB_ChooseGameID = 11001
+message JJBX_MSG_ChooseGame {
+    required JJBX_ChooseGameOption Option = 1;  // 選項
+}
+
+// [訊息] 通知可以選擇龍龍 Server to Client -> WLZB_GameOptionsID = 10001
+message JJBX_MSG_ChooseGameOptions {
+    required int32 Times = 1;                    // 選擇免費遊戲的剩餘次數
+    repeated JJBX_ChooseGameOption Options = 2;  // 選項
+    optional string Data = 3;                    // JSON string
+    repeated JJBX_ReelResult ReelResult = 4;     // 輪軸結果
+    optional int64 BetMoney = 5;                 // 下注金額
+    optional int64 BetRate = 6;                  // 下注倍率
+}
+
+// 選擇遊戲的選項
+message JJBX_ChooseGameOption {
+    optional int32 ID = 1;     // 對應ID
+    optional string Type = 2;  // 遊戲類型
+    optional string Data = 3;  // 附加資訊
+}
+
+// 輪軸表演設置
+message JJBX_ReelSetting {
+    optional int32 ReelID = 1;         // 輪軸編號
+    repeated JJBX_Symbol Symbols = 2;  // 該輪軸群組的符號
+}
+
+// 位置資訊
+message JJBX_ReelPosition {
+    optional int32 Reel = 1;  // 直的軸
+    optional int32 Row = 2;   // 橫的列
+}
+
+// 輪軸結果
+message JJBX_ReelResult {
+    optional JJBX_ReelPosition Position = 1;  // 輪軸位置
+    optional JJBX_Symbol Symbol = 2;          // 該輪軸群組的符號
+    optional bool Blink = 3;                  // 是否亮符號
+}
+
+// 符號
+message JJBX_Symbol {
+    optional int32 SymbolID = 1;              // 符號ID
+    optional string SymbolName = 2;           // 符號Name
+    optional JJBX_ReelPosition Position = 3;  // 輪軸位置
+}
+
+// 賠線資訊
+message JJBX_PayLine {
+    optional int32 PayLineID = 1;              // 賠線ID
+    repeated JJBX_ReelPosition Positions = 2;  // 賠線位置 [{Reel: 1, Row: 2},{Reel: 2, Row: 2},{Reel: 3, Row: 2},{Reel: 4, Row: 2},{Reel: 5, Row: 2}]
+}
+
+// 中獎內容，賠付線結果(派彩線)
+message JJBX_PayGroup {
+    optional JJBX_PayLine PayLines = 1;             // 中獎的賠線     [{Reel:1,Row:2},{Reel:2,Row:2},{Reel:3,Row:2}] , 給多少畫多少線
+    optional int64 WinMoney = 2;                    // 這條連線中獎金額
+    optional string LinkType = 3;                   // 連線方式. left: 由左至右連線，right: 由右至左連線
+    optional int32 Count = 4;                       // 連線符號數量
+    repeated JJBX_ReelPosition BlinkPositions = 5;  // 亮符號位置
+    optional int32 Way = 6;                         // 共有幾條連線
+    optional int32 Multi = 7;                       // 加乘倍數
+}
+
+// 符號賠率設定
+message JJBX_SymbolPayTable {
+    optional JJBX_Symbol Symbol = 1;  // Symbol
+    optional int32 Count = 2;         // 連續幾個Symbol
+    optional string Type = 3;         // 獎項類型。 chip: 賠倍率, jackpot: 中jackpot, pickgame: 中bonus game
+    optional int32 Payout = 4;        // 該項獎勵數量。 chip: 倍率, jackpot: 最大出獎金額, pickgame: 幾pick
+    optional string Title = 5;        // 符號在賠付表要顯示的標題
+    optional string Desc = 6;         // 符號在賠付表要顯示的說明
+}
+
+// 寫入歷程紀錄
+message JJBX_HistoryLogData {
+    optional int32 UserID = 1;          // 玩家ID
+    optional int32 GameID = 2;          // 遊戲ID
+    optional int32 ServerID = 3;        // ServerID
+    optional int64 CurrentAmount = 4;   // 原始分數
+    optional int64 BetMoney = 5;        // 押分
+    optional int64 WinMoney = 6;        // 贏分
+    optional int64 FinalScore = 7;      // 結算分數
+    optional int32 GameType = 8;        // 遊戲形式
+    optional int32 LogType = 9;         // 牌型紀錄種類
+    optional string GameData = 10;      // 牌型紀錄
+    optional int64 CurrentCoupon = 11;  // 原始Coupon
+    optional int64 BetCoupon = 12;      // 押Coupon
+    optional int64 FinalCoupon = 13;    // 結算Coupon
+}
+
+// 讀取歷程紀錄
+message JJBX_LoadHistoryData {
+    optional int32 UserID = 1;      // 玩家ID
+    optional int32 GameID = 2;      // 遊戲ID
+    optional string StartTime = 3;  // ServerID
+    optional string EndTime = 4;    // 原始分數
+    optional int32 PageIndex = 5;   // 第幾頁
+    optional int32 PageSize = 6;    // 一頁幾筆
+}
+
+// 歷程紀錄結果
+message JJBX_SendHistoryData {
+    optional int32 UserID = 1;                        // 回傳玩家ID
+    optional int32 GameID = 2;                        // 回傳遊戲ID
+    optional int32 PageCount = 3;                     // 回傳全部筆數
+    repeated JJBX_SendHistoryLog SendHistoryLog = 4;  //歷程紀錄
+}
+
+// 傳送歷程紀錄
+message JJBX_SendHistoryLog {
+    optional int32 RowNum = 1;       //流水號
+    optional string CreateTime = 2;  //訂單時間
+    optional int64 OrderID = 3;      //訂單編號
+    optional int64 BetMoney = 4;     //投注金額
+    optional int64 Profit = 5;       //盈利/輸贏(計算方式:結算分數-原始分數)
+}
+
+// 歷程紀錄
+message JJBX_GameLog {
+    optional int32 RowNum = 1;       // 流水號
+    optional string CreateTime = 2;  // 訂單時間
+    optional int64 OrderID = 3;      // 訂單編號
+    optional int64 BetMoney = 4;     // 投注金額
+    optional int64 Profit = 5;       // 盈利/輸贏(計算方式:結算分數-原始分數)
+}
+
+// 免費遊戲
+message JJBX_FreeGameInfo {
+    optional int32 ID = 1;                      // 免費遊戲ID
+    optional int32 Count = 2;                   // 總共可以有多少次
+    repeated JJBX_ReelSetting ReelSetting = 3;  // 動態輪軸
+}
+
+// Jackpot奬池資訊
+message JJBX_JackpotInfo {
+    optional int64 Money = 1;  // Jackpot最大獎金額
+    optional string Name = 2;  // Jackpot名稱 (Single / Grand / Major / Minor / Mini)
+    optional int32 ID = 3;     // JackpotID
+}
+
+// 單位名稱
+message JJBX_UnitPrefix {
+    optional string Name = 1;     // 單位名稱
+    optional int64 Multiple = 2;  // 多少倍
+}
+
+// 文字敘述
+message JJBX_Description {
+    optional string Name = 1;   // Key
+    optional string Desc = 2;   // Value
+    optional string Title = 3;  // Value
+}
+
+// 金球倍率設定
+message JJBX_GoldBallInfo {
+    optional string Symbol = 1;             // 符號
+    optional string Type = 2;               // 獎勵類型
+    optional int64 Value = 3;               // 獎勵內容, Jackpot: 給ID, Multiple: 給倍數
+    repeated string AccumulateSymbols = 4;  // Type: Accumulate
+}
+
+// Lightning 賠付資訊
+message JJBX_LightningPayout {
+    optional string Type = 1;                 // 獎項類型. chip: 賠倍率, chipXrate: 賠倍率, jackpot: 中jackpot
+    optional int64 WinMoney = 2;              // 贏得金額
+    optional JJBX_ReelPosition Position = 3;  // 中獎位置
+    optional string JackpotType = 4;          // jackpot類型
+    optional int32 SymbolID = 5;              // SymbolID
+}
+
+// Lightning 鎖軸資訊
+message JJBX_LightningLock {
+    optional int32 SymbolID = 1;              // 輪軸編號
+    optional JJBX_ReelPosition Position = 2;  // 輪軸鎖格子
+}
+
+// 阿拉丁遊戲結果 會附帶一組第一次轉完畫面，與拓展後畫面加結算，
+message JJBX_StepGameResult {
+    repeated JJBX_ReelResult InitResult = 1;      // 第一次轉完畫面
+    required bool IsRespin = 2;                   // 是否為重轉
+    required bool IsExpand = 3;                   // 是否表演拓展
+    repeated int32 ExpandReel = 4;                // 若有拓展，是第幾軸
+    optional string ExpandOrder = 5;              // 若有拓展，順序為 ASC: 上到下，DESC: 下到上
+    required JJBX_MSG_GameResult SlotResult = 6;  // 拓展後畫面與結算
+}
+
+// BonusGame 選擇位置紀錄 {ID: 1, Location: 0, Money: 100}
+message JJBX_BonusGameRecord {
+    required int32 ID = 1;           // 順序 1 開始，由小至大
+    required int32 Location = 2;     // 位置 0: 未翻過, [1-12]:位置
+    required int64 RewareValue = 3;  // 獎勵數量
+    optional int32 BonusID = 4;      // 此次翻牌的BonusID
+}
+
+// 免費遊戲額外獎勵
+message JJBX_FreeGameExtAward {
+    optional int32 TotalCount = 1;      // 累計贏取次數
+    optional int64 TotalWinMoney = 2;   // 累計贏取金額
+    optional int32 Count = 3;           // 本次贏取次數
+    optional int64 WinMoney = 4;        // 本次贏取金額
+    optional int64 EachCountMoney = 5;  // 單次金額
+    optional bool IsFinished = 6;       // 獎勵是否結算
+    repeated JJBX_Symbol Symbols = 7;   // 獎勵符號
+}
+
+// 排列帶資訊
+message JJBX_GameReels {
+    optional string Name = 1;                   // 排列帶名稱
+    optional int32 ID = 2;                      // MainGameID
+    repeated JJBX_ReelSetting ReelSetting = 3;  // 輪軸表演設置
+}

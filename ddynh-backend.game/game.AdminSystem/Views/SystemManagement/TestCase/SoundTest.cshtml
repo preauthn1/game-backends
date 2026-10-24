@@ -1,0 +1,33 @@
+﻿
+
+
+<div>
+
+
+    <div></div>
+    <button id="playSound">點我播放</button>
+
+</div>
+
+
+
+@section initScripts{
+
+    <script>
+
+        $(function () {
+
+
+            $("#playSound").click(function (){
+
+                var audio = new Audio('@Url.Content("~/Content/Audio/sound_withdrawal.m4a")');
+                audio.play();
+
+            });
+
+        })
+
+
+
+    </script>
+}

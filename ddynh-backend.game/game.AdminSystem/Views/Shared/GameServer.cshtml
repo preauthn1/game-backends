@@ -1,0 +1,39 @@
+﻿<div class="form-group">
+    <label>游戏</label>
+    @Html.DropDownList("gameID", DataService.Game(), new { @class = "form-control input-small", id = "gameID" })
+</div>
+<div class="form-group game-server">
+    <label>服务器</label>
+    <select id="serverID" name="serverID" class="form-control input-small" data-server='@Html.Raw(DataService.GameServer())'>
+        <option value="">所有服务器</option>
+    </select>
+</div>
+<script type="text/javascript">    
+
+    $(document).ready(function () {
+        var qs = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return (r[2]); return null;
+        };
+
+        $("#gameID").change(function () {
+            $("#serverID").html('<option value="">所有服务器</option>');
+            $("#serverID").val("");
+            var servers = JSON.parse($("#serverID").attr("data-server"));
+            var gameID = $("#gameID").val();
+            var html = '<option value="">所有服务器</option>';
+            for (var i = 0; i < servers.length; i++) {
+                if (servers[i].GameID == gameID) {
+                    html += '<option value="' + servers[i].ID + '">' + servers[i].Name + '</option>';
+                }
+            }
+            $("#serverID").html(html);
+        });
+
+        var gameid = qs("gameID");
+        var serverid = qs("serverID");
+        $("#gameID").val(gameid ? gameid : "").change();
+        $("#serverID").val(serverid ? serverid : "");
+    });
+</script>

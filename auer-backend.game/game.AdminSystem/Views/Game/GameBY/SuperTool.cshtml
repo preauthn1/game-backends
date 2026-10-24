@@ -1,0 +1,254 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .portlet-body .btn_link {
+        padding-left: 5px;
+        font-weight: bold;
+        text-decoration: underline;
+        color: #428bca;
+    }
+
+    .portlet-body .btn_link_Red {
+        padding-left: 5px;
+        font-weight: bold;
+        text-decoration: underline;
+        color: red;
+    }
+
+
+    .color-red {
+        color: red;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .superTool_search_contain {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        padding: 1%;
+        border: 1px solid #ddd;
+    }
+
+    .superTool_search_label {
+        padding: 0 1%;
+        font-size: 1.3em;
+        font-weight: 900;
+        white-space: nowrap;
+    }
+
+    .superTool_search_link {
+        font-weight: bold;
+        text-decoration: underline;
+        color: #428bca !important;
+    }
+</style>
+
+<div id="vApp">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-12" style="padding:0;">
+                <div class="portlet box grey" style="margin-top:20px;">
+                    <div class="portlet-title">
+                        <div class="caption">游戏信息</div>
+                    </div>
+                    <div class="portlet-body">
+                        <div>
+                            <div class="superTool_search_contain">
+                                <div class="superTool_search_label">房间</div>
+                                <div>
+                                    <select class="form-control input-medium color-red" value="" v-model="spaceID">
+                                        <option value="">全选</option>
+                                        <option value="1">初级场</option>
+                                        <option value="2">中级场</option>
+                                        <option value="3">高级场</option>
+                                        <option value="4">富豪场</option>
+                                    </select>
+                                </div>
+                                <div class="superTool_search_label">开关个人水池</div>
+                                <div v-for="(data, index) in fishPlayerPool" class="superTool_search_label">
+                                    <button type="button" class="btn btn-info" v-bind:class="{'btn-danger':data.Status === 0 }" v-on:click="changePlayerPool(data)">
+                                        <span class="glyphicon glyphicon-ok" v-bind:class="{'glyphicon-remove':data.Status === 0 }"></span> {{flagName[data.FlagID]}}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="superTool_search_contain">
+                                <a target="_blank" class="superTool_search_link superTool_search_label" :href="'/GameBY/VIPUser?gameID='+gameID">放分记录</a>
+                                <a target="_blank" class="superTool_search_link superTool_search_label" href="/GameBY/Ranking">捕鱼输赢排行榜</a>
+                                <a target="_blank" class="superTool_search_link superTool_search_label" href="/GameBY/SystemReward">系统放分</a>
+                                <a target="_blank" class="superTool_search_link superTool_search_label" href="/GameBY/SystemRecord">捕鱼数据</a>
+                            </div>
+                        </div>
+                        <table id="SuperFish_table" class="table table-striped table-bordered table-hover"></table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section initScripts{
+    <script>
+        var vApp = new Vue({
+            el: '#vApp',
+            data: {
+                serverID: '@ViewBag.ServerID',
+                gameID: '@ViewBag.GameID',
+                spaceID: '',
+                dataTable: null,
+                flagName: {
+                    1: '初级场',
+                    2: '中级场',
+                    3: '高级场',
+                    4: '富豪场',
+                },
+                fishPlayerPool: []
+            },
+
+            watch: {
+                spaceID (val, oldVal) {
+                    vApp.dataTable.DataTable().ajax.reload();
+                }
+            },
+
+            methods: {
+                getUserList: function () {
+                    const head = [
+                           {
+                               "sTitle": "房间", "mData": "FlagName"
+                           },
+                           {
+                               "sTitle": "玩家ID", "mData": "UserID",
+                               "render": function (data, type, row) {
+                                   return `<a class="link" target="_blank" href="/UserInfo/Search?userId=${data}&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">${data}</a>`
+                               }
+                           },
+                           {
+                               "sTitle": "总充值", "mData": "TotalSumCharge",
+                               "render": function (data, type, row) {
+                                   return ToCash(data);
+                               }
+                           },
+                           {
+                               "sTitle": "总兑换", "mData": "TotalSumConvert",
+                               "render": function (data, type, row) {
+                                   return ToCash(data);
+                               }
+                           },
+                           {
+                               "sTitle": "用户金币", "mData": "UserCash",
+                               "render": function (data, type, row) {
+                                   return ToCash(data);
+                               }
+                           },
+                           {
+                               "sTitle": "总输赢", "mData": "TotalUserWinLose",
+                               "render": function (data, type, row) {
+                                   var value = data * -1;
+                                   if (value < 0) {
+                                       return `<span class="update_Red">${ToCash(value)}</span>`
+                                   }
+                                   return `<span class="update_Green">${ToCash(value)}</span>`
+                               }
+                           },
+                           {
+                               "sTitle": "今日充值", "mData": "TodaySumCharge",
+                               "render": function (data, type, row) {
+                                   return ToCash(data);
+                               }
+                           },
+                           {
+                               "sTitle": "今日兑换", "mData": "TodaySumConvert",
+                               "render": function (data, type, row) {
+                                   return ToCash(data);
+                               }
+                           },
+                           {
+                               "sTitle": "今日输赢", "mData": "TodayUserWinLose",
+                               "render": function (data, type, row) {
+                                   var value = data * -1;
+                                   if (value < 0) {
+                                       return `<span class="update_Red">${ToCash(value)}</span>`
+                                   }
+                                   return `<span class="update_Green">${ToCash(value)}</span>`
+                               }
+                           },
+                           {
+                               "sTitle": "放分设置", "mData": "UserID",
+                               "render": function (data, type, row) {
+                                   return `<a target="_blank" class="btn_link" href="/GameBY/VIPUser?gameID=${vApp.gameID}&userId=${data}" >跳转</a>`
+                               }
+                           },
+                           {
+                               "sTitle": "增删监控", "mData": "VIPUserID",
+                               "render": function (data, type, row) {
+                                   if (data == 0) {
+                                       return `<a class="btn_link" href="#" onclick="vApp.addVIPUser(${row.UserID})" >增加监控</a>`
+                                   }
+                                   return `<a class="btn_link_Red" href="#" onclick="vApp.delVIPUser(${data})" >删除监控</a>`
+                               }
+                           }]
+
+                    const opt = {
+                        "ordering": false,
+                        "searching": false,
+                        "aoColumns": head,
+                        "processing": true,
+                        "serverSide": true,
+                        "bLengthChange": false,
+                        "bPaginate": false,
+                        "ajax": {
+                            "type": "POST",
+                            "url": "/GameBY/GetOnlineUser",
+                            data: function (d) {
+                                Object.assign(d, {
+                                    "showName": vApp.spaceID
+                                });
+                                return d;
+                            }
+                        },
+                        "destroy": true
+                    }
+                    vApp.dataTable = $("#SuperFish_table").dataTable(opt)
+                },
+                getFishPlayerPool: function () {
+                    $.get('/GameBY/GetFishPlayerPool', function (result) {
+                        vApp.$set(vApp, 'fishPlayerPool', result.data)
+                    });
+                },
+                changePlayerPool: function (data) {
+                    const status = data.Status === 0 ? 1 : 0;
+                    $.post('/GameBY/FishUpdPlayerPool', { 'flagID': data.FlagID, 'status': status }, function (result) {
+                        vApp.getFishPlayerPool()
+                    });
+                },
+                addVIPUser: function (userID) {
+                    $.get('/GameCommon/AddVIPUser', { 'userID': userID }, function (result) {
+                        alert(result.msg);
+                        vApp.dataTable.DataTable().ajax.reload();
+                    });
+                },
+                delVIPUser: function (userID) {
+                    $.get('/GameCommon/DelVIPUser', { 'userID': userID }, function (result) {
+                        alert(result.msg);
+                        vApp.dataTable.DataTable().ajax.reload();
+                    });
+                }
+            }
+        });
+
+        vApp.getUserList()
+        vApp.getFishPlayerPool()
+        setInterval(function () {
+            vApp.dataTable.DataTable().ajax.reload();
+        }, 30000)
+
+    </script>
+}

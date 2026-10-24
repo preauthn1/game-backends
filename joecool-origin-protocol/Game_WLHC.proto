@@ -1,0 +1,72 @@
+syntax = "proto2";
+
+package netproto;
+
+// WLHC 共用遊戲訊息 2xxxx
+enum WLHC_GameMessageClassID {
+    // Default
+    WLHC_UserEnterID = 4;
+    WLHC_UserLeaveID = 5;
+    WLHC_UserStateChangeID = 6;
+    WLHC_GameStartID = 7;
+    WLHC_GameEndID = 8;
+
+    // Server to Client 20xxx
+    WLHC_SettingID = 20001;  // 設置相關
+    WLHC_StatusID = 20002;   // 遊戲狀態 0: 玩家可下注, 1: 開獎, 2: 開獎動畫, 3: 結算動畫, 4: 等待遊戲開始
+    WLHC_BetStatusID = 20003;  // 下注狀態 0: 下注成功, -1: 用戶金額不足, -2: 下注的類型未找到, -3: 莊家不能下注, -4: 此類下注已達到上限, -5: 非下注階段, -6: 用戶金額小於下注限制
+    WLHC_GameResultID = 20004;         // 遊戲結果 (轉出內容，中獎項目，中獎金額)
+    WLHC_LeftFreeGameID = 20005;       // 剩餘免費遊戲資訊
+    WLHC_LightningPrepareID = 20006;   // Lightning 準備訊息
+    WLHC_LightningResultID = 20007;    // Lightning 結果
+    WLHC_SelectGameOptionsID = 20008;  // 通知可以進行選擇機會
+    WLHC_BonusGameID = 20009;          // BonusGame 資訊
+    WLHC_GameReelSettingID = 20010;    // 排列帶資訊
+    WLHC_IncreaseGameTimesID = 20011;  // 遊戲次數增加封包 可為[FreeGame], [JackpotGame]
+
+    // Client to Server 21xxx
+    WLHC_ActionSpinID = 21001;           // 玩家Spin
+    WLHC_ActionLightningSpinID = 21002;  // Lightning 轉轉轉
+    WLHC_ActionChooseGameID = 21003;     // 選擇遊戲模式
+
+    // 會一來一回的資訊 22xxx
+    WLHC_LoadHistoryID = 22001;     // 玩家查詢記錄
+    WLHC_LoadHistoryRetID = 22002;  // 回傳玩家查詢記錄
+    WLHC_JackpotPoolID = 22003;     // 查詢獎池資訊
+    WLHC_JackpotPoolRetID = 22004;  // 回傳獎池資訊
+    WLHC_PickBonusID = 22005;       // 玩家選則PickGame
+    WLHC_PickBonusRetID = 22006;    // Server回覆，玩家選則PickGame
+
+    // DB Handler {ID}xxxx
+    WLHC_SelectGameReadID = 10000001;     // 查詢選擇遊戲機會
+    WLHC_SelectGameReadRetID = 10000002;  // 回傳選擇遊戲機會
+    WLHC_SelectGameRecordID = 10000003;   // 更新選擇遊戲機會
+
+    WLHC_FreeGameReadID = 10000011;     // 查詢免費遊戲
+    WLHC_FreeGameReadRetID = 10000012;  // 回傳免費遊戲
+    WLHC_FreeGameRecordID = 10000013;   // 更新免費遊戲
+
+    WLHC_JackpotNoLinkReadID = 10000021;     // 查詢非連線獎池資訊
+    WLHC_JackpotNoLinkReadRetID = 10000022;  // 回傳非連線獎池資訊
+    WLHC_JackpotNoLinkRecordID = 10000023;   // 更新非連線獎池資訊
+
+    WLHC_GameLogReadID = 10000031;     // 查詢玩家記錄
+    WLHC_GameLogReadRetID = 10000032;  // 回傳玩家記錄
+    WLHC_GameLogAddID = 10000033;      // 更新玩家記錄
+    WLHC_GameLogBatchAddID = 10000034; // 更新玩家記錄(多筆)
+
+    WLHC_BonusGameReadID = 10000041;     // 查詢BonusGame
+    WLHC_BonusGameReadRetID = 10000042;  // 回傳BonusGame
+    WLHC_BonusGameRecordID = 10000043;   // 更新BonusGame
+    WLHC_BonusGameResetID = 10000044;    // 重置BonusGame
+
+    WLHC_LightningReadID = 10000051;     // 向DB讀取Lightning資訊
+    WLHC_LightningReadRetID = 10000052;  // DB回傳讀取Lightning資訊
+    WLHC_LightningRecordID = 10000053;   // 向DB更新Lightning資訊
+
+    WLHC_DeferredAwardReadID = 10000061;     // 向DB讀取DeferredAward資訊
+    WLHC_DeferredAwardReadRetID = 10000062;  // DB回傳讀取DeferredAward資訊
+    WLHC_DeferredAwardRecordID = 10000063;   // 向DB更新DeferredAward資訊
+    WLHC_DeferredAwardPopID = 10000064;      // 使用一次DeferredAward
+    WLHC_DeferredAwardResetID = 10000065;    // 重置 DeferredAward Pop到死
+};

@@ -1,0 +1,1911 @@
+﻿@using FW.Core.Helper.Enum
+@using game.Entity.Users
+
+@model UserInfoDetail
+@{
+    DateTime? beginTime = ViewBag.BeginTime;
+    DateTime? endTime = ViewBag.EndTime;
+    var strBeginTime = beginTime == null ? "" : beginTime.Value.ToString("yyyy-MM-dd HH:mm");
+    var strEndTime = endTime == null ? "" : endTime.Value.ToString("yyyy-MM-dd HH:mm");
+    string rangeDate = "不限";
+    if (beginTime != null && endTime != null)
+    {
+        rangeDate = string.Format("{0}至{1}", beginTime.Value.ToString("yyyy-MM-dd HH:mm"), endTime.Value.ToString("yyyy-MM-dd HH:mm"));
+    }
+    else if (beginTime != null)
+    {
+        rangeDate = string.Format("{0}到现在", beginTime.Value.ToString("yyyy-MM-dd HH:mm"));
+    }
+    else if (endTime != null)
+    {
+        rangeDate = string.Format("{0}之前", endTime.Value.ToString("yyyy-MM-dd HH:mm"));
+    }
+
+    bool isDeleteFlowAmountPremission = Html.CheckFunctionPermissionExist("UserInfoFlowAmount", "DeleteFlowAmountLimit", "POST");
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .flex_box {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 2%;
+    }
+
+    .flex_box_2 {
+        padding: 8px 0 8px 0;
+        width: 50%;
+    }
+
+        .flex_box_2 span {
+            color: red;
+        }
+
+        .flex_box_2 .btn_link {
+            padding-left: 5px;
+            font-weight: bold;
+            text-decoration: underline;
+            color: #428bca;
+        }
+
+    .flex_box_3 {
+        padding: 8px 0 8px 0;
+        width: 33.3%;
+    }
+
+        .flex_box_3 span {
+            color: red;
+        }
+
+        .flex_box_3 .btn_link {
+            padding-left: 5px;
+            font-weight: bold;
+            text-decoration: underline;
+            color: #428bca;
+        }
+
+    .flex_box_4 {
+        padding: 8px 0px 8px 0px;
+        width: 25%;
+    }
+
+        .flex_box_4 span {
+            color: red;
+        }
+
+        .flex_box_4 .btn_link {
+            padding-left: 5px;
+            font-weight: bold;
+            text-decoration: underline;
+            color: #428bca;
+        }
+
+
+    .modal-size {
+        width: 85vw;
+    }
+
+
+    .div_tab {
+        padding: 30px 30px 30px 30px;
+    }
+
+        .div_tab table tr {
+            height: 30px;
+        }
+
+            .div_tab table tr td span {
+                color: red;
+            }
+
+        .div_tab .btn_link {
+            padding-left: 5px;
+            font-weight: bold;
+            text-decoration: underline;
+            color: #428bca;
+        }
+
+
+    .search-group {
+        display: flex;
+        align-items: center;
+        padding: 2%;
+    }
+
+        .search-group div {
+            padding: 1%;
+        }
+
+    .update_Red {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: red;
+    }
+
+    .update_Green {
+        color: white;
+        padding: 0px 10px 0px 10px;
+        background-color: #58ae63;
+    }
+
+    .msg_contain {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        font-size: 14px;
+    }
+
+    .msg_icon {
+        padding: 1%;
+        font-size: 20px;
+    }
+
+    .search_title {
+        color: #fff;
+    }
+
+    .shortText {
+        width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+        text-decoration: underline;
+        color: #3753da;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("~/Views/Shared/_userPartial.cshtml")
+                <div class="form-group">
+                    <label>时间范围</label>
+                    <input type="text" class="form-control " style="width:180px" id="beginTime" name="beginTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString(" yyyy-MM-01 HH:mm")">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="endTime" value="@DateTime.Now.ToString(" yyyy-MM-dd HH:mm")" name="endTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default"> 搜 索 </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@{
+    var query_userID = System.Web.HttpContext.Current.Request.QueryString["userID"];
+    var query_loginName = System.Web.HttpContext.Current.Request.QueryString["loginName"];
+
+    bool isAnyQueryString = !string.IsNullOrEmpty(query_userID) || !string.IsNullOrEmpty(query_loginName);
+}
+
+
+@if (Model == null && isAnyQueryString)
+{
+    <div style="padding:15px;font-size:14px;">
+        <span id="myTip" aria-hidden="true" class="glyphicon glyphicon-exclamation-sign"></span>
+        用户不存在或您的权限无法查询此用户
+    </div>
+
+}
+<style>
+
+    .title-row {
+        text-align: center !important;
+        padding:2px;
+    }
+
+    .itemTitle
+    {
+        font-weight:700;
+    }
+
+    table.table
+    {
+        margin-bottom:80px;  
+        border-left: 1px #EEE solid;
+        border-right: 1px #EEE solid;
+        border-bottom: 1px #EEE solid;
+    }
+
+    thead , thead th {
+        height:1px !important;
+        padding:0px !important;
+    }
+
+    h5
+    {
+        font-size:14px;
+        margin-bottom:0px;
+        padding-left:15px;
+    }
+
+
+</style>
+
+
+@if (Model != null)
+{
+    <br />
+    <div class="row" id="records_data">
+        <div class="col-md-8 col-md-offset-2">
+
+
+
+
+            <div style="margin-top:30px;">
+
+
+
+                <div style="text-align:center;margin-bottom:20px;">
+                    <img style="height:64px;" src="/Content/HeadIcon/sprite_@(Model.FaceID).png">
+                    <div class="title-row" style="font-size:16px;font-weight:700;margin-top:10px;">21944268</div>
+                    <div class="title-row" style="font-size:14px;color:#666;">Fast_4B8E6A438C1D45E  </div>
+                </div>
+
+
+                <div>
+
+                    <h5 class="myTitleRow">
+                        用户详情
+                    </h5>
+
+                    <table class="table">
+
+                        <thead>
+                            <tr>
+                                <th style="width:15%"></th>
+                                <th style="width:35%"></th>
+                                <th style="width:15%"></th>
+                                <th style="width:35%"></th>
+                            </tr>
+                        </thead>
+
+
+                        <tbody>
+                            <tr>
+                                <td class="itemTitle">平台編號：</td>
+                                <td>1736544</td>
+                                <td class="itemTitle">平台名稱：</td>
+                                <td>章魚哥之家</td>
+                            </tr>
+
+                            <tr>
+                                <td class="itemTitle">渠道編號：</td>
+                                <td>12006544</td>
+                                <td class="itemTitle">渠道名稱：</td>
+                                <td>加哩比海</td>
+                            </tr>
+
+                            <tr>
+                                <td class="itemTitle">累计登录次数：</td>
+                                <td>88</td>
+                                <td class="itemTitle">
+                                    
+                                </td>
+                                <td></td>
+                            </tr>
+
+
+                        </tbody>
+
+                    </table>
+
+
+
+                    <h5 style="text-align:left;color:#FFF;background:#444;padding:7px;">
+                        真實姓名與銀行帳戶
+                    </h5>
+
+                    <table class="table">
+
+                        <thead>
+                            <tr>
+                                <th style="width:15%"></th>
+                                <th style="width:35%"></th>
+                                <th style="width:15%"></th>
+                                <th style="width:35%"></th>
+                            </tr>
+                        </thead>
+
+
+                        <tbody>
+                            <tr>
+                                <td class="itemTitle">支付宝真实姓名：</td>
+                                <td>未绑定</td>
+                                <td class="itemTitle">
+                                    支付宝账号：
+                                </td>
+                                <td>未绑定</td>
+                            </tr>
+
+                            <tr>
+                                <td class="itemTitle">
+                                    銀聯真实姓名：
+                                </td>
+                                <td>未绑定</td>
+                                <td class="itemTitle">銀聯账号：</td>
+                                <td>未绑定</td>
+                            </tr>
+
+
+                        </tbody>
+
+                    </table>
+
+
+
+
+
+
+
+                    <h5 style="text-align:left;color:#FFF;background:#444;padding:7px;">
+                        風控管理
+                    </h5>
+
+                    <table class="table">
+
+                        <thead>
+                            <tr>
+                                <th style="width:15%"></th>
+                                <th style="width:35%"></th>
+                                <th style="width:15%"></th>
+                                <th style="width:35%"></th>
+                            </tr>
+                        </thead>
+
+
+                        <tbody>
+                            <tr>
+                                <td class="itemTitle">封号状态：</td>
+                                <td>未绑定</td>
+                                <td class="itemTitle">
+                                    是否允许提问：
+                                </td>
+                                <td>未绑定</td>
+                            </tr>
+
+                            <tr>
+                                <td class="itemTitle">
+                                    注册IP：
+                                </td>
+                                <td>0.0.0.0</td>
+                                <td class="itemTitle">同IP注册账号数：</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td class="itemTitle">
+                                    注册机器码：
+                                </td>
+                                <td>7576ce5b-6ba4-4a2b-a3fa-295b25c48d09</td>
+                                <td class="itemTitle">同Mac注册账号数：</td>
+                                <td>1</td>
+                            </tr>
+
+
+                            <tr>
+                                <td class="itemTitle">
+                                    最后登录IP：
+                                </td>
+                                <td>0.0.0.0</td>
+                                <td class="itemTitle">
+                                    同Mac
+                                    最后登录时间：
+                                </td>
+                                <td>2019-11-28 16:25</td>
+                            </tr>
+
+                            <tr>
+                                <td class="itemTitle">
+                                    最后登录机器码：
+                                </td>
+                                <td>7576ce5b-6ba4-4a2b-a3fa-295b25c48d09</td>
+                                <td class="itemTitle">
+                                    注册设备
+                                </td>
+                                <td>
+                                    PC
+                                </td>
+                            </tr>
+
+
+                        </tbody>
+
+                    </table>
+
+
+
+
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i>用户详情
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <form id="form1" class="form-horizontal form-bordered">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <div class="div_tab">
+                                    <table class="col-md-12">
+                                        <tr>
+                                            <td><img style="height:64px;" src="/Content/HeadIcon/sprite_@(Model.FaceID).png"></td>
+                                            <td>
+                                                ID：<span>@Model.UserID</span>
+                                               
+                                            </td>
+                                            <td>账号：<span>@Model.LoginName</span></td>
+                                            <td>性别：<span></span>　　等级：<span>@</span></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>帐号身分：<span>@Model.UserType.GetDisplayName()</span></td>
+                                            <td>：<span>@Model.PlatformName</span></td>
+                                            <td>渠道ID：<span></span></td>
+                                            <td>渠道名称：<span>@Model.AreaName</span></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>注册设备：<span></span></td>
+                                            <td>注册时间：<span> </span></td>
+                                            <td>累计登录次数：<span>@</span></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>封号状态：</td>
+                                            <td>是否允许提问：</td>
+                                            <td>:@Html.LinkWithRight(href: "#", value: "踢出房間", action: "KickoutGameAccount", cssName: "btn_link", onclick: "KickoutGameAccount(" + Model.UserID + ");return false;")</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                同IP注册账号数：<span>@Model.StatInfo.SameIPCount</span>
+                                                <a target="_blank" href="/userstat/alluser?regIpAddress=@Model.CreateIPAddress" class="btn_link">详情</a>
+                                            </td>
+                                            <td>
+                                                同Mac注册账号数：<span>@Model.StatInfo.SameMacCount</span>
+                                                <a target="_blank" href="/userstat/alluser?hdCode=@Model.HDCode" class="btn_link">详情</a>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 col-md-offset-2" style="display:none;">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i>用户相關
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <form id="form1" class="form-horizontal form-bordered">
+                        <div class="form-body">
+                            <div class="flex_box">
+                                <div class="flex_box_2">
+                                    支付宝真实姓名：<span></span>
+                                </div>
+                                <div class="flex_box_2">
+                                    支付宝账号：
+                                    <span></span>
+
+                                  
+                                </div>
+                                <div class="flex_box_2">
+                                    銀聯真实姓名：<span></span>
+                                </div>
+                                <div class="flex_box_4">
+                                    銀聯账号：
+                                   
+                                </div>
+                                <div class="flex_box_4">
+                                    <span>
+                                        <a href="#no" class="btn_link" data-toggle="modal" data-target="#changeLogModal" v-on:click="createTable('@Model.UserID','changeLog')">用户重置记录</a>
+                                    </span>
+                                </div>
+                                <div class="flex_box_2">
+                                    注册手机号：<span> @Model.LoginName</span>
+                                    @if (Model.UserType == UserType.Reg)
+                                    {
+                                        @Html.LinkWithRight(href: "#", value: "重置注册手机号", action: "ResetPhoneNumber", cssName: "btn_link", onclick: "ResetPhoneNumber(" + Model.UserID + ");return false;")
+                                    }
+                                </div>
+                                <div class="flex_box_4">
+                                    注册IP：<span></span>
+                                </div>
+                                <div class="flex_box_2">
+                                    注册机器码：<span>@Model.HDCode</span>
+                                </div>
+                                <div class="flex_box_4">
+                                    最后登录IP：<span>@Model.LastLogonIPAddress</span>
+                                </div>
+                                <div class="flex_box_4">
+                                    最后登录时间：<span>@Model.LastLogonTime.ToString("yyyy-MM-dd HH:mm")</span>
+                                </div>
+                                <div class="flex_box_2">
+                                    最后登录机器码：<span>@Model.LastLogonHDCode</span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 col-md-offset-2" >
+            <div class="portlet box grey">
+                <div class="search_title">
+                    <div class="msg_contain">
+                        <i class="fa fa-globe msg_icon"></i>
+                        <div>用户金币</div>
+                        <i class="fa fa-exclamation-circle msg_icon"></i>
+                        <div>计算方式 : 累计充值 + 全民代理提现 - 游戏输赢汇总 - 累计兑换 - 保险箱 = 现金数</div>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div class="form-horizontal form-bordered">
+                        <div class="form-body">
+
+                            <div class="flex_box">
+                                <div class="flex_box_3">
+                                    总金额数：<span>@Model.AllCoinAmount.ToCash()</span>
+                                </div>
+                                <div class="flex_box_3">
+                                    现金数：<span>@Model.CashAmount.ToCash()</span>
+                                    <span>
+                                        <a href="#no" class="btn_link" data-toggle="modal" data-target="#moneyModal" v-on:click="createTable('@Model.UserID','money')">现金记录</a>
+                                    </span>
+                                </div>
+                                <div class="flex_box_3">
+                                    体验金币：<span>@Model.ExperienceCash.ToCash()</span>
+                                </div>
+
+                                <div class="flex_box_3">
+                                    累计税收数：<span>@Model.SumTax.ToCash()</span>
+                                    <span>
+                                        <a href="#no" class="btn_link" data-toggle="modal" data-target="#gameModal" v-on:click="createTable('@Model.UserID','game')">税收记录</a>
+                                    </span>
+                                </div>
+                                <div class="flex_box_3">
+                                    累计充值数(第三方 + 官方 + 免费金币)：<br><span>@Model.SumCharge.ToCash()</span> + <span>@Model.SumAgentCharge.ToCash()</span>
+                                    + <span> @Model.SumFreeMoney.ToCash()</span> = <span>@Model.SumChargeTotal.ToCash()</span>
+                                    <span>
+                                        <a href="#no" class="btn_link" data-toggle="modal" data-target="#payModal" v-on:click="createTable('@Model.UserID','pay')">充值记录</a>
+                                    </span>
+                                </div>
+                                <div class="flex_box_3">
+                                    累计兑换数(总数 + 手续费)：<br><span>@Model.SumConvert.ToCash()</span> + <span>@Model.SumConvertTax.ToCash()</span> = <span>@Model.SumConvertTotal.ToCash()</span>
+                                    <span>
+                                        <a href="#no" class="btn_link" data-toggle="modal" data-target="#convertModal" v-on:click="createTable('@Model.UserID','convert')">兑换记录</a>
+                                    </span>
+                                </div>
+
+                                <div class="flex_box_3">&nbsp;</div>
+                                <div class="flex_box_3">
+                                    全民代理提现：
+                                    <span>@(!string.IsNullOrEmpty(ViewBag.BankLog_14003) ? ViewBag.BankLog_14003 : 0)</span>
+                                </div>
+                                <div class="flex_box_3">&nbsp;</div>
+
+                                <div class="flex_box_3">
+                                    保險箱数：<span>@Model.BankAmount.ToCash()</span>
+                                    <span>
+                                       
+                                    </span>
+                                </div>
+                                <div class="flex_box_3">
+                                    ：
+                                    <span>
+                                        
+                                    </span>
+                                </div>
+                                <div class="flex_box_3">
+                                    管理員修改金幣：<span>@Model.SumAdminMoney.ToCash()</span>
+                                </div>
+                                <div class="flex_box_3">
+                                    流水：<span>@Model.SumFlowAmount.ToCash()</span>
+                                </div>
+                                <div class="flex_box_3">
+                                    <div>
+                                        稽核流水：
+                                        <span>
+                                            <a href="#flowLimit" class="btn_link" data-toggle="modal" data-target="#flowLimitModal" v-on:click="createTable('@Model.UserID','flowLimit')">@ViewBag.FlowAmountFromLastConvertToNow.FlowAmountLimitStr</a> /
+                                            <a id="FlowAmountFromLastConvertToNow" href="#no" class="btn_link" data-toggle="modal" data-target="#moneyModal" v-on:click="createTable('@Model.UserID','money', @ViewBag.FlowAmountFromLastConvertToNowJson)">@ViewBag.FlowAmountFromLastConvertToNow.FlowAmountStr</a>
+                                        </span>
+                                        (所需流水/输赢流水)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END FORM-->
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <!-- money Modal-->
+            <div class="modal fade" id="moneyModal" tabindex="-1" role="dialog" aria-labelledby="moneyModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal.large modal-size" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="moneyModalLabel">现金记录</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <records-bar v-on:opentable="createTable" id="@Model.UserID" itag="money"></records-bar>
+                            <div class="search-group">
+                                <div>时间范围</div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="beginTime_money" name="beginTime_money" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString(" yyyy-MM-dd 00:00")">
+                                </div>
+                                <div>
+                                    到
+                                </div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="endTime_money" value="" name="endTime_money" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                                </div>
+                                <div>
+                                    <button type="button" id="moneySearch" name="moneySearch" class="btn btn-default" v-on:click="createTable('@Model.UserID','money')"> 搜 索 </button>
+                                    <button type="button" id="moneySearch" name="moneySearch" class="btn btn-default" v-on:click="newOpenUrl('@Model.UserID','money')"> 汇 出 </button>
+                                </div>
+                            </div>
+                            <table id="money_table" class="display" style="width:100%"></table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- bank Modal-->
+
+            <div class="modal fade" id="bankModal" tabindex="-1" role="dialog" aria-labelledby="bankModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal.large modal-size" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="bankModalLabel">保險箱记录</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <records-bar v-on:opentable="createTable" id="@Model.UserID" itag="bank"></records-bar>
+                            <div class="search-group">
+                                <div>时间范围</div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="beginTime_bank" name="beginTime_bank" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString(" yyyy-MM-dd 00:00")">
+                                </div>
+                                <div>
+                                    到
+                                </div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="endTime_bank" value="" name="endTime_bank" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-default" v-on:click="createTable('@Model.UserID','bank')"> 搜 索 </button>
+                                </div>
+                            </div>
+                            <table id="bank_table" class="display" style="width:100%"></table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- changeLog Modal-->
+
+            <div class="modal fade" id="changeLogModal" tabindex="-1" role="dialog" aria-labelledby="changeLogModal" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal.large modal-size" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="gameModalLabel">用户重置记录</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <records-bar v-on:opentable="createTable" id="@Model.UserID" itag="changeLog"></records-bar>
+                            <div class="search-group">
+                                <div>时间范围</div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="beginTime_changeLog" name="beginTime_changeLog" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.AddYears(-1).ToString(" yyyy-MM-dd 00:00")">
+                                </div>
+                                <div>
+                                    到
+                                </div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="endTime_changeLog" value="" name="endTime_changeLog" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-default" v-on:click="createTable('@Model.UserID','changeLog')"> 搜 索 </button>
+                                </div>
+                            </div>
+                            <table id="changeLog_table" class="display" style="width:100%"></table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- game Modal-->
+            <div class="modal fade" id="gameModal" tabindex="-1" role="dialog" aria-labelledby="gameModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal.large modal-size" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="gameModalLabel">税收记录</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <records-bar v-on:opentable="createTable" id="@Model.UserID" itag="game"></records-bar>
+                            <div class="search-group">
+                                <div>时间范围</div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="beginTime_game" name="beginTime_game" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString(" yyyy-MM-dd 00:00")">
+                                </div>
+                                <div>
+                                    到
+                                </div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="endTime_game" value="" name="endTime_game" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-default" v-on:click="createTable('@Model.UserID','game')"> 搜 索 </button>
+                                </div>
+                            </div>
+                            <table id="game_table" class="display" style="width:100%"></table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- pay Modal-->
+            <div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal.large modal-size" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="payModalLabel">充值记录</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <records-bar v-on:opentable="createTable" id="@Model.UserID" itag="pay"></records-bar>
+                            <div class="search-group">
+                                <div>时间范围</div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="beginTime_pay" name="beginTime_pay" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString(" yyyy-MM-dd 00:00")">
+                                </div>
+                                <div>
+                                    到
+                                </div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="endTime_pay" value="" name="endTime_pay" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-default" v-on:click="createTable('@Model.UserID','pay')"> 搜 索 </button>
+                                    <button type="button" class="btn btn-default" v-on:click="exportReport('@Model.UserID','pay')"> 匯 出 </button>
+                                </div>
+                            </div>
+                            <table id="pay_table" class="display" style="width:100%"></table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- convert Modal-->
+            <div class="modal fade" id="convertModal" tabindex="-1" role="dialog" aria-labelledby="convertModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal.large modal-size" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="convertModalLabel">兑换记录</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <records-bar v-on:opentable="createTable" id="@Model.UserID" itag="convert"></records-bar>
+                            <div class="search-group">
+                                <div>时间范围</div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="beginTime_convert" name="beginTime_convert" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString(" yyyy-MM-dd 00:00")">
+                                </div>
+                                <div>
+                                    到
+                                </div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="endTime_convert" value="" name="endTime_convert" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-default" v-on:click="createTable('@Model.UserID','convert')"> 搜 索 </button>
+                                </div>
+                            </div>
+                            <table id="convert_table" class="display" style="width:100%"></table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticket Modal-->
+            <div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="ticketModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal.large modal-size" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="convertModalLabel">免费券使用纪录</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <records-bar v-on:opentable="createTable" id="@Model.UserID" itag="ticket"></records-bar>
+                            <div class="search-group">
+                                <div>
+                                    游戏
+                                </div>
+                                <div>
+                                    @Html.DropDownList("gameID", DataService.Game(null, false), new { @class = "form-control input-small", id = "gameID", v_model = "selectedGameID" })
+                                </div>
+                                <div>时间范围</div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="beginTime_ticket" name="beginTime_ticket" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString(" yyyy-MM-dd 00:00")">
+                                </div>
+                                <div>
+                                    到
+                                </div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="endTime_ticket" value="" name="endTime_ticket" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-default" v-on:click="createTable('@Model.UserID','ticket')"> 搜 索 </button>
+                                </div>
+
+                            </div>
+                            <table id="ticket_table" class="display" style="width:100%"></table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RankLog Modal-->
+            <div class="modal fade" id="rankLogModal" tabindex="-1" role="dialog" aria-labelledby="rankLogModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal.large modal-size" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="convertModalLabel">比赛排名纪录</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <records-bar v-on:opentable="createTable" id="@Model.UserID" itag="rankLog"></records-bar>
+                            <div class="search-group">
+                                <div>
+                                    游戏
+                                </div>
+                                <div>
+                                    @Html.DropDownList("gameID", DataService.Game(), new { @class = "form-control input-small", id = "gameID", v_model = "selectedGameID" })
+                                </div>
+                                <div>时间范围</div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="beginTime_rankLog" name="beginTime_rankLog" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString(" yyyy-MM-dd 00:00")">
+                                </div>
+                                <div>
+                                    到
+                                </div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="endTime_rankLog" value="" name="endTime_rankLog" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-default" v-on:click="createTable('@Model.UserID','rankLog')"> 搜 索 </button>
+                                </div>
+                            </div>
+                            <table id="rankLog_table" class="display" style="width:100%"></table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- flowLimit Modal-->
+            <div class="modal fade" id="flowLimitModal" tabindex="-1" role="dialog" aria-labelledby="flowLimitModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal.large modal-size" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="convertModalLabel">稽核流水纪录</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <records-bar v-on:opentable="createTable" id="@Model.UserID" itag="flowLimit"></records-bar>
+
+                            <div class="search-group">
+
+                                <div>状态：</div>
+                                <select id="status_flowLimit" name="status_flowLimit" class="form-control input-small" v-model="selectedStatus">
+                                    <option value="">--不限--</option>
+                                    <option value="@((int)FlowLimitStatus.Pass)">通过</option>
+                                    <option value="@((int)FlowLimitStatus.NotPass)">未通過</option>
+                                    <option value="@((int)FlowLimitStatus.Delete)">删除</option>
+                                </select>
+
+                                <div>时间范围</div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="beginTime_flowLimit" name="beginTime_flowLimit" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@ViewBag.FlowBeginTime">
+                                </div>
+                                <div>
+                                    到
+                                </div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="endTime_flowLimit" value="" name="endTime_flowLimit" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-default" v-on:click="createTable('@Model.UserID','flowLimit')" id="flowAmountSearch"> 搜 索 </button>
+                                </div>
+                            </div>
+                            <table id="flowLimit_table" class="display" style="width:100%"></table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PerGameLog Modal-->
+            <div class="modal fade" id="perGameModal" tabindex="-1" role="dialog" aria-labelledby="perGameModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal.large modal-size" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="perGameModalLabel">每局游戏记录</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <records-bar v-on:opentable="createTable" id="@Model.UserID" itag="perGame"></records-bar>
+                            <div class="search-group">
+                                <div>时间范围</div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="beginTime_perGame" name="beginTime_perGame" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间" value="@DateTime.Now.ToString("yyyy-MM-dd 00:00")">
+                                </div>
+                                <div>
+                                    到
+                                </div>
+                                <div>
+                                    <input type="text" class="form-control " style="width:180px" id="endTime_perGame" name="endTime_perGame" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")">
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-default" v-on:click="createTable('@Model.UserID','perGame')"> 搜 索 </button>
+                                </div>
+                            </div>
+                            <table id="perGame_table" class="display" style="width:100%"></table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MoneyPerGameLog Modal-->
+            <div class="modal fade" id="moneyPerGameModal" tabindex="-1" role="dialog" aria-labelledby="moneyPerGameModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal.large modal-size" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="moneyPerGameModalLabel">每局游戏记录</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <table id="moneyPerGame_table" class="display" style="width:100%"></table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 每局游戏记录详情 Modal -->
+            <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog"
+                 aria-labelledby="detailsModalLabel" aria-hidden="true">
+                <div class="modal-dialog" style="width:80%">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close"
+                                    data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="detailsModalLabel">
+                                详情
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <!--列表-->
+                            <div class="table-scrollable">
+                                <table class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="hide">编号</th>
+                                            <th>牌局标识</th>
+                                            <th>账号身分</th>
+                                            <th>服务器名称</th>
+                                            <th>最后登录IP</th>
+                                            <th>用户ID</th>
+                                            <th>账号</th>
+                                            <th>真实姓名</th>
+                                            <th>银行真实姓名</th>
+                                            <th>用户等级</th>
+                                            <th>当前金币</th>
+                                            <th>更新金币</th>
+                                            <th>时间</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody-data"></tbody>
+                                </table>
+                            </div>
+                            <!--列表-->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="portlet box grey">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                <i class="fa fa-globe"></i>游戏记录详情
+                                            </div>
+                                        </div>
+                                        <div class="portlet-body form">
+                                            <form id="form1" class="form-horizontal form-bordered">
+                                                <div class="form-body">
+                                                    <div class="form-group hide">
+                                                        <label class="control-label col-md-5 ">编号</label>
+                                                        <div class="col-md-7">
+                                                            <span id="text-Id"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5 ">牌局标识</label>
+                                                        <div class="col-md-7">
+                                                            <span id="text-LogID"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group hide">
+                                                        <label class="control-label col-md-5 ">牌局编号</label>
+                                                        <div class="col-md-7">
+                                                            <span id="text-DealNo"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5 ">服务器编号</label>
+                                                        <div class="col-md-7">
+                                                            <span id="text-ServerID"></span>
+                                                        </div>
+                                                    </div><div class="form-group">
+                                                        <label class="control-label col-md-5 ">服务器名称</label>
+                                                        <div class="col-md-7">
+                                                            <span id="text-ServerName"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5 ">游戏名称</label>
+                                                        <div class="col-md-7">
+                                                            <span id="text-GameName"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5 ">税收</label>
+                                                        <div class="col-md-7">
+                                                            <span id="text-TaxAmount"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5 ">游戏数据</label>
+                                                        <div class="col-md-7">
+                                                            <span id="text-GameData" style="word-break:break-all;"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group hide">
+                                                        <label class="control-label col-md-5 "> 参数1</label>
+                                                        <div class="col-md-7">
+                                                            <span id="text-Param1"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group hide">
+                                                        <label class="control-label col-md-5 "> 参数2</label>
+                                                        <div class="col-md-7">
+                                                            <span id="text-Param2"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-5 ">时间</label>
+                                                        <div class="col-md-7">
+                                                            <span id="text-GameTime"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </form>
+                                            <!-- END FORM-->
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default"
+                                    data-dismiss="modal">
+                                关闭
+                            </button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+        </div>
+
+        @*
+            <div class="col-md-8 col-md-offset-2">
+                <div class="portlet box grey">
+                    <div class="search_title">
+                        <div class="msg_contain">
+                            <i class="fa fa-globe msg_icon"></i>
+                            <div>用户免费券信息</div>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="form-horizontal form-bordered">
+                            <div class="form-body">
+                                <div class="flex_box">
+                                    <div v-for="(no , index) in  tickets" class="flex_box_3">
+                                        {{no.GameName}}免费券：<span>{{no.Tickets}}</span>
+                                        <span>
+                                            <a href="#no" class="btn_link" data-toggle="modal" data-target="#ticketModal" v-on:click="selectGameID(no.GameID); createTable('@Model.UserID','ticket')">使用纪录</a>
+                                        </span>
+                                    </div>
+                                    <div class="flex_box_3">
+                                        比赛排名纪录：
+                                        <span>
+                                            <a href="#no" class="btn_link" data-toggle="modal" data-target="#rankLogModal" v-on:click="createTable('@Model.UserID','rankLog')">排名纪录</a>
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- END FORM-->
+                    </div>
+                </div>
+            </div>*@
+
+
+        <div class="col-md-8 col-md-offset-2">
+            <div class="portlet box grey">
+                <div class="search_title">
+                    <div class="msg_contain">
+                        <i class="fa fa-globe msg_icon"></i>
+                        <div>用户游戏信息</div>
+                        <i class="fa fa-exclamation-circle msg_icon"></i>
+                        <div>已扣除税收</div>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div class="form-horizontal form-bordered">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <div class="div_tab">
+                                    <table class="col-md-12 table table-striped table-bordered table-hover">
+                                        <tr>
+                                            <th>游戏名称</th>
+                                            <th>赢的局数</th>
+                                            <th>输的局数</th>
+                                            <th>平的局数</th>
+                                            <th>输赢金币数</th>
+                                            <th>彩金</th>
+                                            <th>游戏时长(秒)</th>
+                                        </tr>
+                                        @foreach (var g in Model.GameInfo)
+                                        {
+                                            <tr>
+                                                <td>@g.Game.GameName</td>
+                                                <td>@g.WinCount</td>
+                                                <td>@g.LoseCount</td>
+                                                <td>@g.DrawCount</td>
+                                                <td>@g.Score.ToCash()</td>
+                                                <td>@(g.Game.Id.Equals(2) ? (!String.IsNullOrEmpty(ViewBag.BankLog_15001) ? ViewBag.BankLog_15001 : 0) : "--")</td>
+                                                <td>@SiteHelper.GetTimeStr(g.GameTime)</td>
+                                            </tr>
+                                        }
+                                        <tr>
+                                            <td>汇总：</td>
+                                            <td>@Model.GameInfo.Sum(m => m.WinCount)</td>
+                                            <td>@Model.GameInfo.Sum(m => m.LoseCount)</td>
+                                            <td>@Model.GameInfo.Sum(m => m.DrawCount)</td>
+                                            <td>@Model.GameInfo.Sum(m => m.Score).ToCash()</td>
+                                            <td>@(!String.IsNullOrEmpty(ViewBag.BankLog_15001) ? ViewBag.BankLog_15001 : "0")</td>
+                                            <td>@SiteHelper.GetTimeStr(Model.GameInfo.Sum(m => m.GameTime))</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END FORM-->
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-8 col-md-offset-2">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i>用户游戏信息 查询时间范围：( @rangeDate )
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div class="form-horizontal form-bordered">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <div class="div_tab">
+                                    <table class="col-md-12 table table-striped table-bordered table-hover">
+                                        <tr>
+                                            <th>游戏名称</th>
+                                            <th>赢的局数</th>
+                                            <th>输的局数</th>
+                                            <th>平的局数</th>
+                                            <th>输赢金币数</th>
+                                            <th>游戏时长(秒)</th>
+                                            <th>详情</th>
+                                        </tr>
+                                        @foreach (var g in Model.StatGameInfo)
+                                        {
+                                            <tr>
+                                                <td>@g.Game.GameName</td>
+                                                <td>@g.WinCount</td>
+                                                <td>@g.LoseCount</td>
+                                                <td>@g.DrawCount</td>
+                                                <td>@g.Score.ToCash()</td>
+                                                <td>@SiteHelper.GetTimeStr(g.GameTime)</td>
+                                                <td>@Html.LinkWithRightHref(href: string.Format("/game/gamelog?userID={0}&gameID={3}&logoutBeginTime={1}&logoutEndTime={2}", Model.UserID, strBeginTime, strEndTime, g.GameID), cssName: "btn_link", value: "详情")</td>
+                                            </tr>
+                                        }
+                                        <tr>
+                                            <td>汇总：</td>
+                                            <td>@Model.StatGameInfo.Sum(m => m.WinCount)</td>
+                                            <td>@Model.StatGameInfo.Sum(m => m.LoseCount)</td>
+                                            <td>@Model.StatGameInfo.Sum(m => m.DrawCount)</td>
+                                            <td>@Model.StatGameInfo.Sum(m => m.Score).ToCash()</td>
+                                            <td>@SiteHelper.GetTimeStr(Model.StatGameInfo.Sum(m => m.GameTime))</td>
+                                            <td>　</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div id="records_data"></div>
+}
+@section initScripts{
+    <script>
+
+        var isDeleteFlowAmountPremission = '@isDeleteFlowAmountPremission' == 'True';
+
+        $(function () {
+            var table = {};
+            var Recordsbar = {
+                template: `<div>
+                    <button v-if="isShow('money')" v-on:click="showModal('money')" class ="btn btn-outline-secondary">现金记录</button>
+                    <button v-if="isShow('bank')" v-on:click="showModal('bank')" class ="btn btn-outline-secondary">保險箱记录</button>
+                    <button v-if="isShow('pay')" v-on:click="showModal('pay')" class ="btn btn-outline-secondary">充值记录</button>
+                    <button v-if="isShow('game')" v-on:click="showModal('game')" class ="btn btn-outline-secondary">税收记录</button>
+                    <button v-if="isShow('convert')" v-on:click="showModal('convert')" class ="btn btn-outline-secondary">兑换记录</button>
+                    <button v-if="isShow('perGame')" v-on:click="showModal('perGame')" class ="btn btn-outline-secondary">游戏记录</button>
+                    <button v-if="isShow('changeLog')" v-on:click="showModal('changeLog')" class ="btn btn-outline-secondary">用户重置记录</button>
+                    <button v-if="isShow('flowLimit')" v-on:click="showModal('flowLimit')" class ="btn btn-outline-secondary">稽核流水</button>
+                    </div>`,
+                data: function () {
+                    return {
+                    }
+                },
+                props: {
+                    id: [Number, String],
+                    itag: String
+                },
+
+                methods: {
+                    isShow: function (tag) {
+                        return this.itag !== tag
+                    },
+                    showModal: function (tag) {
+                        $('.modal').modal('hide')
+                        $(`#${tag}Modal`).modal('show')
+                        this.$emit('opentable', this.id, tag)
+                    }
+                }
+            };
+
+            var vApp = new Vue({
+                el: '#records_data',
+                data: {
+                    tickets: JSON.parse(`@Html.Raw(Json.Encode(@ViewBag.Tickets))`),
+                    selectedGameID: '1',
+                    selectedStatus : '',
+                    urls: {
+                        money: '/UserInfo/GetMoneyLog',
+                        bank: '/UserInfo/GetBankLog',
+                        game: '/UserInfo/GetGameLog',
+                        pay: '/UserInfo/GetOrderList',
+                        convert: '/UserInfo/GetConvertLog',
+                        perGame: '/UserInfo/GetDetailLog',
+                        changeLog: '/UserInfo/GetUserInfoChangeLog',
+                        ticket: '/UserInfo/GetUserTicket',
+                        rankLog: '/UserInfo/GetUserInfoRankLog',
+                        flowLimit: '/UserInfo/GetFlowAmountLimitLog'
+                    },
+                    reportUrl: {
+                        pay: '/UserInfo/Download',
+                        money: '/UserInfo/ExportMoneyLog',
+                    },
+                    theadList: {
+                        money: [{ "sTitle": "使用者ID", "mData": "UserID" },
+                        { "sTitle": "创建时间", "mData": "CreateTime" },
+                        {
+                            "sTitle": "牌局紀錄", "mData": "TradeID",
+                            "render": function (data, type, row) {
+                                if (data != 0) {
+                                    var functionName = "createMoneyDetailTable(" + row["UserID"] + "," + data + ",'moneyPerGame')";
+
+                                    return ' <a href="#no" class="btn_link" data-toggle="modal" data-target="#moneyPerGameModal" onClick="' + functionName + '">查询牌局记录</a>'
+                                }
+                                return '';
+                            }
+                        },
+                        { "sTitle": "流通类型", "mData": "SourceName" },
+                        { "sTitle": "当前数量", "mData": "CurrentAmount" },
+                        {
+                            "sTitle": "更新的数量", "mData": "UpdateAmount",
+                            "render": function (data, type, row) {
+                                if (data.indexOf('-') > -1) {
+                                    return '<span class="update_Red">' + data + '<span>'
+                                }
+                                return '<span class="update_Green">' + data + '<span>'
+                            }
+                        },
+                        { "sTitle": "更新后数量", "mData": 'TotalAmount' },
+                        { "sTitle": "流水", "mData": 'FlowAmount' },
+                        { "sTitle": "IP地址", "mData": "IPAddress" },
+                        { "sTitle": "说明", "mData": "Memo" }],
+
+                        bank: [{ "sTitle": "使用者ID", "mData": "UserID" },
+                        { "sTitle": "创建时间", "mData": "CreateTime" },
+                        { "sTitle": "流通类型", "mData": "SourceName" },
+                        { "sTitle": "当前数量", "mData": "CurrentAmount" },
+                        {
+                            "sTitle": "更新的数量", "mData": "UpdateAmount",
+                            "render": function (data, type, row) {
+                                if (data.indexOf('-') > -1) {
+                                    return '<span class="update_Red">' + data + '<span>'
+                                }
+                                return '<span class="update_Green">' + data + '<span>'
+                            }
+                        },
+                        { "sTitle": "更新后数量", "mData": "TotalAmount" },
+                        { "sTitle": "IP地址", "mData": "IPAddress" },
+                        { "sTitle": "说明", "mData": "Memo" }],
+
+                        game: [{ "sTitle": "使用者ID", "mData": "UserID" },
+                        { "sTitle": "服务器", "mData": "ServerName" },
+                        { "sTitle": "进游戏金币", "mData": "LoginMoney" },
+                        { "sTitle": "输赢金币", "mData": "Amount" },
+                        { "sTitle": "税收", "mData": "TaxAmount" },
+                        { "sTitle": "赢", "mData": "WinCount" },
+                        { "sTitle": "输", "mData": "LoseCount" },
+                        { "sTitle": "平", "mData": "DrawCount" },
+                        { "sTitle": "游戏时间", "mData": "GameTime" },
+                        { "sTitle": "IP地址", "mData": "IPAddress" },
+                        { "sTitle": "硬件类型", "mData": "HDType" },
+                        { "sTitle": "硬件唯一码", "mData": "HDCode" },
+                        { "sTitle": "登入时间", "mData": "LoginTime" },
+                        { "sTitle": "登出时间", "mData": "LogoutTime" }],
+
+                        pay: [{ "sTitle": "用户ID", "mData": "UserID" },
+                        { "sTitle": "创建时间", "mData": "CreateTime" },
+                        { "sTitle": "回调时间", "mData": "LastUpdateTime" },
+                        { "sTitle": "编号", "mData": "OrderID" },
+                        { "sTitle": "支付类型", "mData": "PayTypeID" },
+                        { "sTitle": "充值金额	", "mData": "Amount" },
+                        { "sTitle": "订单状态", "mData": "Status" },
+                        { "sTitle": "IP地址", "mData": "IPAddress" },
+                        { "sTitle": "交易标识", "mData": "TransID" },
+                        { "sTitle": "第三方交易数据", "mData": "TransData" }],
+
+                        convert: [
+                            { "sTitle": "编号", "mData": "Id" },
+                            { "sTitle": "状态", "mData": "Status" },
+                            { "sTitle": "兑换金额", "mData": "Amount" },
+                            { "sTitle": "兑换类型", "mData": "ConvertType" },
+                            { "sTitle": "兑换账号", "mData": "Account" },
+                            { "sTitle": "真实姓名", "mData": "RealName" },
+                            { "sTitle": "银行	", "mData": "BankName" },
+                            { "sTitle": "第三方单号", "mData": "Status" },
+                            { "sTitle": "交易详情", "mData": "TransData" },
+                            { "sTitle": "IP地址", "mData": "CreateIP" },
+                            { "sTitle": "提交时间", "mData": "CreateTime" },
+                            { "sTitle": "完成时间", "mData": "LastUpdateTime" }],
+
+                        perGame: [
+                            { "sTitle": "时间", "mData": "GameTime" },
+                            { "sTitle": "牌局标识", "mData": "LogID" },
+                            { "sTitle": "服务器编号", "mData": "ServerID" },
+                            { "sTitle": "服务器名称", "mData": "ServerName" },
+                            { "sTitle": "游戏名称	", "mData": "GameName" },
+                            { "sTitle": "当前金币", "mData": "CurrentAmount" },
+                            { "sTitle": "更新金币", "mData": "UpdateAmount" },
+                            {
+                                "data": null,
+                                "mRender": function (data, type, full) {
+                                    return `<div class="control">
+                                                <div class ="pointer details-control" data-toggle="modal" data-target="#detailsModal" data-logid="${full.LogID}"
+                                                    onclick="loadDetailLog('${full.GameTime}','${full.LogID}')">
+                                                   <div class ="btn-list"></div>
+                                                   <span>详情<span>
+                                                 </div>
+                                               <div>`
+                                }
+                            }],
+
+                        changeLog: [
+                            { "sTitle": "创建时间	", "mData": "WriteTime" },
+                            { "sTitle": "所属平台", "mData": "Platform" },
+                            { "sTitle": "用户信息变化类型", "mData": "ChangeType", },
+                            { "sTitle": "修改前的数据", "mData": "OldData", "width": "20%" },
+                            { "sTitle": "修改后的数据", "mData": "NewData", "width": "20%" },
+                            { "sTitle": "IP地址", "mData": "IPAddress" },
+                            { "sTitle": "说明", "mData": "Memo" }],
+
+                        ticket: [
+                            { "sTitle": "活动名称", "mData": "Name" },
+                            { "sTitle": "领取时间", "mData": "CreateTime" },
+                            { "sTitle": "使用时间", "mData": "UpdateTime", },
+                            { "sTitle": "免费/自费", "mData": "Type" },
+                            {
+                                "sTitle": "使用/未使用",
+                                "data": null,
+                                "mRender": function (data, type, full) {
+                                    if (data.UpdateTime) return `已使用`
+                                    return `未使用`
+                                }
+                            }],
+
+                        rankLog: [
+                            { "sTitle": "活动名称	", "mData": "Name" },
+                            { "sTitle": "活动种类	", "mData": "Type" },
+                            { "sTitle": "排行", "mData": "Rank" },
+                            { "sTitle": "分数", "mData": "Score", },
+                            { "sTitle": "是否完成结算", "mData": "LastCalcRank" },
+                            { "sTitle": "排行时间", "mData": "CreateTime" },
+                            { "sTitle": "奖励金额", "mData": "Reward" }],
+
+                        flowLimit: [
+                            { "sTitle": "种类", "mData": "EventName" },
+                            { "sTitle": "充值金额", "mData": "Amount" },
+                            { "sTitle": "稽核流水", "mData": "FlowAmountLimit", },
+                            {
+                                "sTitle": "有效输赢流水",
+                                "data": null,
+                                "mRender": function (data, type, full) {
+                                    return `<a onclick="showMoneyModal('${data.StartTime}', '${data.EndTime}')" class="btn btn-outline-secondary">${data.FlowAmount}</a>`
+                                }
+                            },
+                            { "sTitle": "状态", "mData": "Status" },
+                            { "sTitle": "时间", "mData": "CreateTime" },
+                            { "sTitle": "操作时间", "mData": "UpdateTime" },
+                            { "sTitle": "操作人", "mData": "UpdateBy" },
+                            {
+                                "sTitle": "备注", "mData": "Memo", "mRender": function (data, type, row) {
+
+                                    var fullText = String.format('删除原因：{0}', row.Memo);
+                                    var html = "";
+                                    html = html + String.format('<div class="shortText" onclick="alert(\'{1}\')">{0}</div>', row.Memo, fullText);
+                                    return html;
+                                }
+                            },
+                            {
+                                "sTitle": "操作",
+                                "mData": "Status",
+                                "mRender": function (data, type, row) {
+
+                                    var html = "";
+                                    if (isDeleteFlowAmountPremission && !row.IsDeleteDisabled)
+                                    {
+                                        html = html + String.format('<a id="" class="btn btn-sm dark" onclick="ConfirmDeleteOrNot({0})" >删除</a>', row.ID);
+                                    }
+
+                                    return html;
+                                }
+                            }]
+                    }
+                },
+
+                methods: {
+                    createTable: function (userID, tag, timeInterval = null)
+                    {
+                        const url = vApp.urls[tag]
+
+                        let beginTime = $(`#beginTime_${tag}`).val()
+                        let endTime = $(`#endTime_${tag}`).val()
+
+                        if (timeInterval != null)
+                        {
+                            if (Date.parse(timeInterval.beginTimeStr)) {
+                                beginTime = timeInterval.beginTimeStr;
+                            }
+                            if (Date.parse(timeInterval.endTimeStr)) {
+                                endTime = timeInterval.endTimeStr;
+                            }
+                        }
+
+                        const opt = {
+                            "ordering": false,
+                            "searching": false,
+                            "aoColumns": vApp.theadList[tag],
+                            "processing": true,
+                            "serverSide": true,
+                            "ajax": {
+                                "type": "POST",
+                                "url": url,
+                                "data": {
+                                    '_r': Math.random(),
+                                    'gameID': this.selectedGameID,
+                                    'userID': userID,
+                                    'beginTime': beginTime,
+                                    'endTime': endTime,
+                                    'status': this.selectedStatus
+                                }
+                            },
+                            "destroy": true
+                        }
+
+                        if (tag == "changeLog") {
+                            opt.ajax.data.type = 'Payment';
+                        }
+
+                        $(`#${tag}_table`).dataTable(opt)
+                    },
+
+                    exportReport: function (userID, tag) {
+                        const url = vApp.urls[tag]
+                        const reportUrl = vApp.reportUrl[tag];
+                        const beginTime = $(`#beginTime_${tag}`).val()
+                        const endTime = $(`#endTime_${tag}`).val()
+
+                        $.ajax({
+                            cache: false,
+                            url: url,
+                            type: "POST",
+                            data: {
+                                userID: userID,
+                                beginTime: beginTime,
+                                endTime: endTime,
+                                submitType: 'Export'
+                            },
+                            success: function (data) {
+                                window.location = reportUrl + '?fileGuid=' + data.FileGuid + '&filename=' + data.FileName;
+                            }
+                        })
+                    },
+
+                    newOpenUrl: function (userID, tag) {
+
+                        const reportUrl = vApp.reportUrl[tag];
+                        const beginTime = $(`#beginTime_${tag}`).val()
+                        const endTime = $(`#endTime_${tag}`).val()
+
+                        var exportUrl = reportUrl + String.format('?userID={0}&beginTime={1}&endTime={2}' , userID , beginTime , endTime);
+                        window.location = exportUrl;
+                    },
+
+                    selectGameID (gameID) {
+                        this.$set(this, 'selectedGameID', gameID)
+                    }
+                },
+
+                components: {
+                    'records-bar': Recordsbar
+                }
+            });
+
+            var validateFunc = function () {
+                var validator = new Validator()
+                validator.add([form_search.loginName, form_search.nickName, form_search.userID], [{
+                    strategy: 'isSomeNonEmpty',
+                    errorMsg: '账户信息不能全为空,请输入账号或者ID！'
+                }])
+
+                var errorMsg = validator.start()
+                return errorMsg
+            }
+
+            var form = document.getElementById('form_search')
+            form.onsubmit = function () {
+                var errorMsg = validateFunc()
+                if (errorMsg) {
+                    alert(errorMsg)
+                    return false
+                }
+            }
+            var userID = `@ViewBag.userID`;
+            if (userID) {
+                $("#userID").val(userID)
+            }
+            fillFormData('form_search');
+
+            //開啟相對應的Dialog
+            var _tagModal = '@ViewBag.OpenTag' + "Modal";
+
+            if ('@ViewBag.OpenTag') {
+                $("#user@example.invalid").val('@ViewBag.BeginTime');
+                $('a[data-target = "#' + _tagModal + '"]').click();
+            }
+        });
+        function showMoneyModal(startTime, endTime) {
+            $('.modal').modal('hide');
+            $('#beginTime_money').val(startTime);
+            $('#endTime_money').val(endTime);
+            $('#moneySearch').trigger('click');
+            $(`#moneyModal`).modal('show');
+        }
+        function ResetPassword(id) {
+            swDelConfirmUrl("ResetPassword?userID=" + id, "确定要重置密码吗?");
+        }
+        function ResetBankPassword(id) {
+            swDelConfirmUrl("ResetBankPwd?userID=" + id, "确定要重置保险箱密码吗?");
+        }
+        function ResetAlipayAccount(id) {
+            swDelConfirmUrl("ResetAlipayAccount?userID=" + id, "确定要重置支付宝账号吗?");
+        }
+        function ResetUnionpayAccount(id) {
+            swDelConfirmUrl("ResetUnionpayAccount?userID=" + id, "确定要重置銀聯账号吗?");
+        }
+        function ResetPhoneNumber(id) {
+            swDelConfirmUrl("ResetPhoneNumber?userID=" + id, "确定要重置注册手机号?");
+        }
+        function KickoutGameAccount(id) {
+            var option = {
+                isAjax: true,
+                isReload: false
+            }
+
+            swDelConfirmUrl("KickoutGameAccount?userID=" + id, "确定要踢出房間吗?", option);
+        }
+
+        function loadDetailLog(gametime, logid) {
+            $("#text-Id").html('');
+            $("#text-LogID").html('');
+            $("#text-DealNo").html('');
+            $("#text-ServerID").html('');
+            $("#text-ServerName").html('');
+            $("#text-GameName").html('');
+            $("#text-TaxAmount").html('');
+            $("#text-GameData").html('');
+            $("#text-Param1").html('');
+            $("#text-Param2").html('');
+            $("#text-GameTime").html('');
+
+            //加载详情
+            $.get("/Game/GetPerGameLogByLogID", { logID: logid, gametime: gametime, r: Math.random() }, function (data) {
+                var result = JSON.parse(data);
+                $("#text-Id").html(result.Id);
+                $("#text-LogID").html(result.Id);
+                $("#text-DealNo").html(result.DealNo);
+                $("#text-ServerID").html(result.ServerID);
+                $("#text-ServerName").html(result.ServerName);
+                $("#text-GameName").html(result.GameName);
+                $("#text-TaxAmount").html(result.TaxAmount);
+                $("#text-GameData").html(result.GameData.replace('\r\n', '').replace(/\r\n/g, '<br />'));
+                $("#text-Param1").html(result.Param1);
+                $("#text-Param2").html(result.Param2);
+                $("#text-GameTime").html('【' + result.BeginTime + '】~【' + result.EndTime + '】');
+            });
+
+            $("#tbody-data").html('');
+
+            //加载列表
+            $.get("/Game/GetDetailLogByLogID", { logID: logid, gametime: gametime }, function (data) {
+                var result = JSON.parse(data);
+                var html = "";
+                for (var i = 0; i < result.length; i++) {
+                    html += "<tr>"
+                        + " <td class='hide'>" + result[i].Id + "</td>"
+                        + "<td>" + result[i].LogID + "</td>"
+                        + "<td>" + result[i].UserType + "</td>"
+                        //+ "<td>" + result[i].ServerID + "</td>"
+                        + "<td>" + result[i].ServerName + "</td>"
+                        + "<td>" + result[i].LastLogonIPAddress + "</td>"
+                        //+ "<td>" + result[i].GameName + "</td>"
+                        //+ "<td>" + result[i].DealNo + "</td>"
+                        + "<td><a class='link' target='_blank' href='/UserInfo/Search?userId=" + result[i].UserID + "'>" + result[i].UserID + "</a></td>"
+                        + "<td>" + result[i].LoginName + "</td>"
+                        + "<td>" + result[i].RealName + "</td>"
+                        + "<td>" + result[i].UnionpayRealName + "</td>"
+                        + "<td>" + result[i].GradeID + "</td>"
+                        + "<td>" + result[i].CurrentAmount + "</td>"
+                        + "<td>" + result[i].UpdateAmount + "</td>"
+                        + "<td>" + result[i].GameTime + "</td>"
+                    html += "</tr>";
+                }
+                $("#tbody-data").html(html);
+            });
+        }
+
+        function createMoneyDetailTable(userID, tradeID, tag) {
+            const opt = {
+                "ordering": false,
+                "searching": false,
+                "aoColumns": [
+                               { "sTitle": "时间", "mData": "GameTime" },
+                               { "sTitle": "牌局标识", "mData": "LogID" },
+                               { "sTitle": "服务器编号", "mData": "ServerID" },
+                               { "sTitle": "服务器名称", "mData": "ServerName" },
+                               { "sTitle": "游戏名称	", "mData": "GameName" },
+                               { "sTitle": "当前金币", "mData": "CurrentAmount" },
+                               { "sTitle": "更新金币", "mData": "UpdateAmount" },
+                               {
+                                   "data": null,
+                                   "mRender": function (data, type, full) {
+                                       return `<div class="control">
+                                                <div class ="pointer details-control" data-toggle="modal" data-target="#detailsModal" data-logid="${full.LogID}"
+                                                    onclick="loadDetailLog('${full.GameTime}','${full.LogID}')">
+                                                   <div class ="btn-list"></div>
+                                                   <span>详情<span>
+                                                 </div>
+                                               <div>`
+                                   }
+                               }],
+                "processing": true,
+                "serverSide": true,
+                "lengthChange": false,
+                "paginate": false,
+                "scrollY": "500px",
+                "scrollCollapse": true,
+                "ajax": {
+                    "type": "POST",
+                    "url": '/UserInfo/GetMoneyDetailLog',
+                    "data": {
+                        '_r': Math.random(),
+                        'userID': userID,
+                        'tradeID': tradeID
+                    }
+                },
+                "destroy": true
+            }
+            $(`#${tag}_table`).dataTable(opt)
+        }
+
+        function ForbidUser(id) {
+            swDelConfirmUrl("ForbidUser?userID=" + id, "确定要封锁此帐号吗?");
+        }
+
+        function ConfirmDeleteOrNot(id) {
+
+            var text = prompt("若要刪除此項目，請輸入原因 (必填项目, 30字)", "");
+
+            if (text == null) {
+                return;
+            }
+
+            if (text == '') {
+                alert('原因为必填项目');
+                return;
+            }
+
+            if(text.length > 60)
+            {
+                alert('储存失败: 字数过多');
+                return;
+            }
+
+            var postBody =
+            {
+                id: id,
+                memo : text
+            };
+
+            $.ajax({
+                cache: false,
+                url: '/UserInfoFlowAmount/DeleteFlowAmountLimit',
+                type: 'POST',
+                data: postBody,
+                success: function (data) {
+
+                    if (data.IsSuccess) {
+
+                        alert(data.Message);
+
+                        //刷新Table
+                        $("#flowAmountSearch")[0].click();
+
+                    }
+                    else {
+                        alert(data.Message);
+                    }
+
+                },
+                error: function (err) {
+                    swal({
+                        type: 'error',
+                        title: '操作失败',
+                        text: err
+                    })
+                }
+            });
+
+
+        }
+
+
+
+
+    </script>
+}

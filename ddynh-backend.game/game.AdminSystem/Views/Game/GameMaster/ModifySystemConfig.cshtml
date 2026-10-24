@@ -1,0 +1,176 @@
+﻿@using FW.Core.Helper.Enum
+
+@model game.Entity.Game.SystemConfig
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                <div class="form-group">
+                    <label>平台</label>
+                    @Html.Partial("_DropdownPlatform", new DropdownPartialSettingViewModel(FirstOptionValueEnum.MustSelect))
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default"> 搜 索 </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (Model != null)
+{
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="portlet box grey">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-globe"></i>编辑系统配置
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <!-- BEGIN FORM-->
+                    <form id="systemConfigForm" method="post" class="form-horizontal form-bordered">
+                        <input type="hidden" name="Id" value="@Model.Id" />
+                        <input type="hidden" name="PlatformID" value="@Model.PlatformID" />
+                        <input type="hidden" name="ConvertWinLostAlert" value="@(Model.ConvertWinLostAlert.HasValue ? Model.ConvertWinLostAlert.Value.ToCash() : "0")" />
+                        <input type="hidden" name="TGBotToken" value="@Model.TGBotToken" />
+                        <input type="hidden" name="TGChatID" value="@Model.TGChatID" />
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label class="control-label col-md-5">兑换状态</label>
+                                <div class="col-md-7 radio-list">
+                                    <select class="form-control input-small" id="ConvertStatus" name="ConvertStatus">
+                                        @foreach (game.Entity.Game.ConvertConfigStatus item in Enum.GetValues(typeof(game.Entity.Game.ConvertConfigStatus)))
+                                        {
+                                            <option value="@item" @Html.IsChoose(Model.ConvertStatus == item, "select")>@item.GetDisplayName()</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5">兑换开关</label>
+                                <div class="col-md-7 radio-list">
+                                    <input type="hidden" name="ConvertBankShow" id="ConvertBankShow" value="@Model.ConvertBankShow" />
+                                    <input type="hidden" name="ConvertAlipayShow" id="ConvertAlipayShow" value="@Model.ConvertAlipayShow" />
+                                    <div>
+                                        <input type="checkbox" name="checkbox_bank" id="checkbox_bank" /><label>银行</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" name="checkbox_alipay" id="checkbox_alipay" /><label>支付宝</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 xing">兑换时金币必须保留的数量</label>
+                                <div class="col-md-7">
+                                    <input type="text" name="ConvertRetainAmount" class="form-control input-medium" placeholder="请输入兑换时金币必须保留的数量" value="@Model.ConvertRetainAmount.ToCash()" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 xing">允许单次兑换最小金额</label>
+                                <div class="col-md-7">
+                                    <input type="text" name="ConvertMinAmount" class="form-control input-medium" placeholder="请输入单次兑换最小金额" value="@Model.ConvertMinAmount.ToCash()" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 xing">允许单次兑换最大金额</label>
+                                <div class="col-md-7">
+                                    <input type="text" name="ConvertMaxAmount" class="form-control input-medium" placeholder="请输入单次兑换最大金额" value="@Model.ConvertMaxAmount.ToCash()" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 xing">关闭兑换功能的提示消息</label>
+                                <div class="col-md-7">
+                                    <textarea rows="4" id="PromptMsg" name="PromptMsg" class="form-control input-large" placeholder="请输入关闭兑换功能的提示消息">@Model.PromptMsg</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 xing">兑换比例提示文本</label>
+                                <div class="col-md-7">
+                                    <textarea rows="4" id="ConvertRateTip" name="ConvertRateTip" class="form-control input-large" placeholder="请输入兑换比例提示文本">@Model.ConvertRateTip</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 xing">银行默认密码文本</label>
+                                <div class="col-md-7">
+                                    <textarea rows="4" id="BankDefaultPwdTip" name="BankDefaultPwdTip" class="form-control input-large" placeholder="请输入银行默认密码文本">@Model.BankDefaultPwdTip</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 xing">客服默认提示讯息文本</label>
+                                <div class="col-md-7">
+                                    <textarea rows="4" id="QuestionContactTip" name="QuestionContactTip" class="form-control input-large" placeholder="请输入客服默认提示讯息文本">@Model.QuestionContactTip</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <div class="col-md-offset-5 col-md-7">
+                                @Html.OkWithRight()
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END FORM-->
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section initScripts{
+    <script>
+        $(function () {
+            fillFormData('form_search');
+
+            if ($("#ConvertBankShow").val() == 1) {
+                $('#checkbox_bank').click()
+            }
+
+            if ($("#ConvertAlipayShow").val() == 1) {
+                $('#checkbox_alipay').click()
+            }
+
+            $('#checkbox_bank').click(function () {
+                let res = $('#checkbox_bank').is(':checked')
+                $('#ConvertBankShow').val(+res)
+            });
+
+            $('#checkbox_alipay').click(function () {
+                let res = $('#checkbox_alipay').is(':checked')
+                $('#ConvertAlipayShow').val(+res)
+            });
+
+            $.validator.addMethod("checkMaxLength", (val, el) => {
+                var len = 0;
+                for (var i = 0; i < val.length; i++) {
+                    len += (val[i].match(/[^\x00-\xff]|[\r\n]|[\r]|[\n]/ig) != null) ? 2 : 1;
+                }
+                if (len <= 512)
+                    return true;
+                else
+                    return false;
+            }, "请输入一个 长度最多是 512 的字符串, 换行为2个字符");
+
+            $('#systemConfigForm').validate({
+                rules: {
+                    PromptMsg: {
+                        required: true,
+                        checkMaxLength: $("#PromptMsg").val()
+                    },
+                    ConvertRateTip: {
+                        required: true,
+                        checkMaxLength: $("#ConvertRateTip").val()
+                    },
+                    BankDefaultPwdTip: {
+                        required: true,
+                        checkMaxLength: $("#BankDefaultPwdTip").val()
+                    },
+                    QuestionContactTip: {
+                        required: true,
+                        checkMaxLength: $("#QuestionContactTip").val()
+                    }
+                }
+            });
+        })
+    </script>
+}

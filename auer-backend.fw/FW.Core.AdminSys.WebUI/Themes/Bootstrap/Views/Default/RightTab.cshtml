@@ -1,0 +1,68 @@
+﻿@model List<FW.Core.AdminSys.Provider.Entity.Right>
+@{
+    Layout = null;
+    FW.Core.AdminSys.Provider.Entity.Right cr = ViewBag.currentRight;
+}
+
+
+@if (Model != null)
+{
+    bool isActive = false;
+
+
+    foreach (var r in Model)
+    {
+        string url = "";
+        if (!String.IsNullOrWhiteSpace(r.PageUrl))
+        {
+            url = r.PageUrl.ToLower();
+        }
+
+        string active = "";
+        if (r.RightToken.ToLower() == cr.RightToken.ToLower())
+        {
+            active = "active";
+            isActive = true;
+        }
+        else if (!String.IsNullOrWhiteSpace(url))
+        {
+            var accessLog = HttpContext.Current.Session[ActionLogFilter.SESSIONKEY_ACCESSLOGFORTABURL] as List<string>;
+            if (accessLog != null)
+            {
+                var urlAbsolute = new System.Text.RegularExpressions.Regex("\\?.*").Replace(url, "").ToLower();
+
+                var log = accessLog.Where(l => new Uri(l).AbsolutePath.ToLower() == urlAbsolute).FirstOrDefault();
+                if (log != null)
+                {
+                    //url = new Uri(log).PathAndQuery; //alan 20180416修改
+                    url = new Uri(log).AbsolutePath;
+                }
+            }
+        }
+
+        <label class="btn dark @active" onclick="changeTab('@url', '@r.RightToken.ToLower()')">
+                <input type="radio" class="toggle">@r.RightName
+        </label>
+    }
+
+    if (!isActive)
+    {
+        <label class="btn dark active">
+            <input type="radio" class="toggle">@cr.RightName
+        </label>
+    }
+
+}
+
+<script>
+    function changeTab(url, token) {
+        if (typeof onChangeTab != "undefined") {
+            if (onChangeTab(token)) {
+                window.location.href = url;
+            }
+        }
+        else {
+            window.location.href = url;
+        }
+    }
+</script>

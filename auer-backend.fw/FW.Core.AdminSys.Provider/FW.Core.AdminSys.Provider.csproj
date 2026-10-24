@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://example.invalid/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B6AB1D14-164F-41DC-8575-95699A29B831}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FW.Core.AdminSys.Provider</RootNamespace>
+    <AssemblyName>FW.Core.AdminSys.Provider</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\using\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="example.invalid.Http" />
+    <Reference Include="example.invalid.Http.Formatting, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\shiquan\web\using\example.invalid.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\shiquan\web\using\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=0.0.0.0, Culture=neutral, PublicKeyToken=[REDACTED], processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdminSysProviderConfigHandler.cs" />
+    <Compile Include="APIHelper.cs" />
+    <Compile Include="APIProvider\APIAdminSysProvider.cs" />
+    <Compile Include="Auth\DbUserRightLoader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Auth\MvcAuthRuleDbProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EFProvider\AdminDbContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EFProvider\EFAdminSysProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EFProvider\Map\AdminLogConfig.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EFProvider\Map\AdminUserConfig.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EFProvider\Map\QuickActionConfig.cs" />
+    <Compile Include="EFProvider\Map\RightConfig.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EFProvider\Map\RoleConfig.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EFProvider\Map\RoleRightConfig.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EFProvider\Map\UserRightConfig.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EFProvider\Map\UserRoleConfig.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entity\AdminLog.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entity\AdminUser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entity\QuickAction.cs" />
+    <Compile Include="Entity\Right.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entity\Role.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entity\RoleRight.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entity\UserIdentity.cs" />
+    <Compile Include="Entity\UserRight.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entity\UserRole.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Event.cs" />
+    <Compile Include="IAdminSysProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ISysInfoProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProviderContext.cs" />
+    <Compile Include="RightFinder\Attribute\CommandRightAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RightFinder\Attribute\PageRightAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RightFinder\Attribute\RightInfoAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RightFinder\IRightFinder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RightFinder\MvcReflectedRightFinder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RightFinder\RightInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FW.Core.Auth\FW.Core.Auth.csproj">
+      <Project>{fa28482a-313d-429c-8653-781a77de049b}</Project>
+      <Name>FW.Core.Auth</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FW.Core.Cache\FW.Core.Cache.csproj">
+      <Project>{fa1a7884-a23a-4e0c-a138-f935b096533e}</Project>
+      <Name>FW.Core.Cache</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FW.Core.Helper\FW.Core.Helper.csproj">
+      <Project>{4f70d664-a9b0-4f2b-b461-d2c12548eddc}</Project>
+      <Name>FW.Core.Helper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FW.Core.Web\FW.Core.Web.csproj">
+      <Project>{d37032a0-c770-4e75-9371-fe6b8505f284}</Project>
+      <Name>FW.Core.Web</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

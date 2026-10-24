@@ -1,0 +1,338 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width ,initial-scale=1, user-scalable=no" />
+    <title>index</title>
+    <link rel="stylesheet" href="https://example.invalid/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" href="@Url.Content("~/Content/serviceTalk/css/style.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Content/lan-emoji/css/lan-emoji.css")">
+    <script type="text/javascript" src="/Scripts/vue.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/Scripts/moment.js" )"></script>
+    <script src="@Url.Content("~/Content/lan-emoji/js/lan-emoji.js?v=20188220546")"></script>
+
+
+</head>
+<body>
+    <div id="ServiceTalk" class="contain">
+        <div id="main_content" class="content" v-on:click="disabledEmoji()">
+            <div class="talk_main" id="sourceText">
+                <div v-for="(it, index) in msgList">
+                    <div v-if="it.type !== 's'">
+                        <i class="infoU" v-html="it.CreateTime"></i>
+                        <div class="msg_cantant">
+                            <img class="face_img" v-bind:src="`/Content/HeadIcon/sprite_10.png`">
+                            <div class="mwt_border chat_s">
+                                <span class="arrow_l_int"></span>
+                                <span class="arrow_l_out"></span>
+                                <span v-if="!it.Image" class="span" v-text="it.Reply"></span>
+                                <img v-else v-bind:src="it.Image" class="updateImage" v-on:click="showImage(it.Image)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <i class="infoCS" v-html="it.HandleTime"></i>
+                        <i v-text="it.DisplayName"></i>
+                        <div class="msg_cantant msg_cantant_r">
+                            <div class="mwt_border chat_m">
+                                <span class="arrow_r_int"></span>
+                                <span class="arrow_r_out"></span>
+                                <span v-if="!it.Image" class="span" v-text="it.Reply"></span>
+                                <img v-else v-bind:src="it.Image" class="updateImage" v-on:click="showImage(it.Image)" />
+                            </div>
+                            <img class="face_img" v-bind:src="`/Content/HeadIcon/sprite_${it.FaceID}.png`">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="emoji"></div>
+        <div class="footer">
+            <div class="editor__contain">
+                <div id="editArea" name="editArea" placeholder="亲，请说明您的问题" contenteditable="true" class="placeholder editArea fullheight"></div>
+                <div class="editArea_action">
+                    <label v-if="isUploadFile === 'True'" class="fas fa-paperclip editor_face" >
+                        <input id="upload_img" type="file" style="display:none;">
+                    </label>
+                    <i id="btn" class="far fa-smile-beam editor_face"></i>
+                    <i id="send" class="far fa-paper-plane editor_face" v-on:click="setMessageEnter()"></i>
+                </div>
+            </div>
+        </div>
+        <div v-if="isLightbox" class="lightbox" v-on:click="showImage()">
+            <img class="lightbox__img" />
+        </div>
+        <div v-if="isShowLoading" class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </div>
+
+    <script>
+        localStorage.setItem("token", `@ViewBag.token`);
+
+        const option = {
+            editor: 'editArea',
+            btn: 'btn',
+            icon: [{
+                path: '/Content/lan-emoji/img/face',
+                alias: {
+                    1: "angry",
+                    2: "blubb",
+                    3: "boo",
+                    4: "brains",
+                    5: "dub",
+                    6: "disappearing",
+                    7: "dizzy",
+                    8: "enjoying",
+                    9: "evilish",
+                    10: "graffiti",
+                    11: "grin",
+                    12: "niceday",
+                    13: "fakesmile",
+                    14: "inlove",
+                    15: "kaboom",
+                    16: "lll",
+                    17: "meaw",
+                    18: "ninja",
+                    19: "OO",
+                    20: "omg",
+                    21: "onfire",
+                    22: "ouchhurts",
+                    23: "pissedoff",
+                    24: "pleasant",
+                    25: "seriousbusiness",
+                    26: "sick",
+                    27: "slow",
+                    28: "snooty",
+                    29: "something",
+                    30: "tttt",
+                    31: "want",
+                    32: "gonnadie",
+                    33: "wut",
+                    34: "xx",
+                    35: "xd",
+                    36: "drunk",
+                    37: "yarr",
+                    38: "kiddingright",
+                    39: "yuush",
+                    40: "zzz"
+                }
+            }]
+        }
+        $(function () {
+            var vApp = new Vue({
+                el: '#ServiceTalk',
+                data: {
+                    msgList: [],
+                    timeOutId: 0,
+                    isShow: false,
+                    isLightbox: false,
+                    isShowLoading: true,
+                    default_Reply_msg: false,
+                    isUploadFile: `@ViewBag.isUploadFile`
+                },
+
+                methods: {
+                    CheckUser () {
+                        $.ajax({
+                            url: '/ServiceTalk/CheckUser',
+                            method: "POST",
+                            dataType: "json",
+                            crossDomain: true,
+                            contentType: "application/json; charset=utf-8",
+                            cache: false,
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader("Authorization", localStorage.getItem("token"));
+                            },
+                            success: function (data) {
+                                vApp.GetReplayMessage()
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                            }
+                        });
+                    },
+                    GetReplayMessage() {
+                        clearInterval(vApp.timeOutId)
+                        var ajaxFn = function () {
+                            $.ajax({
+                                url: '/ServiceTalk/GetReplayMessage',
+                                method: "POST",
+                                dataType: "json",
+                                crossDomain: true,
+                                contentType: "application/json; charset=utf-8",
+                                cache: false,
+                                beforeSend: function (xhr) {
+                                    xhr.setRequestHeader("Authorization", localStorage.getItem("token"));
+                                },
+                                success: function (data) {
+                                    var list = [];
+                                    data.data.forEach(function (val) {
+                                        list.push({ type: 's', Qid: val.QId, UserID: val.UserID, FaceID: val.FaceID, Question: val.Question, Reply: val.Question, ReplyContent: val.ReplyContent, CreateTime: val.CreateTime, NickName: val.NickName, DisplayName: val.DisplayName, HandleTime: val.HandleTime, Status: val.Status, StatusCode: val.StatusCode, Image: val.image })
+                                        if (val.ReplyContent) {
+                                            var split = val.ReplyContent.split("\r\n")
+
+                                            split.forEach(function (reply) {
+                                                if (reply) {
+
+                                                    var replaceReply = reply.replace(/\n/g, "<br/>")
+                                                    const substr = replaceReply.substring(4, 20)
+                                                    const date = moment(substr, 'YYYY-MM-DD HH:ss', true)
+                                                    const isValid = date.isValid()
+                                                    const createTime = isValid ? date.format('YYYY-MM-DD HH:ss') : val.CreateTime
+                                                    const split = replaceReply.split(`time${createTime}`)
+                                                    if (split.length > 1) {
+                                                        val.image = null
+                                                        const img = split[1].split('imgs')
+                                                        if (img.length > 1) {
+                                                            val.image = img[1]
+                                                            split[1] = img[1]
+                                                        }
+                                                        replaceReply = split[1]
+                                                    }
+
+                                                    list.push({ type: 'm', Qid: val.QId, UserID: val.UserID, Question: val.Question, ReplyContent: val.ReplyContent, Reply: replaceReply, CreateTime: createTime, NickName: val.NickName, DisplayName: val.DisplayName, HandleTime: val.HandleTime, Status: val.Status, Image: val.image })
+                                                }
+                                            })
+                                        }
+                                    })
+
+                                    const newVal = list[list.length - 1]
+                                    const oldVal = vApp.msgList[vApp.msgList.length - 1]
+
+                                    if (list.length === 0 || vApp.default_Reply_msg) {
+                                        vApp.default_Reply_msg = true
+                                        list.splice(0, 0, { type: 'm', Reply: '亲，我们是24小时在线客服，很高兴为您服务，请问有什么可以帮到您的？' })
+                                    }
+
+                                    vApp.msgList = list
+
+                                    if (oldVal === void 0 || newVal === void 0 || newVal.Reply !== oldVal.Reply || newVal.Image !== oldVal.Image) {
+                                        Vue.nextTick(function () {
+                                            $('.content img').load(function () {
+                                                $('.content').scrollTop(document.querySelector(".content").scrollHeight)
+                                            })
+                                            vApp.emojiParse()
+                                            vApp.isShowLoading = false
+                                        })
+                                    }
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                }
+                            });
+                        }
+
+                        ajaxFn()
+                        $('.content').scrollTop(document.querySelector(".content").scrollHeight)
+                        vApp.timeOutId = setInterval(ajaxFn, 5000);
+                    },
+
+                    setMessageEnter: function () {
+                        vApp.ReplyQuestion($('.editArea').html())
+                        $('.editArea').empty()
+                    },
+
+                    ReplyQuestion: function () {
+                        _emoji.emojiChange()
+                        reply = $("#editArea").html($("#editArea").text())[0].textContent;
+
+                        if (reply == "") {
+                            vApp.emojiParse()
+                            return;
+                        }
+
+                        reply = $("#editArea").html($("#editArea").text())[0].textContent;
+                        vApp.errMsg = ''
+
+                        $.ajax({
+                            url: '/ServiceTalk/CreateQuestion',
+                            method: "POST",
+                            dataType: "json",
+                            data: JSON.stringify({
+                                '_r': Math.random(),
+                                msg: reply,
+                            }),
+                            crossDomain: true,
+                            contentType: "application/json; charset=utf-8",
+                            cache: false,
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader("Authorization", localStorage.getItem("token"));
+                            },
+                            success: function (data) {
+                                $('.editArea').empty()
+                                vApp.GetReplayMessage()
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+
+                            }
+                        });
+                    },
+                    uploadFile () {
+                        var data = new FormData();
+                        var files = $("#upload_img").get(0).files;
+
+                        if (files.length > 0) {
+                            data.append("UploadedImage", files[0]);
+                        }
+
+                        var ajaxRequest = $.ajax({
+                            type: "POST",
+                            url: "ServiceTalk/UploadFile",
+                            contentType: false,
+                            processData: false,
+                            dataType: "json",
+                            data: data,
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader("Authorization", localStorage.getItem("token"));
+                            },
+                        }).done(function (data, textStatus) {
+                            vApp.GetReplayMessage()
+                        }).fail(function (jqXHR, textStatus) {
+                            alert(jqXHR.responseText)
+                        });
+                    },
+                    showImage (url) {                     
+                        vApp.isLightbox = !vApp.isLightbox
+                        Vue.nextTick(function () {
+                            if (url !== void 0) {
+                                var index = url.lastIndexOf('/') + 1;
+                                url = url.substring(0, index) + 'ORIG-' + url.slice(index);
+                                $(".lightbox__img").attr("src", url)
+                            }
+                        })
+                    },
+                    disabledEmoji () {
+                        _emoji.toggle(false)
+                    },
+                    emojiParse () {
+                        _emoji.emojiParse(document.querySelectorAll('#sourceText span'))
+                    }
+                }
+            })
+
+            var _emoji = new emoji(option)
+
+            vApp.CheckUser()
+            $('#upload_img').on('change', function () {
+                vApp.uploadFile()
+            });
+
+            document.addEventListener("mousedown", function (e) {
+                if (e.target.id == "btn" || e.target.id == "face_img") {
+                    e.preventDefault()
+                }
+                if (e.target.id == "send") {
+                    _emoji.toggle(false)
+                }
+            }, false);
+
+            $(document).on('touchstart', function (e) {
+                if ($(e.target).is('.editor_face')) {
+                    document.activeElement.blur()
+                }
+            })
+        })
+    </script>
+</body>
+</html>

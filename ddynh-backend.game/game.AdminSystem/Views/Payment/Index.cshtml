@@ -1,0 +1,177 @@
+﻿@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+}
+
+<style>
+    .payGateway {
+        display: flex;
+    }
+
+    .gateway_btn {
+        display: flex;
+        align-items: center;
+        padding-left: 2%;
+    }
+</style>
+<div class="row" id="pay_paytype">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <div class="table-scrollable">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>支付平台</th>
+                            <th>所属平台</th>
+                            <th>支付代号</th>
+                            <th>支付渠道</th>
+                            <th>弹性金额</th>
+                            <th>
+                                支付规格
+                                <font color="blue">
+                                    <br>弹性金额输入格式為 : 最小金额,最大金额
+                                    <br>固定金额输入格式為 : 金额1,金额2,金额3...
+                                </font>
+                            </th>
+                            <th>交易代码</th>
+                            <th>启动</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--
+                        public int GWID { get; set; }
+                        public int Type { get; set; }
+                        public string Currencies { get; set; }
+                        public string BankCode { get; set; }
+                        public int MinAmount { get; set; }
+                        public int MaxAmount { get; set; }
+                        //public bool AmountFixed { get; set; }
+                        public string FixedAmount { get; set; }
+                        public bool Status { get; set; }
+                                        -->
+                        <tr v-for="item in tableList">
+                            <td>{{item.GWID}}</td>
+                            <td>{{item.Type}}</td>
+                            <td>{{item.Currencies}}</td>
+                            <td>{{item.BankCode}}</td>
+                            <td>{{item.MinAmount}}</td>
+                            <td>{{item.MaxAmount}}</td>
+                            <td>{{item.AmountFixed}}</td>
+                            <td>{{item.FixedAmount}}</td>
+                            <td>{{item.Status}}</td>
+                            <!--
+                            <td>
+                                <input type="checkbox" id="checkbox" v-model="item.IsRange">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm" id="title" placeholder="范例 : 1,100,1000" v-model="item.AmountSort">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control input-sm" id="title" v-model="item.TradeCode" readonly>
+                            </td>
+                            <td>
+                                <input type="checkbox" id="checkbox" v-model="item.Status">
+                            </td>
+                            <td>
+                                <input v-if="item.changed" type="button" class="btn btn-sm dark" v-on:click="SetPayType(item)" value="保存">
+                            </td>
+                            -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+
+            var vApp = new Vue({
+                el: '#pay_paytype',
+                data: {
+                    tableList: {},
+                    cloneTableList: {},
+                    payGatewayList: [],
+                    isShow: false
+                },
+
+                watch: {
+                    tableList: {
+                        handler: function (val, oldVal) {
+                            var vm = this;
+                            val.filter((p, idx) => {
+                                return Object.keys(p).some((prop) => {
+                                    var diff = p[prop] !== vm.cloneTableList[idx][prop]
+                                    if (diff) {
+                                        p.changed = true
+                                    }
+                                })
+                            });
+                        },
+                        deep: true
+                    },
+                    payGatewayList: (value) => {
+                        vApp.isShow = value.length > 0
+                    }
+                },
+
+                updated: function () {
+                    $(".checker").removeClass("checker");
+                },
+
+                methods: {
+                    SetPayType(item) {
+
+                        var option = {
+                            isAjax: true,
+                            isReload: false
+                        }
+
+                        swDelConfirmUrl('SetPayType?GWID=' + item.GWID + '&TypeID=' + item.TypeID + '&amountSort=' + item.AmountSort + '&tradeCode=' + item.TradeCode + '&isRange=' + item.IsRange + '&status=' + item.Status, '确定要保存么？', option);
+                    },
+                    getTableList: function () {
+                        $.get('/payment/GetPayType', { '_r': Math.random() }, function (data) {
+                            if (data instanceof Array) {
+                                vApp.tableList = data;
+
+                                const grouped = groupBy(data, pet => pet.GWID);
+                                for (let entry of grouped) {
+                                    console.log(
+                                        entry[1][0].GWID,
+                                        entry[1][0].Type,
+                                        entry[1][0].Currencies,
+                                        entry[1][0].BankCode,
+                                        entry[1][0].MinAmount,
+                                        entry[1][0].MaxAmount,
+                                        entry[1][0].AmountFixed,
+                                        entry[1][0].FixedAmount,
+                                        entry[1][0].Status
+                                    );
+                                    vApp.payGatewayList.push({
+                                        GWID: entry[1][0].GWID,
+                                        Type: entry[1][0].Type,
+                                        Currencies: entry[1][0].Currencies,
+                                        BankCode: entry[1][0].BankCode,
+                                        MinAmount: entry[1][0].MinAmount,
+                                        MaxAmount: entry[1][0].MaxAmount,
+                                        AmountFixed: entry[1][0].AmountFixed,
+                                        FixedAmount: entry[1][0].FixedAmount,
+                                        Status: entry[1][0].Status
+                                    })
+                                }
+
+                                vApp.cloneTableList = vApp.tableList.map(a => Object.assign({}, a));
+                            }
+                            else {
+                                vApp.tableList = {};
+                            }
+                        });
+                    }
+                }
+            });
+            vApp.getTableList();
+        })
+
+    </script>
+}

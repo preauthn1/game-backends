@@ -1,0 +1,632 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@using game.Infrastructure.Extensions;
+@using game.Entity.Event;
+
+@model game.AdminSystem.Models.ViewModels.EventSettingLuckyRouletteSettingUpdateModel
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+
+    .rowBox {
+        padding: 10px;
+        clear: both;
+    }
+
+    .step_title {
+        
+        /*border-bottom: solid 1px #CCC;*/
+        font-size: 15px;
+        padding: 3px;
+        width:90%;
+        font-weight: 700;
+        color: #444;
+    }
+
+    .table th {
+        color: #666;
+        font-weight:400 !important;
+    }
+
+    .innerBox {
+        padding: 15px 10px 5px 25px;
+    }
+
+    .eachGroup
+    {
+        border: solid 7px #EEE;
+        padding:15px 3px 15px 35px;
+    }
+
+    .smallHintText
+    {
+        font-size:12px;
+        color:#888;
+        font-weight:400;
+    }
+
+    .bonusGroupTitle
+    {
+        font-size:18px;
+        font-weight:700;
+        margin-left:-10px;
+        margin-bottom:20px;
+        color:#204ea2;
+    }
+
+    .priorityText
+    {
+        padding: 5px 15px;
+        font-size: 12px;
+        float: right;
+        background: #5c98b5;
+        border-radius: 5px !important;
+        font-weight: 400;
+        color: #FFF;
+        margin-right: 10px;
+    }
+
+    .form-bordered .form-group > div
+    {
+        border-left:0px solid;
+    }
+    
+
+    .btn.plusItem
+    {
+        background-color:#DDD;
+        border-radius:5px !important;
+        margin-left:5px;
+    }
+
+
+    .btn.plusItem:hover
+    {
+        opacity:.85;
+    }
+
+    td .btn.red
+    {
+        float:right;
+        border-radius:5px !important;
+    }
+
+
+
+</style>
+
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>奖励活动高級設置
+                </div>
+            </div>
+
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="myForm" method="post" class="form-horizontal form-bordered" novalidate="novalidate" style="padding:15px;">
+                    <div class="form-body" style="padding-top:20px;">
+                        <input type="hidden" value="@Model.EventSettingID" name="eventId" id="eventId" />
+
+                        @{
+                            var eventType = Model.EventType;
+                            string tipMSg = string.Empty;
+
+
+                            if(eventType == ApplyEventTypeEnum.Roulette_FlowAmount)
+                            {                                
+                                tipMSg = "根据流水累计，发放对应的抽奖次数";
+                            }
+                            else if(eventType == ApplyEventTypeEnum.Roulette_Recharge)
+                            {                                
+                                tipMSg = "根据充值金额累计，发放对应的抽奖次数";
+                            }
+
+
+                        }
+
+                        <div>
+                            <div style="font-size:20px;text-align:center;font-weight:700;" title="活动名称">
+                                @Model.EventName
+
+                                @if (!string.IsNullOrWhiteSpace(Model.EventStatusHintText))
+                                {
+                                    <span style="font-size:14px;margin-left:5px;">(状态:@Model.EventStatusHintText)</span>
+                                }
+                            </div>
+
+                            <div style="font-size:12px;text-align:center;margin-top:5px;color:#888;margin-bottom:10px;">
+                                <span title="活动类型">
+                                    @Model.EventTypeName
+                                </span>
+                                <span id="myTip" aria-hidden="true" style="color:#444;" title="" data-original-title="@tipMSg" class="glyphicon glyphicon-exclamation-sign">
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="step_title" style="margin-top:15px;">
+                            抽奖条件说明
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                <textarea rows="5" cols="50" id="Memo" name="Memo" class="form-control input-xlarge" placeholder="请输入抽奖条件">@Model.Memo</textarea>
+                            </div>
+                        </div>
+
+                        <div class="step_title" style="margin-top:15px;">
+                            详细说明
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                <textarea rows="5" cols="50" id="Tips" name="Tips" class="form-control input-xlarge" placeholder="请输入详细说明">@Model.Tips</textarea>
+                            </div>
+                        </div>
+
+                        <div class="step_title" style="margin-top:15px;">
+                            奖项内容设置
+                            <button id="btn" type="button" class="btn plusItem" v-on:click="addAwardRow(@Model.EventSettingID)"><i class="fa fa-plus"></i></button>
+                        </div>
+                        <div class="innerBox">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>奖项名称</th>
+                                        <th>
+                                            奖项图片
+                                            <span id="image_tip" class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" style="color:#ab284c;" title="图片不可超过70*70">
+                                            </span>
+                                        </th>
+                                        <th>奖项内容</th>
+                                        <th>金币数量</th>
+                                        <th>机率(权值)</th>
+                                        <th>限定数量</th>
+                                        <th>已派发数量</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr v-for="(item, index) in AwardItems">
+                                        <td>
+                                            <input type="text" name="AwardName" class="form-control input-small" v-model="item.DisplayName" />
+                                        </td>
+                                        <td>
+                                            <button id="btn" type="button" class="btn green" v-on:click="showModel(item)">上传档案</button>
+                                            <div :id="'show'+index" v-show="!item.ImageUrl==''" class="previewImage_contain" style="height:110px;border:dashed 5px #EEE;text-align:center">
+                                                <img id="'preview_'+index" :src="item.ImageUrlDomain+item.ImageUrl" alt="your image" style="height:100px;max-width:100%;" />
+                                                <input type="hidden" name="ImageUrlDomain" class="form-control input-small" v-model="item.ImageUrlDomain" />
+                                                <input type="hidden" name="ImageUrl" class="form-control input-small" v-model="item.ImageUrl" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <select name="AwardType" class="form-control input-small" v-model="item.AwardType">
+                                                @foreach (var item in Enum.GetValues(typeof(EventAwardTypeEnum)))
+                                                {
+                                                    var itemValue = (int)item;
+                                                    <option value="@itemValue" v-bind:selected="item.AwardType == @itemValue">@item.GetDisplayName() </option>
+
+                                                }
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="AwardAmount" class="form-control input-small" v-model="item.Amount" />
+                                        </td>
+                                        <td>
+                                            <input type="number" name="AwardRate" class="form-control input-small" v-model="item.AwardRate" />
+                                        </td>
+                                        <td>
+                                            <input type="number" name="AwardLimit" class="form-control input-small" v-model="item.AwardLimit" />
+                                        </td>
+                                        <td>
+                                            <span>{{item.AwardUsed}}</span>
+                                        </td>
+                                        <td>
+                                            <button id="btn" type="button" class="btn red" v-on:click="delAwardRow(item.TableExistID)"><i class="fa fa-trash"></i></button>
+                                        </td>
+                                        <i class="fas fa-trash-alt"></i>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="step_title" style="margin-top:15px;">
+                            抽奖条件设置
+                            <button id="btn" type="button" class="btn plusItem" v-on:click="addLotteryRow(@Model.EventSettingID)"><i class="fa fa-plus"></i></button>
+                        </div>
+                        <div class="innerBox">
+                            <table class="table">
+
+                                @{ 
+                                    string headerText = "充值金额";
+
+                                    if(eventType == ApplyEventTypeEnum.Roulette_FlowAmount)
+                                    {
+                                        headerText = "流水金额";
+                                    }
+                                }
+
+                                <thead>
+                                    <tr>
+                                        <th>@headerText</th>
+                                        <th>获得抽奖次数</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr v-for="(item, index) in LotteryConditionsItems">
+                                        <td>
+                                            <input type="number" name="LotteryAmount" class="form-control input-small" v-model="item.LotteryAmount" />
+                                        </td>
+                                        <td>
+                                            <input type="number" name="LotteryCount" class="form-control input-small" v-model="item.LotteryCount" />
+                                        </td>
+                                        <td>
+                                            <button id="btn" type="button" class="btn red" v-on:click="delLotteryRow(item.TableExistID)"><i class="fa fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <div class="step_title" style="margin-top:15px;">
+                            领取资格设置
+                        </div>
+
+
+                        <div class="innerBox">
+
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:150px;">限制条件</th>
+                                        <th>设置数值</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    <tr v-for="(item, index) in RuleItems">
+                                        <td style="line-height:30px;">
+                                            {{item.DisplayName}}
+                                        </td>
+                                        <td>
+                                            <input v-bind:type="item.TextboxType" class="form-control input-medium" v-model="item.Value" v-if="item.TextboxType != 'checkbox'" />
+                                            <input v-bind:type="item.TextboxType" class="form-control" style="width:16px;" v-model="item.Value" v-if="item.TextboxType == 'checkbox'" :disabled="item.IsDisabled" />
+                                        </td>
+                                    </tr>
+
+
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+                        <div class="col-md-offset-4 col-md-8">
+
+                            @if (Model.IsNotAllowEdit)
+                            {
+                                <span id="myTip" aria-hidden="true" style="color:#444;" title="" data-original-title="不同类型的活动，可设置的项目不同" class="glyphicon glyphicon-exclamation-sign">
+                                </span>
+                                <span>
+                                    您没有编辑权限或此活动已被删除不允许编辑
+                                </span>
+                            }
+                            else
+                            {
+                                <button id="btnOk" type="button" class="btn dark" style="" v-on:click="saveChange()"><i class="fa fa-file-o"></i> 确定</button>
+                            }
+
+                            @Html.Back(Url.Action("List", "Activity"))
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal-->
+    <div class="modal fade" id="editAwardImageModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="width:900px;">
+                <div class="modal-header">
+                    <h5 class="modal-title">圖片上傳设置</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form_Edit" method="post" class="form-horizontal form-bordered" enctype="multipart/form-data">
+                        <div class="form-body">
+                            <input type="hidden" id="awardID" name="awardID" />
+                            <input type="hidden" id="awardName" name="awardName" />
+                            <input type="hidden" id="awardType" name="awardType" />
+                            <input type="hidden" id="awardAmount" name="awardAmount" />
+                            <input type="hidden" id="AwardRate" name="AwardRate" />
+                            <input type="hidden" id="AwardLimit" name="AwardLimit" />
+                            <div class="form-group" id="imageDisplay">
+                                <div>
+                                    <span class="msgSpan" id="flieMsg"></span>
+                                    <input type='file' id="MyFile" name="MyFile" />
+                                </div>
+                                <label for="">
+                                    预览图片
+                                    <span id="image_tip" class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" style="color:#ab284c;" title="首图片不可超过70*70">
+                                    </span>
+                                </label>
+                                <div class="previewImage_contain" style="height:200px;border:dashed 5px #EEE;text-align:center">
+                                    <img id="preview" v-model="item.imgUrl" alt="your image" style="height:180px;max-width:100%;" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-dark" onclick="saveAwardImage()">确定</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--End Edit Modal-->
+</div>
+
+@section initScripts
+{
+    <script>
+
+        $(function () {
+        
+            var vApp = new Vue({
+                el: '#myForm',
+                data: {
+                    RuleItems: @Html.Raw(Model.RuleItems.ConvertToJsonString()),
+                    AwardItems: @Html.Raw(Model.AwardItems.ConvertToJsonString()),
+                    LotteryConditionsItems: @Html.Raw(Model.LotteryConditionsItems.ConvertToJsonString()),
+                },
+                methods: {
+                    saveChange: function (ID) {
+                        var model =
+                        {
+                            EventSettingID: '@Model.EventSettingID',
+                            EventSetting: this.EventSetting,
+                            Memo: $.trim($("#Memo").val()),
+                            Tips: $.trim($("#Tips").val()),
+                            RuleItems: this.RuleItems,
+                            AwardItems: this.AwardItems,
+                            LotteryConditionsItems: this.LotteryConditionsItems
+                        };
+
+                        //jquery validate無法檢查name相同的元素 (只會檢查第一個)，所以只好自己寫alert了
+                        if ($('#myForm').valid() == false) {
+                            return;
+                        }
+
+                        global_valid = true; //重製檢查值
+                        checkNotNullAndNotMinusByElementClass('Amount');
+                        checkNotNullAndNotMinusByElementClass('FlowRate');
+
+                        if (!global_valid)
+                            return;
+
+                        $.ajax({
+                            cache: false,
+                            url: '/ActivityEventRule/EditLuckyRoulette',
+                            type: 'POST',
+                            contentType: "application/json",
+                            dataType: "json",
+                            data: JSON.stringify(model),
+                            success: function (data) {
+                                if (data.IsSuccess) {
+                                    alert(data.Message);
+                                    location.reload();
+                                }
+                                else {
+                                    alert(data.Message);
+                                }
+
+                            },
+                            error: function (err) {
+                                swal({
+                                    type: 'error',
+                                    title: '操作失败',
+                                    text: err
+                                })
+                            }
+                        });
+                    },
+                    showModel: function (item) {
+                        $('#awardID').val(item.TableExistID);
+                        $('#awardName').val(item.DisplayName);
+                        //$('#awardType').val(item.AwardType);
+                        $('#awardAmount').val(item.Amount);
+                        $('#AwardRate').val(item.AwardRate);
+                        $('#AwardLimit').val(item.AwardLimit);
+                        $('#editAwardImageModal').modal('show');
+                    },
+                    addAwardRow: function (eventSettingID) {
+                        var awardModel = {
+                            DisplayName: '金币',
+                            ImageUrlDomain: '',
+                            ImageUrl: '',
+                            AwardType: 1,
+                            Amount: 0,
+                            AwardRate: 0,
+                            AwardLimit: 0,
+                            EventSettingID: eventSettingID
+                        };
+                        this.post("/ActivityEventRule/AddAwardRow", awardModel, this.AwardItems);
+                    },
+                    delAwardRow: function (Id) {
+                        var url = "/ActivityEventRule/DeleteAwardRow";
+                        this.get(url, Id);
+                    },
+                    addLotteryRow: function (eventSettingID) {
+                        var lotteryModel = {
+                            TableExistID: 0,
+                            LotteryAmount: 0,
+                            LotteryCount: 0,
+                            EventSettingID: eventSettingID
+                        };
+                        this.post("/ActivityEventRule/AddLotteryRow", lotteryModel, this.LotteryConditionsItems);
+                    },
+                    delLotteryRow: function (Id) {
+                        var url = "/ActivityEventRule/DeleteLotteryRow";
+                        this.get(url, Id);
+                    },
+                    post: function (url, model, object) {
+                        $.ajax({
+                            cache: false,
+                            url: url,
+                            type: 'POST',
+                            contentType: "application/json",
+                            dataType: "json",
+                            data: JSON.stringify(model),
+                            success:  (data) => {
+                                if (data.IsSuccess) {
+                                    model.TableExistID = data.ResultId;
+                                    object.push(model);
+                                    //location.reload();
+                                }
+                                else {
+                                    alert(data.Message);
+                                }
+                            },
+                            error: (err) => {
+                                swal({
+                                    type: 'error',
+                                    title: '操作失败',
+                                    text: err
+                                })
+                            }
+                        });
+                    },
+                    get: function (url, id) {
+                        $.ajax({
+                            cache: false,
+                            url: url,
+                            type: 'GET',
+                            contentType: "application/json",
+                            dataType: "json",
+                            data: { id: id },
+                            success:  (data) => {
+                                if (data.success) {
+                                    alert(data.data.Message);
+                                    location.reload();
+                                }
+                                else {
+                                    alert(data.data.Message);
+                                }
+                            },
+                            error: (err) => {
+                                swal({
+                                    type: 'error',
+                                    title: '操作失败',
+                                    text: err
+                                })
+                            }
+                        });
+                    },
+                    handleFileUpload: function () {
+                        this.file = this.$refs.file.files[0];
+                    }
+                }
+            });
+
+            $("#myForm").validate({
+                rules: {
+                    FlowRate: {
+                        required: true
+                    },
+                    Amount: {
+                        required: true,
+                        maxlength: 32
+                    }
+                },
+                messages: {
+                    GiftCash: {
+                        number: '只能使用数字'
+                    }
+                }
+            });
+
+            $('#myTip').tooltip();
+            $('.myTips').tooltip();
+
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#preview').attr('src', e.target.result);
+                }
+
+                $("#preview").show();
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        $("#MyFile").change(function () {
+            readURL(this);
+        });
+
+        function saveAwardImage() {
+            let form = document.forms.namedItem('form_Edit');
+            let file = $('#MyFile')[0].files[0]; // 單個檔案
+
+            // 建立一個新的 FormData 物件
+            let formData = new FormData(form)
+
+            // 追加新值到 FormData 物件已有的對應鍵上；若該鍵不存在，則為其追加新的鍵
+            formData.append('eventSettingID', @Model.EventSettingID);
+            formData.append('images', file);
+
+            $.ajax({
+                url: '/ActivityEventRule/UpdateAwardImage',
+                type: 'POST',
+                headers: {
+                  'X-Requested-With': 'XMLHttpRequest'
+                },
+                contentType: false,
+                processData: false,
+                mimeType: 'multipart/form-data',
+                data: formData,
+                success: (data) => {
+                    console.log(data);
+                    //if (data.IsSuccess) {
+                        //$('#editAwardImageModal').modal('hide');
+                        location.reload();
+                    //}
+                    //else {
+                    //    alert('Message:'+data.Message);
+                    //}
+                },
+                error: (err) => {
+                    swal({
+                        type: 'error',
+                        title: '操作失败',
+                        text: err
+                    })
+                }
+            });
+
+        }
+    </script>
+}

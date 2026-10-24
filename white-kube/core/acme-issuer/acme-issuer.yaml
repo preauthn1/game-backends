@@ -1,0 +1,14 @@
+apiVersion: example.invalid/v1alpha2
+kind: Issuer
+metadata:
+  name: acme-issuer
+spec:
+  acme:
+    email: user@example.invalid
+    server: https://example.invalid/directory
+    privateKeySecretRef:
+      name: acme-issuer-account-key
+    solvers:
+    - http01:
+        ingress:
+          class: nginx

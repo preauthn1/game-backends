@@ -1,0 +1,88 @@
+<style type="text/css">
+    .btn-group form{
+        float: left;
+    }
+</style>
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+    <div class="btn-group" role="group">
+        <form class="ajaxSerachForm" data-toggle="ajaxsearch" data-options="{searchDatagrid:$.CurrentNavtab.find('#datagrid-test-filter')}">
+            <input type="hidden" name="plan" value="1"/>
+            <button type="submit" class="btn btn-green" >方案一</button>
+        </form>
+        <form class="ajaxSerachForm" data-toggle="ajaxsearch" data-options="{searchDatagrid:$.CurrentNavtab.find('#datagrid-test-filter')}">
+            <input type="hidden" name="plan" value="2"/>
+            <button type="submit" class="btn btn-green" >方案二</button>
+        </form>
+        <form class="ajaxSerachForm" data-toggle="ajaxsearch" data-options="{searchDatagrid:$.CurrentNavtab.find('#datagrid-test-filter')}">
+            <input type="hidden" name="plan" value="3"/>
+            <button type="submit" class="btn btn-green" >方案三</button>
+        </form>
+        <form class="ajaxSerachForm" data-toggle="ajaxsearch" data-options="{searchDatagrid:$.CurrentNavtab.find('#datagrid-test-filter')}">
+            <input type="hidden" name="plan" value="4"/>
+            <button type="submit" class="btn btn-green" >方案四</button>
+        </form>
+    </div>
+    <button type="button" data-toggle="dialog" data-options='{id:"plan_edit_dialog", url:"{{agentPageRoute}}/plan_edit_opt", data:{id:"plan_edit_opt",agentPlans:{{initPageData.agentPlans}}}, title:"方案设置", width:1200, height:400}' class="btn-blue btn">方案设置</button>
+    <label class="row-label">玩家ID:</label><input type="tel" id="playerId" class="form-control" size="10" style="width: 100px;">
+    <label class="row-label">广告等级</label><select id="level"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+    <button type="button" class="btn-default btn" id="adLevel">修改玩家广告等级</button>
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                <th data-options="{name:'id',align:'center'}">编号</th>
+                <th data-options="{name:'agent_id',align:'center'}">代理ID</th>
+                <th data-options="{name:'remark',align:'center'}">备注</th>
+                <th data-options="{name:'level',align:'center'}">代理级别</th>
+                <th data-options="{name:'min_money',align:'center'}">充值下限</th>
+                <th data-options="{name:'money',align:'center'}">账号金额</th>
+                <th data-options="{name:'clock',align:'center'}">打卡时间</th>
+                <th data-options="{name:'status',align:'center','items':[{'0':'排队中'},{'1':'显示中'}]}">状态</th>
+                <th data-options="{name:'opt',align:'center',width:300,render:datagrid_tree_operation,quicksort:false,quickfilter:false,menu:false}">操作</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<script type="text/javascript">
+    function datagrid_tree_operation(value,data){
+        var id = data.id;
+        var html = '';
+        if(data.status==1){
+            html += '<button type="button" class="btn btn-red" onclick="remove('+id+')">撤下</button>';
+        }else{
+            html += '<button type="button" class="btn btn-green" onclick="priority('+id+')">优先</button>';
+        }
+        return html;
+    }
+    function remove(id){
+        BJUI.ajax('doajax', {
+            url:"{{agentApiRoute}}/remove_opt",
+            type:'POST',
+            data:{id:id},
+            loadingmask: true
+        });
+    }
+    function priority(id){
+        BJUI.ajax('doajax', {
+            url:"{{agentApiRoute}}/priority_opt",
+            type:'POST',
+            data:{id:id},
+            loadingmask: true
+        });
+    }
+    $("#adLevel").click(function () {
+        var playerId=$("#playerId").val();
+        var level=$("#level").val();
+        BJUI.ajax('doajax', {
+            url: '{{agentApiRoute}}/adLevel',
+            data: {
+                playerId:playerId,
+                level:level
+            },
+            loadingmask: true,
+            okCallback: function(json, options) {
+            }
+        });
+    });
+</script>

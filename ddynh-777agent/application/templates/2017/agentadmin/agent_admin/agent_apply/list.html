@@ -1,0 +1,121 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+{% autoescape false %}{{formSearch}}{% endautoescape %}
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                <th data-options="{name:'id',align:'center'}">编号</th>
+                <th data-options="{name:'player_id',align:'center'}">用户ID</th>
+                <th data-options="{name:'channel',align:'center'}">平台</th>
+                <th data-options="{name:'name',align:'center'}">申请人</th>
+                <th data-options="{name:'qq',align:'center'}">联系QQ</th>
+                <th data-options="{name:'weixin',align:'center'}">微信</th>
+                <th data-options="{name:'telphone',align:'center'}">联系电话</th>
+                <th data-options="{name:'status',align:'center',type:'select',items:[{'0':'未审核'},{'1':'已审核'},{'2':'拒绝申请'}]}">审核状态</th>
+                <th data-options="{name:'reason',align:'center'}">说明</th>
+                <th data-options="{name:'created_at',width:200,align:'center'}">创建时间</th>
+                <th data-options="{name:'opt',align:'center',width:300,render:datagrid_tree_operation,quicksort:false,quickfilter:false,menu:false}">操作</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<script type="text/javascript">
+function datagrid_tree_operation(value,data){
+    var jsonStr = encodeURIComponent(JSON.stringify(data));
+    var id = data.id;
+    var html = '';
+    if(data.status==1 || data.status==2){
+        html += '<button type="button" class="btn btn-blue" data-icon="plus" onclick="dialog_ReplyEvent('+id+');"><i class="fa fa-plus"></i> 回复</button>'+
+                '<button type="button" class="btn btn-red" data-icon="times" onclick="DelEvent('+id+')"><i class="fa fa-times"></i> 删除</button>';
+    }else{
+        html += '<button type="button" class="btn btn-blue" data-icon="plus" onclick="dialog_ReplyEvent('+id+');"><i class="fa fa-plus"></i> 回复</button>'+
+                '<button type="button" class="btn btn-green editpass" data-icon="edit" onclick="PassEvent('+id+',\''+jsonStr+'\');"><i class="fa fa-edit"></i> 通过</button>'+
+                '<button type="button" class="btn btn-red" data-icon="times" onclick="RefuseEvent('+id+')"><i class="fa fa-times"></i> 拒绝</button>'+
+                '<button type="button" class="btn btn-red" data-icon="times" onclick="DelEvent('+id+')"><i class="fa fa-times"></i> 删除</button>';
+    }
+/*    $("body").on("click",".editpass",function(){
+        var da=data;
+        console.log(da);
+    });*/
+    return html;
+}
+
+
+function dialog_ReplyEvent(id){
+    var ids = id?id:getCustomFields("datagrid-test-filter",'id');
+    BJUI.dialog({
+        id:'dialog_batchReply',
+        url:"{{agentPageRoute}}/reply_opt",
+        data:{id:ids},
+        title:'回复'
+    });
+}
+
+function PassEvent(id,str){
+    var data = JSON.parse(decodeURIComponent(str));
+    var ids = id?id:getCustomFields("datagrid-test-filter",'id');
+    BJUI.dialog({
+        id:'Pass_dialog',
+        title:'代理商申请',
+        width:800,
+        height:600,
+        url:"{{agentPageRoute}}/pass_opt",
+        type:'POST',
+        data:{id:ids,apply:data},
+    });
+}
+
+function PassEvent2(id){
+    var ids = id?id:getCustomFields("datagrid-test-filter",'id');
+    BJUI.ajax('doajax', {
+        url:"{{agentApiRoute}}/pass_opt",
+        type:'POST',
+        data:{id:ids},
+        loadingmask: true,
+        datagrids:"datagrid-test-filter",
+        confirmMsg:"确定要操作吗?"
+    });
+}
+
+
+function RefuseEvent(id){
+    var ids = id?id:getCustomFields("datagrid-test-filter",'id');
+    BJUI.ajax('doajax', {
+        url:"{{agentApiRoute}}/refuse_opt",
+        type:'POST',
+        data:{id:ids},
+        loadingmask: true,
+        datagrids:"datagrid-test-filter",
+        confirmMsg:"确定要操作吗?"
+    });
+}
+
+function DelEvent(id){
+    var ids = id?id:getCustomFields("datagrid-test-filter",'id');
+    BJUI.ajax('doajax', {
+        url:"{{agentApiRoute}}/del",
+        type:'POST',
+        data:{id:ids},
+        loadingmask: true,
+        confirmMsg:"确定要操作吗?"
+    });
+}
+
+function getCustomFields(tableid,fields){
+    var data = $.CurrentNavtab.find("#"+tableid).data('selectedDatas') || [];
+    var fields = fields || '';
+    str = '';
+    if(fields){
+        for(i in data){
+            if(data[i][fields]){
+                str += data[i][fields]+',';
+            }
+        }
+    }else{
+        str = data[0];
+    }
+    return str;
+}
+
+</script>

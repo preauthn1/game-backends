@@ -1,0 +1,194 @@
+﻿@using FW.Core.Helper.Enum
+@model game.Entity.Game.SystemConfig
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>编辑系统配置
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="systemConfigForm" method="post" class="form-horizontal form-bordered">
+                    <input type="hidden" value="@Model.Id" name="Id" />
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-5">兑换状态</label>
+                            <div class="col-md-7 radio-list">
+                                <select class="form-control input-small" id="ConvertStatus" name="ConvertStatus">
+                                    @foreach (game.Entity.Game.ConvertConfigStatus item in Enum.GetValues(typeof(game.Entity.Game.ConvertConfigStatus)))
+                                    {
+                                        <option value="@item" @Html.IsChoose(Model.ConvertStatus == item, "select")>@item.GetDisplayName()</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-5">兑换开关</label>
+                            <div class="col-md-7 radio-list">
+                                <input type="hidden" name="ConvertBankShow" id="ConvertBankShow" value="@Model.ConvertBankShow" />
+                                <input type="hidden" name="ConvertAlipayShow" id="ConvertAlipayShow" value="@Model.ConvertAlipayShow" />
+                                <div>
+                                    <input type="checkbox" name="checkbox_bank" id="checkbox_bank" /><label>银行</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" name="checkbox_alipay" id="checkbox_alipay" /><label>支付宝</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">兑换自动审核最大限额</label>
+                            <div class="col-md-7">
+                                <input type="number" name="AutoCheckLimit" class="form-control input-medium" placeholder="请输入兑换自动审核最大限额" value="@Model.AutoCheckLimit.ToCash()" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">兑换时现金必须保留的数量</label>
+                            <div class="col-md-7">
+                                <input type="number" name="ConvertRetainAmount" class="form-control input-medium" placeholder="请输入兑换时现金必须保留的数量" value="@Model.ConvertRetainAmount.ToCash()" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">允许单次银联兑换最小金额</label>
+                            <div class="col-md-7">
+                                <input type="number" name="ConvertMinAmount" class="form-control input-medium" placeholder="请输入单次银联兑换最小金额" value="@Model.ConvertMinAmount.ToCash()" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">允许单次银联兑换最大金额</label>
+                            <div class="col-md-7">
+                                <input type="text" name="ConvertMaxAmount" class="form-control input-medium" placeholder="请输入单次银联兑换最大金额" value="@Model.ConvertMaxAmount.ToCash()" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">允许单次支付宝兑换最小金额</label>
+                            <div class="col-md-7">
+                                <input type="number" name="ConvertAlipayMinAmount" class="form-control input-medium" placeholder="请输入单次支付宝兑换最小金额" value="@Model.ConvertAlipayMinAmount.ToCash()" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">允许单次支付宝兑换最大金额</label>
+                            <div class="col-md-7">
+                                <input type="text" name="ConvertAlipayMaxAmount" class="form-control input-medium" placeholder="请输入单次支付宝兑换最大金额" value="@Model.ConvertAlipayMaxAmount.ToCash()" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">兑换输赢警报通知金额</label>
+                            <div class="col-md-7">
+                                <input type="text" name="ConvertWinLostAlert" class="form-control input-medium" placeholder="请输入警报金额" value="@(Model.ConvertWinLostAlert.HasValue ? Model.ConvertWinLostAlert.Value.ToCash() : "0")" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">Telegram Token</label>
+                            <div class="col-md-7">
+                                <input type="text" name="TGBotToken" class="form-control input-medium" placeholder="请输入 Token" value="@Model.TGBotToken" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">Telegram ChatID</label>
+                            <div class="col-md-7">
+                                <input type="text" name="TGChatID" class="form-control input-medium" placeholder="请输入 ChatID" value="@Model.TGChatID" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">关闭兑换功能的提示消息</label>
+                            <div class="col-md-7">
+                                <textarea rows="4" name="PromptMsg" class="form-control input-medium" placeholder="请输入关闭兑换功能的提示消息">@Model.PromptMsg</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">兑换比例提示文本</label>
+                            <div class="col-md-7">
+                                <textarea rows="4" name="ConvertRateTip" class="form-control input-medium" placeholder="请输入兑换比例提示文本">@Model.ConvertRateTip</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">银行默认密码文本</label>
+                            <div class="col-md-7">
+                                <textarea rows="4" name="BankDefaultPwdTip" class="form-control input-medium" placeholder="请输入银行默认密码文本">@Model.BankDefaultPwdTip</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">客服默认提示讯息文本</label>
+                            <div class="col-md-7">
+                                <textarea rows="4" name="QuestionContactTip" class="form-control input-medium" placeholder="请输入客服默认提示讯息文本">@Model.QuestionContactTip</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-5 col-md-7">
+                            @Html.OkWithRight()
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+            const ConvertBank = `@Model.ConvertBankShow`
+            const ConvertAlipay = `@Model.ConvertAlipayShow`
+
+            if (ConvertBank == 1) {
+                $('#checkbox_bank').click()
+            }
+
+            if (ConvertAlipay == 1) {
+                $('#checkbox_alipay').click()
+            }
+
+            $('#checkbox_bank').click(function () {
+                const res = $('#checkbox_bank').is(':checked')
+                $('#ConvertBankShow').val(+res)
+            })
+
+            $('#checkbox_alipay').click(function () {
+                const res = $('#checkbox_alipay').is(':checked')
+                $('#ConvertAlipayShow').val(+res)
+            })
+
+            $('#systemConfigForm').validate({
+                rules: {
+                    ConvertWinLostAlert: {
+                        required: true
+                    },
+                    TGBotToken: {
+                        required: true
+                    },
+                    TGChatID: {
+                        required: true
+                    },
+                    OneTimesLimit: {
+                        required: true
+                    },
+                    PromptMsg: {
+                        required: true,
+                        maxlength: 128
+                    },
+                    ConvertRateTip: {
+                        required: true,
+                        maxlength: 128
+                    },
+                    BankDefaultPwdTip: {
+                        required: true,
+                        maxlength: 128
+                    },
+                    QuestionContactTip: {
+                        required: true,
+                        maxlength: 128
+                    }
+                }
+            });
+        })
+    </script>
+}

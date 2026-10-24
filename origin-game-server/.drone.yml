@@ -1,0 +1,247 @@
+debug: true
+workspace:
+  base: /go
+  path: /gameserver
+pipeline:
+  env-sniff:
+    image: target/drone-deploy
+    when:
+      branch: [ develop ]
+      event: [ tag ]
+  receive-notify:
+    image: diyfr/drone_plugin_teams
+    webhook: "https://example.invalid/webhook/1ef22373-712e-43fb-ab7e-f7e1bcd2d4d6@e16cc667-9473-4fc9-9b30-211cdec6647e/JenkinsCI/bf755502cd39488f834cf9dbcb285af9/4a62c4d6-f68a-464f-bf6e-eed5003fccff"
+    content:
+      title: "收到一個新的 TAG"
+      text: 來自分支 ${DRONE_COMMIT_BRANCH} 的 ${DRONE_TAG}
+      themeColor: "#4DC89A"
+    branch: [ master, develop ]
+    when:
+      event: [ tag ]
+  build-init:
+    image: golang:latest
+    commands:
+      - date=$(TZ=Asia/Taipei date +%Y%m%d)
+      - build_name=$date-build-$DRONE_BUILD_NUMBER
+      - release_folder=./release/$build_name
+      - mkdir -p $release_folder
+      - GIT_HASH=`git rev-parse --short HEAD`
+      - BUILD_TIME=`TZ=Asia/Taipei date +%FT%T%z`
+      - BUILD_NUM=`basename $release_folder`
+      - cd $release_folder
+      - echo "GitTag=$DRONE_TAG" > version.txt
+      - echo "BuildTime=$BUILD_TIME" >> version.txt
+      - echo "GitHash=$GIT_HASH" >> version.txt
+      - echo "BuildNum=$BUILD_NUM" >> version.txt
+      - cat version.txt
+  go-test:
+    image: golang:latest
+    environment:
+      GOPATH: /go/gameserver:/go/gameserver/deployserver:/go/gameserver/dbserver:/go/gameserver/framework:/go/gameserver/roomserver:/go/gameserver/hallserver:/go/gameserver/notifyserver:/go/gameserver/using:/go/gameserver/game/bjl:/go/gameserver/game/ddz:/go/gameserver/game/dzpk:/go/gameserver/game/lhd:/go/gameserver/game/qz21:/go/gameserver/game/qzniuniu:/go/gameserver/game/scmj:/go/gameserver/game/sg:/go/gameserver/game/sgj:/go/gameserver/game/srniuniu:/go/gameserver/game/sss:/go/gameserver/game/tbniuniu:/go/gameserver/game/ttz:/go/gameserver/game/wuzhang:/go/gameserver/game/zjh:/go/gameserver/game/ermj:/go/gameserver/game/brnn:/go/gameserver/game/fkeb:/go/gameserver/game/hhdz:/go/gameserver/game/hhnn:/go/gameserver/game/cd21:/go/gameserver/game/by:/go/gameserver/game/lhj:/go/gameserver/game/tgw:/go/gameserver/tools/newbydbserver
+    commands:
+      - go test example.invalid/server/pkg/slot -cover
+      - go test baijialelogic -cover
+      - go test ddzgamelogic -cover
+      - go test qznngamelogic_rndz -cover
+      - go test sssgamelogic -cover
+      - go test ttzlogic -cover
+      - go test wzpgamelogic -cover
+      - go test dzpklogic -cover
+      - go test sggamelogic -cover
+      - go test dal/msghandler -cover
+      - go test longhudoulogic -cover
+      - go test shuiguojilogic -cover
+#      - go test qz21gamelogic
+      - go test ermjlogic -cover
+      - go test srnngamelogic -cover
+      - go test tbnngamelogic -cover
+      - go test brnnlogic -cover
+      - go test hhdzlogic -cover
+      - go test hhnnlogic -cover
+      - go test bylogic -cover
+      - go test zhajinhualogic -cover
+      - go test mahjong -cover
+      - go test cd21gamelogic -cover
+      - go test lhjlogic -cover
+      - go test fkeblogic -cover
+      - make test-game-tgw
+      - make test-game-ald
+    when:
+      event: [ push, pull_request ] 
+      
+
+#  # deploy server
+#  build-deployserver:
+#    group: build
+#    image: golang:latest
+#    environment:
+#      GOPATH: /go/gameserver/deployserver
+#      GOOS: windows
+#      GOARCH: amd64
+#    commands:
+#      - release_folder=$(ls -d ./release/*/|head -n 1)
+#      - echo $release_folder
+#      - git clone http://0.0.0.0/rory/deployserver.git
+#      - go get example.invalid/gin-gonic/gin
+#      - go get gopkg.in/yaml.v2
+#      - go build -i -o $release_folder/deployserver/deployserver.exe deployserver/deployserver.go
+  # main servers
+  build-mains-linux:
+    group: build
+    image: golang:latest
+    environment:
+      GOPATH: /go/gameserver:/go/gameserver/deployserver:/go/gameserver/dbserver:/go/gameserver/framework:/go/gameserver/roomserver:/go/gameserver/hallserver:/go/gameserver/notifyserver:/go/gameserver/using:/go/gameserver/game/bjl:/go/gameserver/game/ddz:/go/gameserver/game/dzpk:/go/gameserver/game/lhd:/go/gameserver/game/qz21:/go/gameserver/game/qzniuniu:/go/gameserver/game/scmj:/go/gameserver/game/sg:/go/gameserver/game/sgj:/go/gameserver/game/srniuniu:/go/gameserver/game/sss:/go/gameserver/game/tbniuniu:/go/gameserver/game/ttz:/go/gameserver/game/wuzhang:/go/gameserver/game/zjh:/go/gameserver/game/cd21:/go/gameserver/tfserver:/go/gameserver/game/lhj:/go/gameserver/game/fkeb:/go/gameserver/game/ermj:/go/gameserver/game/srniuniu:/go/gameserver/game/dfdc:/go/gameserver/game/tgw:/go/gameserver/tools/newbydbserver
+      GOOS: linux
+      GOARCH: amd64
+      CGO_ENABLED: "0"
+    commands:
+    - bash /go/gameserver/buildtools/buildmains.sh
+  # game servers
+  build-games-linux:
+    group: build
+    image: golang:latest
+    environment:
+      GOPATH: /go/gameserver:/go/gameserver/dbserver:/go/gameserver/framework:/go/gameserver/roomserver:/go/gameserver/hallserver:/go/gameserver/notifyserver:/go/gameserver/using:/go/gameserver/game/bjl:/go/gameserver/game/ddz:/go/gameserver/game/dzpk:/go/gameserver/game/lhd:/go/gameserver/game/qz21:/go/gameserver/game/qzniuniu:/go/gameserver/game/scmj:/go/gameserver/game/sg:/go/gameserver/game/sgj:/go/gameserver/game/srniuniu:/go/gameserver/game/sss:/go/gameserver/game/tbniuniu:/go/gameserver/game/ttz:/go/gameserver/game/wuzhang:/go/gameserver/game/zjh:/go/gameserver/game/fkeb:/go/gameserver/game/brnn:/go/gameserver/game/cd21:/go/gameserver/game/hhdz:/go/gameserver/game/hhnn:/go/gameserver/game/by:/go/gameserver/game/lhj:/go/gameserver/game/fkeb:/go/gameserver/game/ermj:/go/gameserver/game/srniuniu:/go/gameserver/game/dfdc:/go/gameserver/game/tgw:/go/gameserver/tools.newbydbserver
+      GOOS: linux
+      GOARCH: amd64
+      CGO_ENABLED: "0"
+    commands:
+    - bash /go/gameserver/buildtools/buildgames.sh
+  # main servers
+  build-mains:
+    group: build
+    image: golang:latest
+    environment:
+      GOPATH: /go/gameserver:/go/gameserver/deployserver:/go/gameserver/dbserver:/go/gameserver/framework:/go/gameserver/roomserver:/go/gameserver/hallserver:/go/gameserver/notifyserver:/go/gameserver/using:/go/gameserver/game/bjl:/go/gameserver/game/ddz:/go/gameserver/game/dzpk:/go/gameserver/game/lhd:/go/gameserver/game/qz21:/go/gameserver/game/qzniuniu:/go/gameserver/game/scmj:/go/gameserver/game/sg:/go/gameserver/game/sgj:/go/gameserver/game/srniuniu:/go/gameserver/game/sss:/go/gameserver/game/tbniuniu:/go/gameserver/game/ttz:/go/gameserver/game/wuzhang:/go/gameserver/game/zjh:/go/gameserver/game/cd21:/go/gameserver/tfserver:/go/gameserver/game/lhj:/go/gameserver/game/fkeb:/go/gameserver/game/ermj:/go/gameserver/game/srniuniu:/go/gameserver/game/dfdc:/go/gameserver/game/tgw:/go/gameserver/tools/newbydbserver
+      GOOS: windows
+      GOARCH: amd64
+    commands:
+      - bash /go/gameserver/buildtools/buildmains.sh
+    when:
+      event: [ tag ]
+  # game servers
+  build-games:
+    group: build
+    image: golang:latest
+    environment:
+      GOPATH: /go/gameserver:/go/gameserver/dbserver:/go/gameserver/framework:/go/gameserver/roomserver:/go/gameserver/hallserver:/go/gameserver/notifyserver:/go/gameserver/using:/go/gameserver/game/bjl:/go/gameserver/game/ddz:/go/gameserver/game/dzpk:/go/gameserver/game/lhd:/go/gameserver/game/qz21:/go/gameserver/game/qzniuniu:/go/gameserver/game/scmj:/go/gameserver/game/sg:/go/gameserver/game/sgj:/go/gameserver/game/srniuniu:/go/gameserver/game/sss:/go/gameserver/game/tbniuniu:/go/gameserver/game/ttz:/go/gameserver/game/wuzhang:/go/gameserver/game/zjh:/go/gameserver/game/fkeb:/go/gameserver/game/brnn:/go/gameserver/game/cd21:/go/gameserver/game/hhdz:/go/gameserver/game/hhnn:/go/gameserver/game/by:/go/gameserver/game/lhj:/go/gameserver/game/fkeb:/go/gameserver/game/ermj:/go/gameserver/game/srniuniu:/go/gameserver/game/dfdc:/go/gameserver/game/tgw:/go/gameserver/tools/newbydbserver
+      GOOS: windows
+      GOARCH: amd64
+    commands:
+      - bash /go/gameserver/buildtools/buildgames.sh
+    when:
+      event: [ tag ]
+  docker-release-init:
+    image: golang:latest
+    commands:
+    - bash /go/gameserver/buildtools/dockerrelease.sh
+    - ls approot
+    when:
+      event: [ tag ]
+  docker-release:
+    image: plugins/ecr
+    access_key: [REDACTED]
+    secret_key: [REDACTED]
+    registry: "example.invalid"
+    repo: "example.invalid/target"
+    region: us-east-2
+    dockerfile: /go/gameserver/buildtools/gobindockerfile
+    default_tags: true
+    tags: latest
+    when:
+      event: [ tag ]
+  failure-notify:
+    image: diyfr/drone_plugin_teams
+    webhook: "https://example.invalid/webhook/1ef22373-712e-43fb-ab7e-f7e1bcd2d4d6@e16cc667-9473-4fc9-9b30-211cdec6647e/JenkinsCI/bf755502cd39488f834cf9dbcb285af9/4a62c4d6-f68a-464f-bf6e-eed5003fccff"
+    content:
+      title: "版本編譯出錯, 請檢查代碼"
+      text: 來自分支 ${DRONE_COMMIT_BRANCH} ${DRONE_COMMIT_MESSAGE} 的 Commit, Author ${DRONE_COMMIT_AUTHOR}
+      themeColor: "EA4300"
+    when:
+      status:  [ failure ]
+
+  build-finish:
+    image: golang:latest
+    commands:
+      - echo "build finish"
+  copy-to-release:
+    image: target/drone-copy
+    srcdir: release/*
+    destdir: /mnt/release/
+    volumes:
+      - /mnt/release:/mnt/release
+    when:
+      event: [ tag ]
+#  release-to-ftp-test:
+#      image: target/drone-ftps-win
+#      environment:
+#        FTP_USERNAME: droneuser
+#        FTP_PASSWORD: [REDACTED]
+#      hostname: 0.0.0.0:21
+#      secrets: [ ftp_username, ftp_password ]
+#      secure: false
+#      dest_dir: /
+#      src_dir: /release
+#      when:
+#        event: [ tag ]
+#
+#  release-to-ftp-qa:
+#      image: target/drone-ftps-win
+#      environment:
+#        FTP_USERNAME: droneuser
+#        FTP_PASSWORD: [REDACTED]
+#      hostname: 0.0.0.0:21
+#      secrets: [ ftp_username, ftp_password ]
+#      secure: false
+#      dest_dir: /
+#      src_dir: /release
+#      when:
+#        event: [ tag ]
+
+  please-read-master-deploy-url:
+    image: golang:latest
+    commands:
+      - echo "己編譯完成, 需要手動部署到 Test 及 Stage\n"
+      - release_folder=$(ls -d ./release/*/|head -n 1)
+      - echo $release_folder
+      - build_name=$(basename $release_folder)
+      - echo $build_name
+      - echo "如需部署 test 服務器, 請訪問 http://0.0.0.0:888/deploy/$build_name\n"
+      - echo "如需部署 stage 服務器, 請訪問 http://0.0.0.0:888/deploy/$build_name\n"
+      - echo ${DRONE_TAG##v}
+      - echo "deploy finish"
+    when:
+      branch: [ master, release/* ]
+      event: [ tag ]
+  deploy-to-test:
+    image: golang:latest
+    commands:
+      - release_folder=$(ls -d ./release/*/|head -n 1)
+      - echo $release_folder
+      - build_name=$(basename $release_folder)
+      - echo $build_name
+      - curl http://0.0.0.0:888/deploy/$build_name
+      - echo "如需部署 qa 服務器, 請訪問 http://0.0.0.0:888/deploy/$build_name\n"
+      - echo "或者執行指令 drone deploy rory/GameServer 222 staging"
+#      - curl http://0.0.0.0:888/deploy/$build_name
+#      - go test
+      - echo ${DRONE_TAG##v}
+      - echo "deploy finish"
+    when:
+      branch: [ develop ]
+      event: [ tag ]
+
+  deploy-to-qa:
+      image: golang:latest
+      commands:
+        - release_folder=$(ls -d ./release/*/|head -n 1)
+        - echo $release_folder
+        - build_name=$(basename $release_folder)
+        - echo $build_name
+        - curl http://0.0.0.0:888/deploy/$build_name
+        - go test
+        - echo ${DRONE_TAG##v}
+        - echo "deploy finish"
+      when:
+        event: [ deployment ]
+        environment: [ staging ]

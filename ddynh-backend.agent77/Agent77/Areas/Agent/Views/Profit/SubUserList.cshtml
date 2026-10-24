@@ -1,0 +1,360 @@
+﻿@{
+    ViewBag.Title = "代理/玩家列表";
+}
+
+@Html.Action("Index", "Profit")
+
+<div class="box box-primary">
+    <!-- form start -->
+    <div class="box-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-2 col-md-2 col-sm-2 col-xs-12">狀態</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    @Html.DropDownList("Status", null, "全部", new { @class = "form-control select2" })
+                </div>
+
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">用户ID</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="text" class="form-control" id="TargetID" maxlength="10">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-2 col-md-2 col-sm-2 col-xs-12">注册時間</label>
+                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                    <input type="date" class="form-control" id="dtStartTime">
+                </div>
+
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">到</label>
+                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                    <input type="date" class="form-control" id="dtEndTime">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                    <input type="hidden" id="SubUserID" name="SubUserID">
+                    <button type="button" id="btnQuery" class="btn btn-primary btn-block">搜索</button>
+                </div>
+            </div>
+        </div>
+        <hr class="hr-sm1">
+
+        <!-- 查詢結果 -->
+        <div class="box-header">
+            <h3 class="box-title">搜索结果</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>用户ID</th>
+                        <th>平台</th>
+                        <th>层级</th>
+                        <th>身份</th>
+                        <th>一级ID</th>
+                        <th>上层ID</th>
+                        <th>人数(玩家+代理)</th>
+                        <th>分成比例</th>
+                        <th>净利润</th>
+                        <th>下线总充值</th>
+                        <th>下线总兑换</th>
+                        <th>兑换率</th>
+                        <th>可提领</th>
+                        <th>已提現</th>
+                        <th>流水</th>
+                        <th>注册時間</th>
+                        <th>备注</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="Memomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @using (Html.BeginForm("UserInfoMemoUpdate", "Profit", new { Area = "Agent" }, FormMethod.Post, new { @class = "form-horizontal" }))
+            {
+                <div class="modal-header bg-light-blue-active text-white">
+                    <h5 class="modal-title" id="exampleModalLabel">修改备注</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-sm-12">备注</label>
+                        <div class="col-sm-12">
+                            <input type="hidden" id="userID" name="userID">
+                            <input type="text" id="memo" name="memo" class="form-control" value="" maxlength="100">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary bg-light text-dark" data-dismiss="modal">取消</button>
+                    <button type="submit" id="ok" class="btn btn-primary">确认</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="InfoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-light-blue-active text-white">
+                <h5 class="modal-title" id="exampleModalLabel">用户资讯</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("_ProfitUserInfoDetail")
+
+<!-- /.box -->
+@section scripts{
+    <!-- Page script -->
+    <script type="text/javascript">
+        $(function () {
+
+            //DataTable
+            var table =
+                $('#example1').DataTable({
+                    "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                    "searching": false,
+                    "autoWidth": false,
+                    "serverSide": true,
+                    "deferLoading": 0,
+                    "order": [[ 12, 'desc' ]],
+                    "ajax": {
+                        method: 'post',
+                        url: '@Url.Action("SubUserList", "Profit")',
+                        data: function (d) {
+                            d.subUserID = $('#SubUserID').val();
+                            d.targetID = $('#TargetID').val();
+                            d.dtStartTime = $('#dtStartTime').val();
+                            d.dtEndTime = $('#dtEndTime').val();
+                            d.status = $('#Status').val();
+                        },
+                        "dataSrc": function (json) {
+                            if (json.success == false)
+                                swal("错误", json.message, "error");
+
+                            return json.data;
+                        }
+                    },
+                    columns: [
+                        { name: "UserID", data: "UserID" },
+                        { name: "PlatFormName", data: "PlatFormName" },
+                        { name: "StageLevel", data: "StageLevel" },
+                        {
+                            name: "Status",
+                            data: "Status",
+                            render: function (data, type, row, meta) {
+                                return data == 1 ? "玩家" : "代理";
+                            }
+                        },
+                        { name: "UpperUserID", data: "UpperUserID" },
+                        { name: "TopUserID", data: "TopUserID" },
+                        {
+                            name: "TotalUser",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                return '<a class="" data-toggle="modal" data-target="#UserModal" data-whatever="' + data.UserID + '">' + data.TotalUser + '(' + data.SumSubUser + '+' + data.SumSubAgent + ')</a> ';                               
+                            }
+                        },
+                        { name: "Rate", data: "Rate" },
+                        { name: "PoolAmount", data: "PoolAmount" },
+                        { name: "SumSubChargeAmount", data: "SumSubChargeAmount" },
+                        { name: "SumSubConvertAmount", data: "SumSubConvertAmount" },
+                        { name: "ConvertRate", data: "ConvertRate" },
+                        { name: "Amount", data: "Amount" },
+                        { name: "WithDrawAmount", data: "WithDrawAmount" },
+                        { name: "SumFlowAmount", data: "SumFlowAmount" },
+                        {
+                            name: "CreateTime",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                return moment(data.CreateTime).format("YYYY-MM-DD HH:mm");
+                            }
+                        },
+                        {
+                            name: "Memo",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                var html = (data.Memo == undefined ? '' : data.Memo)
+                                @if (UserHelper.User.Role != RoleType.Agent)
+                                {
+                                    <text>html = '<a class="" data-toggle="modal" data-target="#Memomodal" data-whatever="' + data.UserID + '">' + (data.Memo == undefined || data.Memo == '' ? '备注' : data.Memo) + '</a> ';</text>
+                                }
+                                return html;
+                            }
+                        },
+                        {
+                            orderable: false,
+                            data: function (data, type, row) {
+                                let _html = ''
+                                if (data.TotalUser == 0)
+                                    _html = '<a class="btn bg-navy disabled" href="#">下层列表</a>';
+                                else
+                                    _html = '<button class="btn bg-navy lower" data-id=' + data.UserID + '>下层列表</button>';
+
+                                _html = _html + ' <button class="btn bg-navy info" data-id=' + data.UserID + '>用户详情</button>';
+                                return _html;
+                            }
+                        }
+                    ],
+                    responsive: true
+                });
+
+            $('#btnQuery').click(function () {
+                $('#SubUserID').val('');
+                table.draw();
+            });
+
+            $('#example1 tbody').on('click', 'button.lower', function () {
+                $('#SubUserID').val($(this).data('id'));
+                $('#TargetID').val('');
+                $('#dtStartTime').val('');
+                $('#dtEndTime').val('');
+                $('#Status').val('');
+                table.draw();
+            });
+
+            $('#example1 tbody').on('click', 'example.invalid', function () {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("UserInfo", "Profit", new { Area = "Agent" })/" + $(this).data('id'),
+                    dataType: "html",
+                    success: function (content) {
+                        $("#InfoModal .modal-body").html(content);
+                        $('#InfoModal').modal('show');
+                    }
+                })
+            });
+
+
+            $('#Memomodal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)
+                var recipient = button.data('whatever')
+                var memo = button.html() == '备注' ? '' : button.html();
+
+                var modal = $(this)
+                modal.find('#userID').val(recipient);
+                modal.find('#memo').val(memo);
+            });
+
+            $('#InfoModal').on('click', '#btnUserRate', function () {
+                swal({
+                    title: '确定储存吗？',
+                    text: '净利润比例设定',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '确认',
+                    cancelButtonText: '取消',
+                }).then(function () {
+                    var maxVal = $('#InfoModal #maxVal').data('max');
+                    var val = $('#InfoModal #UserRate').val();
+
+                    if (val > maxVal) {
+                        swal(
+                            '錯誤！',
+                            '超過上限:' + maxVal + '%',
+                            'error'
+                            );
+                    }
+                    else {
+                        $('#UpdateUserRate').submit();
+                    }
+                }).catch(swal.noop)
+            });
+
+            $('#InfoModal').on('click', '#btnUserStatus', function () {
+                swal({
+                    title: '确定储存吗？',
+                    text: '账号狀態设定',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '确认',
+                    cancelButtonText: '取消',
+                }).then(function () {
+                    $('#ChangeUserStatus').submit();
+                }).catch(swal.noop)
+            });
+
+            $('#InfoModal').on('click', '#btnAgentApply', function () {
+                swal({
+                    title: '确定储存吗？',
+                    text: '申请代理',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '确认',
+                    cancelButtonText: '取消',
+                }).then(function () {
+                    $('#AddAgentApply').submit();
+                }).catch(swal.noop)
+            });
+
+            var _userid = '';
+
+            var table2 =
+                $('#example2').DataTable({
+                    "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                    "searching": false,
+                    "autoWidth": false,
+                    "serverSide": true,
+                    "deferLoading": 0,
+                    "ajax": {
+                        method: 'post',
+                        url: '@Url.Action("GetUserInfoDetail", "Profit")',
+                        data: function (d) {
+                            d.userID = _userid;
+                        },
+                        "dataSrc": function (json) {
+                            if (json.success == false)
+                                swal("错误", json.message, "error");
+
+                            return json.data;
+                        }
+                    },
+                    columns: [
+                        { name: "UserID", data: "UserID" },
+                        { name: "StorageAmount", data: "StorageAmount" },
+                        { name: "SumCharge", data: "SumCharge" },
+                        { name: "SumConvert", data: "SumConvert" },
+                        { name: "TodayCharge", data: "TodayCharge" },
+                        { name: "TodayConvert", data: "TodayConvert" },
+                        { name: "TopUserID", data: "TopUserID" },
+                        { name: "Memo", data: "Memo" }
+                    ],
+                    responsive: true
+                })
+
+            $('#UserModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)
+                var recipient = button.data('whatever')
+                _userid = recipient;
+                table2.draw();
+            });
+        })
+    </script>
+}
+<td></td>
+

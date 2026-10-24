@@ -1,0 +1,64 @@
+syntax = "proto2";
+
+package netproto;
+
+message Http_FKEB_GameInfo {
+    repeated Http_FKEB_TableList TableList = 1;  //桌子信息
+};
+
+message Http_FKEB_TableList {
+    required int32 TableNo = 1;            //桌子号
+    required int32 Status = 2;             //当前状态 0 下注中 1 开奖中 2开奖动画 3结算动画 4等待开始游戏
+    required int32 GameUserCount = 3;      //玩家人数(包含未下注玩家)
+    required int32 RobotCount = 4;         //机器人数(包含未下注机器人)
+    required int64 SumEarnAmount = 5;      //系统从开服到现在的总收益
+    required int32 LastEarnAmount = 6;     //最后一局收益
+    required int64 PoolCurrentAmount = 7;  //当前水池金币数
+};
+
+message Http_FKEB_TableDetail {
+    required int32 TableNo = 1;            //桌子号
+    required int32 Status = 2;             //当前状态 0 下注中 1 开奖中 2开奖动画 3结算动画 4等待开始游戏
+    required int64 SumEarnAmount = 3;      //系统从开服到现在的总收益
+    required int32 LastEarnAmount = 4;     //最后一局收益
+    required int64 PoolCurrentAmount = 5;  //当前水池金币数
+    required int32 GameUserCount = 6;      //游戏玩家人数(包含未下注玩家)
+    required int32 RobotCount = 7;         //机器人数(包含未下注机器人)
+    required int32 PopWaterRate = 8;       //当前注水率
+
+    required int32 ZhuangType = 9;                 //庄家类型	0系统 1机器人当庄 2玩家上庄
+    required string ZhuangNickName = 10;           //庄家昵称
+    required int32 ZhuangUserID = 11;              //庄家用户ID
+    required int32 ZhuangSurplusTotal = 12;        //庄家剩余局数
+    required int64 ZhuangCurrentMoneyAmount = 13;  //庄家当前金币数 系统或机器人坐庄则表示水池金币数量
+    required int64 ZhuangInitMoneyAmount = 14;     //庄家初始上庄金币数 系统或机器人坐庄则用0表示
+
+    required int64 OpenResultZhuang = 15;     //当前开奖结果为庄的收益数量
+    required int64 OpenResultShun = 16;       //当前开奖结果为顺的收益数量
+    required int64 OpenResultTian = 17;       //当前开奖结果为天的收益数量
+    required int64 OpenResultDi = 18;         //当前开奖结果为地的收益数量
+    required int64 OpenResultShunTaiDi = 19;  //当前开奖结果为顺天地的收益数量
+    required int64 OpenResultShunTai = 20;    //当前开奖结果为顺天的收益数量
+    required int64 OpenResultShunDi = 21;     //当前开奖结果为顺地的收益数量
+    required int64 OpenResultTianDi = 22;     //当前开奖结果为天地的收益数量
+
+    required string CurentOpenResult = 23;     //当前开奖结果,只有在开奖动画状态下有值
+    required int64 CurentOpenResultEarn = 24;  //当前开奖收益,只有在开奖动画状态下有值
+
+    repeated Http_FKEB_UserInfo UserInfo = 25;  //玩家信息
+    required int32 BetTime = 26;                //下注時間
+};
+
+message Http_FKEB_UserInfo {
+    required int32 UserID = 1;        //玩家ID
+    required int32 UserType = 2;      //玩家类型 0机器人 1玩家
+    required string NickName = 3;     //玩家昵称
+    required int64 GameScore = 4;     //游戏总输赢
+    required int64 InitMoney = 5;     //初始金币
+    required int64 CurrentMoney = 6;  //当前金币
+    required int64 BetInfoShun = 7;   //下注顺的金币数量
+    required int64 BetInfoTian = 8;   //下注天的金币数量
+    required int64 BetInfoDi = 9;     //下注地的金币数量
+    required int64 SumCharge = 10;    //總充值
+    required int64 SumConvert = 11;   //總兌換
+};

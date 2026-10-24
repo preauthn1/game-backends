@@ -1,0 +1,44 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@using game.Entity.Event
+@using game.Entity.Money
+@using game.Entity;
+
+@{
+    var events = (List<game.Entity.Area.Platform>)ViewBag.Events;
+}
+
+<div>
+
+    <div class="checkbox-row">
+        <input type="checkbox" id="select_all_step3" />
+        <label for="select_all_step3"> 全选 </label>
+    </div>
+
+
+    @foreach (var item in events)
+    {
+        string elementID = string.Format("select_OnwerID_{0}", item.Id);
+
+        <div class="checkbox-row">
+            <input type="checkbox" id="@elementID" class="copy_target_ID" name="copy_target_ID" attr-platformID="@item.Id" />
+            <label for="@elementID">@item.Name</label>
+        </div>
+    }
+
+</div>
+
+<script>
+
+    $(function () {
+
+        $("#select_all_step3").click(function () {
+
+            $('input.copy_areaID').not(this).prop('checked', this.checked);
+
+        })
+
+    })
+
+</script>

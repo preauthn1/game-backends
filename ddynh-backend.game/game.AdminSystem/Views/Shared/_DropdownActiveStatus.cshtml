@@ -1,0 +1,22 @@
+﻿@model DropdownPartialSettingViewModel
+
+@{
+    DropdownPartialSettingViewModel myModel = Model;
+    myModel = myModel ?? new DropdownPartialSettingViewModel();
+
+    string name = myModel.DOM_ElementName ?? "status";
+}
+
+
+    <select class="form-control" id="@name" name="@name" style="width:120px;">
+
+        @if (myModel.FirstOption != null)
+        {
+            <option value="@myModel.FirstOption.Value">@myModel.FirstOption.Text</option>
+        }
+        
+        <option value="1"  @(myModel.DefaultSelectValue == "1" ? "selected='selected'" : "")  >启用</option>
+        <option value="0"  @(myModel.DefaultSelectValue == "0" ? "selected='selected'" : "")  >已关闭</option>
+
+    </select>
+

@@ -1,0 +1,372 @@
+﻿@using FW.Core.Helper.Enum
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .content {
+        padding: .5%;
+        font-size: 1.2em;
+        font-family: serif;
+    }
+
+    .menu {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 1%;
+    }
+
+    .control {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .instructions {
+        flex: .4;
+    }
+
+        .instructions span {
+            padding: 2%;
+        }
+
+    .gi-2x {
+        font-size: 2em;
+    }
+</style>
+
+<div class="content">
+    <div class="menu">
+
+        <div class="instructions form-inline">
+            @Html.Partial("_PlatformSelect", false)
+            <div class="form-group">
+                <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+            </div>
+        </div>
+
+        <div>
+            @if (UserService.CheckToken("AddAreaGame", "post"))
+            {
+                <button type="button" class="btn btn-light" data-toggle="modal" data-target="#gameModal">新增</button>
+            }
+        </div>
+    </div>
+    <div>
+        <table id="game_table" class="display" style="width:100%"></table>
+    </div>
+</div>
+
+<!-- add Modal-->
+
+<div class="modal fade" id="gameModal" tabindex="-1" role="dialog" aria-labelledby="gameModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="gameModalLabel">渠道新增游戏</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-body">
+
+                    <div class="form-group">
+                        <label>平台</label>
+                        <select class="form-control input-small" id="platformID_add" name="platformID_add">
+                            @foreach (var p in DataService.GetAllPlatform())
+                            {
+                                <option value="@p.Id">@p.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>渠道</label>
+                        <select class="form-control input-small" id="areaID_add" name="areaID_add">
+                            @foreach (var a in DataService.GetAllArea())
+                            {
+                                <option value="@a.AreaID" data-pid="@a.PlatformID" style="display:none;">@a.AreaName</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="">游戏</label>
+                        @Html.DropDownList("GameID", DataService.Game(string.Empty, false), new { @class = "form-control input-medium", id = "GameID" })
+                    </div>
+                    <div class="form-group">
+                        <label class="">排序</label>
+                        <div class="">
+                            <input type="number" id="sort_add" name="sort_add" class="form-control input-medium" value="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="">热门程度</label>
+                        <select class="form-control input-medium" name="popular_add" id="popular_add">
+                            @foreach (var item in Enum.GetValues(typeof(game.Entity.Area.Popular)))
+                            {
+                                var itemValue = (int)item;
+                                <option value="@itemValue">@item.GetDisplayName() </option>
+
+                            }
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="">开启游戏</label>
+                        <div class="">
+                            <input type="checkbox" id="status_add" name="status_add" class="form-control input-medium">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="add()">新增</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section initScripts{
+    <script>
+
+        function createTable() {
+            const url = '/AreaGameSetting/GetAreaGameList'
+            const thead = [{ "sTitle": "平台", "mData": "PlatformName" },
+                           { "sTitle": "游戏", "mData": "GameName" },
+                           { "sTitle": "排序", "mData": "Sort" },
+                           { "sTitle": "热门程度", "mData": "PopularName" },
+                           {
+                               "sTitle": "开关", "mData": "Status",
+                               "render": function (data, type, row) {
+                                   return (data == true) ? '<span class="glyphicon glyphicon-ok gi-2x"></span>' : '<span class="glyphicon glyphicon-remove gi-2x"></span>';
+                               }
+                           },
+                           {
+                               "data": null,
+                               "mRender": function (data, type, full) {
+
+                                   var update_token = [REDACTED]"UpdateAreaGame", "post")`
+                                   var delete_token = [REDACTED]"DeleteAreaGame", "post")`
+                                   var switch_token = [REDACTED]"SetAreaGameStatus", "post")`
+
+                                   var details_control = ''
+                                   var delete_control = ''
+                                   var switch_control = ''
+
+                                   if (update_token === 'True') {
+                                       details_control = `
+                                           <div class ="pointer details-control">
+                                            <div class ="btn-edit"></div>
+                                            <span>修改<span>
+                                           </div>`
+                                   }
+
+                                   if (delete_token === 'True') {
+                                       delete_control = `
+                                           <div class ="pointer delete-control">
+                                            <div class ="btn-trash"></div>
+                                            <span>删除<span>
+                                           </div>`
+                                   }
+
+                                   if (switch_token === 'True') {
+                                       switch_control = `
+                                            <div class ="pointer switch-control">
+                                            <div class ="btn-toggle"></div>
+                                            <span>开关<span>
+                                           </div>`
+                                   }
+
+                                   return `<div class="control">
+                                       ${details_control}
+                                       ${switch_control}
+                                       ${delete_control}<div>`
+                               }
+                           }]
+
+            var platformID = $('#platformid').val()
+            var areaID = $('#areaID').val()
+
+            const data = {
+                platformID: platformID,
+                areaID: areaID
+            }
+
+            createDataTable('game', thead, url, data)
+        }
+
+        function format(d) {
+            const checked = d.Status === true ? 'checked' : '';
+
+            return `
+                        <div class ="form-body">
+                            <div class ="form-group">
+                                <label class ="">排序</label>
+                                <div class ="">
+                                    <input type="number" class ="form-control input-medium" name="sort_update_${d.Id}" id="sort_update_${d.Id}" value="${d.Sort}">
+                                </div>
+                            </div>
+                           <div class ="form-group">
+                                <label class ="">热门程度</label>
+                                   <select class ="form-control input-medium" name="popular_update_${d.Id}" id="popular_update_${d.Id}">
+                                  @foreach (var item in Enum.GetValues(typeof(game.Entity.Area.Popular)))
+                                  {
+                                      var itemValue = (int)item;
+                                       <option value="@itemValue">@item.GetDisplayName() </option>
+
+                                  }
+                                   </select>
+                            </div>
+                            <div class ="form-group">
+                                <label class ="">开关</label>
+                                <div class ="">
+                                    <input type="checkbox" class ="form-check-input" name="status_update_${d.Id}" id="status_update_${d.Id}" ${checked}>
+                                </div>
+                            </div>
+                             <div class ="form-group">
+                                  <button type="button" class ="btn btn-primary" onclick="update(${d.Id})">保存</button>
+                            </div>
+                        </div>`;
+        }
+
+        function changeOption(pid) {
+            $('#areaID_add>[data-pid]').hide()
+            $('#areaID_add>[data-pid="' + pid + '"]').show()
+            $("#areaID_add").val($("#areaID_add option:not([style*='display: none']):eq(0)").val())
+        }
+
+        function add() {
+
+            var platformID = $('#platformID_add').val()
+            var areaID = $('#areaID_add').val()
+            var gameID = $('#GameID').val()
+            var sort = $('#sort_add').val()
+            var status = $("#status_add").is(":checked");
+            var popular = $("#popular_add").val();
+
+            var option = {
+                isAjax: true,
+                method: 'post',
+                data: {
+                    platformID: platformID,
+                    areaID: areaID,
+                    gameID: gameID,
+                    sort: sort,
+                    status: status,
+                    popular: popular
+
+                },
+                isReload: false,
+                callback: function () {
+                    dataTable.ajax.reload(null, false);
+                }
+            }
+
+            $('#gameModal').modal('hide')
+            swDelConfirmUrl('AddAreaGame', '确定要新增渠道游戏么？', option)
+        }
+
+        function update(id) {
+            var sort = $(`#sort_update_${id}`).val()
+            var status = $(`#status_update_${id}`).is(':checked')
+            var popular = $(`#popular_update_${id}`).val();
+
+            var option = {
+                isAjax: true,
+                method: 'post',
+                data: {
+                    ID: id,
+                    sort: sort,
+                    status: status,
+                    popular: popular
+                },
+                isReload: false,
+                callback: function () {
+                    dataTable.ajax.reload(null, false);
+                }
+            }
+            swDelConfirmUrl('UpdateAreaGame', '确定要更新么？', option);
+        }
+
+        $(function () {
+            createTable()
+
+            var pid = $('#platformID_add').val()
+            changeOption(pid)
+
+            $('#platformID_add').change(() => {
+                var pid = $('#platformID_add').val()
+                changeOption(pid)
+            })
+
+            $('#game_table tbody').on('click', '.details-control', function () {
+                var tr = $(this).closest('tr');
+                var row = dataTable.row(tr);
+                if (row.child.isShown()) {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                }
+                else {
+                    var tr_old = dataTable.$('tr.shown')
+                    var row_old = dataTable.row(tr_old)
+
+                    tr_old.removeClass('shown')
+                    row_old.child.hide()
+
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                    $("#popular_update_" + row.data().Id).val(row.data().Popular);
+
+                }
+            });
+
+            $('#game_table tbody').on('click', '.switch-control', function () {
+                var tr = $(this).closest('tr');
+                var row = dataTable.row(tr);
+                var data = row.data()
+
+                var option = {
+                    isAjax: true,
+                    method: 'post',
+                    data: {
+                        Id: data.Id,
+                        status: !data.Status
+                    },
+                    isReload: false,
+                    callback: function () {
+                        dataTable.ajax.reload(null, false);
+                    }
+                }
+                swDelConfirmUrl('SetAreaGameStatus', '确定要开启/关闭么？', option);
+            })
+
+            $('#game_table tbody').on('click', '.delete-control', function () {
+                var tr = $(this).closest('tr');
+                var row = dataTable.row(tr);
+                var data = row.data()
+
+                var option = {
+                    isAjax: true,
+                    method: 'post',
+                    data: {
+                        ID: data.Id
+                    },
+                    isReload: false,
+                    callback: function () {
+                        dataTable.ajax.reload(null, false);
+                    }
+                }
+                swDelConfirmUrl('DeleteAreaGame', '确定要刪除么？', option);
+            })
+        })
+    </script>
+}
+

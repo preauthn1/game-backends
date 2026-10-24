@@ -1,0 +1,38 @@
+<div class="bjui-pageContent">
+    <div class="bs-example">
+        <form action="{{agentApiRoute}}" class="datagrid-edit-form" data-toggle="validate" data-data-type="jsonp">
+            <div class="bjui-row col-2">
+                <input type="hidden" name="id" value="{{params.id}}">
+                <label class="row-label">代理商手机</label>
+                <div class="row-input required">
+                    <input type="text" name="telphone" value="{{params.telphone}}" data-rule="required">
+                </div>
+                <label class="row-label">代理商名称</label>
+                <div class="row-input required">
+                    <input type="text" name="name" value="{{params.name}}" data-rule="required">
+                </div>
+                <label class="row-label">代理商渠道</label>
+                <div class="row-input required">
+                    <input type="text" name="channel" value="{{params.channel}}" data-rule="required">
+                </div>
+                <label class="row-label">注册日期</label>
+                <div class="row-input">
+                    <input type="text" name="created_at" data-toggle="datepicker" data-pattern="yyyy-MM-dd HH:mm:ss" value="{{params.created_at}}">
+                </div>
+                <label class="row-label">状态</label>
+                <div class="row-input required">
+                    <select name="status" data-toggle="selectpicker" data-rule="required" data-width="100%">
+                        <option value="0" {% if params.status==0 %}selected{% endif %}>禁用</option>
+                        <option value="1" {% if params.status==1 %}selected{% endif %}>启用</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="bjui-pageFooter">
+    <ul>
+        <li><button type="button" class="btn-close" data-icon="close">取消</button></li>
+        <li><button type="submit" class="btn-default" data-icon="save">保存</button></li>
+    </ul>
+</div>

@@ -1,0 +1,333 @@
+syntax = "proto3";
+
+package netproto;
+
+// [將軍] 符號
+enum GEN_Symbol {
+    // 藍7 p1
+    GEN_Symbol_BlueSeven = 0;
+
+    // 紅7 p2
+    GEN_Symbol_RedSeven = 1;
+
+    // Bar(將軍) p3
+    GEN_Symbol_Bar = 2;
+
+    // 銅鐘 p4
+    GEN_Symbol_Bell = 3;
+
+    // 西瓜(松) p5
+    GEN_Symbol_WaterMelon = 4;
+
+    // 櫻桃 p6
+    GEN_Symbol_Berry = 5;
+
+    // Replay(青再) p7
+    GEN_Symbol_Replay = 6;
+}
+
+// [將軍] 情境
+enum GEN_Scenario {
+    // Normal Game
+    GEN_Scenario_NG = 0;
+
+    // Regular Bonus
+    GEN_Scenario_RB = 1;
+
+    // Big Bonus
+    GEN_Scenario_BB = 2;
+
+    // JAC
+    GEN_Scenario_JAC = 3;
+}
+
+// [將軍] 模式類型
+enum GEN_Mode {
+    // 未指定
+    GEN_MODE_Unassigned = 0;
+
+    // A模式
+    GEN_MODE_A = 1;
+    
+    // B模式
+    GEN_MODE_B = 2;
+
+    // 天國模式
+    GEN_MODE_Heaven = 3;
+}
+
+// [將軍] 牌型
+enum GEN_ResultType {
+    // Empty
+    GEN_RT_Empty = 0;
+
+    // 沒有中獎
+    GEN_RT_None = 1;
+
+    // 純槓
+    GEN_RT_FeatureNone = 2;
+
+    // JAC槓
+    GEN_RT_JACNone = 3;
+
+    // 藍7連線
+    GEN_RT_BlueSevenLink = 10;
+
+    // 紅7連線
+    GEN_RT_RedSevenLink = 11;
+
+    // Bar連線
+    GEN_RT_BarLink = 12;
+
+    // 銅鐘連線
+    GEN_RT_BellLink = 13;
+
+    // 西瓜連線
+    GEN_RT_WaterMelonLink = 14;
+
+    // 櫻桃連線
+    GEN_RT_BerryLink = 15;
+
+    // Replay連線
+    GEN_RT_ReplayLink = 16;
+    
+    // 雙7(藍7紅7混合)連線
+    GEN_RT_DoubleSevenLink = 17;
+
+    // 需要解除RT 骰出後要依照當前大獎是 RB / BB，對應到 ReleaseRTonBB / ReleaseRTonRB
+    GEN_RT_ReleaseRT = 100;
+
+    // 需要解除RT 當前大獎為BB
+    GEN_RT_ReleaseRTonBB = 101;
+
+    // 需要解除RT 當前大獎為RB
+    GEN_RT_ReleaseRTonRB = 102;
+
+    // Bonus確定
+    GEN_RT_BonusSure = 200;
+
+    // 櫻桃出現在左邊任意位置
+    GEN_RT_BerryLeftAny = 10000;
+}
+
+// [將軍] 賠付類型
+enum GEN_PayType {
+    // 賠錢 Payout 為倍數
+    GEN_PTChip = 0;
+    
+    // 免費再轉 Payout 為次數
+    GEN_PTReplay = 1;
+
+    // 大獎 Payout 為 GameModeConfig 的 ID
+    GEN_PTBonus = 2;
+
+    // 1G連 增加 Bonus 連莊 Payout 為次數 
+    GEN_PT1G = 3;
+}
+
+// [將軍] 錯誤類型
+enum GEN_ErrorType {
+    GEN_ErrUnknowen = 0;
+
+    // 錢不夠
+    GEN_ErrBet_MoneyNotEnough = 30000;
+    // 倍率不合規定
+    GEN_ErrBet_IllegalOdds = 30001;
+}
+
+// [將軍] 遊戲封包編號
+enum GEN_GameMessageClassID {
+    GEN_None = 0;
+    // 發生錯誤 (內容為 GEN_Error)
+    GEN_ErrorID = 5000;
+
+    // 遊戲設定 (內容為 GEN_GameSetting)
+    GEN_GameSettingID = 10000;
+    // 轉數表 (內容為 GEN_RoadMap)
+    GEN_RoadMapID = 10010;
+    // 遊戲狀態 (內容為 GEN_GameStatus)
+    GEN_GameStatusID = 10020;
+    // 遊戲結果 (內容為 GEN_GameResult)
+    GEN_GameResultID = 10030;
+
+    // 因BB獲得0次JAC獲得1G連 (內容為 GEN_Payout)
+    GEN_EventBB0JACID = 10101;
+    // 因BB獲得1次JAC獲得1G連 (內容為 GEN_Payout)
+    GEN_EventBB1JACID = 10102;
+    // 因BB獲得2次JAC獲得1G連 (內容為 GEN_Payout)
+    GEN_EventBB2JACID = 10103;
+    // 因JAC連8銅鐘獲得1G連 (內容為 GEN_Payout)
+    GEN_EventJAC8BellID = 10110;
+
+    // 查詢遊戲設定 (不需帶資料)
+    GEN_Read_GameSettingID = 20000;
+    // 查詢轉數表 (不需帶資料)
+    GEN_Read_RoadMapID = 20010;
+    // 查詢遊戲狀態 (不需帶資料)
+    GEN_Read_GameStatusID = 20020;
+
+    // 玩家下注 (內容為 GEN_Bet)
+    GEN_BetID = 30000;
+}
+
+// [將軍] 錯誤封包
+message GEN_Error {
+    // 錯誤類型
+    GEN_ErrorType Type = 1;
+    // 錯誤訊息
+    string Message = 2;
+    // 錯誤來源
+    GEN_GameMessageClassID Source = 3;
+}
+
+// [將軍] 遊戲設定
+message GEN_GameSetting {
+    // 機台編號
+    int32 TableNo = 1;
+    // 當前機台下注倍率
+    int64 BetOdds = 2;
+    // 可選擇倍率
+    repeated int64 Odds = 3;
+    // 輪軸帶
+    repeated GEN_ReelStrip ReelStrips = 4;
+}
+
+// [將軍] 賠線設定
+message GEN_PayLine {
+    // 編號
+    int32 ID = 1;
+    // 位置
+    repeated GEN_Position Position = 2;
+}
+
+// [將軍] 賠線設定
+message GEN_Position {
+    // 直列編號
+    int32 Reel = 1;
+    // 橫列編號
+    int32 Row = 2;
+}
+
+// [將軍] 輪軸帶設定
+message GEN_ReelStrip {
+    // 輪軸編號
+    int32 Reel = 1;
+    // 符號
+    repeated GEN_Symbol Symbols = 2;
+}
+
+// [將軍] 遊戲狀態
+message GEN_GameStatus {
+    // 當前情境
+    GEN_Scenario Scenario = 1;
+    // 當前模式
+    GEN_Mode Mode = 2;
+    // 當前大獎
+    GEN_Scenario Bonus = 3;
+    // 剩餘RT數
+    int32 RT = 4;
+    // 是否為重玩
+    bool Replay = 5;
+    // Bonus確定
+    bool BonusSure = 6;
+    // 當前遊戲所需Coin數
+    int32 RequireCoin = 7;
+    // 當前Bonus剩餘次數
+    int32 BonusLeft = 8;
+    // 當前JAC剩餘次數
+    int32 JACLeft = 9;
+    // 目前累積1G連次數
+    int32 BonusStore = 10;
+    // 當前是否為機會模式
+    bool ChanceBuff = 11;
+    // 機會模式當前轉數到達時解除
+    int32 ChanceBuffDeadLine = 12;
+}
+
+// [將軍] 轉數表
+message GEN_RoadMap {
+    // 累積轉數
+    int64 Total = 1;
+    // 當前轉數
+    int64 Spin = 2;
+    // 各個大獎累積次數
+    repeated GEN_RoadMapBonus Bonus = 3;
+    // 歷史快照
+    repeated GEN_RoadMapSnapshot Snapshots = 4;
+}
+
+// [將軍] 轉數表(大獎累計次數)
+message GEN_RoadMapBonus {
+    // 大獎類型
+    GEN_Scenario Type = 1;
+    // 累積次數
+    int64 Count = 2;
+}
+
+// [將軍] 轉數表(歷史快照)(每次獲得大獎清空當前轉數時的狀態)
+message GEN_RoadMapSnapshot {
+    // 大獎類型
+    GEN_Scenario Type = 1;
+    // 次數
+    int64 Count = 2;
+    // 時間點(Unit Timestamp)
+    int64 Time = 3;
+}
+
+// [將軍] 下注
+message GEN_Bet {
+    // 下注倍率
+    int64 Odds = 1;
+}
+
+// [將軍] 遊戲結果
+message GEN_GameResult {
+    // 下注金額
+    int64 BetMoney = 1;
+    // 贏錢金額
+    int64 WinMoney = 2;
+    // 牌型
+    GEN_ResultType Result = 3;
+    // 停輪index 起始為0
+    repeated int32 StopIndex = 4;
+    // 停輪樣式 內容的符號只會為3個
+    repeated GEN_ReelStrip ReelStrip = 5;
+    // 是否解除RT
+    bool ReleaseRT = 6;
+    // 獎勵內容
+    repeated GEN_Payout Payouts = 7;
+    // 亮燈位置
+    repeated GEN_Position BlinkPositions = 8;
+    // 此局是由什麼情境轉出的
+    GEN_Scenario Scenario = 9;
+}
+
+// [將軍] 獎勵內容
+message GEN_Payout {
+    // 獎勵類型
+    GEN_PayType Type = 1;
+    // 獎勵數量
+    int64 Amount = 2;
+    // 獎勵大獎
+    GEN_Scenario Bonus = 3;
+}
+
+// [將軍] 房間資訊
+message GEN_RoomInfo {
+    // 可選擇下注倍率
+    repeated int64 Odds = 1;
+    // 牌桌
+    repeated GEN_TableInfo Tables = 2;
+}
+
+// [將軍] 牌桌資訊
+message GEN_TableInfo {
+    // 桌號
+    int32 ID = 1;
+    // 下注倍率
+    int64 Odds = 2;
+    // 轉數表
+    GEN_RoadMap RoadMap = 3;
+    // 是否有人
+    bool Occupied = 4;
+}

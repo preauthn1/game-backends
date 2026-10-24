@@ -1,0 +1,43 @@
+﻿@{
+    ViewBag.Title = "新增一级代理";
+}
+
+@Html.Action("Index", "Profit")
+
+<div class="box box-primary">
+    <!-- /.box-header -->
+    <form action="@Url.Action("AddNewAgent", "Profit", new { Area = "Agent" })" class="form-horizontal" method="post">
+        <div class="box-body">
+            <div class="form-group">
+                <label class="col-sm-12">用户ID</label>
+                <div class="col-sm-12">                   
+                    <input class="input-validation-error form-control" id="userid" name="userid" type="text" value="">             
+                </div>
+            </div>            
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-primary btn-block">确认</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section head{
+    <!-- iCheck -->
+    <link rel="stylesheet" href="~/Areas/Agent/Content/plugins/iCheck/square/blue.css">
+    <!-- Select2 -->
+    <link href="~/Areas/Agent/Content/plugins/select2/select2.css" rel="stylesheet" />
+}
+@section scripts{
+    <!-- InputMask -->
+    <script src="~/Areas/Agent/Content/plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="~/Areas/Agent/Content/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+    <script src="~/Areas/Agent/Content/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+    <!-- iCheck -->
+    <script src="/Areas/Agent/Content/plugins/iCheck/icheck.min.js"></script>
+    <!-- Select2 -->
+    <script src="~/Areas/Agent/Content/plugins/select2/select2.full.js"></script>
+    <!-- Page script -->    
+}
+

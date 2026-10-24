@@ -1,0 +1,222 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using game.Entity.Pay
+@using game.AdminSystem.Models.ViewModels
+@using game.Entity.Money
+@using game.AdminSystem
+
+@{
+
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+
+
+<style>
+
+
+    #myModalContet
+    {
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .eachResultRow
+    {
+        width: 50px;
+        margin: 10px;
+        text-align: center;
+        line-height: 75px;
+        font-size: 30px;
+    }
+
+    .resultItem
+    {
+        display:inline-block;
+        width:30px;
+        padding:5px 30px;
+        font-size:18px;
+    }
+
+</style>
+
+<div class="row tableListPage">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+
+
+                <div class="form-group">
+                    <label>玩家ID</label>
+                    <input type="text" id="userID" name="userID" />
+                </div>
+
+
+                <div class="form-group">
+                    <label>游戏</label>
+                    @Html.Partial("_DropdownGameList", new DropdownPartialSettingViewModel(FirstOptionValueEnum.DefaultSelectAll))
+                </div>
+
+
+                <div class="form-group">
+                    <label>游戏形式</label>
+                    @Html.Partial("_DropdownSlotGameHistoryGameType", new DropdownPartialSettingViewModel(FirstOptionValueEnum.DefaultSelectAll))
+                </div>
+
+
+                <div class="form-group">
+                    <label>时间</label>
+                    <input type="text" class="form-control " style="width:180px" value="@Convert.ToDateTime(DateTime.Now.AddDays(-1).ToShortDateString()).ToString("yyyy-MM-dd HH:mm")" id="createBeginTime" name="createBeginTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm', isShowClear: false, readOnly: true })" placeholder="开始时间">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="createEndTime" name="createEndTime" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间">
+                </div>
+
+
+
+                @Html.Partial("_DropdownChangeDate")
+
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                </div>
+
+
+                <div class="hr-s"></div>
+
+            </form>
+
+            <div class="content">
+                <table id="myTable_table" class="display border-r" style="width:100%"></table>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="myCardResultModal" tabindex="-1" role="dialog" aria-labelledby="modal_empty_template" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 700px">
+        <div class="modal-content" style="padding:15px;">
+
+
+            <h4>
+                <b>
+                    牌型
+                </b>
+            </h4>
+
+            <div class="hr-small">
+
+            </div>
+
+
+            <div id="myModalContet" style="margin: 0 auto;">
+
+            </div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    关闭
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+@section initScripts{
+    <script>
+
+        function createTable() {
+
+            const urlEdit = '/SlotGameHistoryLog/Update';
+            const url = '/SlotGameHistoryLog/GetList'
+            const thead =
+                [
+                    { "sTitle": "建立时间", "mData": "CreateTimeText", "className": "algin-c" },
+                    { "sTitle": "单号", "mData": "LogID", "className": "algin-l" },
+                    { "sTitle": "游戏", "mData": "GameName", "className": "algin-l" },
+                    { "sTitle": "伺服器", "mData": "ServerName", "className": "algin-l" },
+                    { "sTitle": "平台", "mData": "PlatformName", "className": "algin-l" },
+                    { "sTitle": "玩家ID", "mData": "UserID", "className": "algin-l" },
+                    { "sTitle": "原始分数", "mData": "CurrentAmount", "className": "algin-r", "render": function (data, type, row) { return toCurrency(row.CurrentAmount); } },
+                    { "sTitle": "押分", "mData": "BetMoney", "className": "algin-r", "render": function (data, type, row) { return toCurrency(row.BetMoney); } },
+                    { "sTitle": "赢分", "mData": "WinMoney", "className": "algin-r", "render": function (data, type, row) { return toCurrency(row.WinMoney); } },
+                    { "sTitle": "结算分数", "mData": "FinalScore", "className": "algin-r", "render": function (data, type, row) { return toCurrency(row.FinalScore); } },
+                    { "sTitle": "游戏形式", "mData": "GameTypeText", "className": "algin-c" },
+                    { "sTitle": "LogType", "mData": "LogTypeText", "className": "algin-c" },
+                    {
+                        "sTitle": "牌型", "mData": "Title",
+                        "render": function (data, type, row) {
+                            var html = "";
+                            var elementID = "hidden_" + row.LogID;
+                            html = html + String.format('<div id={0} style="display:none;">{1}</div>', elementID , row.GameDataConvert);
+                            html = html + String.format('<a id="" class="btn btn-sm dark" style="" onclick="showModal(\'{0}\')" >查看</a>', elementID);
+                            return html;
+                        }
+                    }
+                ]
+
+            var gameID = $("#gameID").val();
+
+            //if (gameID == '') {
+            //    alert('请先选择篩選游戏、再进行查询');
+            //    return;
+            //}
+            
+            //将表单上的筛选条件、下拉选单带入api
+            const data =
+            {
+                userID: $("#userID").val(),
+                gameID: $("#gameID").val(),
+                createBeginTime: $("#createBeginTime").val(),
+                createEndTime: $("#createEndTime").val(),
+                gameType : $("#gameType").val(),
+            }
+
+            createDataTable('myTable', thead, url, data);
+        }
+
+
+        $(function () {
+
+            fillFormData('form_search');
+        })
+
+
+
+        function showModal(elementID) {
+
+            var replaceText = $("#" + elementID).html();
+
+            $("#myModalContet").html(replaceText);
+            $("#myCardResultModal").modal('show');
+        }
+
+        function toCurrency(num)
+        {
+            var parts = num.toString().split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return parts.join('.');
+        }
+
+
+    </script>
+}

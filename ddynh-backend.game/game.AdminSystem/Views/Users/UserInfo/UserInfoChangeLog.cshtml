@@ -1,0 +1,98 @@
+﻿@using FW.Core.Helper.Enum
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+<style>
+    .content {
+        padding: .5%;
+        font-size: 1.2em;
+        font-family: serif;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="protlet-body">
+            <form class="form-inline" id="form_search" method="get">
+                @Html.Partial("_userPartial")
+                <div class="form-group">
+                    <label>用户信息变更类型</label>
+                    <select name="type" id="type" class="form-control input-small">
+                        <option>--不限--</option>
+                        @foreach (var item in Enum.GetValues(typeof(game.Entity.Users.UserInfoChangeType)))
+                        {
+                            <option value="@item.ToString().ToLower()">@item.GetDisplayName()</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>创建时间</label>
+                    <input type="text" class="form-control " style="width:180px" id="createTimeBegin" name="createTimeBegin" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm',isShowClear:false,readOnly:true})" placeholder="开始时间" value="@Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("yyyy-MM-dd HH:mm")">
+                    到
+                    <input type="text" class="form-control " style="width:180px" id="createTimeEnd" name="createTimeEnd" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm'})" placeholder="结束时间" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>IP地址</label>
+                    <input type="text" class="form-control input-medium" id="ipAddress" name="ipAddress" placeholder="IP地址">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="createTable()"> 搜 索 </button>
+                </div>
+            </form>
+            <div class="content">
+                <table id="userInfoChangeLog_table" class="display" style="width:100%"></table>
+            </div>
+        </div>
+    </div>
+</div>
+@section initScripts{
+    <script>
+
+        function createTable() {
+            const url = '/UserInfo/GetUserInfoChangeLog'
+            const thead = [{ "sTitle": "创建时间	", "mData": "WriteTime" },
+                            { "sTitle": "所属平台", "mData": "Platform" },
+                            {
+                                "sTitle": "用户ID", "mData": "UserID",
+                                "render": function (data, type, row) {
+                                    return `<a class="link" target="_blank" href="/UserInfo/Search?userId=${data}&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">${data}</a>`
+                                }
+                            },
+                            {
+                                "sTitle": "帐号", "mData": "LoginName",
+                                "render": function (data, type, row) {
+                                    return `<a class="link" target="_blank" href="/UserInfo/Search?loginName=${data}&beginTime=@(DateTime.Now.AddMinutes(-10).ToString("yyyy-MM-dd HH:mm:ss"))&endTime=@(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))">${data}</a>`
+                                }
+                            },
+                            { "sTitle": "用户信息变化类型", "mData": "ChangeType", },
+                            { "sTitle": "修改前的数据", "mData": "OldData", "width": "20%" },
+                            { "sTitle": "修改后的数据", "mData": "NewData", "width": "20%" },
+                            { "sTitle": "IP地址", "mData": "IPAddress" },
+                            { "sTitle": "说明", "mData": "Memo" }]
+
+            var loginName = $('#loginName').val()
+            var userID = $('#userID').val()
+            var type = $('#type').val()
+            var createTimeBegin = $('#createTimeBegin').val()
+            var createTimeEnd = $('#createTimeEnd').val()
+            var ipAddress = $('#ipAddress').val()
+
+            const data = {
+                loginName: loginName,
+                userID: userID,
+                type: type,
+                beginTime: createTimeBegin,
+                endTime: createTimeEnd,
+                ipAddress: ipAddress
+            }
+            createDataTable('userInfoChangeLog', thead, url, data)
+        }
+
+        $(function () {
+            fillFormData('form_search')
+            createTable()
+        })
+    </script>
+}

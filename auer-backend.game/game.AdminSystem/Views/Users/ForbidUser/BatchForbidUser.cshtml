@@ -1,0 +1,109 @@
+﻿@using FW.Core.Helper.Enum
+@using FW.Core.Web.Mvc
+@using FW.Core.Web
+@using FW.Core.Helper
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+}
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>批量封锁账号
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="form1" method="POST" class="form-horizontal form-bordered">
+                    <div class="form-body">
+                        @if (Model != null)
+                        {
+                            <div class="form-group">
+                                <label class="control-label col-md-4 xing">错误信息</label>
+                                <div class="col-md-8">
+                                    <span>
+                                        @Html.Raw(Model.ToString())
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        { 
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">封锁账号</label>
+                            <div class="col-md-8">
+                                <textarea rows="3" id="userIDList" class="form-control  input-medium" placeholder="请输入账号,以逗号隔开(,)。例如：1,2,3,4"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">备注</label>
+                            <div class="col-md-8">
+                                <textarea rows="3" name="memo" id="memo" class="form-control  input-medium" placeholder="备注"></textarea>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            @if (Model == null)
+                            {
+                                @Html.OkWithRight()
+                                @Html.Back(Url.Action("List"))
+                            }
+                            else
+                            {
+                                <button id="btnBack" type="button" class="btn " style="" onclick="window.location.href = '/Admin/forbiduser/BatchTickUser'"><i class="fa  fa-mail-reply-all"></i> 返回</button>
+                            }
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+        
+    </div>
+</div>
+@section initScripts{
+    <script type="text/javascript" src="/Plugins/Uploadify/Upload.js"></script>
+    <script>
+        var num = 0;
+        $(function () {
+            $("#form1").validate({
+                rules: {
+                    userIDList: {
+                        required: true
+                    },
+                    memo: {
+                        required: true,
+                        minlength:5,
+                        maxlength: 1024
+                    }
+                }
+            });
+            $("#form1").submit(function () {
+                var userIDList = $("#userIDList").val().replace("，",",");
+                if (userIDList.toString().trim() == "") {
+                    return false;
+                }
+                if (userIDList.indexOf(",") == -1) {
+                    alert("输入格式有误，请重新输入。");
+                    return false;
+                }
+                var list = userIDList.toString().split(",");
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].toString().trim() == "") {
+                        continue;
+                    }
+                    if (isNaN(list[i])) {
+                        alert("输入ID有误，请重新输入。");
+                        return false;
+                    }
+                    $(this).append("<input hidden name='userID' value='" + list[i].replace(/[\r\n]/g,"") + "' />");
+                }
+            });
+        })
+       
+    </script>
+}

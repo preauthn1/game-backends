@@ -1,0 +1,43 @@
+<div class="bjui-pageHeader" style="background-color:#fefefe; border-bottom:none;">
+    <button type="button" class="btn-blue" data-toggle="dialog" data-options="{id:'dialogAutoReply',type:'post',url:'{{agentPageRoute}}/auto_opt',data:{id:'autoReply',auto:'{{initPageData.autoReply}}'}}">设置自动回复</button>
+    <br/><br/>
+{% autoescape false %}{{formSearch}}{% endautoescape %}
+</div>
+<div class="bjui-pageContent">
+    <table class="table table-bordered" id="datagrid-test-filter" data-toggle="datagrid" data-options="{{gridCfg}}">
+        <thead>
+            <tr>
+                <th data-options="{name:'player_id',align:'center'}">玩家ID</th>
+                <th data-options="{name:'msg',align:'center'}">消息内容</th>
+                <th data-options="{name:'reply',align:'center'}">回复内容</th>
+                <th data-options="{name:'created_at',align:'center'}">创建时间</th>
+                <th data-options="{name:'opt',align:'center',width:300,render:datagrid_tree_operation,quicksort:false,quickfilter:false,menu:false}">操作</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<script type="text/javascript">
+    function datagrid_tree_operation(value,data){
+        var id = data.id;
+        return'<button type="button" class="btn btn-blue" data-icon="plus" onclick="dialog_ReplyEvent('+id+',\''+data.reply+'\');"><i class="fa fa-plus"></i> 回复</button><button type="button" class="btn btn-red" data-icon="times" onclick="DelEvent('+id+')"><i class="fa fa-times"></i> 删除</button>';
+    }
+    function dialog_ReplyEvent(id,reply){
+        BJUI.dialog({
+            id:'dialog_batchReply',
+            url:"{{agentPageRoute}}/reply_opt",
+            data:{id:id,reply:reply},
+            closeCurrent:true,
+            title:'回复'
+        });
+    }
+
+    function DelEvent(id){
+        BJUI.ajax('doajax', {
+            url:"{{agentApiRoute}}/del",
+            type:'POST',
+            data:{id:id},
+            loadingmask: true,
+            confirmMsg:"确定要操作吗?"
+        });
+    }
+</script>

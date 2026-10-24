@@ -1,0 +1,181 @@
+﻿@{
+    ViewBag.Title = "用戶列表";
+}
+
+@Html.Action("Index", "Split")
+
+<div class="box box-primary">
+    <!-- form start -->
+    <div class="box-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">用户ID</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input class="form-control" id="TargetID" maxlength="10" name="targetID" type="text">
+                </div>
+
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">加入日期</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="date" class="form-control" id="dtStartTime">
+                </div>
+
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">到</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="date" class="form-control" id="dtEndTime">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                    <input type="hidden" id="SubUserID" name="SubUserID">
+                    <button type="button" id="btnQuery" class="btn btn-primary btn-block">搜索</button>
+                </div>
+            </div>
+        </div>
+        <hr class="hr-sm1">
+
+        <!-- 查詢結果 -->
+        <div class="box-header">
+            <h3 class="box-title">搜索结果</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>用户ID</th>
+                        <th>昵称</th>
+                        <th>平台</th>
+                        <th>层级</th>
+                        <th>身份</th>
+                        <th>下级人数</th>
+                        <th>上层ID</th>
+                        <th>直属上级</th>                     
+                        <th>注册時間</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_SplitLevelUsers")
+
+<!-- /.box -->
+@section scripts{
+    <!-- Page script -->
+    <script type="text/javascript">
+        $(function () {
+
+            //DataTable
+            var table =
+                $('#example1').DataTable({
+                "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                "searching": false,
+                "autoWidth": false,
+                "serverSide": true,
+                "deferLoading": 0,
+                "order": [[5, 'desc']],
+                "ajax": {
+                    method : 'post',
+                    url: '@Url.Action("UserInfoList", "Split")',
+                    data:function(d)
+                    {
+                        d.targetID = $('#TargetID').val();
+                        d.dtStartTime = $('#dtStartTime').val();
+                        d.dtEndTime = $('#dtEndTime').val();
+                    },
+                    "dataSrc": function (json) {
+                        if (json.success == false)
+                            swal("错误", json.message, "error");
+
+                        return json.data;
+                    }
+                },
+                columns: [
+                    { name: "UserID", data: "UserID" },
+                    { name: "NickName", data: "NickName" },
+                    { name: "PlatformName", data: "PlatformName" },
+                    { name: "StageLevel", data: "StageLevel" },
+                    {
+                        name: "Status",
+                        data: "Status",
+                        render: function (data, type, row, meta) {
+                            return data == 1 ? "玩家" : "代理";
+                        }
+                    },
+                    {
+                        name: "TotalUser",
+                        data: null,
+                        render: function (data, type, row, meta) {                            
+                            var html = '<a class="label label-success" data-toggle="modal" data-target="#UserModal" data-whatever="' + data.UserID + '" data-level="1">' + data.B_User + '</a> + ';
+                            html += '<a class="label label-warning" data-toggle="modal" data-target="#UserModal" data-whatever="' + data.UserID + '" data-level="2">' + data.C_User + '</a> + ';
+                            html += '<a class="label label-danger" data-toggle="modal" data-target="#UserModal" data-whatever="' + data.UserID + '" data-level="3">' + data.D_User + '</a>';
+                            return html;
+                        }
+                    },
+                    { name: "TopUserID", data: "TopUserID" },
+                    { name: "UpperUserID", data: "UpperUserID" },
+                    {
+                        name: "CreateTime",
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            return moment(data.CreateTime).format("YYYY-MM-DD HH:mm");
+                        }
+                    }
+                ],
+                responsive: true
+            });
+
+            $('#btnQuery').click(function () {
+                table.draw();
+            });
+
+            var _userid = '';
+            var _level = 1;
+            var table2 =
+                $('#example2').DataTable({
+                    "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                    "searching": false,
+                    "autoWidth": false,
+                    "serverSide": true,
+                    "deferLoading": 0,
+                    "ajax": {
+                        method: 'post',
+                        url: '@Url.Action("GetUserInfo_LevelUsers", "Split")',
+                        data: function (d) {
+                            d.userID = _userid,
+                            d.level = _level
+                        },
+                        "dataSrc": function (json) {
+                            if (json.success == false)
+                                swal("错误", json.message, "error");
+
+                            return json.data;
+                        }
+                    },
+                    columns: [
+                        { name: "UserID", data: "UserID" },
+                        {
+                            name: "CreateTime",
+                            data: null,
+                            render: function (data, type, row, meta) {
+                                return moment(data.CreateTime).format("YYYY-MM-DD HH:mm");
+                            }
+                        }
+                    ],
+                    responsive: true
+                })
+
+            $('#UserModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)              
+                _userid = button.data('whatever');
+                _level = button.data('level');
+
+                table2.draw();
+            });
+        })
+    </script>
+}
+<td></td>
+

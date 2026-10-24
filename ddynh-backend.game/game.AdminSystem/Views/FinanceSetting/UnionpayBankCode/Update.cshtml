@@ -1,0 +1,118 @@
+﻿
+@using FW.Core.Helper.Enum
+@using game.Entity.Users
+@using game.AdminSystem;
+@model game.AdminSystem.Models.ViewModels.UnionpayBankCodeUpdateViewModel
+
+@{
+
+    bool isEdit = Model.IsUpdatePage;
+
+}
+
+@section pageLevelPlugins{
+    <script src="@Url.Content("~/Plugins/My97DatePicker/WdatePicker.js")"></script>
+    <script src="@Url.Content("~/Plugins/DataTable/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Plugins/Vue/vue.js")"></script>
+    <link href="@Url.Content("~/Plugins/DataTable/css/dataTables.jqueryui.min.css")" rel="stylesheet" type="text/css" />
+}
+
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>银行管理
+                </div>
+            </div>
+            <div class="portlet-body form">
+
+                <!-- BEGIN FORM-->
+                <form id="myForm" method="post" class="form-horizontal form-bordered" novalidate="novalidate">
+                    <div class="form-body">
+
+
+                        <input type="hidden" value="@Model.Id" name="Id" id="Id" />
+
+                        <input type="hidden" value="@(Model.IsUpdatePage ? 1 : 0)" name="IsUpdatePage" id="IsUpdatePage" />
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">系统编号</label>
+                            <div class="col-md-3">
+                                <input type="text" id="Code" name="Code" class="form-control input-medium" value="@Model.Code" placeholder="" @(Model.IsUpdatePage ? "disabled='disabled'" : "") placeholder="请输入99999以下的数字">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">银行名称</label>
+                            <div class="col-md-3">
+                                <input type="text" id="BankName" name="BankName" class="form-control input-medium" value="@Model.BankName" placeholder="">
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">银行代码</label>
+                            <div class="col-md-3">
+                                <input type="text" id="BankID" name="BankID" class="form-control input-medium" value="@Model.BankID" placeholder="">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group last">
+                            <label class="control-label col-md-3">是否启用</label>
+                            <div class="col-md-3">
+
+                                @Html.Partial("_DropdownActiveStatus", new DropdownPartialSettingViewModel(FirstOptionValueEnum.None, Model.Show ? 1 : 0))
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button id="btnOk" type="submit" class="btn dark" style="" onclick=""><i class="fa fa-file-o"></i> 确定</button>
+                            <button id="btnBack" type="button" class="btn " style="" onclick="javascript:window.history.back();return false;"><i class="fa  fa-mail-reply-all"></i> 返回</button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section initScripts
+{
+    <script>
+
+
+
+        $("#myForm").validate({
+            rules: {
+
+                Code: {
+                    required: true,
+                },
+
+                BankName: {
+                    required: true,
+                    maxlength: 50
+                }
+            },
+            messages: {
+                Name: {
+                    required: "不能为空",
+                }
+            }
+        });
+
+    </script>
+}

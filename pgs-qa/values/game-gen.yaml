@@ -1,0 +1,45 @@
+game:
+  gen:
+    id: 6001
+    name: 將軍
+    group: pachislot
+    room:
+      - serverid: 600112010
+        proto: gen-test
+        configs:
+          gameserver.dat: |
+            [gameserver]
+            gameid=6001				                                  // 遊戲ID
+            gamename=將軍   		                                // 遊戲名稱
+            flag=1201			     	                                // 顯示名稱,客戶端可根據此名稱將房間分類顯示
+            minplayer=1                                         // 遊戲最小人數
+            maxplayer=1                                         // 遊戲最大人數
+            tablecount=15			                                  // 桌子數
+            seatcount=1				                                  // 椅子數
+            maxuser=500					                                // 最大人數
+            loginmoney=1000			                                // 進入遊戲最小積分
+            basescore=10				                                // 底分
+            deallog=2					                                  // 牌局記錄器類型0 不記錄 ,1 文本, 2 db, 5: Console
+            scoremode=0					                                // 0 即時寫分 1退房間寫分
+
+            readywaittime=3600                                  // 舉手超時時間,單位秒
+            reghallserverinterval=3600                          // 註冊廣場時間間隔,單位秒
+
+            defaultbetodds=1000                                 // 預設倍率
+            defaultpattern=600101                               // 預設Pattern
+            chancerate=256                                      // 機會模式觸發機率 1 / n
+            chancecntopt=20:30,30:20                            // 機會模式次數機率，每組為 次數:權重，逗號隔開
+            chancerangeopt=A:1-193,502-565,902-965,1302-1365,1666-1921;B:1-193,402-465,802-865,1202-1265,1502-1565,1794-1921            // 機會模式觸發範圍，每組為 {模式}:{最小}-{最大},{最小}-{最大},...;   轉數區間逗號隔開，模式與模式分號隔開
+
+            [table]
+            distribution=100:600101:3,100:600102:3,200:600103:4,300:600104:3,400:600105:2,500:600106:1 // 牌桌佈局 {Bet}:{Pattern}:{Count}，逗號隔開
+
+            [gamequeue]
+            queuetype=1                                 // 撮合類型 0 時間隨機 1 固定人數
+            queueusercount=1                            // 排隊人數
+            queuetimeout=2                              // 排隊人數超時
+            gamematchwaitmintime=1                      // 撮合時間間隔範圍小值,單位秒
+            gamematchwaitmaxtime=3                      // 撮合時間間隔範圍大值,單位秒
+            gameendaction=0                             // 遊戲結束後動作,0 無動作 1 準備
+            againstsameip=0                             // 同IP不分配一起
+            againstlastgame=0                           // 最後一次遊戲過的用戶不分配一起

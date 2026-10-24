@@ -1,0 +1,44 @@
+﻿all,all,client,client,client,all,all,client,client,all,client,client,client,client,client,client,server,client,client,server,server,server,server,server,server,server,,,,,client,client,client,client,client,client,client
+required,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,,,,,optional,optional,optional,optional,optional,optional,optional
+uint32,bytes,string,string,uint32,uint32,float,uint32,uint32,uint32,uint32,float,float,float,float,float,uint32,float,string,uint32,float,float,float,float,float,float,0.825,,,,uint32,string,uint32,uint32,uint32,string,string
+fishId,name,modelName,aiType,coinNum,fishType,fishScale,fishOrder,swimRotationType,reward,rewardNum,moveSpeed,rotateSpeed,rotateAngleRndRange,rotateInterval,rotateIntervalRndRange,numberLimit,Radius,deadSound, minHit, hitRate_2, hitRate_3, hitRate_4, hitRate_5, hitRate_7, hitRate_6,,,,,isShake,musicbg,isTurnTable,deadEffect,isTypeUI,isTypeUIText,fishText
+鱼序号,鱼名称,模組名稱,"ai类型
+空：自由移动
+pathxxx：固定路劲预制体名字",特效金币数量,"鱼类型
+1.普通鱼
+2.BOSS鱼
+3.炸死除Boss外的鱼
+4.炸死30倍一下
+5.炸死同类鱼
+6.钻头龙虾",魚大小縮放,"""魚在場景中的深度排序 數值必須大於0(數字越小越前面)""","鱼游动旋转方式
+1：正常旋转
+2：不旋转
+",鱼倍率(Server要再除100),"""跳出的錢幣類數量 1:1 2:2 3:4 4:6 5:8""",移动速度,"转向速度
+(ai类型为2时不适用)","转向范围(左右随机)
+(ai类型为2时不适用)","转向间隔(s)
+(ai类型为2时不适用)
+移動间隔(s)","转向间隔偏移(s)
+(ai类型为2时不适用)
+移動间隔偏移(s)","数量限制
+不为0，限制生成数量",半径,"死亡音效
+0表示无音效,其它表示音效文件ID,权重是百分比，百分比总数是100
+第一种配置:
+{音效文件ID}:{播放音效的权重百分比}
+第二种配置:
+{播放音效文件ID}",鱼最小攻击次数,"鱼初始死亡概率
+（初级房）","鱼初始死亡概率
+（中级房）","鱼初始死亡概率
+（高级房）","鱼初始死亡概率
+（大师房）","鱼初始死亡概率
+（皇家房）","鱼初始死亡概率
+（體驗房）",鱼死亡本身效果,鱼死亡特效,存在房间,游动轨迹（游动时动作不变）,"死亡时是否抖动
+0：不抖动
+1：抖动
+",鱼的入场背景音乐,死亡时是否显示转盘,"鱼死亡时特效
+1表示爆炸特效","0不显示
+1大Boss
+2中Boss
+3高倍鱼 金框
+4一般鱼 蓝色框
+5一般鱼 蓝色框排序較靠後
+6 特殊鱼",鱼种介面说明文字,进场提示

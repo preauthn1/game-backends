@@ -1,0 +1,129 @@
+﻿@{
+    ViewBag.Title = "代理提现";
+}
+@model UnionpayModel
+@Html.Action("Index", "Profit")
+
+<div class="box box-primary">
+    <!-- /.box-header -->
+    <div class="box-body">
+        <form action="@Url.Action("ResetUnionpay", "Profit", new { Area = "Agent" })" class="form-horizontal" method="post">
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">手机号</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">                   
+                    @Html.TextBoxFor(x => x.LoginName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.LoginName)                    
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">銀聯真实姓名</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    @Html.TextBoxFor(x => x.UnionpayRealName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.UnionpayRealName)                    
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">收款银行</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    @Html.DropDownList("unionpayBank", null, null, new { @class = "form-control select2" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">銀聯账号</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    @Html.TextBoxFor(x => x.UnionpayAccount, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.UnionpayAccount)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">验证码</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    @Html.TextBoxFor(x => x.CodeID, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.CodeID)
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+                    <button type="button" id="btnSMS" class="btn btn-default">获取验证码</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">游戏密码</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    @Html.PasswordFor(x => x.Password, new { @class = "form-control", maxlength = "40" })
+                    @Html.ValidationMessageFor(x => x.Password)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">确认密码</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "form-control", maxlength = "40" })
+                    @Html.ValidationMessageFor(x => x.ConfirmPassword)
+                </div>
+            </div>  
+            <div class="form-group">
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12 col-lg-offset-1 col-md-offset-2 col-sm-offset-2">
+                    <button type="submit" id="btnBind" class="btn btn-success">立即绑定</button>
+                </div>
+            </div>
+        </form>
+            <hr class="hr-sm1">
+        <form action="@Url.Action("WithDrawOrder", "Profit", new { Area = "Agent" })" class="form-horizontal" method="post">
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">提现金额</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input class="input-validation-error form-control" id="intAmount" name="intAmount" type="number" value="">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-primary btn-block">确认</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section scripts{
+    <!-- Page script -->
+    <script type="text/javascript">
+        $(function () {           
+
+            $('#btnSMS').click(function () {                
+                var tel = $('#LoginName').val();
+                if (tel == '') {
+                    swal({
+                        type: 'error',
+                        title: "请输入手机号",
+                    })
+                    return;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("SendSMSCode", "Profit")',
+                    data: { "tel": tel },
+                    success: function (data) {
+                        console.log(data);
+                       
+                        swal({
+                            type: data.success ? 'success' : 'error',
+                            title: data.message,
+                        }).then((result) => {
+                            $('#btnSMS').attr('disabled', true);
+                            var sec = data.countdown;
+
+                            var t1 = setInterval((() => {
+                                $('#btnSMS').text('获取验证码(' + sec + ')')
+                                    if (sec < 1) {
+                                        $('#btnSMS').attr('disabled', false);
+                                        $('#btnSMS').text('获取验证码')
+                                        clearInterval(t1);
+                                    }
+                                    sec--;
+                            }), 1000);
+                        })
+                    }
+                });               
+            });
+        })
+    </script>
+}

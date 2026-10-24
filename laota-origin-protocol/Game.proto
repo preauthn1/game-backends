@@ -1,0 +1,69 @@
+syntax = "proto2";
+
+package netproto;
+
+enum GameMessageClassID {
+    TestGameChatID = 1;
+    TestGameScoreID = 2;
+    TestGameEndID = 3;
+    UserEnterID = 4;
+    UserLeaveID = 5;
+    UserStateChangeID = 6;
+    GameStartID = 7;
+    GameEndID = 8;
+    UserPokerID = 9;
+    GamePokerID = 10;
+    UserActionCommitID = 11;
+    AllUserActionCommitID = 12;
+    UserRecoverID = 13;
+    LookOnUserNotifyID = 14;
+    UserLuckScoreID = 15;
+    UserLuckScoreRetID = 16;
+    GameBeginCountDownID = 25;
+    GameBeginCountDownStopID = 26;
+
+    SuperToolAddChangeLogID = 27;
+    SuperToolAssignRewardID = 28;
+    SuperToolGetAssignRewardDetailID = 29;
+    SuperToolGetAssignRewardDetailRetID = 30;
+    SuperToolUpdAssignRewardDetailID = 31;
+    SuperToolGetVipUserID = 32;
+    SuperToolGetVipUserRetID = 33;
+    SuperToolUpdVipUserID = 34;
+    SuperToolFishGetSystemRewardDetailID = 35;
+    SuperToolFishGetSystemRewardDetailRet = 36;
+    SuperToolFishUpdSystemRewardID = 37;
+    SuperToolFishUpdSystemRewardRetID = 38;
+    SuperToolFishUpdVIPUserRewardID = 39;
+    SuperToolFishUpdVIPUserRewardRetID = 40;
+    SuperToolZjhGetVipUserID = 41;
+    SuperToolZjhGetVipUserRetID = 42;
+    SuperToolZjhUpdVipUserID = 43;
+    FishSysPoolID = 45;
+    FishSysPoolRetID = 46;
+    FishPlayerPoolID = 47;
+    FishPlayerPoolRetID = 48;
+    GetBeginnerOfferID = 49;         // 取得玩家新手優惠
+    GetBeginnerOfferRetID = 50;      // 回傳玩家新手優惠
+    UpdateBeginnerOfferID = 51;      // 更新玩家新手優惠
+    GameCompetitionStartID = 52;     // 參加活動, 扣金幣
+    GameCompetitionStartRetID = 53;  // 回傳參加活動, 扣金幣 結果
+    GameUpdateUserJackpotBox = 54;   // jackpot寫入保險箱
+    SlotFreeSpinID = 55;             // Slot FreeSpin紀錄 (Slot_FreeSpinDetail)
+    SlotFreeSpinRetID = 56;          // Slot 讀取FreeSpin紀錄 (Slot_FreeSpinRead)
+    SlotFreeSpinDetailID = 57;       // Slot 接收FreeSpin紀錄 (Slot_FreeSpinDetail)
+    SlotJackpotNoLinkID = 58;        // Slot 非連接型Jackpot (Slot_JackpotData)
+    SlotJackpotNoLinkRetID = 59;     // Slot 讀取非連接型結果 (Slot_JackpotAllData)
+    SlotJackpotLinkID = 60;          // Slot 連接型Jackpot (Slot_JackpotData)
+    SlotJackpotLinkRetID = 61;       // Slot 讀取連接型Jackpot結果 (Slot_JackpotData)
+    SlotAddGameLogID = 62;           // Slot 歷程紀錄寫入 (Slot_HistoryLogData)
+    SlotGetGameLogID = 63;           // Slot 讀取歷程紀錄 (Slot_LoadHistoryData)
+    SlotSendGameLogID = 64;          // Slot 傳送已讀取的歷程紀錄 (Slot_SendHistoryData)
+    JackpotNoLinkID = 65;            // 非連接型Jackpot
+    JackpotNoLinkRetID = 66;         // 讀取非連接型結果
+    JackpotLinkID = 67;              // 連接型Jackpot
+    JackpotLinkRetID = 68;           // 讀取連接型Jackpot結果
+    SuperToolGetSysPoolWinLose = 69;          // 要求 水線控制遊戲輸贏結果
+    SuperToolGetSysPoolWinLoseRet = 70;       // 回傳 水線控制遊戲輸贏結果
+    SuperToolUpdateSysPoolWinLose = 71;       // 更新 水線控制遊戲輸贏結果
+};

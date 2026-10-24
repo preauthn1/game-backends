@@ -1,0 +1,8 @@
+db: 
+  host: 0.0.0.0
+  port: 1433
+  username: sa
+  password: [REDACTED]
+  semaphore: 5
+  pool: 100
+  smswebapi: 0.0.0.0:80/SMS/Send

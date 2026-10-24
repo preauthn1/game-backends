@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package netproto;
+
+// WLZB 遊戲訊息 1xxxx
+enum WLZB_GameMessageClassID {
+    // Server to Client 10xxx
+    WLZB_GameOptionsID = 10001;  // 通知可以選擇龍龍
+
+    // Client to Server 11xxx
+    WLZB_ChooseGameID = 11001;  // 選擇了哪條龍
+};

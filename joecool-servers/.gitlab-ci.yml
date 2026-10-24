@@ -1,0 +1,122 @@
+include: .template-ci.yml
+
+stages:
+  - dependencies
+  - go-test
+  - build-all
+  - deploy-dev
+go_download_modules:
+  stage: dependencies
+  extends: .go-cache
+  script:
+    - make go-download-modules
+  tags:
+    - golang
+  artifacts:
+    name: "go-build-name"
+    untracked: false
+    expire_in: 60 mins
+    paths:
+      - $CI_PROJECT_DIR/.go/build-name
+  only:
+    - branches@server-team/servers
+    - tags@server-team/servers
+    - merge_requests
+    - develop@Rory/servers
+go_lint:
+  stage: go-test
+  extends: .go-cache
+  dependencies:
+    - go_download_modules
+  allow_failure: true
+  script:
+    - golint -set_exit_status ./...
+  tags:
+    - golang
+  only:
+    - branches@server-team/servers
+    - tags@server-team/servers
+    - merge_requests
+    - develop@Rory/servers
+  except:
+    refs:
+      - master
+      - develop@server-team/servers
+      - /^phnum.*$/
+go_test:
+  stage: go-test
+  extends: .go-cache
+  dependencies:
+    - go_download_modules
+  script:
+    - make go-test
+  tags:
+    - golang
+  artifacts:
+    name: "go-test"
+    untracked: false
+    expire_in: 60 mins
+    when: always
+    paths:
+      - $CI_PROJECT_DIR/origin_output
+  only:
+    - branches@server-team/servers
+    - tags@server-team/servers
+    - merge_requests
+    - develop@Rory/servers
+  except:
+    refs:
+      - master
+      - develop@server-team/servers
+      - /^phnum.*$/
+build_windows:
+  extends: .build_windows_base_template
+  dependencies:
+    - go_download_modules
+  stage: build-all
+  script:
+    - make go-build-init
+    - make go-build-mains
+    - make go-build-games
+  tags:
+    - golang
+  except:
+    refs:
+      - phnum/master
+  only:
+    refs:
+      - tags
+      - develop@server-team/servers
+
+build_linux:
+  extends: .build_linux_base_template
+  dependencies:
+    - go_download_modules
+  stage: build-all
+  script:
+    - make go-build-init
+    - make go-build-mains
+    - make go-build-games
+  tags:
+    - golang
+  only:
+    refs:
+      - tags
+      - develop@server-team/servers
+      - develop@Rory/servers
+
+deploy_dev:
+  dependencies:
+    - go_download_modules
+  stage: deploy-dev
+  script:
+    - source .go/build-name
+    - curl http://0.0.0.0:888/deploy/${BUILD_NAME}
+    - echo "如需部署 qa 服務器, 請訪問 http://0.0.0.0:888/deploy/${BUILD_NAME}"
+    - echo ${CI_COMMIT_TAG##v}
+    - echo "deploy finish"
+  tags:
+    - golang
+  only:
+    refs:
+      - develop@server-team/servers

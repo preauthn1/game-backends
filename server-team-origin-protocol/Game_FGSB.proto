@@ -1,0 +1,25 @@
+syntax = "proto2";
+
+package netproto;
+
+enum FGSB_GameMessageClassID {
+    //---------- Server - Client ----------
+    FGSB_GameInfo = 10001;              // S2C 牌局資訊，於玩家進入牌局或斷線重連時傳送
+    FGSB_AllUserInfo = 10002;           // S2C 玩家資訊，當玩家人數或狀態有變動時傳送
+    FGSB_UserBettingStart = 10003;      // S2C 玩家開始下注
+    FGSB_Bet = 10004;                   // C2S 玩家下注，包含底注及邊注
+    FGSB_BetResult = 10005;             // S2C 玩家下注結果
+    FGSB_StopBettingAnimation = 10006;  // S2C 播放停止下注動畫
+    FGSB_Deal = 10007;                  // S2C 發牌
+    FGSB_SideSettlement = 10008;        // S2C 邊注、特殊牌型結算
+    FGSB_DoubleBetStart = 10009;        // S2C 玩家開始加注
+    FGSB_DoubleBet = 10010;             // C2S 玩家加注
+    FGSB_FoldCard = 10011;              // C2S 棄牌
+    FGSB_DoubleBetResult = 10012;       // S2C 玩家加注結果
+    FGSB_Settlement = 10013;            // S2C 總結算
+    FGSB_SelectSeat = 10014;            // C2S 玩家選座位
+    FGSB_SelectSeat_OK = 10015;         // S2C 玩家選座位結果
+    FGSB_KickTip = 10016;               // S2C 踢人倒數提示
+    FGSB_UserActionCommitID = 11;       // C2S 動畫播放完成
+    FGSB_WatchUserCountID = 10017;      // S2C 觀戰人數
+};

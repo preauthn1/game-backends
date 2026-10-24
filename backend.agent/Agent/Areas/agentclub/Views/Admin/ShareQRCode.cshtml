@@ -1,0 +1,51 @@
+﻿
+<style>
+    .qrcode {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        height: 100%;
+        background-color: #000;
+    }
+
+    .inputAction {
+        display: flex;
+        padding: 1%;
+    }
+
+    input {
+        padding: 5px 15px;
+        background: #ccc;
+        border: 0 none;
+        cursor: pointer;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+    }
+
+        input[type="submit"] {
+            padding: 5px 15px;
+            background: #ccc;
+            border: 0 none;
+            cursor: pointer;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+        }
+</style>
+
+<div class="qrcode">
+    <img src="/agentclub/admin/GetShareQRCode?inviteCode=@ViewBag.inviteCode">
+    <div class="inputAction">
+        <input id="copyInput" value="@ViewBag.shareUrl">
+        <input type="submit" value="複製" onclick='copyInput()'>
+    </div>
+</div>
+
+<script>
+    function copyInput() {
+        document.getElementById('copyInput').select()
+        document.execCommand('copy')
+    }
+</script>
+
+

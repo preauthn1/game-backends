@@ -1,0 +1,75 @@
+﻿@{
+    var type = ViewBag.ReplyType as game.Entity.Customer.ReplyType;
+}
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>添加快速回复内容
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="form1" method="post" class="form-horizontal form-bordered">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-5">所属类型</label>
+                            <div class="col-md-7">
+                                <input type="hidden" value="@type.Id" name="ReplyTypeID" />
+                                <p class="help-block">@type.TypeName</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">标题</label>
+                            <div class="col-md-7">
+                                <input type="text" name="Title" class="form-control input-medium" placeholder="请输入标题" value="" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">内容</label>
+                            <div class="col-md-7">
+                                <textarea style="height:200px;width:500px" name="Content" placeholder="请输入内容"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-5 xing">排序值</label>
+                            <div class="col-md-7">
+                                <input type="number" name="Sort" class="form-control input-medium" placeholder="请输入排序值" value="" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-5 col-md-7">
+                            @Html.OkWithRight()
+                            @Html.Back(Url.Action("ReplyContentList", new { replyTypeID = type.Id }))
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function () {
+            $("#form1").validate({
+                rules: {
+                    Title: {
+                        required: true,
+                        maxlength: 32
+                    },
+                    Content: {
+                        required: true,
+                        maxlength: 128
+                    },
+                    Sort: {
+                        required: true
+                    }
+                }
+            });
+        })
+    </script>
+}

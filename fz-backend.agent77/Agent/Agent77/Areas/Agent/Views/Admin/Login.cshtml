@@ -1,0 +1,111 @@
+﻿@model Repository.ViewModel.LoginViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>后台管理系统</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="~/Areas/Agent/Content/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://example.invalid/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://example.invalid/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Areas/Agent/Content/dist/css/AdminLTE.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="~/Areas/Agent/Content/plugins/iCheck/square/blue.css">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://example.invalid/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://example.invalid/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <a href="#"><b>后台管理系统</b></a>
+        </div>
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+            <p class="login-box-msg">登入账号</p>
+            @using (Html.BeginForm("Login", "Admin", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { id = "userForm" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Partial("_ValidationSummary")
+                <div class="form-group has-feedback">
+                    @Html.TextBoxFor(x => x.Account, new { @class = "form-control", placeholder = "ID" })
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                    @Html.ValidationMessageFor(x => x.Account)
+                </div>
+                <div class="form-group has-feedback">
+                    @Html.PasswordFor(x => x.Password, new { @class = "form-control", placeholder = "密码" })
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    @Html.ValidationMessageFor(x => x.Password)
+                </div>                              
+                <div class="row">
+                    <!-- /.col -->
+                    <div class="col-xs-4 col-xs-offset-4">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">登入</button>
+                    </div>
+                    <!-- /.col -->
+                </div>                
+            }
+        </div>
+        <!-- /.login-box-body -->
+    </div>
+    <!-- /.login-box -->
+    <!-- jQuery 2.2.3 -->
+    <script src="/Areas/Agent/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="/Areas/Agent/Content/bootstrap/js/bootstrap.min.js"></script>
+    <!-- iCheck -->
+    <script src="/Areas/Agent/Content/plugins/iCheck/icheck.min.js"></script>
+    <script src="/Areas/Agent/Content/plugins/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="/Areas/Agent/Content/plugins/jquery.validate.min.js"></script>
+    <script src="/Areas/Agent/Content/plugins/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        var form = $('#userForm')
+            , formData = $.data(form[0])
+            , settings = formData.validator.settings
+            // Store existing event handlers in local variables
+            , oldErrorPlacement = settings.errorPlacement
+            , oldSuccess = settings.success;
+
+        settings.errorPlacement = function (label, element) {
+
+            // Call old handler so it can update the HTML
+            oldErrorPlacement(label, element);
+
+            // Add Bootstrap classes to newly added elements
+            label.parents('.form-group').addClass('has-error');
+            label.addClass('text-danger');
+        };
+
+        settings.success = function (label) {
+            // Remove error class from <div class="form-group">, but don't worry about
+            // validation error messages as the plugin is going to remove it anyway
+            label.parents('.form-group').removeClass('has-error');
+
+            // Call old handler to do rest of the work
+            oldSuccess(label);
+        };
+    });
+
+    $(function () {
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%' // optional
+        });      
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+﻿<Project Sdk="example.invalid.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Repository\已捨棄\AGGGameSummaryFetchRepository.cs" />
+    <Compile Remove="Repository\已捨棄\PerGameDetailLog48HoursRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\target.Models\target.Models.csproj" />
+    <ProjectReference Include="..\target.Utility\target.Utility.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Repository\已捨棄\" />
+  </ItemGroup>
+
+</Project>

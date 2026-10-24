@@ -1,0 +1,36 @@
+syntax = "proto2";
+
+package netproto;
+
+message RetMessage{
+	required int32 Code = 1;
+	required string Message = 2;
+};
+message RPCInfo{
+	required string ConnID = 1;
+	required int32 QueueID = 2;
+	required string IPAddress = 3;
+	optional int32 UserID = 4;
+	optional string Cer = 5;
+	required int32 RouteServerID = 6;
+	optional string ExtendInfo = 7;
+	optional string ConnToken = 8;
+};
+message TipMessage{
+	required string Message=1;
+	required int32 MsgType=2;
+	optional int32 Param=3;
+};
+
+message HeartBeatConfig{
+	required int32 BeatInterval=1;
+	required int32 ConnLoseTimeSpan=2;
+};
+
+message IPReport{
+	required string IPAddress=1;	
+};
+
+message ConnTokenMessage{
+    required string token=1;
+}

@@ -1,0 +1,265 @@
+syntax = "proto2";
+
+package netproto;
+
+//错误消息定义
+enum DDZ_ErrorCode {
+    OK = 1;    //成功
+    Fail = 2;  //失败
+};
+
+//牌对象定义
+//黑桃  3
+//红桃  2
+//梅花  1
+//方块  0
+//大小王4
+//皮子  5
+message Card {
+    required int32 Number = 1;  //点数
+    required int32 Color = 2;   //花色
+}
+
+//叫地主
+message DDZ_JiaoDiZhu {
+    required bool IsJiaoDiZhu = 2;  // true 叫地主 false 不叫
+};
+
+//叫地主返回消息
+message DDZ_JiaoDiZhuRet {
+    required DDZ_ErrorCode Code = 1;  //错误id
+    optional string Msg = 2;          //错误描述
+};
+
+//抢地主
+message DDZ_QiangDiZhu {
+    required bool IsRob = 2;  // true 抢 false 不抢
+};
+
+//抢地主 返回消息
+message DDZ_QiangDiZhuRet {
+    required DDZ_ErrorCode Code = 1;  //错误id
+    optional string Msg = 2;          //错误描述
+};
+
+//明牌
+message DDZ_MingPai {
+    required bool IsMingPai = 2;  // true明牌  false 不明牌
+};
+
+//明牌 返回消息
+message DDZ_MingPaiRet {
+    required DDZ_ErrorCode Code = 1;  //错误id
+    required string Msg = 2;          //错误描述
+};
+
+//出牌
+message DDZ_ChuPai {
+    repeated Card Cards = 1;  //用户选择的 要出的牌
+};
+
+//出牌 返回消息
+message DDZ_ChuPaiRet {
+    required DDZ_ErrorCode Code = 1;  //错误id
+    required string Msg = 2;          //错误描述
+};
+
+message DDZ_Pass {};
+
+message DDZ_PassRet {
+    required DDZ_ErrorCode Code = 1;  //错误id
+    required string Msg = 2;          //错误描述
+};
+
+//托管请求
+message DDZ_TuoGuan {};
+
+//托管响应
+message DDZ_TuoGuanRet {
+    required DDZ_ErrorCode Code = 1;  //错误id
+    required string Msg = 2;          //错误描述
+};
+
+enum UserActionDo {
+    UANONE = 1;
+    UANOTDO = 2;
+    UADO = 3;
+};
+
+//其他玩家信息
+message DDZ_PlayerInfo {
+    required int32 UserId = 1;
+    required int32 SeatNo = 2;
+    required bool IsDiZhu = 3;               //是否是地主
+    required bool IsMingPai = 4;             //是否选择了明牌
+    required UserActionDo IsJiaoDiZhu = 5;   //是否叫地主
+    required UserActionDo IsQiangDiZhu = 6;  //是否抢地主
+    required int32 CardsCount = 7;           //手里牌的数量
+    optional CardArry Cards = 8;             //当IsMingPai==true时 该字段存在 否则没有该字段
+    required bool IsTuoGuan = 9;             //是否托管
+};
+
+message DDZ_SendCardInfo {
+    optional int32 SeatNo = 1;
+    optional int32 SendType = 2;         // 0 表示不要 1 表示要 2不处理
+    optional CardArry SendOutCards = 3;  //当SendType为0 时 该字段不存在
+};
+
+//断线重连后恢复场景
+message DDZ_UserRecoverRet {
+    required int32 UserId = 1;
+    required int32 GameStep = 2;     //游戏进度（阶段）
+    required int32 Odds = 3;         //当前总倍率
+    required int32 OptSeat = 4;      //当前该操作的玩家座位
+    required int32 OptLastTime = 5;  //当前操作玩家剩余超时时间
+    required int32 DiZhuSeat = 6;
+    repeated DDZ_PlayerInfo Opi = 7;   //其余两家玩家信息
+    optional CardArry DiZhuCards = 8;  // GameStep>=3（发牌阶段）
+    optional int32 DiZhuCardType = 9;  //地主牌牌型
+    repeated DDZ_SendCardInfo Sci = 10;
+    required bool IsSendCard = 11;    //是否有人出过牌
+    required int32 Calculation = 12;  // 0加法 1乘法
+};
+
+//广播类型消息 游戏进度
+message DDZ_NotifyGameStep {
+    required int32 Step = 1;  // 1 初始状态, 2 游戏开始, 3 发牌阶段, 4 叫牌, 5 抢地主, 6 明牌, 7出牌, 8 结束结算
+};
+
+//广播类型消息 当前进度timer时间广播
+message DDZ_NotifyGameTimeOut {
+    required int32 SeatNo = 1;   //当前是哪个玩家正在操作 椅子号
+    required int32 TimeOut = 2;  //暂停时间
+};
+
+//广播类型消息 叫地主
+message DDZ_NotifyJiaoDiZhu {
+    required int32 SeatNo = 1;      //当前是哪个玩家正在操作
+    required bool IsJiaoDiZhu = 2;  //是否叫地主
+};
+
+//广播类型消息 抢地主
+message DDZ_NotifyQiangDiZhu {
+    required int32 SeatNo = 1;  //当前是哪个玩家正在操作
+    required bool IsQiang = 2;  //是否抢地主
+};
+
+//明牌对象定义
+message CardArry {
+    repeated Card Cards = 1;
+};
+
+//广播类型消息 明牌
+message DDZ_NotifyMingPai {
+    required int32 SeatNo = 1;   //明牌操作是由哪个玩家发出的
+    required bool IsMing = 2;    //是否明牌  true 明牌 false 不明牌
+    optional CardArry Mpcs = 3;  //在IsMing为true时 有值 是该玩家手牌详情
+};
+
+//广播类型消息 出牌
+message DDZ_NotifyChuPai {
+    required int32 SeatNo = 1;           //出牌操作是由哪个玩家发出的
+    required int32 CardType = 2;         //牌型
+    required int32 MainCards = 3;        //主牌副数
+    required int32 MainCardsNumber = 4;  //主牌点数
+    required int32 CurOdds = 5;          //当前出牌倍率
+    optional CardArry Cards = 6;         //玩家出牌详情
+};
+
+//广播类型消息  发牌
+message DDZ_NotifyFaPai {
+    required int32 SeatNo = 1;    //发牌给哪个玩家
+    optional CardArry Cards = 2;  //发牌详情
+};
+
+//广播类型消息  抢地主结果
+message DDZ_NotifyDizhuInfo {
+    required int32 SeatNo = 1;       //地主id
+    required CardArry Cards = 2;     //地主牌
+    required int32 Calculation = 3;  // 0加法 1乘法
+};
+
+//倍率改变类型
+enum OddsChangeType {
+    null = 1;
+    mingpai = 2;       //明牌
+    jiaodizhu = 3;     //叫地主
+    qiangdizhu = 4;    //抢地主
+    zhadan = 5;        //炸弹
+    chuntian = 6;      //春天
+    sanpai = 7;        //地主牌是散牌
+    duizi = 8;         //地主牌是对子
+    shunzi = 9;        //地主牌是顺子
+    tonghua = 10;      //地主牌是同花
+    xiaowang = 11;     //地主牌是小王
+    dawang = 12;       //地主牌是大王
+    baozi = 13;        //地主牌是豹子
+    rocket = 14;       //火箭
+    fanchuntian = 15;  //反春天
+};
+
+//广播类型消息 房间基本信息
+message DDZ_NotifyRoomInfo {
+    required int32 Odds = 1;     //总倍率
+    required int32 NowOdds = 2;  //当前总倍率
+    required int32 oct = 3;      //引起倍率改变的原因
+};
+
+//单个玩家结算详情
+message DDZ_ResultRecord {
+    required int32 UserId = 1;
+    required int32 Money = 2;
+    required bool IsDiZhu = 3;
+    required bool Bankruptcy = 4;  //是否破产
+    required CardArry cards = 5;
+    required string NickName = 6;  //昵称
+};
+
+//广播类型消息 结算
+message DDZ_NotifySettlement {
+    required int32 BaseScore = 1;          //底分
+    required int32 JiaoDiZhuOdds = 3;      //叫地主 倍率信息
+    required int32 QiangDiZhuOdds = 4;     //抢地主 倍率信息
+    required int32 DiZhuCardTypeOdds = 5;  //地主牌 牌型倍率
+    required int32 ZhaDanOdds = 6;         //炸弹翻倍倍率
+    required int32 ChunTianOdds = 7;       //春天倍率
+    required int32 MingPaiOdds = 8;        //明牌倍率
+    required int32 TotalOdds = 9;          //总倍率
+    required int32 WinSeat = 10;           //赢家椅子号
+    repeated DDZ_ResultRecord Settlement = 11;
+    optional int32 Rocket = 12;           //火箭倍率
+    required int32 Calculation = 13;      // 0加法 1乘法
+    required int32 FanChunTianOdds = 14;  //春天倍率
+};
+
+//广播类型消息 玩家托管
+message DDZ_NotifyTuoGuan {
+    required int32 UserSeat = 1;  //托管的玩家id
+    required bool State = 2;      //是否托管 true 托管 false 取消托管
+};
+
+//广播桌子配置消息
+message DDZ_NotifyDeskCfg {
+    required int32 Difen = 1;    //桌子底分
+    required int32 TimeOut = 2;  //一局结束后客户端超时返回时间
+    required int32 Odds = 3;     //基础倍数 默认为1
+    required int32 MaxOdd = 4;   //封顶倍数
+}
+
+//是否開啟玩家計牌器功能
+message DDZ_EnableUserChiPaiChi {
+    required bool Status = 1;
+}
+
+//計牌器資料:剩餘牌紀錄, 上下家出牌紀錄
+message DDZ_ChiPaiChiInfo {
+    repeated Card ShengYuPai = 1;            //剩餘牌紀錄
+    repeated DDZ_ChuPaiChiLu ShangChia = 2;  //上家出牌紀錄
+    repeated DDZ_ChuPaiChiLu HsiaChia = 3;   //下家出牌紀錄
+}
+
+//出牌紀錄
+message DDZ_ChuPaiChiLu {
+    repeated Card Cards = 1;  //用户出過的牌
+    required int32 SeatNo = 2;
+}

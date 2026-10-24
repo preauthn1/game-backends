@@ -1,0 +1,155 @@
+﻿<div class="row">
+    <div class="col-md-8 col-md-offset-2">        
+        <div class="portlet box grey">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>新增机器人服务器配置
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form id="form1" method="post" class="form-horizontal form-bordered">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">游戏</label>
+                            <div class="col-md-8">                                
+                                @Html.DropDownList("gameID", DataService.Game("", false), new { @class = "form-control input-medium", id = "gameID" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">服务器</label>
+                            <div class="col-md-8">
+                                <select id="serverID" name="serverID" class="form-control input-medium" data-server='@Html.Raw(DataService.GameServer())'></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">开始时间</label>
+                            <div class="col-md-8">
+                                <input type="text" name="BeginTime" class="form-control input-medium" maxlength="5" placeholder="请输入开始时间，格式：00:00" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">结束时间</label>
+                            <div class="col-md-8">
+                                <input type="text" name="EndTime" class="form-control input-medium" maxlength="5" placeholder="请输入结束时间，格式：23:59" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">最小数量</label>
+                            <div class="col-md-8">
+                                <input type="text" name="MinCount" class="form-control input-medium" placeholder="请输入最小数量" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">最大数量</label>
+                            <div class="col-md-8">
+                                <input type="text" name="MaxCount" class="form-control input-medium" placeholder="请输入最大数量" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">最小智商</label>
+                            <div class="col-md-8">
+                                <select name="MinLevel" class="form-control input-medium">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 xing">最大智商</label>
+                            <div class="col-md-8">
+                                <select name="MaxLevel" class="form-control input-medium">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="col-md-offset-4 col-md-8">
+                            @Html.OkWithRight()
+                            @Html.Back(Url.Action("List"))
+
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+
+    </div>
+</div>
+@section initScripts{
+    <script>
+        $(function() {
+            $("#form1").validate({
+                rules: {
+                    BeginTime: {
+                        required: true
+                    },
+                    EndTime: {
+                        required: true
+                    },
+                    MinCount: {
+                        required: true,
+                        digits: true
+                    },
+                    MaxCount: {
+                        required: true,
+                        digits: true
+                    }
+                }
+            });
+
+            $("#form1").submit(function () {
+                var bt = $('[name="BeginTime"]').val();
+                var et = $('[name="EndTime"]').val();
+                var minCount = $('[name="MinCount"]').val();
+                var maxCount = $('[name="MaxCount"]').val();
+                var minLevel = $('[name="MinLevel"]').val();
+                var maxLevel = $('[name="MaxLevel"]').val();
+                if (new Date('2000-01-01 ' + bt) > new Date('2000-01-01 ' + et)) {
+                    alert('结束时间不能早于开始时间');
+                    return false;
+                }
+                if (parseInt(minCount) > parseInt(maxCount)) {
+                    alert('最大数量不能小于最小数量');
+                    return false;
+                }
+                if (parseInt(minLevel) > parseInt(maxLevel)) {
+                    alert('最大智商不能小于最小智商');
+                    return false;
+                }
+            });
+
+            $("#gameID").change(function () {
+                var servers = JSON.parse($("#serverID").attr("data-server"));
+                var gameID = $("#gameID").val();
+                var html = '';
+                for (var i = 0; i < servers.length; i++) {
+                    if (servers[i].GameID == gameID) {
+                        html += '<option value="' + servers[i].ID + '">' + servers[i].Name + '</option>';
+                    }
+                }
+                $("#serverID").html(html);
+            });
+            $("#gameID").change();
+        })
+    </script>
+}

@@ -1,0 +1,104 @@
+﻿@{
+    ViewBag.Title = "我的代理";
+}
+@model Repository.ViewModel.CouponGenerator
+
+<div class="box box-primary">
+    <!-- form start -->
+
+    <div class="box-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">指定平台</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    @Html.DropDownList("PlatformID", (MultiSelectList)ViewBag.PlatformID, "全部平台", new { @class = "form-control", style = "width: 100%;" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">兑换金</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="number" class="form-control" id="amount">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-1 col-md-2 col-sm-2 col-xs-12">组数</label>
+                <div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                    <input type="number" class="form-control" id="counts">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-1 col-md-2 col-sm-2 col-xs-12">
+                    <button type="button" id="btnQuery" class="btn btn-primary btn-block">产生礼码</button>
+                </div>
+            </div>
+        </div>
+        <hr class="hr-sm1">
+
+        <!-- 查詢結果 -->
+        <div class="box-header">
+            <h3 class="box-title">礼码列表</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>礼码序号</th>
+                        <th>兑换金</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <!-- /.box-body -->
+    </div>
+</div>
+
+<!-- /.box -->
+@section scripts{
+    <!-- Page script -->
+    <script type="text/javascript">
+        $(function () {
+
+            //DataTable
+            var table =
+                $('#example1').DataTable({
+                    "language": { "url": "/Areas/Agent/Content/plugins/datatables/Chinese.json" },
+                    "searching": false,
+                    "autoWidth": false,
+                    "serverSide": true,
+                    "deferLoading": 0,
+                    "pageLength": 1000,
+                    "ajax": {
+                        method: 'post',
+                        url: '@Url.Action("CouponGenerator", "Coupon")',
+                        data: function (d) {
+                            d.amount = $('#amount').val();
+                            d.counts = $('#counts').val();
+                            d.platform_id = $('#PlatformID').val();
+                        },
+                        "dataSrc": function (json) {
+                            if (json.success == false) {
+                                return [];
+                                swal("错误", json.message, "error");
+                            }
+                            return json.data.data;
+                        }
+                    },
+                    columns: [
+                        { name: "CouponCode", data: "CouponCode" },
+                        { name: "Amount", data: "Amount" }
+                    ],
+                    responsive: true
+                });
+
+            $('#btnQuery').click(function () {
+                var amount = $('#amount').val() - 0;
+                var counts = $('#counts').val() - 0;
+                if (amount <= 0 || counts <= 0) {
+                    swal('错误', '兑换金或组数有误, 请重新检查', 'warning');
+                }
+                table.draw();
+            });
+        })
+    </script>
+}

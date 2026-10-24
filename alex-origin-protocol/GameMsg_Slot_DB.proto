@@ -1,0 +1,140 @@
+syntax = "proto2";
+
+package netproto;
+
+// [訊息] 查詢選擇遊戲機會 Server to DB -> Slot_SelectGameReadID = 30001
+message Slot_MSG_SelectGameRead {
+    required int32 UserID = 1;  // 玩家ID
+    required int32 GameID = 2;  // GameID ID
+    required int32 FlagID = 3;  // FlagID
+}
+
+// [訊息] 更新遊戲機會資料 Server to DB -> Slot_SelectGameRecordID = 30002 | 30003
+message Slot_MSG_SelectGameRecord {
+    required Slot_SelectGameInfo Info = 1;  // 選擇遊戲機會資料
+}
+
+// [訊息] 查詢免費遊戲 Server to DB -> Slot_FreeGameReadID = 30011
+message Slot_MSG_FreeGameRead {
+    required int32 UserID = 1;  // 玩家ID
+    required int32 GameID = 2;  // GameID
+    required int32 FlagID = 3;  // FlagID
+}
+
+// [訊息] 更新免費遊戲 Server to DB -> Slot_FreeGameRecordID = 30012 | 30013
+message Slot_MSG_FreeGameRecord {
+    required Slot_FreeSpinDetail Info = 1;  // 免費遊戲資料
+}
+
+// [訊息] 查詢獎池資訊 Server to DB -> Slot_JackpotReadID = 30021
+message Slot_MSG_JackpotRead {
+    required Slot_JackpotData Info = 1;  // 獎池資訊
+}
+
+// [訊息] 更新獎池資訊 Server to DB -> Slot_JackpotRecordID = 30022 | 30023
+message Slot_MSG_JackpotRecord {
+    repeated Slot_JackpotData Records = 1;  // 獎池資訊
+}
+
+// [訊息] 查詢Bonus遊戲 Server to DB -> Slot_BonusGameReadID = 10000041
+message Slot_MSG_BonusGameRead {
+    required int32 UserID = 1;    // 玩家ID
+    required int32 GameID = 2;    // GameID
+    required int32 FlagID = 3;    // FlagID
+    optional int32 OriginID = 4;  // OriginID
+}
+
+// [訊息] 查詢Bonus遊戲 Server to DB -> Slot_BonusGameReadID = 10000041
+message Slot_MSG_BonusGameRecord {
+    repeated Slot_BonusGameDetail Detail = 1;  // 詳細資料
+}
+
+// [訊息] 新增遊戲歷程 Server to DB -> Slot_GameLogAddID = 30033
+message Slot_MSG_GameLogAdd {
+    required int32 UserID = 1;          // 玩家ID
+    required int32 GameID = 2;          // 遊戲ID
+    required int32 ServerID = 3;        // ServerID
+    required int64 CurrentAmount = 4;   // 原始分數
+    required int64 BetMoney = 5;        // 押分
+    required int64 WinMoney = 6;        // 贏分
+    required int64 FinalScore = 7;      // 結算分數
+    required int32 GameType = 8;        // 遊戲形式
+    required int32 LogType = 9;         // 牌型紀錄種類
+    required string GameData = 10;      // 牌型紀錄
+}
+
+// [訊息] 向 DB Server 請求讀取
+message Slot_MSG_LightningRead {
+    optional int32 UserID = 1;  // 玩家ID
+    optional int32 GameID = 2;  // GameID ID
+    optional int32 FlagID = 3;  // FlagID
+}
+
+// [訊息] 向 DB Server 請求讀取
+message Slot_MSG_LightningRecord {
+    optional int32 UserID = 1;  // 玩家ID
+    optional int32 GameID = 2;  // GameID ID
+    optional int32 FlagID = 3;  // FlagID
+    optional string Data = 4;   // Lightning 資料
+}
+
+// Slot 選擇遊戲機會資料
+message Slot_SelectGameInfo {
+    required int32 UserID = 1;    // 玩家ID
+    required int32 GameID = 2;    // GameID ID
+    required int32 FlagID = 3;    // FlagID
+    optional int32 OriginID = 4;  // 機率表ID
+    optional int32 Times = 5;     // 剩餘次數
+    optional string Data = 6;     // 補充資料(自行做字串處理)
+}
+
+// Slot 免費次數Detail
+message Slot_FreeSpinDetail {
+    required int32 UserID = 1;         // 玩家ID
+    required int32 GameID = 2;         // GameID ID
+    required int32 FlagID = 3;         // FlagID
+    required int64 UserBet = 4;        // 玩家下注金額
+    required int32 FreeSpinGroup = 5;  // FreeSpin群組
+    required int32 Times = 6;          // FreeSpin次數
+    required int32 ChooseRate = 7;     // 玩家選擇倍率
+    required int64 WinMoney = 8;       // 玩家已贏得多少
+    optional int64 OriginID = 10;      // 機率表ID
+    optional int32 WinTimes = 11;      // 累計贏的次數
+    optional string Data = 12;         // 額外資訊
+}
+
+// Slot 讀取免費次數
+message Slot_FreeSpinRead {
+    required int32 UserID = 1;  // UserID
+    required int32 GameID = 2;  // GameID ID
+    required int32 FlagID = 3;  // FlagID
+}
+
+// Slot jackpot資料
+message Slot_JackpotData {
+    required int32 GameID = 1;             // GameID
+    required int32 FlagID = 2;             // FlagID
+    required int32 TableNo = 3;            // 桌子編號
+    required int64 Contribution = 4;       // 玩家貢獻值
+    required int64 TotalContribution = 5;  // 總貢獻值
+    required int64 AwardTotal = 6;         // 已發送獎金總和
+    required int32 Level = 7;              // Jackpot層級
+}
+
+// Slot jackpot資料
+message Slot_JackpotAllData {
+    repeated Slot_JackpotData AllData = 1;  // 各池異動值
+}
+
+// Slot BonusGame資料
+message Slot_BonusGameDetail {
+    required int32 UserID = 1;    // 玩家ID
+    required int32 GameID = 2;    // GameID ID
+    required int32 FlagID = 3;    // FlagID
+    optional int32 OriginID = 4;  // 規則ID
+    optional int32 TurnID = 5;    // 順序
+    optional int32 Location = 6;  // 位置
+    optional int32 BetMoney = 7;  // 下注金額
+    optional int32 BetRate = 8;   // 下注倍率
+    optional string Data = 9;     // 額外資訊
+}

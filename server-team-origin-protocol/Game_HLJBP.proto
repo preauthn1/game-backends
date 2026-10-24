@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package netproto;
+
+enum HLJBP_GameMessageClassID {
+    //---------- Server - Client ----------
+    HLJBP_GameInfo = 10001;          // S2C 牌局資訊，於玩家進入牌局或斷線重連時傳送
+    HLJBP_AllUserInfo = 10002;       // S2C 玩家資訊，當玩家人數或狀態有變動時傳送
+    HLJBP_UserBettingStart = 10003;  // S2C 玩家開始下注
+    HLJBP_Bet = 10004;               // C2S 玩家下注，包含底注及邊注
+    HLJBP_BetResult = 10005;         // S2C 玩家下注結果
+    HLJBP_Settlement = 10006;        // S2C 總結算
+    HLJBP_KickTip = 10007;           // S2C 踢人倒數提示
+    HLJBP_UserActionCommitID = 11;       // C2S 動畫播放完成
+};

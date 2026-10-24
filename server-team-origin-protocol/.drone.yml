@@ -1,0 +1,12 @@
+pipeline:
+  gen-go:
+    image: znly/protoc
+    commands:
+        - mkdir -p src/go
+        - protoc --plugin=protoc-gen-go=/usr/bin/protoc-gen-go --go_out=./src/go ./*proto
+  copy-to-release:
+    image: target/drone-copy
+    srcdir: src
+    destdir: /mnt/release/proto
+    volumes:
+      - /mnt/release:/mnt/release

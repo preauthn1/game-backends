@@ -1,0 +1,26 @@
+﻿@model DropdownPartialSettingViewModel
+
+@{
+    DropdownPartialSettingViewModel myModel = Model;
+    myModel = myModel ?? new DropdownPartialSettingViewModel();
+
+    string name = myModel.DOM_ElementName ?? "gameType";
+    var dataList = Html.GetSelectListItemByEnum<game.Entity.Game.SlotGameHistoryGameTypeEnum>();
+}
+
+<select class="form-control" id="@name" name="@name" style="width:180px;" @(Model.IsLockSelect ? "disabled='disabled'" : "")>
+
+    @if (myModel.FirstOption != null)
+    {
+        <option value="@myModel.FirstOption.Value">@myModel.FirstOption.Text</option>
+    }
+
+    @foreach (var a in dataList)
+    {
+        <option value="@a.Value" @(a.Value.ToString() == Model.DefaultSelectValue ? "selected='selected'" : "")>
+            @a.Text
+        </option>
+    }
+
+</select>
+

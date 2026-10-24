@@ -1,0 +1,164 @@
+variables:
+  NAS_HOST: 0.0.0.0
+  NAS_USERNAME: release
+  NAS_PASSWORD: [REDACTED]
+  NAS_VERSION: "2.0"
+  NAS_MNT_TARGET: 99.release
+  NAS_MNT_FOLDER: mnt/release
+  TARGET_TYPE: all
+  TARGET_NAME: all
+  K8S_SERVER: https://0.0.0.0:6443
+  K8S_CERT_AUTH: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN5RENDQWJDZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJd01ERXdNekF4TlRVME5sb1hEVEk1TVRJek1UQXhOVFUwTmxvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTXNPCnVjRDlOS2x1WDlEZ0VvUWdxK01aSnlyUTFhK0VtQTAvUzdkSXdPVWRzQ0Nwd0VlMDRrQzd3Wjd0UTQrY0F0a1UKZ3k1RU0yeDlTZ3g3aXpQcHR3amxXa0dGRkczbHQ5T2ZwZEM0aWpDNmI2WWRybWlReU41aDRtWFo5UXlibGhsNwoyVzdMSmNtMzdab2EvT0hObU5UZE56MWZoMkZ3YmFHOXZmdFl0NlVSMjA4aVVqSHAyMXR3cWJ2cFo2S1NrdzNiCmNzbkhwNjQ5S2o5OXA0RjRVQ3NVQ3NGU1BTRkNBL3BiZ2kzMkNYK1NNeDFGSnJvWmpXamd0cU1sY3FZV0FmRGQKMUt6NGFDbVhTYkJEbzhzQUgyZTVWc01Tc0F4WnllQ0UvdXNOelljZTljbllZUHM5emk1UzJjSXNaNjRtWWg4LwovdVlSWDhqS2lmWUp0VUlwVEpjQ0F3RUFBYU1qTUNFd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFJb2pzcm9ONHphVTI3eU8rME1zNHhjOXgvajYKQlNGNmUzNmlGOFpON0pudklGZTFRdElxaWhPSHdlTHJ2aDZZOEpLZHVUanVScUwreWVraFFlTmF1OXJ2VXpxeQo2Z2RNN2xUaDROQnAzRWZZNHdVUlh3YzR4QjB3djBJNlI0bDRaNnJXRTVBT3dySXFvQk84NkFvMkJYam5rRkRDCndORW5CY1BUU1NUQ2wwc2pPNlNaM2JQa0I2UFNYQUdKZGRaY1M2YTlYbnRMQXQ4MVgwOU9iODRNWDVMaEExalYKd0poVElRb1NaNTdUZm93VWJqMW5USFFMT1hvdFdxQUhrbnlIZnFuSnJCOGUvNlcrSjVMNWN2S282NHQxYkpaLwoyWjB5MlhYNDgvcGlGY2F1Q2l5QnIvZXN5eG1uN3JiRlV2dzk1ZFVPYXpZSVFMSCtuZkhEL2ZFaHFPVT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  K8S_USER_NAME: kubernetes-admin
+  K8S_USER_TOKEN: [REDACTED]
+
+.go-env:
+  image: golang:1.12
+  tags:
+    - golang
+  variables:
+    GOPATH: $CI_PROJECT_DIR/.go
+    GO111MODULE: "on"
+    GOPROXY: "http://0.0.0.0:3000"
+  cache:
+    untracked: false
+    policy: pull-push
+    paths:
+      - ${GOPATH}/pkg/mod
+      - bin
+
+stages:
+  # - test
+  # - choose
+  # - build
+  - docker
+  - deploy
+
+# go lint:
+#   image: cytopia/golint
+#   stage: test
+#   allow_failure: true
+#   tags:
+#     - golang
+#   script:
+#     - go list ./... | grep -v /go/ | golint -set_exit_status
+
+# go test:
+#   extends: .go-env
+#   stage: test
+#   script:
+#     - go test -coverprofile=.cover ./...
+#     - go tool cover -func=.cover
+
+docker:
+  image: docker:19.03.1
+  services:
+    - docker:19.03.1-dind
+  stage: docker
+  tags:
+    - docker
+  variables:
+    DOCKER_HOST: tcp://localhost:2375
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - docker images
+
+deploy:
+  image: dtzar/helm-kubectl
+  stage: deploy
+  tags:
+    - golang
+  script: 
+    # - kubectl config set-cluster k8s --server="${K8S_SERVER}"
+    # - kubectl config set clusters.k8s.certificate-authority-data ${K8S_CERT_AUTH}
+    # - kubectl config set-credentials ${K8S_USER_NAME} --token=[REDACTED]"
+    # - kubectl config set-context default --cluster=k8s --user=${K8S_USER_NAME}
+    # - kubectl config use-context default
+    # - kubectl config view
+    - kubectl -n dd-dev get cm,pod,svc
+    - helm -n dd-dev ls
+
+
+# go build:
+#   extends: .go-env
+#   stage: build
+#   dependencies:
+#     - go test
+#   script:
+#     - go build -o bin/go-mod-proxy-test .
+#   after_script:
+#     - mkdir -p ${NAS_MNT_FOLDER}
+#     - mount -t cifs -o username=${NAS_USERNAME},password=[REDACTED],vers=${NAS_VERSION} //${NAS_HOST}/${NAS_MNT_TARGET} ${NAS_MNT_FOLDER}
+#     - mkdir -p ${NAS_MNT_FOLDER}/ggwhite
+#     - cp bin/go-mod-proxy-test ${NAS_MNT_FOLDER}/ggwhite
+
+# docker build:
+  # image: docker:19.03.1
+  # services:
+  #   - docker:19.03.1-dind
+  # stage: docker
+  # dependencies:
+  #   - go build
+  # cache:
+  #   untracked: false
+  #   policy: pull-push
+  #   paths:
+  #     - bin
+  # tags:
+  #   - docker
+  # variables:
+  #   DOCKER_HOST: tcp://localhost:2375
+  #   DOCKER_TLS_CERTDIR: ""
+  # script:
+  #   - ls bin
+  #   - docker info
+
+# choose target:
+#   stage: choose
+#   when: manual
+#   tags:
+#     - golang
+#   artifacts:
+#     expire_in: 30 sec
+#     paths:
+#       - .env
+#   script:
+#     # - env | sed 's/^/export /' > .env
+#     - export > .env
+#     - cat .env
+
+# deploy dev:
+#   stage: deploy
+#   needs:
+#     - choose target
+#   dependencies:
+#     - choose target
+#   environment:
+#     name: dev
+#   tags:
+#     - golang
+#   before_script:
+#     - . .env
+#   script:
+#     - echo "DEV"
+#     - echo $TARGET_TYPE
+#     - echo $TARGET_NAME
+#     - env
+
+# deploy qa:
+  # stage: deploy
+  # needs:
+  #   - choose target
+  # dependencies:
+  #   - choose target
+  # environment:
+  #   name: qa
+  # tags:
+  #   - golang
+  # before_script:
+  #   - . .env
+  # script:
+  #   - echo "QA"
+  #   - echo $TARGET_TYPE
+  #   - echo $TARGET_NAME
+  #   - env

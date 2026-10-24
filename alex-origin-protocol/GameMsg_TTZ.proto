@@ -1,0 +1,129 @@
+//==================================================================
+//文件名： GameMsg_TTZ.proto
+//作者：   
+//日期：   
+//说明：   推筒子游戏客户服务器通信协议
+//修改记录：
+//==================================================================
+syntax = "proto2";
+package netproto;
+
+import "GameMsg.proto";
+
+//服务端消息：用户断线重连数据结构
+message TTZ_UserInfoArr{
+    required int32 CurrOptSeatno=1;
+};
+
+//客户端操作。ActionType：下底1，押注2，亮牌3
+message TTZ_ActionInfo{
+    required int32 ActionType=1;        //操作类型
+    required int32 ActionValue=2;       //操作值,无操作值填0
+}
+
+//服务器回复（客户端操作）
+message TTZ_BroadCastActionResult{
+    required int32 ActionSeatNo=1;      //操作座位号
+    required int32 ActionType=2;        //操作类型
+    required int32 ActionValue=3;       //操作值
+}
+
+//庄家信息
+message TTZ_BroadCastRobResult{
+    required int32 ButtonSeatNo=1;      //庄家座位号
+    required int32 ActionValue=2;       //抢庄值操作值
+}
+
+//发牌信息
+message TTZ_BroadCastDealInfo{
+    required int32 SeatNo=1;        //座位号
+    required int32 CardSize=2;      //发牌数量
+    repeated PokerCard Cards=3;     //cards
+    required int32 No=4;            //序号
+}
+
+//广播牌型信息
+message TTZ_BroadCastUpdateCT{
+    required int32 SeatNo=1;            //座位号
+    required int32 CardType=2;          //牌型
+    required int32 CardCount=3;         //点数
+}
+
+//亮牌信息
+message TTZ_BroadCastLightCards{
+    required int32 SeatNo=1;            //座位号
+    required int32 CardType=2;          //牌型
+    required int32 CardCount=3;         //点数
+    repeated PokerCard Cards=4;         //cards
+}
+
+//小局结算
+message TTZ_BrodCastSettleMentRound{
+    repeated TTZ_SettleMentInfo UserScoreInfo=1;         //玩家和庄家比牌结果
+    required int32 ButtonSeatNo=2;                       //庄家座位号
+    required int64 ButtonTotalScore=3;                   //庄家当前赢得的总分
+}
+//玩家和庄家比牌结果
+message TTZ_SettleMentInfo{
+    required int32 SeatNo=1;            //座位号,除庄家外其他玩家座位号
+    required int64 Score=2;             //闲家得分
+    required int64 ButtonScore=3;       //庄家得分
+}
+
+//总结算
+message TTZ_BrodCastSettleMentTotal{
+    repeated TTZ_SettleMentInfo UserScoreInfo=1;         //玩家数据
+}
+
+//错误信息
+message TTZ_ErrorMsg{
+    required int32 ErrorType=1;//错误类型，-1操作错误
+    required string ErrorInfo=2;//错误信息
+}
+
+//游戏状态
+message TTZ_BroadCastGameState{
+    required int32 CurGameState=1;            //当前状态
+    required int32 OutTime=2;                 //超时时间
+}
+
+//**********************************************************
+//场景恢复
+message TTZ_GameSence{
+    required int32 CurGameState=1;                  //当前状态
+    required int32 OutTime=2;                       //剩余超时时间
+    required int32 ButtonSeatNo=4;                  //庄家座位号
+    repeated TTZ_SenceUserInfo UserInfo=5;          //玩家数据
+    required int32 RobRate=6;                       //抢庄倍率
+    //玩家自己的数据
+    required int32 MaxRobRate=7;                   //玩家最大抢庄倍数
+    required int32 MaxBetRate=8;                   //玩家最大押注倍数
+}
+message TTZ_SenceUserInfo{
+    required int32 SeatNo=1;                    //座位号
+    required int32 CardType=2;                  //牌型
+    required int32 CardCount=3;                 //点数
+    repeated PokerCard Cards=4;                 //cards
+    required int32 BetRate=5;                   //押注倍数
+    required bool IsRob=6;                      //是否已抢庄
+    required bool IsBet=7;                      //是否已下注
+    required bool IsLight=8;                    //是否已亮牌
+    required int32 RobRate=9;                   //抢庄倍数
+    required int64 WinScore=10;                 //当局结算得分
+}
+//**********************************************************
+
+//系统配置信息
+message TTZ_GameSettings{
+    required int32 ReadyWaitTime=1;             //举手超时时间
+    required int32 BaseScore=2;                 //底分
+}
+//GM 测试命令
+message TTZ_GMinfo{
+    repeated int32 data=1; //测试数据
+}
+
+message TTZ_MaxOpRate{
+    required int32 MaxRate=1;                   //最大倍数
+    required int32 Type=2;                      //类型，1抢庄，2押注
+}

@@ -1,0 +1,204 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>target.API.Vendor</name>
+    </assembly>
+    <members>
+        <member name="M:target.API.Vendor.Controllers.BetRecordsController.GetGameRecords(target.Models.ViewModels.GameRecordRequestModel)">
+            <summary>
+            3.1.1 Get betRecords (取得投注记录) 
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.BetRecordsController.GetGameRecordByTransactionNo(target.Models.ViewModels.SingleWalletGameRecordRequestModel)">
+            <summary>
+            3.1.2 Get betRecord by transactionNo (根据投注单号取得投注记录)  
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.BetRecordsController.GetSettleChangeRecords(target.Models.ViewModels.SettleInfoChangedGameRecordRequestModel)">
+            <summary>
+            3.1.7 get data-changed records (取得结算金額资讯 再次被修改的注单)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.BetRecordsController.GenerateScreenshotDetailInfoLink(target.Models.ViewModels.BetRecordDetailInfoLinkGenerateRequestModel)">
+            <summary>
+            3.3.1 Get replay/screenShot history (取得回放/盤面紀錄)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.BetReportSummaryController.GetReportSummary(target.Models.ViewModels.VendorReportSummaryRequestModel)">
+            <summary>
+            3.1.3 Get merchant statistic report (取得商户总报表资讯)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.BetReportSummaryController.GetPlayerWinLossReport(target.Models.ViewModels.PlayerWinLossReportSummaryRequestModel)">
+            <summary>
+            3.1.4 Get each player's win-lose report (paging) (取得每位玩家输赢报表-分頁查詢)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.CustomizedApiByReverseAPIController.QTech_GetGameLaunchUrl(target.Models.ViewModels.QTechPlatformGameLaunchRequestParameter)">
+            <summary>
+            QTech 商戶客製的API (啟動遊戲)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.CustomizedApiByReverseAPIController.QTech_GetScreenshotReplayUrl(target.Models.ViewModels.QTechPlatformScreenReplayRequestParameter)">
+            <summary>
+            QTech 商戶客製的API (回放)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.CustomizedApiByReverseAPIController.THub_GetGameLaunchUrl(target.Models.ViewModels.THubPlatformGameLaunchRequestParameter)">
+            <summary>
+            THub 商戶客製的API (啟動遊戲)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.CustomizedApiByReverseAPIController.THub_GetGameList(target.Models.ViewModels.THubPlatformGetGameListRequestParameter)">
+            <summary>
+            THub 商戶客製的API (遊戲清單)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.CustomizedApiByReverseAPIController.THub_GetGameReplayScreenshot(target.Models.ViewModels.THubPlatformGetGameReplayScreenshotRequestParameter)">
+            <summary>
+            THub 商戶客製的API (遊戲結果回放)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.CustomizedApiByReverseAPIController.Notix_GetGameLaunchUrl(target.Models.ViewModels.NotixGameLaunchRequestParameter,System.String)">
+            <summary>
+            Notix 商戶客製的API (啟動遊戲)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.CustomizedApiByReverseAPIController.Notix_DemoMode_GetGameLaunchUrl(target.Models.ViewModels.NotixGameLaunchRequestParameter,System.String)">
+            <summary>
+            Notix 商戶客製的API (demo模式啟動遊戲)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.CustomizedApiByReverseAPIController.Notix_GetGameList(target.Models.ViewModels.NotixGameListRequestParameter,System.String)">
+            <summary>
+            Notix 商戶客製的API (遊戲清單)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.CustomizedApiByReverseAPIController.Notix_GetWagerDetailScreenshot(target.Models.ViewModels.NotixScreenshotAPIRequestParameter,System.String)">
+            <summary>
+            Notix 商戶客製的API (Screenshot遊戲結果快照)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.CustomizedApiByRichmondController.GetAgentHierarchyReport(target.Models.ViewModels.AgentHierarchyReportSummaryRequestModel)">
+            <summary>
+            查詢代表報表 - 2024年活動使用
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.CustomizedApiByRichmondController.GetAPIBackupUrls(target.Models.Models.BackUrlsQueryParameterModel)">
+            <summary>
+            Get API back urls (取得API备用网址)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.CustomizedApiByVIPVendorController.Get5MinutesSummaryReport(target.Models.ViewModels.UFA5MinutesReportRequestModel)">
+            <summary>
+            UFA商戶客製的API
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.SwaggerDocumentRedirectController.RedirectTo_TransferDocument_EN">
+            <summary>
+            透過中間一層網址導頁 (英文)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.SwaggerDocumentRedirectController.RedirectTo_TransferDocument_CN">
+            <summary>
+            透過中間一層網址導頁 (英文)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.SwaggerDocumentRedirectController.RedirectTo_SingleWalletDocument_EN">
+            <summary>
+            透過中間一層網址導頁 (英文)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.SwaggerDocumentRedirectController.RedirectTo_SingleWalletDocument_CN">
+            <summary>
+            透過中間一層網址導頁 (中文)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.SwaggerDocumentRedirectController.RedirectTo_CustomizedApi_Richmond">
+            <summary>          
+            特殊客製API 
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.SwaggerDocumentRedirectController.RedirectTo_CustomizedApi_Freespin_EN">
+            <summary>          
+            freespin API 
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.SwaggerDocumentRedirectController.RedirectTo_CustomizedApi_Freespin_CN">
+            <summary>          
+            freespin API 
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.EventRecordController.GetPrizeRecords(target.Models.ViewModels.PromotionRecordRequestModel)">
+            <summary>
+            4.8.1 Get event award records (取得活动派奖记录)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.GameLaunchController.GenerateGameUrl(target.Models.ViewModels.GameLaunchVendorApiTransferModeRequestModel)">
+            <summary>
+            2.1.1 Get game launch url (取得游戏启动连结) (TransferMode)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.GameLaunchController.GenerateSingleWalletGameLaunchUrl(target.Models.ViewModels.GameLaunchVendorApiSingleWalletModeRequestModel)">
+            <summary>
+            2.1.2 Get game launch url (取得游戏启动连结) (SeamlessMode)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.GamesController.GetMerchantEnableAllGames(target.Models.ViewModels.GameInfoRequestModel)">
+            <summary>
+            4.6.1 Get game list (取得游戏列表)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.DemoSiteUtilityController.GetServers(System.Int32)">
+            <summary>
+            取得指定商戶的所有 開通遊戲、服務器
+            這隻API 基本上是for demo站使用
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.PlayerController.CheckIsPlayerAccountExist(target.Models.ViewModels.QueryPlayerAccountExistRequestModel)">
+            <summary>
+            2.2.1 Check player exist (检查用户是否存在)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.PlayerController.CreateNewPlayer(target.Models.ViewModels.CreatePlayerAccountExistRequestModel)">
+            <summary>
+            2.2.2 Create player account (建立玩家帐户)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.PlayerController.ForcePlayerLogout(target.Models.ViewModels.PlayerLogoutRequestModel)">
+            <summary>
+            4.9.9 強制登出玩家 (Force logout player)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.WalletTransferController.GetPlayerWalletCash(target.Models.ViewModels.WalletCashPlayerAmountRequestModel)">
+            <summary>
+            2.4.1 Get player wallet (取得玩家钱包余额)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.WalletTransferController.TransferCashToGameWallet(target.Models.ViewModels.WalletTransferRequestModel)">
+            <summary>
+            2.4.2 Wallet transfer from platform to gameWallet (玩家钱包转账)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.WalletTransferController.TransferCashToPlatformWallet(target.Models.ViewModels.WalletTransferRequestModel)">
+            <summary>
+            2.4.3 Wallet transfer from gameWallet to platform (玩家钱包转账)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.WalletTransferController.GetTransferByMerchant(target.Models.ViewModels.QueryTransferRecordRequestModel)">
+            <summary>
+            2.4.4 Query transfer record (查询转账记录)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Controllers.WalletTransferController.GetFishingTransferByMerchant(target.Models.ViewModels.QueryFishingTransferRecordRequestModel)">
+            <summary>
+            4.7.9 Get fishing transfer record (查询特殊捕鱼游戏的转账记录-僅無縫錢包模式支援此)
+            </summary>
+        </member>
+        <member name="M:target.API.Vendor.Startup.WarmUp">
+            <summary>
+            暖機
+            </summary>
+        </member>
+    </members>
+</doc>
