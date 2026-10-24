@@ -1,6 +1,6 @@
 # backend.portal
 
-原始路径：`backend.portal`　|　文件：**336**　|　主语言：Vue 205, TypeScript 99, YAML 10
+原始路径：`backend.portal`　|　文件：**335**　|　主语言：Vue 205, TypeScript 99, YAML 10
 
 ## 目录构成
 
@@ -11,14 +11,14 @@ src/models/  — 39
 src/api/  — 35
 helm-charts/backend-portal/  — 11
 src/utilities/  — 9
+src/  — 6
 src/assets/  — 4
 src/store/  — 4
 src/i18n/  — 3
 src/router/  — 3
-.env.production/  — 1
-package.json/  — 1
-.env.staging/  — 1
-.env.development/  — 1
+DockerFiles/  — 2
+src/plugins/  — 1
+docs/decisions/  — 1
 ```
 
 ## 关键文件

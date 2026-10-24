@@ -1,6 +1,6 @@
 # cm-api-frontend
 
-原始路径：`cm-api-frontend`　|　文件：**304**　|　主语言：PHP 292, JavaScript 3, JSON 2
+原始路径：`cm-api-frontend`　|　文件：**303**　|　主语言：PHP 292, JavaScript 3, JSON 2
 
 ## 目录构成
 
@@ -10,15 +10,15 @@ app/Models/  — 47
 app/Repositories/  — 35
 app/Http/  — 34
 app/Services/  — 23
+config/  — 12
 resources/lang/  — 11
 app/Enums/  — 10
 app/Helpers/  — 9
+routes/  — 3
+app/  — 3
 resources/views/  — 3
+bootstrap/  — 2
 app/Loggers/  — 2
-resources/js/  — 2
-package.json/  — 1
-.env.example/  — 1
-README.md/  — 1
 ```
 
 ## 关键文件

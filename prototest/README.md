@@ -1,20 +1,16 @@
 # prototest
 
-原始路径：`prototest`　|　文件：**3**　|　主语言：YAML 1
+原始路径：`prototest`　|　文件：**2**　|　主语言：YAML 1
 
 ## 目录构成
 
 ```
-README.md/  — 1
-.drone.yml/  — 1
-GameMsg_Slot.proto/  — 1
 ```
 
 ## 主要文件
 
 - `GameMsg_Slot.proto`
 - `.drone.yml`
-- `README.md`
 
 ## 说明
 

@@ -1,6 +1,6 @@
 # laota-servers
 
-原始路径：`laota-servers`　|　文件：**1277**　|　主语言：Go 1248, Shell 12, YAML 4
+原始路径：`laota-servers`　|　文件：**1276**　|　主语言：Go 1248, Shell 12, YAML 4
 
 ## 目录构成
 

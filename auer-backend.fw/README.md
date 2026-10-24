@@ -1,6 +1,6 @@
 # auer-backend.fw
 
-原始路径：`auer-backend.fw`　|　文件：**1056**　|　主语言：CSS 409, C# 309, JavaScript 106
+原始路径：`auer-backend.fw`　|　文件：**1055**　|　主语言：CSS 409, C# 309, JavaScript 106
 
 ## 目录构成
 
@@ -9,16 +9,16 @@ FW.Core.AdminSys.WebUI/Content/  — 526
 FW.Core.AdminSys.WebUI/Themes/  — 63
 FW.Core.IO/FastDFS/  — 30
 packages/MvvmLightLibs.4.2.30.0/  — 25
+FW.Core.Repository/  — 23
 FW.Core.Web/WebAPI/  — 23
 FW.Core.Web/Mvc/  — 21
-FW.Core.AdminSys.Provider/EFProvider/  — 10
-FW.Core.Auth/AuthorizeRule/  — 9
-FW.Core.Repository/EF/  — 9
-FW.Core.AdminSys.Provider/Entity/  — 9
-packages/Newtonsoft.Json.4.5.11/  — 8
-packages/Microsoft.AspNet.WebPages.3.0.0/  — 8
-packages/System.Data.SQLite.Core.1.0.94.0/  — 8
-FW.Core.AdminSys.WebUI/Controllers/  — 8
+FW.Core.Logger/  — 16
+FW.Core.Helper/  — 15
+FW.Core.EventBus/  — 15
+FW.Core.Engine/  — 14
+FW.Core.Language/  — 12
+FW.Core.IO/  — 11
+FW.Core.AdminSys.WebUI/  — 11
 ```
 
 ## 关键文件

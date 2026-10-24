@@ -1,6 +1,6 @@
 # auer-backend.game
 
-原始路径：`auer-backend.game`　|　文件：**1725**　|　主语言：C# 559, JavaScript 418, XML 225
+原始路径：`auer-backend.game`　|　文件：**1724**　|　主语言：C# 559, JavaScript 418, XML 225
 
 ## 目录构成
 
@@ -15,10 +15,10 @@ game.Entity/Stat/  — 33
 game.Entity/Users/  — 28
 game.Repository/Stat/  — 23
 game.GameAPI/Controllers/  — 23
+game.Service/  — 22
 game.Service/Service/  — 21
 packages/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0/  — 19
-game.Repository/Game/  — 13
-packages/bootstrap.3.4.1/  — 13
+game.Infrastructure/  — 14
 ```
 
 ## 关键文件

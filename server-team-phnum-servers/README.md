@@ -1,6 +1,6 @@
 # server-team-phnum-servers
 
-原始路径：`server-team-phnum-servers`　|　文件：**852**　|　主语言：Go 837, Shell 4, YAML 2
+原始路径：`server-team-phnum-servers`　|　文件：**851**　|　主语言：Go 837, Shell 4, YAML 2
 
 ## 目录构成
 

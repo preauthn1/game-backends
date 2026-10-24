@@ -1,6 +1,6 @@
 # server-team-tf-server
 
-原始路径：`server-team-tf-server`　|　文件：**20**　|　主语言：Go 18, XML 1
+原始路径：`server-team-tf-server`　|　文件：**19**　|　主语言：Go 18, XML 1
 
 ## 目录构成
 
@@ -8,7 +8,6 @@
 internal/tfserver/  — 14
 internal/tfconfig/  — 2
 cmd/tfconfig/  — 2
-README.md/  — 1
 cmd/tfserver/  — 1
 ```
 

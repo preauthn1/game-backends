@@ -1,14 +1,12 @@
 # alex-deploy-server
 
-原始路径：`alex-deploy-server`　|　文件：**8**　|　主语言：Go 5, YAML 1
+原始路径：`alex-deploy-server`　|　文件：**7**　|　主语言：Go 5, YAML 1
 
 ## 目录构成
 
 ```
 internal/deploy/  — 3
-README.md/  — 1
-Makefile/  — 1
-configs/deploy.yml/  — 1
+configs/  — 1
 pkg/copy/  — 1
 cmd/deploy/  — 1
 ```
@@ -23,7 +21,6 @@ cmd/deploy/  — 1
 - `cmd/deploy/main.go`
 - `pkg/copy/copy.go`
 - `internal/deploy/deploy_test.go`
-- `README.md`
 - `configs/deploy.yml`
 - `internal/deploy/config.go`
 - `Makefile`

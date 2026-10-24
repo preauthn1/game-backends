@@ -1,15 +1,11 @@
 # proto
 
-原始路径：`proto`　|　文件：**5**　|　主语言：YAML 1, Shell 1
+原始路径：`proto`　|　文件：**4**　|　主语言：YAML 1, Shell 1
 
 ## 目录构成
 
 ```
-README.md/  — 1
-DBServerMsg.proto/  — 1
-ServerMgmMsg.proto/  — 1
-.gitlab-ci.yml/  — 1
-scripts/build-proto.sh/  — 1
+scripts/  — 1
 ```
 
 ## 关键文件
@@ -20,7 +16,6 @@ scripts/build-proto.sh/  — 1
 
 - `DBServerMsg.proto`
 - `ServerMgmMsg.proto`
-- `README.md`
 - `.gitlab-ci.yml`
 - `scripts/build-proto.sh`
 

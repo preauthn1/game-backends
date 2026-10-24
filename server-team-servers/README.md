@@ -1,6 +1,6 @@
 # server-team-servers
 
-原始路径：`server-team-servers`　|　文件：**2222**　|　主语言：Go 1904, Vue 66, TypeScript 56
+原始路径：`server-team-servers`　|　文件：**2221**　|　主语言：Go 1904, Vue 66, TypeScript 56
 
 ## 目录构成
 
@@ -14,11 +14,11 @@ cmd/game/  — 81
 pkg/pachislot/  — 77
 internal/apiserver/  — 52
 internal/cli-api-svc/  — 51
+release-notes/  — 37
 pkg/gamelogic/  — 32
 pkg/poker/  — 31
 cmd/slot88/  — 31
 internal/hallserver/  — 27
-cmd/admin-api/  — 25
 ```
 
 ## 关键文件

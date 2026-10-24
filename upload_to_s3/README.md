@@ -1,12 +1,10 @@
 # upload_to_s3
 
-原始路径：`upload_to_s3`　|　文件：**2**　|　主语言：YAML 1
+原始路径：`upload_to_s3`　|　文件：**1**　|　主语言：YAML 1
 
 ## 目录构成
 
 ```
-README.md/  — 1
-.gitlab-ci.yml/  — 1
 ```
 
 ## 关键文件
@@ -16,7 +14,6 @@ README.md/  — 1
 ## 主要文件
 
 - `.gitlab-ci.yml`
-- `README.md`
 
 ## 说明
 

@@ -1,6 +1,6 @@
 # pgs-game.backend
 
-原始路径：`pgs-game.backend`　|　文件：**2428**　|　主语言：C# 2287, JSON 59, YAML 12
+原始路径：`pgs-game.backend`　|　文件：**2427**　|　主语言：C# 2287, JSON 59, YAML 12
 
 ## 目录构成
 

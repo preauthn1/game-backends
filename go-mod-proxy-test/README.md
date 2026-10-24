@@ -1,17 +1,12 @@
 # go-mod-proxy-test
 
-原始路径：`go-mod-proxy-test`　|　文件：**7**　|　主语言：Go 5, YAML 1
+原始路径：`go-mod-proxy-test`　|　文件：**6**　|　主语言：Go 5, YAML 1
 
 ## 目录构成
 
 ```
-README.md/  — 1
-hello_test.go/  — 1
-main.go/  — 1
-.gitlab-ci.yml/  — 1
-a/foo.go/  — 1
-b/qoo.go/  — 1
-b/qoo_test.go/  — 1
+b/  — 2
+a/  — 1
 ```
 
 ## 关键文件
@@ -21,7 +16,6 @@ b/qoo_test.go/  — 1
 ## 主要文件
 
 - `.gitlab-ci.yml`
-- `README.md`
 - `b/qoo_test.go`
 - `main.go`
 - `a/foo.go`

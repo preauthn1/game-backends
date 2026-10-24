@@ -1,6 +1,6 @@
 # cm-backend
 
-原始路径：`cm-backend`　|　文件：**408**　|　主语言：PHP 382, JavaScript 9, CSS 7
+原始路径：`cm-backend`　|　文件：**407**　|　主语言：PHP 382, JavaScript 9, CSS 7
 
 ## 目录构成
 
@@ -14,11 +14,11 @@ app/Livewire/  — 43
 app/Enums/  — 15
 resources/lang/  — 14
 public/resources/  — 14
+config/  — 13
 app/Helpers/  — 9
 database/migrations/  — 4
-app/Loggers/  — 2
-app/Console/  — 2
-package.json/  — 1
+routes/  — 3
+app/  — 3
 ```
 
 ## 关键文件

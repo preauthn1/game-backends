@@ -1,6 +1,6 @@
 # fz-777agent
 
-原始路径：`fz-777agent`　|　文件：**2931**　|　主语言：PHP 2243, JavaScript 242, HTML 126
+原始路径：`fz-777agent`　|　文件：**2930**　|　主语言：PHP 2243, JavaScript 242, HTML 126
 
 ## 目录构成
 
@@ -14,11 +14,11 @@ application/Controllers/  — 37
 application/Libraries/  — 7
 application/configs/  — 6
 application/Module/  — 6
-README.md/  — 1
-application/crontab_dev.sh.php/  — 1
-application/start.php/  — 1
-application/cli.php/  — 1
-application/crontab.sh.php/  — 1
+.idea/  — 5
+application/  — 4
+public/  — 3
+application/caches/  — 1
+application/constants/  — 1
 ```
 
 ## 关键文件

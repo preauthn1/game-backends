@@ -1,6 +1,6 @@
 # backend.agent
 
-原始路径：`backend.agent`　|　文件：**332**　|　主语言：C# 100, XML 67, JavaScript 61
+原始路径：`backend.agent`　|　文件：**331**　|　主语言：C# 100, XML 67, JavaScript 61
 
 ## 目录构成
 
@@ -10,6 +10,8 @@ Repository/Models/  — 29
 Repository/Entity/  — 28
 packages/ZXing.Net.0.16.4/  — 27
 Agent/Areas/  — 24
+Agent/  — 13
+Repository/  — 9
 Repository/ViewModel/  — 8
 packages/Newtonsoft.Json.10.0.1/  — 8
 packages/jQuery.1.10.2/  — 7
@@ -17,8 +19,6 @@ Service/Service/  — 7
 packages/bootstrap.3.0.0/  — 6
 packages/EntityFramework.6.2.0/  — 5
 packages/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0/  — 4
-packages/Microsoft.ApplicationInsights.2.0.0/  — 4
-packages/Microsoft.Net.Compilers.1.0.0/  — 4
 ```
 
 ## 关键文件

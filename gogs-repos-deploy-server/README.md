@@ -1,14 +1,12 @@
 # gogs-repos-deploy-server
 
-原始路径：`gogs-repos-deploy-server`　|　文件：**6**　|　主语言：Go 4, YAML 1
+原始路径：`gogs-repos-deploy-server`　|　文件：**5**　|　主语言：Go 4, YAML 1
 
 ## 目录构成
 
 ```
 src/deployer/  — 3
-README.md/  — 1
-deployserver.go/  — 1
-config/deploy.yml/  — 1
+config/  — 1
 ```
 
 ## 主要文件
@@ -17,7 +15,6 @@ config/deploy.yml/  — 1
 - `deployserver.go`
 - `src/deployer/copy.go`
 - `config/deploy.yml`
-- `README.md`
 - `src/deployer/config.go`
 
 ## 说明

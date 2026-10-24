@@ -1,6 +1,6 @@
 # white-chessgameserver
 
-原始路径：`white-chessgameserver`　|　文件：**787**　|　主语言：Go 766, YAML 8, Shell 3
+原始路径：`white-chessgameserver`　|　文件：**786**　|　主语言：Go 766, YAML 8, Shell 3
 
 ## 目录构成
 

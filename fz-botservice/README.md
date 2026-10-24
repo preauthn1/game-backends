@@ -1,6 +1,6 @@
 # fz-botservice
 
-原始路径：`fz-botservice`　|　文件：**163**　|　主语言：C# 66, JavaScript 14, XML 9
+原始路径：`fz-botservice`　|　文件：**162**　|　主语言：C# 66, JavaScript 14, XML 9
 
 ## 目录构成
 
@@ -8,17 +8,17 @@
 HangfireJob/wwwroot/  — 23
 packages/Newtonsoft.Json.12.0.2/  — 10
 HangfireJob/Views/  — 6
+MoneylogExportExcel/  — 6
+HangfireJob/  — 5
+WanshangBankWithdrawJob/  — 5
+HammerBankWithdrawJob/  — 5
+BotMessageWebservice/  — 5
+TungyiBankWithdrawJob/  — 5
+HemaBankWithdrawJob/  — 4
 HangfireJob/Models/  — 4
 HangfireJob/Services/  — 4
-FZAlertBot/html/  — 4
-HangfireJob/EFModels/  — 2
-packages/NPOI.2.3.0/  — 2
-BankWithdrawJob/Entity/  — 2
-README.md/  — 1
-BotServer.sln/  — 1
-TerproStatBot/TerproStatBot.csproj/  — 1
-TerproStatBot/Program.cs/  — 1
-TerproStatBot/App.config/  — 1
+LunyunBankWithdrawJob/  — 4
+CKBankWithdrawJob/  — 4
 ```
 
 ## 关键文件

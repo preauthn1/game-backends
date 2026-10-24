@@ -1,6 +1,6 @@
 # app-frontend
 
-原始路径：`app-frontend`　|　文件：**178**　|　主语言：XML 10, JSON 5, C++ 4
+原始路径：`app-frontend`　|　文件：**177**　|　主语言：XML 10, JSON 5, C++ 4
 
 ## 目录构成
 
@@ -13,12 +13,12 @@ windows/runner/  — 9
 lib/providers/  — 6
 ios/Runner/  — 6
 lib/utils/  — 5
+linux/  — 4
 windows/flutter/  — 3
+android/  — 3
 linux/flutter/  — 3
 macos/Runner/  — 3
 lib/platform/  — 2
-lib/themes/  — 2
-README.md/  — 1
 ```
 
 ## 关键文件

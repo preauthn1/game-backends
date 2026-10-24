@@ -1,6 +1,6 @@
 # ddynh-backend.agent77
 
-原始路径：`ddynh-backend.agent77`　|　文件：**1126**　|　主语言：JavaScript 437, C# 194, CSS 157
+原始路径：`ddynh-backend.agent77`　|　文件：**1125**　|　主语言：JavaScript 437, C# 194, CSS 157
 
 ## 目录构成
 
@@ -9,16 +9,16 @@ Agent77/Areas/  — 895
 Repository/Models/  — 124
 Repository/ViewModel/  — 18
 Agent77/Scripts/  — 16
+Agent77/  — 13
+Service/  — 11
 Repository/Enums/  — 6
+Repository/  — 5
 Agent77/Views/  — 5
 Repository/DTOModels/  — 4
 Service/Helper/  — 4
 Agent77/Content/  — 4
 Service/DAO/  — 3
 Agent77/Controllers/  — 3
-Agent77/App_Start/  — 3
-Service/Modules/  — 2
-Agent77/Filters/  — 2
 ```
 
 ## 关键文件

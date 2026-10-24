@@ -1,24 +1,13 @@
 # server-team-origin-protocol
 
-原始路径：`server-team-origin-protocol`　|　文件：**134**　|　主语言：C# 9, YAML 2, Shell 2
+原始路径：`server-team-origin-protocol`　|　文件：**133**　|　主语言：C# 9, YAML 2, Shell 2
 
 ## 目录构成
 
 ```
-GameMsg_DDZ.proto/  — 1
-Game_BJL.proto/  — 1
-GameMsg_BRNN.proto/  — 1
-GameMsg_SSS.proto/  — 1
-GameMsg_SGJ.proto/  — 1
-GameMsg_LHJ.proto/  — 1
-Game_HBSL.proto/  — 1
-GameMsg_WLZBJP.proto/  — 1
-GameMsg_Slot_DB.proto/  — 1
-ServerMgm.proto/  — 1
-Game_TBNN.proto/  — 1
-GameRoomMsg.proto/  — 1
-Game_DFDC.proto/  — 1
-Game_WLHC.proto/  — 1
+C#/  — 9
+phnum/  — 2
+scripts/  — 1
 ```
 
 ## 关键文件

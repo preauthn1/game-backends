@@ -1,6 +1,6 @@
 # alex-servers
 
-原始路径：`alex-servers`　|　文件：**805**　|　主语言：Go 792, Shell 4, YAML 2
+原始路径：`alex-servers`　|　文件：**804**　|　主语言：Go 792, Shell 4, YAML 2
 
 ## 目录构成
 

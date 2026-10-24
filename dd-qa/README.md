@@ -1,24 +1,11 @@
 # dd-qa
 
-原始路径：`dd-qa`　|　文件：**26**　|　主语言：YAML 25
+原始路径：`dd-qa`　|　文件：**25**　|　主语言：YAML 25
 
 ## 目录构成
 
 ```
-README.md/  — 1
-.gitlab-ci.yml/  — 1
-values/game-wlzbjp.yaml/  — 1
-values/db.yaml/  — 1
-values/game-dchjk.yaml/  — 1
-values/game-wlzb.yaml/  — 1
-values/game-fgsb.yaml/  — 1
-values/game-jlbpk.yaml/  — 1
-values/tfserver.yaml/  — 1
-values/values.yaml/  — 1
-values/game-dfdc.yaml/  — 1
-values/game-xmbx.yaml/  — 1
-values/game-jdesyd.yaml/  — 1
-values/game-xgpd.yaml/  — 1
+values/  — 24
 ```
 
 ## 关键文件

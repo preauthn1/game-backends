@@ -1,24 +1,11 @@
 # dd-dev
 
-原始路径：`dd-dev`　|　文件：**35**　|　主语言：YAML 34
+原始路径：`dd-dev`　|　文件：**34**　|　主语言：YAML 34
 
 ## 目录构成
 
 ```
-README.md/  — 1
-.gitlab-ci.yml/  — 1
-values/game-wlzbjp.yaml/  — 1
-values/db.yaml/  — 1
-values/game-lkb.yaml/  — 1
-values/game-dchjk.yaml/  — 1
-values/game-s888.yaml/  — 1
-values/game-faf.yaml/  — 1
-values/game-wlzb.yaml/  — 1
-values/game-fgsb.yaml/  — 1
-values/game-jlbpk.yaml/  — 1
-values/tfserver.yaml/  — 1
-values/game-bjl.yaml/  — 1
-values/values.yaml/  — 1
+values/  — 33
 ```
 
 ## 关键文件

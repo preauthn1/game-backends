@@ -1,19 +1,10 @@
 # electron-jp-game
 
-原始路径：`electron-jp-game`　|　文件：**9**　|　主语言：JavaScript 4, JSON 2, CSS 1
+原始路径：`electron-jp-game`　|　文件：**8**　|　主语言：JavaScript 4, JSON 2, CSS 1
 
 ## 目录构成
 
 ```
-package.json/  — 1
-renderer.js/  — 1
-preload.js/  — 1
-app.js/  — 1
-README.md/  — 1
-styles.css/  — 1
-index.html/  — 1
-package-lock.json/  — 1
-main.js/  — 1
 ```
 
 ## 关键文件
@@ -30,7 +21,7 @@ main.js/  — 1
 - `package.json`
 - `styles.css`
 - `renderer.js`
-- `README.md`
+- `preload.js`
 
 ## 说明
 

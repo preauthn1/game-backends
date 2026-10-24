@@ -1,6 +1,6 @@
 # fz-backend.agent77
 
-原始路径：`fz-backend.agent77`　|　文件：**1121**　|　主语言：JavaScript 437, C# 187, CSS 156
+原始路径：`fz-backend.agent77`　|　文件：**1120**　|　主语言：JavaScript 437, C# 187, CSS 156
 
 ## 目录构成
 
@@ -8,8 +8,7 @@
 Agent/Agent77/  — 946
 Agent/Repository/  — 153
 Agent/Service/  — 19
-README.md/  — 1
-Agent/Agent77.sln/  — 1
+Agent/  — 1
 Agent/.vs/  — 1
 ```
 

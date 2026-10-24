@@ -1,24 +1,11 @@
 # pgs-dev
 
-原始路径：`pgs-dev`　|　文件：**35**　|　主语言：YAML 34
+原始路径：`pgs-dev`　|　文件：**34**　|　主语言：YAML 34
 
 ## 目录构成
 
 ```
-README.md/  — 1
-.gitlab-ci.yml/  — 1
-values/game-hhdz.yaml/  — 1
-values/game-lkb.yaml/  — 1
-values/game-wlyc.yaml/  — 1
-values/game-xlhd.yaml/  — 1
-values/game-s888.yaml/  — 1
-values/game-faf.yaml/  — 1
-values/game-jzyq.yaml/  — 1
-values/game-fgsb.yaml/  — 1
-values/game-infc.yaml/  — 1
-values/game-bjl.yaml/  — 1
-values/value.yaml/  — 1
-values/game-dfdc.yaml/  — 1
+values/  — 33
 ```
 
 ## 关键文件

@@ -1,24 +1,12 @@
 # sql-update
 
-原始路径：`sql-update`　|　文件：**62**　|　主语言：SQL 60
+原始路径：`sql-update`　|　文件：**61**　|　主语言：SQL 60
 
 ## 目录构成
 
 ```
-README.md/  — 1
-20190708-aepayment/PrWeb_GetPaymentGatewayAll.sql/  — 1
-20190708-aepayment/PrWeb_GetPaymentAmountList.sql/  — 1
-20190708-aepayment/PrWeb_UpdatePaymentMerchantStatus.sql/  — 1
-20190708-aepayment/PrWeb_GetMerchantList.sql/  — 1
-20190708-aepayment/create_table.sql/  — 1
-20190708-aepayment/PrWeb_UpdatePaymentGateway.sql/  — 1
-20190708-aepayment/PrWeb_GetPaymentType.sql/  — 1
-20190708-aepayment/Fn_GetAdminAccessRights.sql/  — 1
-20190708-aepayment/PrWeb_Pay_FinishedAEOrder.sql/  — 1
-20190708-aepayment/PrWeb_GetMerchantUuid.sql/  — 1
-20190708-aepayment/PrWeb_UpdatePaymentType.sql/  — 1
-20190708-aepayment/PrWeb_GetPaymentTypeAll.sql/  — 1
-20190708-aepayment/PrWeb_AddMsgSystemNotifyNew.sql/  — 1
+20190701-coupon/  — 43
+20190708-aepayment/  — 18
 ```
 
 ## 主要文件

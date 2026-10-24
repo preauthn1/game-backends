@@ -1,24 +1,11 @@
 # pgs-qa
 
-原始路径：`pgs-qa`　|　文件：**42**　|　主语言：YAML 41
+原始路径：`pgs-qa`　|　文件：**41**　|　主语言：YAML 41
 
 ## 目录构成
 
 ```
-README.md/  — 1
-.gitlab-ci.yml/  — 1
-values/game-hhdz.yaml/  — 1
-values/game-wlzbjp.yaml/  — 1
-values/game-lkb.yaml/  — 1
-values/game-wlyc.yaml/  — 1
-values/game-jxry.yaml/  — 1
-values/game-s888.yaml/  — 1
-values/game-faf.yaml/  — 1
-values/game-wlzb.yaml/  — 1
-values/game-fgsb.yaml/  — 1
-values/game-infc.yaml/  — 1
-values/game-bjl.yaml/  — 1
-values/value.yaml/  — 1
+values/  — 40
 ```
 
 ## 关键文件
