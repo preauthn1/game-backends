@@ -1,3 +1,24 @@
-# target QA Environment
+# pgs-qa
 
-請上 [Servers/Wiki](http://example.invalid:1688/server-team/servers/wikis/Kubernetes/1.-Guides) 參考相關說明
+原始路径：`pgs-qa`　|　收录文件：**42**
+
+## 语言构成
+
+- YAML — 41 个文件（97%）
+- Markdown — 1 个文件（2%）
+
+## 目录结构
+
+```
+values/  (40 个文件)
+./  (2 个文件)
+```
+
+## 关键文件
+
+- 构建脚本：`.gitlab-ci.yml`
+
+## 说明
+
+文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+

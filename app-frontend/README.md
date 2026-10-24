@@ -1,45 +1,36 @@
-# miner
+# app-frontend
 
-A new Flutter project.
+原始路径：`app-frontend`　|　收录文件：**178**
 
-## Getting Started
+## 语言构成
 
-This project is a starting point for a Flutter application.
+- XML — 10 个文件（38%）
+- JSON — 5 个文件（19%）
+- C++ — 4 个文件（15%）
+- YAML — 3 个文件（11%）
+- Markdown — 2 个文件（7%）
+- Shell — 1 个文件（3%）
 
-A few resources to get you started if this is your first Flutter project:
+## 目录结构
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-## Environment List
-
-To setup environments, edit the following file:
-
-/lib/utils/env_list.dart
-
-## Switching Environments
-
-To switch environments, use the following commands based on your target platform:
-
-### Run in a Specific Environment
 ```
-flutter run --dart-define=ENV=your_environment_name
+lib/  (122 个文件)
+android/  (16 个文件)
+windows/  (13 个文件)
+ios/  (7 个文件)
+linux/  (7 个文件)
+./  (5 个文件)
+macos/  (5 个文件)
+web/  (2 个文件)
+test/  (1 个文件)
 ```
 
-Replace `your_environment_name` with the desired environment name.
+## 关键文件
 
-### Build APK for a Specific Environment
-```
-flutter build apk --dart-define=ENV=your_environment_name
-```
+- 构建脚本：`.gitlab-ci.yml`
+- 前端入口：`web/index.html`
 
-### Build for Web in a Specific Environment
-```
-flutter build web --dart-define=ENV=your_environment_name
-```
+## 说明
 
-In each case, replace `your_environment_name` with the desired environment.
+文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+

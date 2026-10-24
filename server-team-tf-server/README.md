@@ -1,40 +1,22 @@
-# Servers
+# server-team-tf-server
 
-* [TF Server](#tf-server)
-* [TF Config](#tf-config)
+原始路径：`server-team-tf-server`　|　收录文件：**20**
 
-# TF Server
+## 语言构成
 
-# TF Config
+- Go — 18 个文件（90%）
+- Markdown — 1 个文件（5%）
+- XML — 1 个文件（5%）
 
-### RestfulAPIs
+## 目录结构
 
-| Method | URI                    | Description            |
-|:------:|:----------------------:|:-----------------------|
-| GET    | [config](#config)      | 加載配置               |
-| GET    | [submit](#submit)      | 交轉發服務器狀態       |
-| GET    | [tfstatus](#tf-status) | 讀取轉發服務器運行狀況 |
+```
+internal/  (16 个文件)
+cmd/  (3 个文件)
+./  (1 个文件)
+```
 
----
-#### Config
-加載配置
-##### Method `GET`
-##### URI `${hostname}/config`
----
-#### Submit
-交轉發服務器狀態
-##### Method `GET`
-##### URI `${hostname}/submit`
-##### Arguments
-| Name | Type   | Required | Descirption |
-| :--: | :----: | :------: | :---------- |
-| cn   | Int    | Required | 當前連接數  |
-| code | string | Required | 校驗碼      |
-> `code`: 要帶入`tfconfig.dat`裡的`submitcheckcode`
----
-#### TF Status
-讀取轉發服務器運行狀況
-##### Method `GET`
-##### URI `${hostname}/tfstatus`
----
+## 说明
+
+文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
 

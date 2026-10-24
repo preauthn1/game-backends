@@ -1,55 +1,28 @@
-# Deploy Server
+# alex-deploy-server
 
-讓外部可以透過 RestfulAPI 重新部署 Server
+原始路径：`alex-deploy-server`　|　收录文件：**8**
 
-## Build Command
+## 语言构成
 
-#### Use Makefile
+- Go — 5 个文件（71%）
+- Markdown — 1 个文件（14%）
+- YAML — 1 个文件（14%）
 
-``` bash
-$ make compile # build for native OS
+## 目录结构
 
-$ make compile-win # build for windows
+```
+internal/  (3 个文件)
+./  (2 个文件)
+configs/  (1 个文件)
+pkg/  (1 个文件)
+cmd/  (1 个文件)
 ```
 
-#### With Golang
+## 关键文件
 
-``` bash
-$ GOOS=${OS} go build -o ./bin/deploy ./cmd/deploy
-```
+- 构建脚本：`Makefile`
 
-> `${OS}` should be `linux` / `darwin` / `windows`
+## 说明
 
-## Run Server
+文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
 
-#### Workspace
-
-在 Workspace 下準備 `configs/deploy.yml` 設定檔，啟動 `deploy.exe` 執行檔
-
-#### Config File `deploy.yml`
-
-|Name            |Type     |Required   |Description                                                   |
-|:---------------|:-------:|:---------:|:-------------------------------------------------------------|
-|server.port     |int      |Required   |Listen port for http                                          |
-|release.root    |string   |Required   |Source folder to copy                                         |
-|target.root     |string   |Required   |Target folder to copy                                         |
-|target.gsdir    |string   |Required   |Sub folder to copy                                            |
-|target.srcdir   |string   |Required   |File folder to copy                                           |
-|target.extname  |string   |Optional   |Spectific ext name for executable file                        |
-|stop.base       |string   |Required   |The base path for commands that will execute on stop servers  |
-|stop.commands   |[]string |Required   |The commands to execute on stop servers                       |
-|start.base      |string   |Required   |The base path for commands that will execute on start servers |
-|start.commands  |[]string |Required   |The commands to execute on start servers                      |
-|notify.webhook  |string   |Required   |Notify API endpoint URL                                       |
-
-#### Flags
-
-|Full Name       |Type     |Short Name |Description                 |
-|:---------------|:-------:|:---------:|:---------------------------|
-|config          |string   |c          |Config file location        |
-|server.port     |int      |p          |Listen port for http        |
-
-Example: 
-``` bash
-$ deploy -p 8080 -c ./configs/deploy.yml
-```

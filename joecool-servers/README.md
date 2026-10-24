@@ -1,20 +1,30 @@
-# Servers
+# joecool-servers
 
-[![pipeline status](http://example.invalid:1688/server-team/servers/badges/master/pipeline.svg)](http://example.invalid:1688/server-team/servers/commits/master)
-[![coverage report](http://example.invalid:1688/server-team/servers/badges/master/coverage.svg)](http://example.invalid:1688/server-team/servers/commits/master)
+原始路径：`joecool-servers`　|　收录文件：**1388**
 
-### Games
+## 语言构成
 
-#### Slot 
-* [多福多財(DFDC), 招財進寶(ZCJB)](internal/game/dfdc/README.md)
-* [糖果屋(TGW)](internal/game/candyhouse/README.md)
-* [星光派對(XGPD), 阿拉丁(ALD)](internal/game/aladdin/README.md)
-* [五龍爭霸(WLZB)](internal/game/wlzb/README.md)
-* [五龍爭霸_彩金版(WLZBJP), 財神到_採金版(CSDJP)](internal/game/wlzbjp/README.md)
-* [五龍皇朝(WLHC)](internal/game/wlhc/README.md)
-* [百萬金輪五龍爭霸(WLJR)](internal/game/wljr/README.md)
-* [熊貓報喜(XMBX)](internal/game/xmbx/README.md)
-* [擊鼓迎福(JGYF)](internal/game/jgyf/README.md)
-* [吉祥如意(JXRY)](internal/game/jxry/README.md)
-* [金吉報喜(JJBX)](internal/game/jjbx/README.md)
-* [東海之王(DHZW)](internal/game/dhzw/README.md)
+- Go — 1355 个文件（97%）
+- Markdown — 14 个文件（1%）
+- Shell — 12 个文件（0%）
+- YAML — 4 个文件（0%）
+- XML — 1 个文件（0%）
+
+## 目录结构
+
+```
+internal/  (832 个文件)
+pkg/  (472 个文件)
+cmd/  (67 个文件)
+scripts/  (12 个文件)
+./  (5 个文件)
+```
+
+## 关键文件
+
+- 构建脚本：`Makefile`、`.gitlab-ci.yml`
+
+## 说明
+
+文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+
