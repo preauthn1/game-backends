@@ -1,34 +1,44 @@
 # backend.portal
 
-原始路径：`backend.portal`　|　收录文件：**336**
+原始路径：`backend.portal`　|　文件：**336**　|　主语言：Vue 205, TypeScript 99, YAML 10
 
-## 语言构成
-
-- Vue — 205 个文件（63%）
-- TypeScript — 99 个文件（30%）
-- YAML — 10 个文件（3%）
-- JSON — 3 个文件（0%）
-- Markdown — 2 个文件（0%）
-- JavaScript — 2 个文件（0%）
-
-## 目录结构
+## 目录构成
 
 ```
-src/  (308 个文件)
-./  (13 个文件)
-helm-charts/  (11 个文件)
-DockerFiles/  (2 个文件)
-docs/  (1 个文件)
-public/  (1 个文件)
+src/components/  — 128
+src/views/  — 76
+src/models/  — 39
+src/api/  — 35
+helm-charts/backend-portal/  — 11
+src/utilities/  — 9
+src/assets/  — 4
+src/store/  — 4
+src/i18n/  — 3
+src/router/  — 3
+.env.production/  — 1
+package.json/  — 1
+.env.staging/  — 1
+.env.development/  — 1
 ```
 
 ## 关键文件
 
 - 依赖清单：`package.json`
-- 构建脚本：`.gitlab-ci.yml`、`DockerFiles/Dockerfile`
+- CI/构建：`.gitlab-ci.yml`、`DockerFiles/Dockerfile`
 - 前端入口：`src/main.ts`、`public/index.html`
+
+## 主要文件
+
+- `src/components/system-setting/Merchants.vue`
+- `src/components/agent/MerchantCredits.vue`
+- `src/components/statistics/merchant-summary/MerchantSummaryFinanceCompare.vue`
+- `src/components/members-management/Detail.vue`
+- `src/components/game-management/UnionBetRecords.vue`
+- `src/components/game-management/BetRecordSearch.vue`
+- `src/components/game-management/RecordList.vue`
+- `src/components/system-setting/AccountingInvoice.vue`
 
 ## 说明
 
-文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
 

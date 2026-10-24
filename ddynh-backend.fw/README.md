@@ -1,38 +1,42 @@
 # ddynh-backend.fw
 
-原始路径：`ddynh-backend.fw`　|　收录文件：**1077**
+原始路径：`ddynh-backend.fw`　|　文件：**1078**　|　主语言：CSS 409, C# 327, XML 107
 
-## 语言构成
-
-- CSS — 409 个文件（42%）
-- C# — 327 个文件（33%）
-- XML — 107 个文件（11%）
-- JavaScript — 106 个文件（10%）
-- HTML — 16 个文件（1%）
-- JSON — 6 个文件（0%）
-
-## 目录结构
+## 目录构成
 
 ```
-FW.Core.AdminSys.WebUI/  (612 个文件)
-packages/  (138 个文件)
-FW.Core.Web/  (49 个文件)
-FW.Core.IO/  (42 个文件)
-FW.Core.AdminSys.Provider/  (41 个文件)
-FW.Core.Auth/  (37 个文件)
-FW.Core.Repository/  (35 个文件)
-FW.Core.Helper/  (33 个文件)
-FW.Core.EventBus/  (23 个文件)
-FW.Core.Language/  (20 个文件)
-FW.Core.Logger/  (17 个文件)
-FW.Core.Engine/  (17 个文件)
+FW.Core.AdminSys.WebUI/Content/  — 526
+FW.Core.AdminSys.WebUI/Themes/  — 63
+FW.Core.IO/FastDFS/  — 30
+packages/MvvmLightLibs.4.2.30.0/  — 25
+FW.Core.Web/WebAPI/  — 24
+FW.Core.Web/Mvc/  — 21
+FW.Core.AdminSys.Provider/Entity/  — 12
+FW.Core.AdminSys.Provider/EFProvider/  — 10
+FW.Core.Auth/AuthorizeRule/  — 9
+FW.Core.Repository/EF/  — 9
+packages/Newtonsoft.Json.4.5.11/  — 8
+packages/Microsoft.AspNet.WebPages.3.0.0/  — 8
+packages/System.Data.SQLite.Core.1.0.94.0/  — 8
+FW.Core.AdminSys.WebUI/Controllers/  — 8
 ```
 
 ## 关键文件
 
 - 前端入口：`FW.Core.AdminSys.WebUI/index.html`
 
+## 主要文件
+
+- `packages/mongocsharpdriver.1.8.3/lib/net35/MongoDB.Driver.XML`
+- `packages/Microsoft.AspNet.Mvc.5.1.1/lib/net45/System.Web.Mvc.xml`
+- `packages/Microsoft.AspNet.Mvc.5.1.2/lib/net45/System.Web.Mvc.xml`
+- `packages/mongocsharpdriver.1.8.3/lib/net35/MongoDB.Bson.XML`
+- `packages/Microsoft.AspNet.Mvc.5.0.0/lib/net45/System.Web.Mvc.xml`
+- `packages/Microsoft.AspNet.Mvc.zh-Hans.5.0.0/lib/net45/zh-Hans/System.Web.Mvc.xml`
+- `packages/Microsoft.AspNet.Mvc.5.0.0/lib/net45/zh-Hans/System.Web.Mvc.xml`
+- `packages/System.Data.SQLite.Core.1.0.94.0/lib/net451/System.Data.SQLite.xml`
+
 ## 说明
 
-文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
 

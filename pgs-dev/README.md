@@ -1,24 +1,42 @@
 # pgs-dev
 
-原始路径：`pgs-dev`　|　收录文件：**35**
+原始路径：`pgs-dev`　|　文件：**35**　|　主语言：YAML 34
 
-## 语言构成
-
-- YAML — 34 个文件（97%）
-- Markdown — 1 个文件（2%）
-
-## 目录结构
+## 目录构成
 
 ```
-values/  (33 个文件)
-./  (2 个文件)
+README.md/  — 1
+.gitlab-ci.yml/  — 1
+values/game-hhdz.yaml/  — 1
+values/game-lkb.yaml/  — 1
+values/game-wlyc.yaml/  — 1
+values/game-xlhd.yaml/  — 1
+values/game-s888.yaml/  — 1
+values/game-faf.yaml/  — 1
+values/game-jzyq.yaml/  — 1
+values/game-fgsb.yaml/  — 1
+values/game-infc.yaml/  — 1
+values/game-bjl.yaml/  — 1
+values/value.yaml/  — 1
+values/game-dfdc.yaml/  — 1
 ```
 
 ## 关键文件
 
-- 构建脚本：`.gitlab-ci.yml`
+- CI/构建：`.gitlab-ci.yml`
+
+## 主要文件
+
+- `values/game-hdc.yaml`
+- `values/game-jjbx.yaml`
+- `values/game-csdjp.yaml`
+- `values/game-hyxm.yaml`
+- `values/game-fgsb.yaml`
+- `values/game-dczz.yaml`
+- `values/game-jgyf.yaml`
+- `values/game-hhdz.yaml`
 
 ## 说明
 
-文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
 

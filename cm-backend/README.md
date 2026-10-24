@@ -1,37 +1,44 @@
 # cm-backend
 
-原始路径：`cm-backend`　|　收录文件：**408**
+原始路径：`cm-backend`　|　文件：**408**　|　主语言：PHP 382, JavaScript 9, CSS 7
 
-## 语言构成
-
-- PHP — 382 个文件（94%）
-- JavaScript — 9 个文件（2%）
-- CSS — 7 个文件（1%）
-- JSON — 3 个文件（0%）
-- Markdown — 1 个文件（0%）
-- Shell — 1 个文件（0%）
-
-## 目录结构
+## 目录构成
 
 ```
-app/  (293 个文件)
-resources/  (61 个文件)
-public/  (16 个文件)
-config/  (13 个文件)
-./  (11 个文件)
-database/  (6 个文件)
-routes/  (3 个文件)
-tests/  (3 个文件)
-bootstrap/  (2 个文件)
+app/Models/  — 59
+app/Http/  — 57
+app/Repositories/  — 54
+app/Services/  — 46
+resources/views/  — 46
+app/Livewire/  — 43
+app/Enums/  — 15
+resources/lang/  — 14
+public/resources/  — 14
+app/Helpers/  — 9
+database/migrations/  — 4
+app/Loggers/  — 2
+app/Console/  — 2
+package.json/  — 1
 ```
 
 ## 关键文件
 
 - 依赖清单：`package.json`、`composer.json`
-- 构建脚本：`.gitlab-ci.yml`
+- CI/构建：`.gitlab-ci.yml`
 - 前端入口：`resources/js/app.js`
+
+## 主要文件
+
+- `public/resources/css/bootstrap.css`
+- `public/resources/js/chart.js`
+- `public/resources/css/bootstrap.min.css`
+- `public/resources/css/nifty.min.css`
+- `public/resources/css/bootstrap-icons.min.css`
+- `public/resources/js/jquery-2.2.4.min.js`
+- `resources/views/livewire/system/miner-setting.blade.php`
+- `public/resources/js/moment.min.js`
 
 ## 说明
 
-文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
 

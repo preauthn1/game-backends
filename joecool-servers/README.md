@@ -1,30 +1,42 @@
 # joecool-servers
 
-原始路径：`joecool-servers`　|　收录文件：**1388**
+原始路径：`joecool-servers`　|　文件：**1388**　|　主语言：Go 1355, Shell 12, YAML 4
 
-## 语言构成
-
-- Go — 1355 个文件（97%）
-- Markdown — 14 个文件（1%）
-- Shell — 12 个文件（0%）
-- YAML — 4 个文件（0%）
-- XML — 1 个文件（0%）
-
-## 目录结构
+## 目录构成
 
 ```
-internal/  (832 个文件)
-pkg/  (472 个文件)
-cmd/  (67 个文件)
-scripts/  (12 个文件)
-./  (5 个文件)
+internal/game/  — 468
+internal/dbserver/  — 270
+pkg/slot/  — 122
+pkg/netproto/  — 105
+cmd/game/  — 55
+pkg/gamelogic/  — 31
+internal/hallserver/  — 27
+pkg/gameserver/  — 23
+internal/monitorserver/  — 21
+internal/notifyserver/  — 20
+pkg/robot/  — 17
+pkg/util/  — 16
+internal/tfserver/  — 15
+pkg/module/  — 15
 ```
 
 ## 关键文件
 
-- 构建脚本：`Makefile`、`.gitlab-ci.yml`
+- CI/构建：`Makefile`、`.gitlab-ci.yml`
+
+## 主要文件
+
+- `pkg/netproto/HallMsg.pb.go`
+- `internal/game/by/bylogic_test.go`
+- `internal/game/by/bylogic.go`
+- `internal/game/jlbpk/jlbpkLogic.go`
+- `internal/game/ddz/ddzgamelogic.go`
+- `internal/game/ddz/ddzrobotlogic.go`
+- `internal/game/dchjk/dchjkLogic.go`
+- `internal/game/bjl/baijialelogic.go`
 
 ## 说明
 
-文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
 

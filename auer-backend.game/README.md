@@ -1,37 +1,42 @@
 # auer-backend.game
 
-原始路径：`auer-backend.game`　|　收录文件：**1724**
+原始路径：`auer-backend.game`　|　文件：**1725**　|　主语言：C# 559, JavaScript 418, XML 225
 
-## 语言构成
-
-- C# — 559 个文件（39%）
-- JavaScript — 418 个文件（29%）
-- XML — 225 个文件（16%）
-- CSS — 162 个文件（11%）
-- HTML — 27 个文件（1%）
-- Markdown — 9 个文件（0%）
-
-## 目录结构
+## 目录构成
 
 ```
-game.AdminSystem/  (854 个文件)
-packages/  (315 个文件)
-game.Entity/  (172 个文件)
-game.WebSite/  (154 个文件)
-game.Repository/  (91 个文件)
-game.Service/  (44 个文件)
-game.OfficialWebsite/  (35 个文件)
-game.GameAPI/  (32 个文件)
-game.Infrastructure/  (15 个文件)
-game.Transform/  (11 个文件)
-./  (1 个文件)
+game.AdminSystem/Content/  — 507
+game.AdminSystem/Views/  — 200
+game.WebSite/PaymentHelper/  — 107
+game.AdminSystem/Plugins/  — 71
+game.AdminSystem/Controllers/  — 44
+game.Entity/Game/  — 39
+game.Entity/Stat/  — 33
+game.Entity/Users/  — 28
+game.Repository/Stat/  — 23
+game.GameAPI/Controllers/  — 23
+game.Service/Service/  — 21
+packages/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0/  — 19
+game.Repository/Game/  — 13
+packages/bootstrap.3.4.1/  — 13
 ```
 
 ## 关键文件
 
 - 前端入口：`game.AdminSystem/Plugins/UMEditor/index.html`、`game.AdminSystem/Content/Bootstrap/assets/plugins/ckeditor/samples/index.html`、`game.AdminSystem/Content/Bootstrap/assets/scripts/core/app.js`
 
+## 主要文件
+
+- `packages/Microsoft.AspNet.Mvc.5.2.2/lib/net45/System.Web.Mvc.xml`
+- `packages/Microsoft.AspNet.Mvc.5.2.7/lib/net45/System.Web.Mvc.xml`
+- `packages/Microsoft.AspNet.Mvc.5.1.1/lib/net45/System.Web.Mvc.xml`
+- `packages/Microsoft.AspNet.Mvc.zh-Hant.5.2.7/lib/net45/zh-Hant/System.Web.Mvc.xml`
+- `packages/Microsoft.AspNet.Mvc.zh-Hant.5.2.3/lib/net45/zh-Hant/System.Web.Mvc.xml`
+- `packages/Microsoft.AspNet.Mvc.5.2.7/lib/net45/zh-Hant/System.Web.Mvc.xml`
+- `packages/Microsoft.AspNet.Mvc.zh-Hans.5.2.2/lib/net45/zh-Hans/System.Web.Mvc.xml`
+- `packages/Microsoft.AspNet.Mvc.5.2.2/lib/net45/zh-Hans/System.Web.Mvc.xml`
+
 ## 说明
 
-文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
 

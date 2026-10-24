@@ -1,28 +1,42 @@
 # docker91
 
-原始路径：`docker91`　|　收录文件：**27**
+原始路径：`docker91`　|　文件：**28**　|　主语言：YAML 2, Shell 1
 
-## 语言构成
-
-- YAML — 2 个文件（66%）
-- Shell — 1 个文件（33%）
-
-## 目录结构
+## 目录构成
 
 ```
-game/  (20 个文件)
-./  (3 个文件)
-notifyserver/  (1 个文件)
-test/  (1 个文件)
-dbserver/  (1 个文件)
-hallserver/  (1 个文件)
+game/ddz/  — 6
+game/by/  — 3
+game/zjh/  — 2
+game/qzniuniu/  — 2
+README.md/  — 1
+gsupdate.sh/  — 1
+.drone.yml/  — 1
+docker-compose.yml/  — 1
+game/lhd/  — 1
+game/sgj/  — 1
+game/scmj/  — 1
+game/bjl/  — 1
+game/hhnn/  — 1
+game/brnn/  — 1
 ```
 
 ## 关键文件
 
-- 构建脚本：`docker-compose.yml`、`game/by/by_1/Dockerfile`、`game/by/by_3/Dockerfile`、`game/by/by_2/Dockerfile`
+- CI/构建：`docker-compose.yml`、`game/by/by_1/Dockerfile`、`game/by/by_3/Dockerfile`
+
+## 主要文件
+
+- `docker-compose.yml`
+- `README.md`
+- `.drone.yml`
+- `game/qzniuniu/qzniuniu_1/Dockerfile`
+- `game/qzniuniu/qzniuniu_2/Dockerfile`
+- `game/scmj/scmj_1/Dockerfile`
+- `game/hhnn/hhnn_1/Dockerfile`
+- `game/brnn/brnn_1/Dockerfile`
 
 ## 说明
 
-文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
 

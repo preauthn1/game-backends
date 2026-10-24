@@ -1,28 +1,34 @@
 # alex-deploy-server
 
-原始路径：`alex-deploy-server`　|　收录文件：**8**
+原始路径：`alex-deploy-server`　|　文件：**8**　|　主语言：Go 5, YAML 1
 
-## 语言构成
-
-- Go — 5 个文件（71%）
-- Markdown — 1 个文件（14%）
-- YAML — 1 个文件（14%）
-
-## 目录结构
+## 目录构成
 
 ```
-internal/  (3 个文件)
-./  (2 个文件)
-configs/  (1 个文件)
-pkg/  (1 个文件)
-cmd/  (1 个文件)
+internal/deploy/  — 3
+README.md/  — 1
+Makefile/  — 1
+configs/deploy.yml/  — 1
+pkg/copy/  — 1
+cmd/deploy/  — 1
 ```
 
 ## 关键文件
 
-- 构建脚本：`Makefile`
+- CI/构建：`Makefile`
+
+## 主要文件
+
+- `internal/deploy/deploy.go`
+- `cmd/deploy/main.go`
+- `pkg/copy/copy.go`
+- `internal/deploy/deploy_test.go`
+- `README.md`
+- `configs/deploy.yml`
+- `internal/deploy/config.go`
+- `Makefile`
 
 ## 说明
 
-文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
 

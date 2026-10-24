@@ -1,33 +1,38 @@
 # joecool-chessgameserver
 
-原始路径：`joecool-chessgameserver`　|　收录文件：**787**
+原始路径：`joecool-chessgameserver`　|　文件：**787**　|　主语言：Go 766, YAML 8, Shell 3
 
-## 语言构成
-
-- Go — 766 个文件（97%）
-- YAML — 8 个文件（1%）
-- Markdown — 4 个文件（0%）
-- Shell — 3 个文件（0%）
-- XML — 1 个文件（0%）
-
-## 目录结构
+## 目录构成
 
 ```
-game/  (278 个文件)
-framework/  (129 个文件)
-roomserver/  (96 个文件)
-dbserver/  (86 个文件)
-using/  (69 个文件)
-hallserver/  (25 个文件)
-monitorserver/  (23 个文件)
-tools/  (23 个文件)
-notifyserver/  (20 个文件)
-tfserver/  (16 个文件)
-example/  (8 个文件)
-tfconfig/  (4 个文件)
+framework/src/  — 129
+roomserver/src/  — 96
+dbserver/src/  — 85
+using/src/  — 69
+game/by/  — 28
+hallserver/src/  — 24
+game/qzniuniu/  — 22
+monitorserver/src/  — 21
+notifyserver/src/  — 19
+game/ddz/  — 15
+game/brnn/  — 15
+game/lhj/  — 14
+tfserver/src/  — 14
+game/zjh/  — 13
 ```
+
+## 主要文件
+
+- `game/by/src/bylogic/bylogic_test.go`
+- `game/by/src/bylogic/bylogic.go`
+- `game/ddz/src/ddzgamelogic/ddzgamelogic.go`
+- `using/src/netproto/HallMsg.pb.go`
+- `game/bjl/src/baijialelogic/baijialelogic.go`
+- `game/ddz/src/ddzgamelogic/ddzrobotlogic.go`
+- `game/scmj/src/scmj/scmjlogic.go`
+- `game/brnn/src/brnnlogic/brnnlogic.go`
 
 ## 说明
 
-文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
 

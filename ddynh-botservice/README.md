@@ -1,39 +1,43 @@
 # ddynh-botservice
 
-原始路径：`ddynh-botservice`　|　收录文件：**282**
+原始路径：`ddynh-botservice`　|　文件：**283**　|　主语言：C# 142, JavaScript 14, XML 9
 
-## 语言构成
-
-- C# — 142 个文件（79%）
-- JavaScript — 14 个文件（7%）
-- XML — 9 个文件（5%）
-- CSS — 8 个文件（4%）
-- JSON — 3 个文件（1%）
-- Markdown — 2 个文件（1%）
-
-## 目录结构
+## 目录构成
 
 ```
-HangfireJob/  (46 个文件)
-game.Service.Job/  (21 个文件)
-Job.API.APLFish/  (17 个文件)
-Job.API.BG/  (17 个文件)
-Job.API.EGaming/  (17 个文件)
-Job.API.APL/  (17 个文件)
-Job.API.ThirdPartyCommon/  (15 个文件)
-packages/  (12 个文件)
-FZAlertBot/  (7 个文件)
-MoneylogExportExcel/  (7 个文件)
-WanshangBankWithdrawJob/  (6 个文件)
-HammerBankWithdrawJob/  (6 个文件)
+HangfireJob/wwwroot/  — 23
+game.Service.Job/ServiceImplement/  — 16
+packages/Newtonsoft.Json.12.0.2/  — 10
+HangfireJob/Views/  — 6
+Job.API.APLFish/Controllers/  — 5
+Job.API.BG/Controllers/  — 5
+Job.API.EGaming/Controllers/  — 5
+Job.API.APL/Controllers/  — 5
+HangfireJob/Models/  — 4
+HangfireJob/Services/  — 4
+Job.API.ThirdPartyCommon/Controllers/  — 3
+Job.API.ThirdPartyCommon/App_Start/  — 3
+Job.API.APLFish/App_Start/  — 3
+Job.API.BG/App_Start/  — 3
 ```
 
 ## 关键文件
 
-- 依赖清单：`TerproStatBot/TerproStatBot.csproj`、`HemaBankWithdrawJob/HemaBankWithdrawJob.csproj`、`LXBankWithdrawJob/LXBankWithdrawJob.csproj`、`HangfireJob/HangfireJob.csproj`
-- 主程序：`TerproStatBot/Program.cs`、`HemaBankWithdrawJob/Program.cs`、`LXBankWithdrawJob/Program.cs`、`HangfireJob/Program.cs`
+- 依赖清单：`TerproStatBot/TerproStatBot.csproj`、`HemaBankWithdrawJob/HemaBankWithdrawJob.csproj`、`LXBankWithdrawJob/LXBankWithdrawJob.csproj`
+- 服务端主程序：`TerproStatBot/Program.cs`、`HemaBankWithdrawJob/Program.cs`、`LXBankWithdrawJob/Program.cs`
+
+## 主要文件
+
+- `packages/Newtonsoft.Json.12.0.2/lib/net45/Newtonsoft.Json.xml`
+- `packages/Newtonsoft.Json.12.0.2/lib/netstandard2.0/Newtonsoft.Json.xml`
+- `packages/Newtonsoft.Json.12.0.2/lib/netstandard1.3/Newtonsoft.Json.xml`
+- `packages/Newtonsoft.Json.12.0.2/lib/netstandard1.0/Newtonsoft.Json.xml`
+- `packages/Newtonsoft.Json.12.0.2/lib/portable-net45+win8+wp8+wpa81/Newtonsoft.Json.xml`
+- `packages/Newtonsoft.Json.12.0.2/lib/net20/Newtonsoft.Json.xml`
+- `packages/Newtonsoft.Json.12.0.2/lib/net40/Newtonsoft.Json.xml`
+- `packages/Newtonsoft.Json.12.0.2/lib/net35/Newtonsoft.Json.xml`
 
 ## 说明
 
-文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
 

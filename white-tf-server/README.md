@@ -1,22 +1,29 @@
 # white-tf-server
 
-原始路径：`white-tf-server`　|　收录文件：**20**
+原始路径：`white-tf-server`　|　文件：**20**　|　主语言：Go 18, XML 1
 
-## 语言构成
-
-- Go — 18 个文件（90%）
-- Markdown — 1 个文件（5%）
-- XML — 1 个文件（5%）
-
-## 目录结构
+## 目录构成
 
 ```
-internal/  (16 个文件)
-cmd/  (3 个文件)
-./  (1 个文件)
+internal/tfserver/  — 14
+internal/tfconfig/  — 2
+cmd/tfconfig/  — 2
+README.md/  — 1
+cmd/tfserver/  — 1
 ```
+
+## 主要文件
+
+- `internal/tfserver/tfnet/tfserver.go`
+- `internal/tfserver/tfnet/conninfo.go`
+- `internal/tfserver/router/portrouter/remotemaploader.go`
+- `cmd/tfconfig/main.go`
+- `internal/tfserver/router/portrouter/localconfigmaploader.go`
+- `internal/tfserver/tfconfig/tfconfig.go`
+- `cmd/tfserver/main.go`
+- `internal/tfserver/tfnet/tchannel.go`
 
 ## 说明
 
-文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
 

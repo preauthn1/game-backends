@@ -1,25 +1,30 @@
 # proto
 
-原始路径：`proto`　|　收录文件：**5**
+原始路径：`proto`　|　文件：**5**　|　主语言：YAML 1, Shell 1
 
-## 语言构成
-
-- Markdown — 1 个文件（33%）
-- YAML — 1 个文件（33%）
-- Shell — 1 个文件（33%）
-
-## 目录结构
+## 目录构成
 
 ```
-./  (4 个文件)
-scripts/  (1 个文件)
+README.md/  — 1
+DBServerMsg.proto/  — 1
+ServerMgmMsg.proto/  — 1
+.gitlab-ci.yml/  — 1
+scripts/build-proto.sh/  — 1
 ```
 
 ## 关键文件
 
-- 构建脚本：`.gitlab-ci.yml`
+- CI/构建：`.gitlab-ci.yml`
+
+## 主要文件
+
+- `DBServerMsg.proto`
+- `ServerMgmMsg.proto`
+- `README.md`
+- `.gitlab-ci.yml`
+- `scripts/build-proto.sh`
 
 ## 说明
 
-文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
 

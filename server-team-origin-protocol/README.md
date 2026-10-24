@@ -1,28 +1,42 @@
 # server-team-origin-protocol
 
-原始路径：`server-team-origin-protocol`　|　收录文件：**134**
+原始路径：`server-team-origin-protocol`　|　文件：**134**　|　主语言：C# 9, YAML 2, Shell 2
 
-## 语言构成
-
-- C# — 9 个文件（64%）
-- YAML — 2 个文件（14%）
-- Shell — 2 个文件（14%）
-- Markdown — 1 个文件（7%）
-
-## 目录结构
+## 目录构成
 
 ```
-./  (122 个文件)
-C#/  (9 个文件)
-phnum/  (2 个文件)
-scripts/  (1 个文件)
+GameMsg_DDZ.proto/  — 1
+Game_BJL.proto/  — 1
+GameMsg_BRNN.proto/  — 1
+GameMsg_SSS.proto/  — 1
+GameMsg_SGJ.proto/  — 1
+GameMsg_LHJ.proto/  — 1
+Game_HBSL.proto/  — 1
+GameMsg_WLZBJP.proto/  — 1
+GameMsg_Slot_DB.proto/  — 1
+ServerMgm.proto/  — 1
+Game_TBNN.proto/  — 1
+GameRoomMsg.proto/  — 1
+Game_DFDC.proto/  — 1
+Game_WLHC.proto/  — 1
 ```
 
 ## 关键文件
 
-- 构建脚本：`.gitlab-ci.yml`
+- CI/构建：`.gitlab-ci.yml`
+
+## 主要文件
+
+- `HallMsg.proto`
+- `C#/HttpMsg_BJL.cs`
+- `C#/HttpMsg_SGJ.cs`
+- `C#/HttpMsg_BRNN.cs`
+- `C#/HttpMsg_HHNN.cs`
+- `C#/HttpMsg_HHDZ.cs`
+- `C#/HttpMsg_LHD.cs`
+- `GameMsg_Slot.proto`
 
 ## 说明
 
-文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
 

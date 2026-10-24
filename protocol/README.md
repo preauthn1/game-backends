@@ -1,21 +1,38 @@
 # protocol
 
-原始路径：`protocol`　|　收录文件：**101**
+原始路径：`protocol`　|　文件：**101**　|　主语言：C# 9, Shell 1
 
-## 语言构成
-
-- C# — 9 个文件（81%）
-- Markdown — 1 个文件（9%）
-- Shell — 1 个文件（9%）
-
-## 目录结构
+## 目录构成
 
 ```
-./  (92 个文件)
-C#/  (9 个文件)
+GameMsg_DDZ.proto/  — 1
+Game_BJL.proto/  — 1
+GameMsg_BRNN.proto/  — 1
+GameMsg_SSS.proto/  — 1
+GameMsg_SGJ.proto/  — 1
+GameMsg_LHJ.proto/  — 1
+GameMsg_Slot_DB.proto/  — 1
+ServerMgm.proto/  — 1
+Game_TBNN.proto/  — 1
+GameRoomMsg.proto/  — 1
+Game_DFDC.proto/  — 1
+GameMsg_DFDC.proto/  — 1
+GameMsg_QZ21.proto/  — 1
+HallMsg.proto/  — 1
 ```
+
+## 主要文件
+
+- `HallMsg.proto`
+- `C#/HttpMsg_BJL.cs`
+- `C#/HttpMsg_SGJ.cs`
+- `C#/HttpMsg_BRNN.cs`
+- `C#/HttpMsg_HHNN.cs`
+- `C#/HttpMsg_HHDZ.cs`
+- `C#/HttpMsg_LHD.cs`
+- `C#/HttpMsg_FKEB.cs`
 
 ## 说明
 
-文本源码与配置的静态快照；二进制资源未收录。发布前已按本目录实际内容替换凭据、密钥、内网地址与域名。
+该工程为平台的一个组件。仅收录文本源码与配置，图片、音频等二进制资源未收录；凭据、密钥、内网地址与域名已按实际内容替换。
 
